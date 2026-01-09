@@ -6,12 +6,11 @@
     <title>Edutop Scholars - Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* [CSS REMAINS EXACTLY THE SAME AS PROVIDED TO MAINTAIN DESIGN] */
+        /* [CSS REMAINS EXACTLY THE SAME] */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         :root { --primary: #311b92; --primary-light: #4527a0; --secondary: #ff5722; --accent: #00bcd4; --light: #f5f5f7; --dark: #333; --success: #4caf50; --warning: #ff9800; --danger: #f44336; --gray: #777; --light-gray: #eee; }
         body { background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%); color: var(--dark); min-height: 100vh; }
         
-        /* Header */
         .header { background: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08); position: sticky; top: 0; z-index: 100; }
         .logo { display: flex; align-items: center; }
         .logo h1 { color: var(--primary); font-size: 28px; }
@@ -23,7 +22,6 @@
         .user-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; }
         .user-name { font-weight: 600; }
 
-        /* Dashboard Layout */
         .dashboard-container { display: flex; min-height: calc(100vh - 80px); }
         .sidebar { width: 250px; background: white; padding: 25px 0; box-shadow: 3px 0 10px rgba(0, 0, 0, 0.05); display: flex; flex-direction: column; }
         .sidebar-section { margin-bottom: 30px; padding: 0 20px; }
@@ -36,7 +34,6 @@
         .subscription-status h4 { margin-bottom: 5px; }
         .subscription-status p { font-size: 14px; opacity: 0.9; }
 
-        /* Main Content */
         .main-content { flex: 1; padding: 30px; }
         .welcome-section { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); color: white; padding: 25px; border-radius: 15px; margin-bottom: 30px; box-shadow: 0 10px 20px rgba(49, 27, 146, 0.2); }
         .welcome-section h2 { font-size: 28px; margin-bottom: 10px; }
@@ -49,7 +46,6 @@
         .stat-info h3 { font-size: 24px; margin-bottom: 5px; }
         .stat-info p { color: var(--gray); font-size: 14px; }
 
-        /* Dashboard Actions */
         .dashboard-actions { margin-bottom: 40px; }
         .dashboard-actions h2 { margin-bottom: 20px; color: var(--primary); font-size: 24px; }
         .action-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
@@ -62,7 +58,6 @@
         .action-btn:hover { background: var(--primary-light); }
         .action-btn:disabled { background: #ccc; cursor: not-allowed; }
 
-        /* Modal & Recent Activity */
         .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.7); display: none; align-items: center; justify-content: center; z-index: 1000; }
         .modal { background: white; border-radius: 15px; width: 90%; max-width: 600px; max-height: 90vh; overflow-y: auto; padding: 30px; position: relative; }
         .modal-close { position: absolute; top: 20px; right: 20px; background: none; border: none; font-size: 24px; cursor: pointer; color: var(--gray); }
@@ -111,7 +106,7 @@
                 <div class="user-avatar" id="user-avatar-display">...</div>
                 <div>
                     <div class="user-name" id="user-name-display">Loading...</div>
-                    <div style="font-size: 12px; color: var(--gray);" id="user-plan-display">Checking plan...</div>
+                    <div style="font-size: 12px; color: var(--gray);" id="user-plan-display">Checking...</div>
                 </div>
             </div>
         </div>
@@ -121,7 +116,7 @@
         <nav class="sidebar">
             <div class="sidebar-section">
                 <h3>Navigation</h3>
-                <a href="dashboard.html" class="sidebar-item active">
+                <a href="#" class="sidebar-item active">
                     <i class="fas fa-home"></i>
                     <span>Dashboard</span>
                 </a>
@@ -173,7 +168,7 @@
         <main class="main-content">
             <section class="welcome-section">
                 <h2 id="welcome-msg">Welcome!</h2>
-                <p id="welcome-subtext">You haven't selected your subjects yet. Please select them to get personalized recommendations.</p>
+                <p id="welcome-subtext">Fetching your profile data...</p>
             </section>
 
             <div class="stats-cards">
@@ -282,11 +277,11 @@
                             <i class="fas fa-user-plus"></i>
                         </div>
                         <div class="activity-info">
-                            <h4>Account Created</h4>
-                            <p>Welcome to Edutop Scholars!</p>
+                            <h4>Login Successful</h4>
+                            <p>You accessed your dashboard</p>
                         </div>
                     </div>
-                    </div>
+                </div>
             </section>
         </main>
     </div>
@@ -303,62 +298,23 @@
             
             <div class="subject-selection">
                 <div class="subject-grid">
-                    <div class="subject-card" data-subject="Mathematics">
-                        <div class="subject-icon"><i class="fas fa-square-root-alt"></i></div>
-                        <h4>Mathematics</h4>
-                    </div>
-                    <div class="subject-card" data-subject="Physics">
-                        <div class="subject-icon"><i class="fas fa-atom"></i></div>
-                        <h4>Physics</h4>
-                    </div>
-                    <div class="subject-card" data-subject="Chemistry">
-                        <div class="subject-icon"><i class="fas fa-flask"></i></div>
-                        <h4>Chemistry</h4>
-                    </div>
-                    <div class="subject-card" data-subject="Biology">
-                        <div class="subject-icon"><i class="fas fa-dna"></i></div>
-                        <h4>Biology</h4>
-                    </div>
-                    
-                    <div class="subject-card" data-subject="English">
-                        <div class="subject-icon"><i class="fas fa-language"></i></div>
-                        <h4>English</h4>
-                    </div>
-                    <div class="subject-card" data-subject="Literature">
-                        <div class="subject-icon"><i class="fas fa-book-reader"></i></div>
-                        <h4>Literature</h4>
-                    </div>
-                    <div class="subject-card" data-subject="Government">
-                        <div class="subject-icon"><i class="fas fa-landmark"></i></div>
-                        <h4>Government</h4>
-                    </div>
-                    <div class="subject-card" data-subject="Economics">
-                        <div class="subject-icon"><i class="fas fa-chart-line"></i></div>
-                        <h4>Economics</h4>
-                    </div>
-                    
-                    <div class="subject-card" data-subject="Geography">
-                        <div class="subject-icon"><i class="fas fa-globe-africa"></i></div>
-                        <h4>Geography</h4>
-                    </div>
-                    <div class="subject-card" data-subject="Commerce">
-                        <div class="subject-icon"><i class="fas fa-shopping-cart"></i></div>
-                        <h4>Commerce</h4>
-                    </div>
-                    <div class="subject-card" data-subject="Accounting">
-                        <div class="subject-icon"><i class="fas fa-calculator"></i></div>
-                        <h4>Accounting</h4>
-                    </div>
-                    <div class="subject-card" data-subject="CRS">
-                        <div class="subject-icon"><i class="fas fa-church"></i></div>
-                        <h4>CRS</h4>
-                    </div>
+                    <div class="subject-card" data-subject="Mathematics"><div class="subject-icon"><i class="fas fa-square-root-alt"></i></div><h4>Mathematics</h4></div>
+                    <div class="subject-card" data-subject="Physics"><div class="subject-icon"><i class="fas fa-atom"></i></div><h4>Physics</h4></div>
+                    <div class="subject-card" data-subject="Chemistry"><div class="subject-icon"><i class="fas fa-flask"></i></div><h4>Chemistry</h4></div>
+                    <div class="subject-card" data-subject="Biology"><div class="subject-icon"><i class="fas fa-dna"></i></div><h4>Biology</h4></div>
+                    <div class="subject-card" data-subject="English"><div class="subject-icon"><i class="fas fa-language"></i></div><h4>English</h4></div>
+                    <div class="subject-card" data-subject="Literature"><div class="subject-icon"><i class="fas fa-book-reader"></i></div><h4>Literature</h4></div>
+                    <div class="subject-card" data-subject="Government"><div class="subject-icon"><i class="fas fa-landmark"></i></div><h4>Government</h4></div>
+                    <div class="subject-card" data-subject="Economics"><div class="subject-icon"><i class="fas fa-chart-line"></i></div><h4>Economics</h4></div>
+                    <div class="subject-card" data-subject="Geography"><div class="subject-icon"><i class="fas fa-globe-africa"></i></div><h4>Geography</h4></div>
+                    <div class="subject-card" data-subject="Commerce"><div class="subject-icon"><i class="fas fa-shopping-cart"></i></div><h4>Commerce</h4></div>
+                    <div class="subject-card" data-subject="Accounting"><div class="subject-icon"><i class="fas fa-calculator"></i></div><h4>Accounting</h4></div>
+                    <div class="subject-card" data-subject="CRS"><div class="subject-icon"><i class="fas fa-church"></i></div><h4>CRS</h4></div>
                 </div>
                 
                 <div class="selected-subjects">
                     <h4>Selected Subjects (4 maximum)</h4>
-                    <div class="selected-list" id="selectedList">
-                        </div>
+                    <div class="selected-list" id="selectedList"></div>
                     <p id="selectionCount" style="margin-top: 15px; color: var(--gray); font-size: 14px;">0 subjects selected</p>
                 </div>
             </div>
@@ -371,12 +327,11 @@
     </div>
 
     <script type="module">
-        // Import Firebase (Modular SDK)
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+        import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-        // Firebase Configuration
+        // Your Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyCictHNxtslYs9VR0hoicxlwPn_QghkgIA",
             authDomain: "edutop-7ff51.firebaseapp.com",
@@ -387,7 +342,6 @@
             measurementId: "G-GGGH590BYS"
         };
 
-        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
@@ -395,52 +349,86 @@
         let currentUserUid = null;
         let selectedSubjects = [];
 
-        // --- AUTH & DATA LOADING ---
-        onAuthStateChanged(auth, async (user) => {
+        // 1. AUTH & REAL-TIME DATA LISTENER
+        onAuthStateChanged(auth, (user) => {
             if (user) {
                 currentUserUid = user.uid;
-                await loadUserProfile(user.uid);
+                
+                // Real-time listener for user document
+                // This replaces "getDoc" so it feels real-time
+                const userRef = doc(db, "users", currentUserUid);
+                
+                onSnapshot(userRef, async (docSnap) => {
+                    if (docSnap.exists()) {
+                        // DOCUMENT EXISTS: Load Data
+                        const data = docSnap.data();
+                        updateUI(data);
+                    } else {
+                        // DOCUMENT MISSING: Create it immediately (Self-Correction)
+                        // This fixes the "mocked" feeling if sign-up didn't work perfectly
+                        const defaultData = {
+                            fullName: user.displayName || "New Scholar",
+                            email: user.email,
+                            subscriptionPlan: "Free",
+                            selectedSubjects: [],
+                            createdAt: new Date().toISOString()
+                        };
+                        
+                        try {
+                            await setDoc(userRef, defaultData);
+                            console.log("Created missing profile document");
+                            // The listener will trigger again immediately after this setDoc
+                        } catch (e) {
+                            console.error("Error creating profile:", e);
+                        }
+                    }
+                }, (error) => {
+                    console.error("Listener error:", error);
+                    // Handle permission errors (unlikely given your rules)
+                });
+
             } else {
-                // If not logged in, redirect to login page
+                // Not logged in -> Redirect
                 window.location.href = "index.html";
             }
         });
 
-        async function loadUserProfile(uid) {
-            const userRef = doc(db, "users", uid);
-            const userSnap = await getDoc(userRef);
+        // 2. UPDATE UI FUNCTION
+        function updateUI(userData) {
+            // Name & Initials
+            const fullName = userData.fullName || "Scholar";
+            document.getElementById('user-name-display').innerText = fullName;
+            document.getElementById('welcome-msg').innerText = `Welcome back, ${fullName.split(' ')[0]}!`;
+            
+            const initials = fullName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+            document.getElementById('user-avatar-display').innerText = initials;
 
-            if (userSnap.exists()) {
-                const userData = userSnap.data();
-                
-                // Update Name
-                const fullName = userData.fullName || "Student";
-                document.getElementById('user-name-display').innerText = fullName;
-                document.getElementById('welcome-msg').innerText = `Welcome back, ${fullName.split(' ')[0]}!`;
-                
-                // Update Avatar (Initials)
-                const initials = fullName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
-                document.getElementById('user-avatar-display').innerText = initials;
+            // Plan
+            const plan = (userData.subscriptionPlan || "Free").toUpperCase();
+            document.getElementById('user-plan-display').innerText = `${plan} Plan`;
+            document.getElementById('sidebar-plan-name').innerText = `${plan} Plan`;
 
-                // Update Plan
-                const plan = (userData.subscriptionPlan || "Basic").toUpperCase();
-                document.getElementById('user-plan-display').innerText = `${plan} Plan`;
-                document.getElementById('sidebar-plan-name').innerText = `${plan} Plan`;
+            // Subjects
+            selectedSubjects = userData.selectedSubjects || [];
+            
+            const welcomeSubtext = document.getElementById('welcome-subtext');
+            const subjectBtn = document.querySelector('#subject-selection-btn .action-btn');
 
-                // Load Subjects if they exist
-                if (userData.selectedSubjects && Array.isArray(userData.selectedSubjects)) {
-                    selectedSubjects = userData.selectedSubjects;
-                    updateWelcomeMessageWithSubjects();
-                    // If user has subjects, we can update the button text
-                    const subjectBtn = document.querySelector('#subject-selection-btn .action-btn');
-                    if(subjectBtn) subjectBtn.textContent = 'Change Subjects';
-                }
+            if (selectedSubjects.length > 0) {
+                welcomeSubtext.innerHTML = `You are practicing: <strong>${selectedSubjects.join(', ')}</strong>`;
+                subjectBtn.textContent = 'Change Subjects';
             } else {
-                console.log("No user document found!");
+                welcomeSubtext.innerText = "You haven't selected your subjects yet. Please select them to get personalized recommendations.";
+                subjectBtn.textContent = 'Select Subjects';
+            }
+            
+            // Re-render modal in case it's open
+            if(document.getElementById('subjectModal').style.display === 'flex'){
+                renderSubjectSelection();
             }
         }
 
-        // --- UI LOGIC FOR MODAL ---
+        // 3. MODAL LOGIC
         const subjectModal = document.getElementById('subjectModal');
         const subjectSelectionBtn = document.getElementById('subject-selection-btn');
         const closeModal = document.getElementById('closeModal');
@@ -450,31 +438,25 @@
         const selectionCount = document.getElementById('selectionCount');
         const saveSubjectsBtn = document.getElementById('saveSubjects');
 
-        // Open Modal
-        subjectSelectionBtn.addEventListener('click', () => {
-            subjectModal.style.display = 'flex';
-            renderSubjectSelection();
+        // Open/Close
+        subjectSelectionBtn.addEventListener('click', () => { 
+            subjectModal.style.display = 'flex'; 
+            renderSubjectSelection(); 
         });
-
-        // Close Modal
         const hideModal = () => { subjectModal.style.display = 'none'; };
         closeModal.addEventListener('click', hideModal);
         cancelSelection.addEventListener('click', hideModal);
         subjectModal.addEventListener('click', (e) => { if (e.target === subjectModal) hideModal(); });
 
-        // Logic to toggle subject selection
+        // Selection Logic
         subjectCards.forEach(card => {
             card.addEventListener('click', function() {
                 const subject = this.getAttribute('data-subject');
                 const index = selectedSubjects.indexOf(subject);
                 
                 if (index === -1) {
-                    if (selectedSubjects.length < 4) {
-                        selectedSubjects.push(subject);
-                    } else {
-                        alert('You can only select 4 subjects.');
-                        return;
-                    }
+                    if (selectedSubjects.length < 4) selectedSubjects.push(subject);
+                    else alert('Maximum 4 subjects allowed.');
                 } else {
                     selectedSubjects.splice(index, 1);
                 }
@@ -482,18 +464,13 @@
             });
         });
 
-        // Render the visual state of subjects inside Modal
         function renderSubjectSelection() {
-            // Reset visual cards
             document.querySelectorAll('.subject-card').forEach(c => c.classList.remove('selected'));
-            
-            // Highlight selected
             selectedSubjects.forEach(sub => {
                 const card = document.querySelector(`.subject-card[data-subject="${sub}"]`);
                 if(card) card.classList.add('selected');
             });
 
-            // Update List text
             selectedList.innerHTML = '';
             selectedSubjects.forEach(subject => {
                 const tag = document.createElement('div');
@@ -515,23 +492,37 @@
             }
         }
 
-        // --- SAVE TO FIRESTORE ---
+        // 4. SAVE TO FIREBASE
         saveSubjectsBtn.addEventListener('click', async () => {
             if (!currentUserUid) return;
-            
             const originalText = saveSubjectsBtn.innerText;
             saveSubjectsBtn.innerText = "Saving...";
-            saveSubjectsBtn.disabled = true;
-
+            
             try {
-                // Update Firestore document
                 const userRef = doc(db, "users", currentUserUid);
-                
-                // Using setDoc with merge:true creates the doc if missing, or updates if exists
                 await setDoc(userRef, { 
                     selectedSubjects: selectedSubjects,
                     lastUpdated: new Date().toISOString()
                 }, { merge: true });
-
-                alert("Subjects saved successfully!");
+                
+                alert("Subjects saved!");
                 hideModal();
+                // No need to manually update UI, the onSnapshot listener will do it automatically!
+            } catch (error) {
+                console.error("Error:", error);
+                alert("Failed to save: " + error.message);
+            } finally {
+                saveSubjectsBtn.innerText = originalText;
+            }
+        });
+
+        // 5. LOGOUT
+        document.getElementById('logout-btn').addEventListener('click', async (e) => {
+            e.preventDefault();
+            await signOut(auth);
+            window.location.href = "index.html";
+        });
+
+    </script>
+</body>
+</html>
