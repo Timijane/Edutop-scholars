@@ -1,1233 +1,677 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Edutop Scholars - Where Excellence is Certain</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    :root {
-      --primary: #0a0f24;
-      --secondary: #1e40af;
-      --accent: #00c2ff;
-      --light: #f8fafc;
-      --dark: #0f172a;
-      --gray: #64748b;
-      --success: #10b981;
-      --warning: #f59e0b;
-      --error: #ef4444;
-      --gradient: linear-gradient(135deg, #0a0f24 0%, #1e40af 100%);
-      --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-      --shadow-md: 0 10px 25px rgba(0, 0, 0, 0.1);
-      --radius: 16px;
-      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    }
-
-    body {
-      background-color: var(--light);
-      color: var(--dark);
-      line-height: 1.6;
-      overflow-x: hidden;
-      min-height: 100vh;
-    }
-
-    /* Modern 2030 Typography */
-    h1, h2, h3, h4, h5, h6 {
-      font-weight: 700;
-      line-height: 1.2;
-    }
-
-    /* Navigation */
-    .navbar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(20px);
-      border-bottom: 1px solid rgba(10, 15, 36, 0.1);
-      padding: 1.5rem 5%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      z-index: 1000;
-    }
-
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-
-    .logo-icon {
-      background: var(--gradient);
-      color: white;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      font-weight: 700;
-    }
-
-    .logo-text {
-      font-size: 1.75rem;
-      font-weight: 800;
-      background: var(--gradient);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 2rem;
-      list-style: none;
-    }
-
-    .nav-links a {
-      text-decoration: none;
-      color: var(--primary);
-      font-weight: 600;
-      transition: var(--transition);
-      position: relative;
-    }
-
-    .nav-links a:hover {
-      color: var(--secondary);
-    }
-
-    .nav-links a::after {
-      content: '';
-      position: absolute;
-      bottom: -5px;
-      left: 0;
-      width: 0;
-      height: 2px;
-      background: var(--secondary);
-      transition: var(--transition);
-    }
-
-    .nav-links a:hover::after {
-      width: 100%;
-    }
-
-    .nav-actions {
-      display: flex;
-      gap: 1rem;
-      align-items: center;
-    }
-
-    .cta-button {
-      background: var(--gradient);
-      color: white;
-      border: none;
-      padding: 0.75rem 1.5rem;
-      border-radius: var(--radius);
-      font-weight: 600;
-      cursor: pointer;
-      transition: var(--transition);
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .cta-button:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-md);
-    }
-
-    /* Hero Section */
-    .hero {
-      padding: 12rem 5% 4rem;
-      background: var(--gradient);
-      color: white;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .hero::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%231e40af' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
-      opacity: 0.3;
-    }
-
-    .hero-content {
-      max-width: 1200px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 4rem;
-      align-items: start;
-    }
-
-    .hero-text h1 {
-      font-size: 3.5rem;
-      margin-bottom: 1.5rem;
-      line-height: 1.1;
-    }
-
-    .hero-text p {
-      font-size: 1.25rem;
-      opacity: 0.9;
-      margin-bottom: 2rem;
-    }
-
-    .hero-tagline {
-      font-size: 1.5rem;
-      font-weight: 600;
-      color: var(--accent);
-      margin-bottom: 1rem;
-    }
-
-    .hero-stats {
-      display: flex;
-      gap: 2rem;
-      margin-top: 3rem;
-    }
-
-    .stat-item {
-      text-align: center;
-    }
-
-    .stat-number {
-      font-size: 2.5rem;
-      font-weight: 800;
-      display: block;
-    }
-
-    .stat-label {
-      font-size: 0.9rem;
-      opacity: 0.8;
-    }
-
-    /* Auth Section */
-    .auth-section {
-      background: white;
-      border-radius: var(--radius);
-      padding: 2.5rem;
-      box-shadow: var(--shadow-lg);
-      position: relative;
-      overflow: hidden;
-      margin-bottom: 2rem;
-    }
-
-    .auth-section::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 6px;
-      height: 100%;
-      background: var(--gradient);
-    }
-
-    .auth-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 2rem;
-    }
-
-    .auth-tabs {
-      display: flex;
-      gap: 0.5rem;
-      background: #f1f5f9;
-      padding: 0.25rem;
-      border-radius: 12px;
-    }
-
-    .auth-tab {
-      padding: 0.75rem 1.5rem;
-      border: none;
-      background: transparent;
-      color: var(--gray);
-      font-weight: 600;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: var(--transition);
-    }
-
-    .auth-tab.active {
-      background: white;
-      color: var(--primary);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .auth-title {
-      font-size: 1.75rem;
-      color: var(--primary);
-      margin-bottom: 0.5rem;
-    }
-
-    .auth-subtitle {
-      color: var(--gray);
-      margin-bottom: 2rem;
-    }
-
-    /* Auth Form */
-    .auth-form {
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-    }
-
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-
-    .form-label {
-      font-weight: 600;
-      color: var(--primary);
-    }
-
-    .form-input {
-      padding: 1rem;
-      border: 2px solid #e2e8f0;
-      border-radius: 12px;
-      font-size: 1rem;
-      transition: var(--transition);
-    }
-
-    .form-input:focus {
-      outline: none;
-      border-color: var(--secondary);
-      box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
-    }
-
-    .password-container {
-      position: relative;
-    }
-
-    .password-toggle {
-      position: absolute;
-      right: 1rem;
-      top: 50%;
-      transform: translateY(-50%);
-      background: none;
-      border: none;
-      color: var(--gray);
-      cursor: pointer;
-      font-size: 1.1rem;
-    }
-
-    .auth-button {
-      background: var(--gradient);
-      color: white;
-      border: none;
-      padding: 1rem;
-      border-radius: 12px;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: var(--transition);
-      margin-top: 1rem;
-    }
-
-    .auth-button:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-md);
-    }
-
-    .auth-button:disabled {
-      opacity: 0.7;
-      cursor: not-allowed;
-    }
-
-    .auth-footer {
-      text-align: center;
-      margin-top: 1.5rem;
-      color: var(--gray);
-    }
-
-    .auth-link {
-      color: var(--secondary);
-      text-decoration: none;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .auth-link:hover {
-      text-decoration: underline;
-    }
-
-    .auth-message {
-      padding: 1rem;
-      border-radius: 12px;
-      margin-top: 1rem;
-      display: none;
-    }
-
-    .auth-message.success {
-      background: #d1fae5;
-      color: #065f46;
-      display: block;
-    }
-
-    .auth-message.error {
-      background: #fee2e2;
-      color: #991b1b;
-      display: block;
-    }
-
-    /* Image Slider */
-    .image-slider {
-      width: 100%;
-      background: white;
-      border-radius: var(--radius);
-      padding: 2rem;
-      box-shadow: var(--shadow-lg);
-      margin-top: 2rem;
-    }
-
-    .slider-title {
-      text-align: center;
-      color: var(--primary);
-      margin-bottom: 1.5rem;
-      font-size: 1.5rem;
-    }
-
-    .slider-container {
-      position: relative;
-      width: 100%;
-      height: 300px;
-      overflow: hidden;
-      border-radius: 12px;
-    }
-
-    .slider-track {
-      display: flex;
-      transition: transform 0.5s ease-in-out;
-      height: 100%;
-    }
-
-    .slide {
-      min-width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .slide img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      border-radius: 8px;
-    }
-
-    .slider-nav {
-      position: absolute;
-      top: 50%;
-      width: 100%;
-      display: flex;
-      justify-content: space-between;
-      transform: translateY(-50%);
-      padding: 0 1rem;
-    }
-
-    .slider-btn {
-      background: rgba(255, 255, 255, 0.8);
-      border: none;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      cursor: pointer;
-      font-size: 1.2rem;
-      color: var(--primary);
-      transition: var(--transition);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .slider-btn:hover {
-      background: white;
-      transform: scale(1.1);
-    }
-
-    .slider-dots {
-      display: flex;
-      justify-content: center;
-      gap: 0.5rem;
-      margin-top: 1rem;
-    }
-
-    .slider-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: #cbd5e1;
-      border: none;
-      cursor: pointer;
-      transition: var(--transition);
-    }
-
-    .slider-dot.active {
-      background: var(--secondary);
-      transform: scale(1.2);
-    }
-
-    /* Features Section */
-    .features {
-      padding: 6rem 5%;
-      background: white;
-    }
-
-    .section-header {
-      text-align: center;
-      max-width: 800px;
-      margin: 0 auto 4rem;
-    }
-
-    .section-title {
-      font-size: 2.5rem;
-      color: var(--primary);
-      margin-bottom: 1rem;
-    }
-
-    .section-subtitle {
-      color: var(--gray);
-      font-size: 1.125rem;
-    }
-
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 2rem;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    .feature-card {
-      background: #f8fafc;
-      padding: 2.5rem;
-      border-radius: var(--radius);
-      transition: var(--transition);
-      border: 1px solid #e2e8f0;
-    }
-
-    .feature-card:hover {
-      transform: translateY(-10px);
-      box-shadow: var(--shadow-lg);
-      border-color: var(--secondary);
-    }
-
-    .feature-icon {
-      width: 60px;
-      height: 60px;
-      background: var(--gradient);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-size: 1.5rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .feature-title {
-      font-size: 1.5rem;
-      color: var(--primary);
-      margin-bottom: 1rem;
-    }
-
-    /* Footer */
-    .footer {
-      background: var(--primary);
-      color: white;
-      padding: 4rem 5% 2rem;
-    }
-
-    .footer-content {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 3rem;
-      max-width: 1200px;
-      margin: 0 auto 3rem;
-    }
-
-    .footer-logo {
-      font-size: 1.75rem;
-      font-weight: 700;
-      margin-bottom: 1rem;
-    }
-
-    .footer-description {
-      opacity: 0.8;
-      margin-bottom: 1.5rem;
-    }
-
-    .footer-heading {
-      font-size: 1.25rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .footer-links {
-      list-style: none;
-    }
-
-    .footer-links li {
-      margin-bottom: 0.75rem;
-    }
-
-    .footer-links a {
-      color: rgba(255, 255, 255, 0.8);
-      text-decoration: none;
-      transition: var(--transition);
-    }
-
-    .footer-links a:hover {
-      color: var(--accent);
-    }
-
-    .footer-bottom {
-      text-align: center;
-      padding-top: 2rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-      color: rgba(255, 255, 255, 0.7);
-    }
-
-    /* Responsive Design */
-    @media (max-width: 1024px) {
-      .hero-content {
-        grid-template-columns: 1fr;
-        text-align: center;
-        gap: 3rem;
-      }
-
-      .hero-text h1 {
-        font-size: 2.75rem;
-      }
-
-      .hero-stats {
-        justify-content: center;
-      }
-      
-      .image-slider {
-        margin-top: 0;
-      }
-    }
-
-    @media (max-width: 768px) {
-      .navbar {
-        flex-direction: column;
-        gap: 1rem;
-        padding: 1rem 5%;
-      }
-
-      .nav-links {
-        gap: 1rem;
-        flex-wrap: wrap;
-        justify-content: center;
-      }
-
-      .hero {
-        padding: 10rem 5% 4rem;
-      }
-
-      .hero-text h1 {
-        font-size: 2.25rem;
-      }
-
-      .auth-section {
-        padding: 2rem 1.5rem;
-      }
-
-      .section-title {
-        font-size: 2rem;
-      }
-
-      .slider-container {
-        height: 250px;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .hero-stats {
-        flex-direction: column;
-        gap: 1.5rem;
-      }
-
-      .auth-tabs {
-        width: 100%;
-        justify-content: center;
-      }
-
-      .auth-tab {
-        padding: 0.5rem 1rem;
-        font-size: 0.9rem;
-      }
-
-      .slider-container {
-        height: 200px;
-      }
-    }
-
-    /* Animation */
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .animate-up {
-      animation: fadeInUp 0.6s ease-out forwards;
-    }
-
-    /* Loading Spinner */
-    .spinner {
-      display: inline-block;
-      width: 1rem;
-      height: 1rem;
-      border: 3px solid rgba(255, 255, 255, 0.3);
-      border-radius: 50%;
-      border-top-color: white;
-      animation: spin 1s ease-in-out infinite;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JAMB CBT Master - Login/Signup</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a237e 0%, #311b92 100%);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            display: flex;
+            width: 100%;
+            max-width: 1200px;
+            min-height: 700px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        /* Slider Section */
+        .slider-section {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slider {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .slide.active {
+            opacity: 1;
+        }
+
+        .slide-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 40px;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+            color: white;
+        }
+
+        .slide-content h3 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .slide-content p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .slider-indicators {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            z-index: 10;
+        }
+
+        .indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .indicator.active {
+            background: white;
+            transform: scale(1.2);
+        }
+
+        /* Form Section */
+        .form-section {
+            flex: 1;
+            padding: 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            color: #311b92;
+            font-size: 36px;
+            margin-bottom: 5px;
+        }
+
+        .logo span {
+            color: #ff5722;
+        }
+
+        .logo p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .form-container {
+            width: 100%;
+        }
+
+        .form-toggle {
+            display: flex;
+            margin-bottom: 30px;
+            background: #f0f0f0;
+            border-radius: 50px;
+            padding: 5px;
+        }
+
+        .toggle-btn {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            background: transparent;
+            font-size: 16px;
+        }
+
+        .toggle-btn.active {
+            background: #311b92;
+            color: white;
+            box-shadow: 0 4px 12px rgba(49, 27, 146, 0.3);
+        }
+
+        .form {
+            display: none;
+        }
+
+        .form.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form h2 {
+            margin-bottom: 25px;
+            color: #311b92;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .form-group i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #777;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 15px 15px 15px 45px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: #311b92;
+            outline: none;
+        }
+
+        .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+        }
+
+        .remember-me input {
+            margin-right: 8px;
+        }
+
+        .forgot-password {
+            color: #311b92;
+            text-decoration: none;
+        }
+
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: #311b92;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            background: #1a237e;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(49, 27, 146, 0.3);
+        }
+
+        .social-login {
+            margin-top: 25px;
+            text-align: center;
+        }
+
+        .social-login p {
+            margin-bottom: 15px;
+            color: #666;
+            position: relative;
+        }
+
+        .social-login p::before, .social-login p::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            width: 30%;
+            height: 1px;
+            background: #ddd;
+        }
+
+        .social-login p::before {
+            left: 0;
+        }
+
+        .social-login p::after {
+            right: 0;
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .social-icon:hover {
+            transform: translateY(-3px);
+        }
+
+        .facebook { background: #3b5998; }
+        .google { background: #dd4b39; }
+        .twitter { background: #1da1f2; }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .form-footer a {
+            color: #311b92;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .form-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Features Preview */
+        .features-preview {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f9f9ff;
+            border-radius: 10px;
+            border-left: 5px solid #ff5722;
+        }
+
+        .features-preview h4 {
+            color: #311b92;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .features-preview ul {
+            padding-left: 20px;
+            color: #555;
+        }
+
+        .features-preview li {
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .container {
+                flex-direction: column;
+                max-width: 600px;
+            }
+            
+            .slider-section {
+                height: 300px;
+            }
+            
+            .form-section {
+                padding: 30px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                border-radius: 15px;
+            }
+            
+            .form-section {
+                padding: 20px;
+            }
+            
+            .slide-content {
+                padding: 20px;
+            }
+            
+            .slide-content h3 {
+                font-size: 22px;
+            }
+        }
+    </style>
 </head>
 <body>
-  <!-- Navigation -->
-  <nav class="navbar">
-    <div class="logo">
-      <div class="logo-icon">E</div>
-      <div class="logo-text">Edutop Scholars</div>
-    </div>
-    <ul class="nav-links">
-      <li><a href="#home">Home</a></li>
-      <li><a href="#features">Features</a></li>
-      <li><a href="#courses">Courses</a></li>
-      <li><a href="#pricing">Pricing</a></li>
-      <li><a href="#about">About</a></li>
-    </ul>
-    <div class="nav-actions">
-      <button class="cta-button" id="navAuthBtn">
-        <i class="fas fa-user-graduate"></i>
-        <span>Get Started</span>
-      </button>
-    </div>
-  </nav>
-
-  <!-- Hero Section -->
-  <section class="hero" id="home">
-    <div class="hero-content">
-      <div class="hero-text animate-up">
-        <div class="hero-tagline">Welcome to the home of scholars where excellence is certain</div>
-        <h1>Transform Your Academic Journey With AI-Powered Learning</h1>
-        <p>Edutop Scholars combines cutting-edge technology with proven pedagogical methods to deliver personalized education experiences. Join thousands of successful students worldwide.</p>
-        <div class="hero-stats">
-          <div class="stat-item">
-            <span class="stat-number">50K+</span>
-            <span class="stat-label">Active Students</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-number">98%</span>
-            <span class="stat-label">Success Rate</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-number">24/7</span>
-            <span class="stat-label">AI Tutor Support</span>
-          </div>
-        </div>
-      </div>
-      
-      <div class="hero-side">
-        <!-- Auth Section -->
-        <div class="auth-section animate-up" style="animation-delay: 0.2s">
-          <div class="auth-header">
-            <div>
-              <h2 class="auth-title" id="formTitle">Login to Your Account</h2>
-              <p class="auth-subtitle">Access your personalized learning dashboard</p>
-            </div>
-            <div class="auth-tabs">
-              <button class="auth-tab active" id="loginTab">Login</button>
-              <button class="auth-tab" id="signupTab">Sign Up</button>
-            </div>
-          </div>
-          
-          <form id="authForm" class="auth-form">
-            <div class="form-group">
-              <label for="email" class="form-label">Email Address</label>
-              <input type="email" id="email" class="form-input" placeholder="Enter your email" required>
+    <div class="container">
+        <!-- Slider Section -->
+        <div class="slider-section">
+            <div class="slider">
+                <div class="slide active" style="background-image: url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80');">
+                    <div class="slide-content">
+                        <h3>JAMB CBT Excellence</h3>
+                        <p>Access over 2000+ questions per subject with global shuffle algorithm</p>
+                    </div>
+                </div>
+                <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1523580494863-6f3031224c94?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80');">
+                    <div class="slide-content">
+                        <h3>Collaborative Learning</h3>
+                        <p>Share links with friends for combined practice sessions</p>
+                    </div>
+                </div>
+                <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1501504905252-473c47e087f8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80');">
+                    <div class="slide-content">
+                        <h3>Comprehensive Resources</h3>
+                        <p>Access to all JAMB subjects and literature texts</p>
+                    </div>
+                </div>
+                <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80');">
+                    <div class="slide-content">
+                        <h3>Real Exam Simulation</h3>
+                        <p>Practice with CBT interface identical to actual JAMB exam</p>
+                    </div>
+                </div>
+                <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1524178239883-269a632bb546?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80');">
+                    <div class="slide-content">
+                        <h3>Performance Analytics</h3>
+                        <p>Track your progress with detailed performance reports</p>
+                    </div>
+                </div>
             </div>
             
-            <div class="form-group">
-              <label for="password" class="form-label">Password</label>
-              <div class="password-container">
-                <input type="password" id="password" class="form-input" placeholder="Enter your password" required>
-                <button type="button" class="password-toggle" id="togglePassword">
-                  <i class="fas fa-eye"></i>
-                </button>
-              </div>
+            <div class="slider-indicators">
+                <div class="indicator active" data-slide="0"></div>
+                <div class="indicator" data-slide="1"></div>
+                <div class="indicator" data-slide="2"></div>
+                <div class="indicator" data-slide="3"></div>
+                <div class="indicator" data-slide="4"></div>
             </div>
-            
-            <button type="submit" class="auth-button" id="submitBtn">
-              <span id="buttonText">Login to Dashboard</span>
-              <span class="spinner" id="buttonSpinner" style="display: none;"></span>
-            </button>
-            
-            <div class="auth-footer">
-              <a href="#" class="auth-link" id="forgotPassword">Forgot Password?</a>
-              <p style="margin-top: 1rem;">
-                <span id="switchText">Don't have an account?</span>
-                <a href="#" class="auth-link" id="switchBtn">Sign up now</a>
-              </p>
-            </div>
-            
-            <div id="message" class="auth-message"></div>
-          </form>
         </div>
-
-        <!-- Image Slider -->
-        <div class="image-slider animate-up" style="animation-delay: 0.4s">
-          <h3 class="slider-title">Our Learning Environment</h3>
-          <div class="slider-container">
-            <div class="slider-track" id="sliderTrack">
-              <div class="slide">
-                <img src="j1.jpg" alt="Modern Classroom" onerror="this.src='https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80'">
-              </div>
-              <div class="slide">
-                <img src="j2.jpg" alt="Students Collaborating" onerror="this.src='https://images.unsplash.com/photo-1523580494863-6f3031224c94?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80'">
-              </div>
-              <div class="slide">
-                <img src="j3.jpg" alt="Technology Lab" onerror="this.src='https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w-1350&q=80'">
-              </div>
-              <div class="slide">
-                <img src="j4.jpg" alt="Library Study" onerror="this.src='https://images.unsplash.com/photo-1503676260728-1c00da094a0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80'">
-              </div>
-              <div class="slide">
-                <img src="j5.jpg" alt="Graduation Celebration" onerror="this.src='https://images.unsplash.com/photo-1524178234883-043d5c3f3cf4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80'">
-              </div>
-            </div>
-            <div class="slider-nav">
-              <button class="slider-btn prev-btn"><i class="fas fa-chevron-left"></i></button>
-              <button class="slider-btn next-btn"><i class="fas fa-chevron-right"></i></button>
-            </div>
-          </div>
-          <div class="slider-dots" id="sliderDots"></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Features Section -->
-  <section class="features" id="features">
-    <div class="section-header">
-      <h2 class="section-title">Why Choose Edutop Scholars?</h2>
-      <p class="section-subtitle">We leverage advanced technology to deliver unparalleled educational experiences</p>
-    </div>
-    
-    <div class="features-grid">
-      <div class="feature-card">
-        <div class="feature-icon">
-          <i class="fas fa-robot"></i>
-        </div>
-        <h3 class="feature-title">AI-Powered Tutoring</h3>
-        <p>Our intelligent tutoring system adapts to your learning style and pace, providing personalized guidance 24/7.</p>
-      </div>
-      
-      <div class="feature-card">
-        <div class="feature-icon">
-          <i class="fas fa-chart-line"></i>
-        </div>
-        <h3 class="feature-title">Progress Analytics</h3>
-        <p>Track your performance with detailed analytics and predictive modeling to optimize your study strategy.</p>
-      </div>
-      
-      <div class="feature-card">
-        <div class="feature-icon">
-          <i class="fas fa-vr-cardboard"></i>
-        </div>
-        <h3 class="feature-title">Immersive Learning</h3>
-        <p>Experience complex concepts through VR/AR simulations and interactive 3D models for better retention.</p>
-      </div>
-      
-      <div class="feature-card">
-        <div class="feature-icon">
-          <i class="fas fa-globe"></i>
-        </div>
-        <h3 class="feature-title">Global Community</h3>
-        <p>Connect with peers and mentors worldwide through our collaborative learning platform and study groups.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="footer-content">
-      <div class="footer-col">
-        <div class="footer-logo">Edutop Scholars</div>
-        <p class="footer-description">The home of scholars where excellence is certain. Transforming education through technology since 2025.</p>
-        <div class="social-links">
-          <a href="#" style="color: white; margin-right: 1rem;"><i class="fab fa-twitter"></i></a>
-          <a href="#" style="color: white; margin-right: 1rem;"><i class="fab fa-linkedin"></i></a>
-          <a href="#" style="color: white; margin-right: 1rem;"><i class="fab fa-instagram"></i></a>
-          <a href="#" style="color: white;"><i class="fab fa-youtube"></i></a>
-        </div>
-      </div>
-      
-      <div class="footer-col">
-        <h3 class="footer-heading">Platform</h3>
-        <ul class="footer-links">
-          <li><a href="#">Courses</a></li>
-          <li><a href="#">Pricing</a></li>
-          <li><a href="#">Features</a></li>
-          <li><a href="#">Testimonials</a></li>
-        </ul>
-      </div>
-      
-      <div class="footer-col">
-        <h3 class="footer-heading">Resources</h3>
-        <ul class="footer-links">
-          <li><a href="#">Blog</a></li>
-          <li><a href="#">Research</a></li>
-          <li><a href="#">Help Center</a></li>
-          <li><a href="#">Contact Us</a></li>
-        </ul>
-      </div>
-      
-      <div class="footer-col">
-        <h3 class="footer-heading">Legal</h3>
-        <ul class="footer-links">
-          <li><a href="#">Privacy Policy</a></li>
-          <li><a href="#">Terms of Service</a></li>
-          <li><a href="#">Cookie Policy</a></li>
-          <li><a href="#">Accessibility</a></li>
-        </ul>
-      </div>
-    </div>
-    
-    <div class="footer-bottom">
-      <p>&copy; 2030 Edutop Scholars. All rights reserved. Revolutionizing education for the next generation.</p>
-    </div>
-  </footer>
-
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"></script>
-
-  <script>
-    // Initialize Firebase
-    const firebaseConfig = {
-      apiKey: "AIzaSyCictHNxtslYs9VR0hoicxlwPn_QghkgIA",
-      authDomain: "edutop-7ff51.firebaseapp.com",
-      projectId: "edutop-7ff51",
-      storageBucket: "edutop-7ff51.firebasestorage.app",
-      messagingSenderId: "79307850494",
-      appId: "1:79307850494:web:b51ce51204140ec5429baf",
-      measurementId: "G-GGGH590BYS"
-    };
-
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-
-    // DOM Elements
-    const form = document.getElementById('authForm');
-    const emailInput = document.getElementById('email');
-    const passwordInput = document.getElementById('password');
-    const messageDiv = document.getElementById('message');
-    const switchBtn = document.getElementById('switchBtn');
-    const switchText = document.getElementById('switchText');
-    const formTitle = document.getElementById('formTitle');
-    const submitBtn = document.getElementById('submitBtn');
-    const buttonText = document.getElementById('buttonText');
-    const buttonSpinner = document.getElementById('buttonSpinner');
-    const forgotPassword = document.getElementById('forgotPassword');
-    const togglePassword = document.getElementById('togglePassword');
-    const loginTab = document.getElementById('loginTab');
-    const signupTab = document.getElementById('signupTab');
-    const navAuthBtn = document.getElementById('navAuthBtn');
-
-    // Image Slider Elements
-    const sliderTrack = document.getElementById('sliderTrack');
-    const prevBtn = document.querySelector('.prev-btn');
-    const nextBtn = document.querySelector('.next-btn');
-    const sliderDots = document.getElementById('sliderDots');
-
-    // State
-    let isLogin = true;
-    let currentSlide = 0;
-    const totalSlides = 5;
-
-    // Initialize Image Slider
-    function initSlider() {
-      // Create dots
-      for (let i = 0; i < totalSlides; i++) {
-        const dot = document.createElement('button');
-        dot.classList.add('slider-dot');
-        if (i === 0) dot.classList.add('active');
-        dot.addEventListener('click', () => goToSlide(i));
-        sliderDots.appendChild(dot);
-      }
-      
-      // Auto slide
-      setInterval(() => {
-        nextSlide();
-      }, 5000);
-    }
-
-    function goToSlide(slideIndex) {
-      currentSlide = slideIndex;
-      sliderTrack.style.transform = `translateX(-${currentSlide * 100}%)`;
-      
-      // Update dots
-      document.querySelectorAll('.slider-dot').forEach((dot, index) => {
-        dot.classList.toggle('active', index === currentSlide);
-      });
-    }
-
-    function nextSlide() {
-      currentSlide = (currentSlide + 1) % totalSlides;
-      goToSlide(currentSlide);
-    }
-
-    function prevSlide() {
-      currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
-      goToSlide(currentSlide);
-    }
-
-    // Slider Event Listeners
-    prevBtn.addEventListener('click', prevSlide);
-    nextBtn.addEventListener('click', nextSlide);
-
-    // Initialize slider
-    initSlider();
-
-    // Update UI based on login/signup state
-    function updateUI() {
-      if (isLogin) {
-        formTitle.textContent = 'Login to Your Account';
-        buttonText.textContent = 'Login to Dashboard';
-        switchText.textContent = "Don't have an account?";
-        switchBtn.textContent = 'Sign up now';
-        loginTab.classList.add('active');
-        signupTab.classList.remove('active');
-      } else {
-        formTitle.textContent = 'Create Your Account';
-        buttonText.textContent = 'Sign Up for Free';
-        switchText.textContent = "Already have an account?";
-        switchBtn.textContent = 'Login now';
-        signupTab.classList.add('active');
-        loginTab.classList.remove('active');
-      }
-    }
-
-    // Tab switching
-    loginTab.addEventListener('click', () => {
-      isLogin = true;
-      updateUI();
-      clearMessage();
-    });
-
-    signupTab.addEventListener('click', () => {
-      isLogin = false;
-      updateUI();
-      clearMessage();
-    });
-
-    // Toggle between login and signup
-    switchBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      isLogin = !isLogin;
-      updateUI();
-      clearMessage();
-    });
-
-    // Toggle password visibility
-    togglePassword.addEventListener('click', () => {
-      const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-      passwordInput.setAttribute('type', type);
-      togglePassword.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
-    });
-
-    // Show message
-    function showMessage(text, isError = false) {
-      messageDiv.textContent = text;
-      messageDiv.className = 'auth-message ' + (isError ? 'error' : 'success');
-      messageDiv.style.display = 'block';
-      
-      // Auto hide after 5 seconds
-      setTimeout(() => {
-        clearMessage();
-      }, 5000);
-    }
-
-    // Clear message
-    function clearMessage() {
-      messageDiv.textContent = '';
-      messageDiv.className = 'auth-message';
-      messageDiv.style.display = 'none';
-    }
-
-    // Show loading state
-    function setLoading(isLoading) {
-      submitBtn.disabled = isLoading;
-      buttonText.style.display = isLoading ? 'none' : 'inline';
-      buttonSpinner.style.display = isLoading ? 'inline-block' : 'none';
-    }
-
-    // Form submission
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      
-      const email = emailInput.value.trim();
-      const password = passwordInput.value;
-      
-      if (!email || !password) {
-        showMessage('Please fill in all fields', true);
-        return;
-      }
-      
-      setLoading(true);
-      clearMessage();
-      
-      try {
-        if (isLogin) {
-          // Login
-          const userCred = await auth.signInWithEmailAndPassword(email, password);
-          
-          if (!userCred.user.emailVerified) {
-            showMessage('Please verify your email before logging in.', true);
-            setLoading(false);
-            return;
-          }
-          
-          showMessage('Login successful! Redirecting to dashboard...');
-          // In a real app, you would redirect to dashboard
-          // window.location.href = '/dashboard.html';
-          
-          // Simulate redirect
-          setTimeout(() => {
-            showMessage('Redirect would happen in a real app. Dashboard is at /dashboard.html');
-            setLoading(false);
-          }, 1500);
-          
-        } else {
-          // Sign up
-          const userCred = await auth.createUserWithEmailAndPassword(email, password);
-          
-          await userCred.user.sendEmailVerification();
-          showMessage('Account created! Please check your email for verification link.');
-          
-          // Switch to login after successful signup
-          setTimeout(() => {
-            isLogin = true;
-            updateUI();
-            setLoading(false);
-          }, 2000);
-        }
-      } catch (error) {
-        console.error(error);
         
-        // User-friendly error messages
-        let errorMessage = 'An error occurred. Please try again.';
-        switch (error.code) {
-          case 'auth/email-already-in-use':
-            errorMessage = 'Email is already in use. Try logging in instead.';
-            break;
-          case 'auth/invalid-email':
-            errorMessage = 'Please enter a valid email address.';
-            break;
-          case 'auth/weak-password':
-            errorMessage = 'Password should be at least 6 characters.';
-            break;
-          case 'auth/user-not-found':
-            errorMessage = 'No account found with this email.';
-            break;
-          case 'auth/wrong-password':
-            errorMessage = 'Incorrect password. Please try again.';
-            break;
-          case 'auth/too-many-requests':
-            errorMessage = 'Too many attempts. Please try again later.';
-            break;
+        <!-- Form Section -->
+        <div class="form-section">
+            <div class="logo">
+                <h1>JAMB<span>Master</span></h1>
+                <p>Nigeria's Premier CBT Practice Platform</p>
+            </div>
+            
+            <div class="form-container">
+                <div class="form-toggle">
+                    <button class="toggle-btn active" id="login-toggle">Login</button>
+                    <button class="toggle-btn" id="signup-toggle">Sign Up</button>
+                </div>
+                
+                <!-- Login Form -->
+                <form class="form active" id="login-form">
+                    <h2>Welcome Back</h2>
+                    
+                    <div class="form-group">
+                        <i class="fas fa-user"></i>
+                        <input type="text" class="form-control" placeholder="Username or Email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" class="form-control" placeholder="Password" required>
+                    </div>
+                    
+                    <div class="remember-forgot">
+                        <div class="remember-me">
+                            <input type="checkbox" id="remember">
+                            <label for="remember">Remember me</label>
+                        </div>
+                        <a href="#" class="forgot-password">Forgot Password?</a>
+                    </div>
+                    
+                    <button type="submit" class="btn">Login to Dashboard</button>
+                    
+                    <div class="social-login">
+                        <p>Or login with</p>
+                        <div class="social-icons">
+                            <div class="social-icon facebook">
+                                <i class="fab fa-facebook-f"></i>
+                            </div>
+                            <div class="social-icon google">
+                                <i class="fab fa-google"></i>
+                            </div>
+                            <div class="social-icon twitter">
+                                <i class="fab fa-twitter"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-footer">
+                        <p>Don't have an account? <a href="#" id="go-to-signup">Sign Up</a></p>
+                    </div>
+                </form>
+                
+                <!-- Sign Up Form -->
+                <form class="form" id="signup-form">
+                    <h2>Create Account</h2>
+                    
+                    <div class="form-group">
+                        <i class="fas fa-user"></i>
+                        <input type="text" class="form-control" placeholder="Full Name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" class="form-control" placeholder="Email Address" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <i class="fas fa-phone"></i>
+                        <input type="tel" class="form-control" placeholder="Phone Number" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" class="form-control" placeholder="Password" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" class="form-control" placeholder="Confirm Password" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <select class="form-control" style="padding-left: 45px;">
+                            <option value="" disabled selected>Select Subscription Plan</option>
+                            <option value="basic">Basic (₦2,500/month)</option>
+                            <option value="standard">Standard (₦5,000/month)</option>
+                            <option value="premium">Premium (₦8,000/month)</option>
+                        </select>
+                        <i class="fas fa-graduation-cap" style="top: 20px;"></i>
+                    </div>
+                    
+                    <button type="submit" class="btn">Create Account</button>
+                    
+                    <div class="form-footer">
+                        <p>Already have an account? <a href="#" id="go-to-login">Login</a></p>
+                    </div>
+                </form>
+                
+                <!-- Features Preview -->
+                <div class="features-preview">
+                    <h4><i class="fas fa-star"></i> Platform Features:</h4>
+                    <ul>
+                        <li>Over 2000+ questions per subject with global shuffle</li>
+                        <li>Real JAMB CBT exam simulation</li>
+                        <li>Collaborative practice with friends</li>
+                        <li>Access to all subjects & literature texts</li>
+                        <li>Performance tracking & analytics</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Slider functionality
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const indicators = document.querySelectorAll('.indicator');
+        
+        function showSlide(index) {
+            // Hide all slides
+            slides.forEach(slide => {
+                slide.classList.remove('active');
+            });
+            
+            // Remove active class from all indicators
+            indicators.forEach(indicator => {
+                indicator.classList.remove('active');
+            });
+            
+            // Show selected slide
+            slides[index].classList.add('active');
+            indicators[index].classList.add('active');
+            currentSlide = index;
         }
         
-        showMessage(errorMessage, true);
-        setLoading(false);
-      }
-    });
-
-    // Forgot password
-    forgotPassword.addEventListener('click', async (e) => {
-      e.preventDefault();
-      
-      const email = emailInput.value.trim();
-      
-      if (!email) {
-        showMessage('Please enter your email address first.', true);
-        emailInput.focus();
-        return;
-      }
-      
-      setLoading(true);
-      
-      try {
-        await auth.sendPasswordResetEmail(email);
-        showMessage('Password reset email sent. Please check your inbox.');
-      } catch (error) {
-        showMessage('Error sending reset email. Please check your email address.', true);
-      }
-      
-      setLoading(false);
-    });
-
-    // Nav auth button
-    navAuthBtn.addEventListener('click', () => {
-      document.querySelector('.hero').scrollIntoView({ behavior: 'smooth' });
-    });
-
-    // Initialize UI
-    updateUI();
-
-    // Add animation on scroll
-    const observerOptions = {
-      threshold: 0.1,
-      rootMargin: '0px 0px -50px 0px'
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('animate-up');
+        // Initialize slider
+        function initSlider() {
+            // Set click events for indicators
+            indicators.forEach((indicator, index) => {
+                indicator.addEventListener('click', () => {
+                    showSlide(index);
+                });
+            });
+            
+            // Auto slide every 5 seconds
+            setInterval(() => {
+                let nextSlide = (currentSlide + 1) % slides.length;
+                showSlide(nextSlide);
+            }, 5000);
         }
-      });
-    }, observerOptions);
-
-    // Observe feature cards
-    document.querySelectorAll('.feature-card').forEach(card => {
-      observer.observe(card);
-    });
-
-    // Observe image slider
-    const slider = document.querySelector('.image-slider');
-    if (slider) observer.observe(slider);
-  </script>
+        
+        // Form toggle functionality
+        const loginToggle = document.getElementById('login-toggle');
+        const signupToggle = document.getElementById('signup-toggle');
+        const loginForm = document.getElementById('login-form');
+        const signupForm = document.getElementById('signup-form');
+        const goToSignup = document.getElementById('go-to-signup');
+        const goToLogin = document.getElementById('go-to-login');
+        
+        loginToggle.addEventListener('click', () => {
+            loginToggle.classList.add('active');
+            signupToggle.classList.remove('active');
+            loginForm.classList.add('active');
+            signupForm.classList.remove('active');
+        });
+        
+        signupToggle.addEventListener('click', () => {
+            signupToggle.classList.add('active');
+            loginToggle.classList.remove('active');
+            signupForm.classList.add('active');
+            loginForm.classList.remove('active');
+        });
+        
+        goToSignup.addEventListener('click', (e) => {
+            e.preventDefault();
+            signupToggle.click();
+        });
+        
+        goToLogin.addEventListener('click', (e) => {
+            e.preventDefault();
+            loginToggle.click();
+        });
+        
+        // Form submission
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            // In a real app, you would handle authentication here
+            alert('Login functionality would be implemented with backend integration');
+            // Redirect to dashboard
+            // window.location.href = 'dashboard.html';
+        });
+        
+        signupForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            // In a real app, you would handle registration here
+            alert('Account created successfully! Redirecting to payment...');
+            // Redirect to payment page
+            // window.location.href = 'payment.html';
+        });
+        
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            initSlider();
+            
+            // Add some visual effects
+            const socialIcons = document.querySelectorAll('.social-icon');
+            socialIcons.forEach(icon => {
+                icon.addEventListener('mouseenter', () => {
+                    icon.style.transform = 'translateY(-5px) scale(1.1)';
+                });
+                
+                icon.addEventListener('mouseleave', () => {
+                    icon.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+        });
+        
+        // Note: For actual deployment, you would replace the image URLs with your actual images (j1.jpg, j2.jpg, etc.)
+        // and implement proper backend authentication and database integration.
+    </script>
 </body>
-  </html>
+                          </html>
