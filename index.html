@@ -3,333 +3,244 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EdutopScholars - Login/Signup</title>
+    <title>Edutop Scholars - Login/Signup</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
     <style>
-        :root {
-            --primary-color: #2E3192; /* Academic Blue */
-            --secondary-color: #F7931E; /* Highlight Orange */
-            --text-dark: #333333;
-            --text-light: #666666;
-            --white: #ffffff;
-            --light-bg: #f4f6f9;
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        
-        body { 
-            background: linear-gradient(135deg, #141E30 0%, #243B55 100%); 
-            color: var(--text-dark); 
-            min-height: 100vh; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            padding: 20px; 
-        }
-
-        .container { 
-            display: flex; 
-            width: 100%; 
-            max-width: 1100px; 
-            min-height: 700px; 
-            background: var(--white); 
-            border-radius: 20px; 
-            overflow: hidden; 
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3); 
-            position: relative; 
-        }
-
-        /* --- Slider Section --- */
-        .slider-section { flex: 1; position: relative; overflow: hidden; display: none; } /* Hidden on mobile by default */
-        @media(min-width: 992px) { .slider-section { display: block; } }
-
+        /* [PREVIOUS CSS REMAINS - WITH MINOR ADDITIONS FOR PASSWORD TOGGLE] */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background: linear-gradient(135deg, #1a237e 0%, #311b92 100%); color: #333; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .container { display: flex; width: 100%; max-width: 1200px; min-height: 700px; background: rgba(255, 255, 255, 0.95); border-radius: 20px; overflow: hidden; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3); position: relative; }
+        .slider-section { flex: 1; position: relative; overflow: hidden; }
         .slider { position: relative; width: 100%; height: 100%; }
-        .slide { 
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
-            opacity: 0; transition: opacity 1.2s ease-in-out; 
-            background-size: cover; background-position: center; 
-        }
-        .slide::after {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(to top, rgba(46, 49, 146, 0.9), rgba(0,0,0,0.2));
-        }
+        .slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 1.5s ease-in-out; background-size: cover; background-position: center; background-repeat: no-repeat; }
         .slide.active { opacity: 1; }
+        .slide-content { position: absolute; bottom: 0; left: 0; right: 0; padding: 40px; background: linear-gradient(transparent, rgba(0, 0, 0, 0.8)); color: white; }
+        .slide-content h3 { font-size: 28px; margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); }
+        .slide-content p { font-size: 16px; opacity: 0.9; }
+        .slider-indicators { position: absolute; bottom: 20px; left: 0; right: 0; display: flex; justify-content: center; gap: 10px; z-index: 10; }
+        .indicator { width: 12px; height: 12px; border-radius: 50%; background: rgba(255, 255, 255, 0.5); cursor: pointer; transition: background 0.3s; }
+        .indicator.active { background: white; transform: scale(1.2); }
+        .form-section { flex: 1; padding: 50px; display: flex; flex-direction: column; justify-content: center; }
         
-        .slide-content { 
-            position: absolute; bottom: 0; left: 0; right: 0; padding: 50px; 
-            color: white; z-index: 2; 
-        }
-        .slide-content h3 { font-size: 32px; font-weight: 700; margin-bottom: 15px; line-height: 1.2; }
-        .slide-content p { font-size: 16px; opacity: 0.9; line-height: 1.6; }
-
-        .slider-indicators { 
-            position: absolute; bottom: 30px; left: 50px; display: flex; gap: 8px; z-index: 10; 
-        }
-        .indicator { width: 10px; height: 10px; border-radius: 50%; background: rgba(255, 255, 255, 0.4); cursor: pointer; transition: 0.3s; }
-        .indicator.active { background: var(--secondary-color); width: 25px; border-radius: 10px; }
-
-        /* --- Form Section --- */
-        .form-section { 
-            flex: 1; padding: 40px 50px; 
-            display: flex; flex-direction: column; 
-            justify-content: center; 
-            background: var(--white);
-        }
-
+        /* LOGO UPDATE */
         .logo { text-align: center; margin-bottom: 30px; }
-        .logo h1 { color: var(--primary-color); font-size: 32px; font-weight: 700; letter-spacing: -0.5px; }
-        .logo span { color: var(--secondary-color); }
-        .logo p { color: var(--text-light); font-size: 13px; margin-top: 5px; font-weight: 500; text-transform: uppercase; letter-spacing: 1px; }
+        .logo h1 { color: #311b92; font-size: 36px; margin-bottom: 5px; }
+        .logo span { color: #ff5722; }
+        .logo p { color: #666; font-size: 14px; letter-spacing: 1px; }
 
-        /* --- Toggles --- */
-        .form-toggle { 
-            display: flex; margin-bottom: 30px; 
-            background: var(--light-bg); 
-            border-radius: 12px; padding: 5px; 
-        }
-        .toggle-btn { 
-            flex: 1; padding: 12px; text-align: center; cursor: pointer; 
-            border-radius: 10px; font-weight: 600; transition: all 0.3s; 
-            border: none; background: transparent; font-size: 15px; color: var(--text-light); 
-        }
-        .toggle-btn.active { 
-            background: var(--white); color: var(--primary-color); 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05); 
-        }
-
-        /* --- Form Elements --- */
+        .form-container { width: 100%; }
+        .form-toggle { display: flex; margin-bottom: 30px; background: #f0f0f0; border-radius: 50px; padding: 5px; }
+        .toggle-btn { flex: 1; padding: 12px; text-align: center; cursor: pointer; border-radius: 50px; font-weight: 600; transition: all 0.3s; border: none; background: transparent; font-size: 16px; }
+        .toggle-btn.active { background: #311b92; color: white; box-shadow: 0 4px 12px rgba(49, 27, 146, 0.3); }
         .form { display: none; }
-        .form.active { display: block; animation: fadeIn 0.4s ease-out; }
+        .form.active { display: block; animation: fadeIn 0.5s; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        .form h2 { margin-bottom: 25px; color: var(--primary-color); font-size: 24px; font-weight: 600; text-align: center; }
+        .form h2 { margin-bottom: 25px; color: #311b92; text-align: center; }
         
+        /* FORM INPUT STYLES & PASSWORD TOGGLE */
         .form-group { margin-bottom: 20px; position: relative; }
-        .form-group i.input-icon { 
-            position: absolute; left: 18px; top: 50%; transform: translateY(-50%); 
-            color: #aaa; font-size: 18px; 
-        }
+        .form-group .input-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #777; z-index: 2; }
+        .form-control { width: 100%; padding: 15px 45px 15px 45px; border: 2px solid #ddd; border-radius: 10px; font-size: 16px; transition: border 0.3s; }
+        .form-control:focus { border-color: #311b92; outline: none; }
         
-        /* Eye Icon Logic */
-        .password-toggle-icon {
-            position: absolute; right: 18px; top: 50%; transform: translateY(-50%);
-            color: #aaa; cursor: pointer; transition: color 0.3s;
-            z-index: 5;
-        }
-        .password-toggle-icon:hover { color: var(--primary-color); }
+        /* New Password Toggle Style */
+        .password-toggle { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #777; cursor: pointer; z-index: 2; transition: color 0.3s; }
+        .password-toggle:hover { color: #311b92; }
 
-        .form-control { 
-            width: 100%; padding: 14px 45px 14px 50px; /* Right padding for eye icon */
-            border: 2px solid #e1e5ee; border-radius: 12px; 
-            font-size: 15px; transition: border 0.3s, box-shadow 0.3s; 
-            background: var(--light-bg); color: var(--text-dark);
-        }
-        .form-control:focus { 
-            border-color: var(--primary-color); outline: none; background: #fff;
-            box-shadow: 0 0 0 4px rgba(46, 49, 146, 0.1); 
-        }
-
-        .remember-forgot { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; font-size: 14px; }
-        .remember-me { display: flex; align-items: center; gap: 8px; cursor: pointer; }
-        .remember-me input { width: 16px; height: 16px; accent-color: var(--primary-color); cursor: pointer; }
-        .forgot-password { color: var(--primary-color); text-decoration: none; font-weight: 500; }
+        .remember-forgot { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; font-size: 14px; }
+        .remember-me { display: flex; align-items: center; cursor: pointer; }
+        .remember-me input { margin-right: 8px; accent-color: #311b92; cursor: pointer; }
+        .remember-me label { cursor: pointer; }
+        .forgot-password { color: #311b92; text-decoration: none; font-weight: 600; }
         .forgot-password:hover { text-decoration: underline; }
-
-        .btn { 
-            display: block; width: 100%; padding: 16px; 
-            background: var(--primary-color); color: white; 
-            border: none; border-radius: 12px; 
-            font-size: 16px; font-weight: 600; cursor: pointer; 
-            transition: all 0.3s; box-shadow: 0 4px 15px rgba(46, 49, 146, 0.3); 
-        }
-        .btn:hover { background: #1a237e; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(46, 49, 146, 0.4); }
-        .btn:disabled { background: #ccc; cursor: not-allowed; transform: none; box-shadow: none; }
-
-        /* --- Social Login --- */
-        .social-login { margin-top: 30px; text-align: center; }
-        .social-login p { margin-bottom: 20px; color: var(--text-light); font-size: 14px; position: relative; }
-        .social-login p::before, .social-login p::after { content: ""; position: absolute; top: 50%; width: 35%; height: 1px; background: #eee; }
+        .btn { display: block; width: 100%; padding: 15px; background: #311b92; color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; transition: background 0.3s; margin-top: 10px; box-shadow: 0 4px 6px rgba(49, 27, 146, 0.2); }
+        .btn:hover { background: #1a237e; transform: translateY(-2px); box-shadow: 0 6px 15px rgba(49, 27, 146, 0.3); }
+        .btn:disabled { background: #9da0bc; cursor: not-allowed; transform: none; box-shadow: none; }
+        
+        .social-login { margin-top: 25px; text-align: center; }
+        .social-login p { margin-bottom: 15px; color: #666; position: relative; }
+        .social-login p::before, .social-login p::after { content: ""; position: absolute; top: 50%; width: 30%; height: 1px; background: #ddd; }
         .social-login p::before { left: 0; }
         .social-login p::after { right: 0; }
+        .social-icons { display: flex; justify-content: center; gap: 15px; }
+        .social-icon { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 18px; cursor: pointer; transition: transform 0.3s; }
+        .social-icon:hover { transform: translateY(-3px); }
+        .facebook { background: #3b5998; }
+        .google { background: #dd4b39; }
         
-        .social-icons { display: flex; justify-content: center; gap: 20px; }
-        .social-icon { 
-            width: 50px; height: 50px; border-radius: 12px; 
-            display: flex; align-items: center; justify-content: center; 
-            font-size: 20px; cursor: pointer; transition: all 0.3s; 
-            border: 1px solid #eee; background: white; color: var(--text-dark);
-        }
-        .social-icon:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        .social-icon.facebook:hover { color: #3b5998; border-color: #3b5998; background: #f0f4ff; }
-        .social-icon.google:hover { color: #dd4b39; border-color: #dd4b39; background: #fff0f0; }
-
-        .form-footer { text-align: center; margin-top: 25px; font-size: 14px; color: var(--text-light); }
-        .form-footer a { color: var(--primary-color); text-decoration: none; font-weight: 600; }
+        .form-footer { text-align: center; margin-top: 20px; font-size: 14px; color: #666; }
+        .form-footer a { color: #311b92; text-decoration: none; font-weight: 600; }
         .form-footer a:hover { text-decoration: underline; }
-
-        /* Responsive */
-        @media (max-width: 992px) { 
-            .container { flex-direction: column; max-width: 500px; min-height: auto; } 
-            .form-section { padding: 30px; }
-        }
-        @media (max-width: 576px) { 
-            body { padding: 0; background: var(--white); }
-            .container { border-radius: 0; box-shadow: none; height: 100vh; }
-            .form-section { padding: 25px; } 
-        }
+        .features-preview { margin-top: 30px; padding: 20px; background: #f9f9ff; border-radius: 10px; border-left: 5px solid #ff5722; }
+        .features-preview h4 { color: #311b92; margin-bottom: 10px; font-size: 18px; }
+        .features-preview ul { padding-left: 20px; color: #555; }
+        .features-preview li { margin-bottom: 8px; font-size: 14px; }
+        
+        @media (max-width: 992px) { .container { flex-direction: column; max-width: 600px; } .slider-section { height: 300px; } .form-section { padding: 30px; } }
+        @media (max-width: 576px) { body { padding: 10px; } .container { border-radius: 15px; } .form-section { padding: 20px; } .slide-content { padding: 20px; } .slide-content h3 { font-size: 22px; } }
     </style>
 </head>
 <body>
-
     <div class="container">
         <div class="slider-section">
             <div class="slider">
                 <div class="slide active" style="background-image: url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80');">
                     <div class="slide-content">
-                        <h3>Master the JAMB CBT<br>with Confidence</h3>
-                        <p>Join EdutopScholars to access 20,000+ past questions and simulations.</p>
+                        <h3>Edutop Scholars Excellence</h3>
+                        <p>Access over 2000+ questions per subject with global shuffle algorithm</p>
                     </div>
                 </div>
-                <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1434030216411-0b793f4b4173?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80');">
+                <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1523580494863-6f3031224c94?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80');">
                     <div class="slide-content">
-                        <h3>Analyze Your Performance</h3>
-                        <p>Get detailed analytics on your strengths and weaknesses.</p>
+                        <h3>Collaborative Learning</h3>
+                        <p>Share links with friends for combined practice sessions</p>
                     </div>
                 </div>
-                <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80');">
+                <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1501504905252-473c47e087f8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80');">
                     <div class="slide-content">
-                        <h3>Learn Together</h3>
-                        <p>Challenge friends and study in a competitive environment.</p>
+                        <h3>Comprehensive Resources</h3>
+                        <p>Access to all JAMB subjects and literature texts</p>
+                    </div>
+                </div>
+                <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80');">
+                    <div class="slide-content">
+                        <h3>Real Exam Simulation</h3>
+                        <p>Practice with CBT interface identical to actual JAMB exam</p>
+                    </div>
+                </div>
+                <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1524178239883-269a632bb546?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80');">
+                    <div class="slide-content">
+                        <h3>Performance Analytics</h3>
+                        <p>Track your progress with detailed performance reports</p>
                     </div>
                 </div>
             </div>
+            
             <div class="slider-indicators">
-                <div class="indicator active" onclick="showSlide(0)"></div>
-                <div class="indicator" onclick="showSlide(1)"></div>
-                <div class="indicator" onclick="showSlide(2)"></div>
+                <div class="indicator active" data-slide="0"></div>
+                <div class="indicator" data-slide="1"></div>
+                <div class="indicator" data-slide="2"></div>
+                <div class="indicator" data-slide="3"></div>
+                <div class="indicator" data-slide="4"></div>
             </div>
         </div>
         
         <div class="form-section">
             <div class="logo">
                 <h1>Edutop<span>Scholars</span></h1>
-                <p>Powered by JAMB CBT Master</p>
+                <p>Nigeria's Premier CBT Practice Platform</p>
             </div>
             
-            <div class="form-toggle">
-                <button class="toggle-btn active" id="login-toggle">Login</button>
-                <button class="toggle-btn" id="signup-toggle">Create Account</button>
-            </div>
-            
-            <form class="form active" id="login-form">
-                <h2>Welcome Back</h2>
-                
-                <div class="form-group">
-                    <i class="fas fa-envelope input-icon"></i>
-                    <input type="email" id="login-email" class="form-control" placeholder="Email Address" required>
+            <div class="form-container">
+                <div class="form-toggle">
+                    <button class="toggle-btn active" id="login-toggle">Login</button>
+                    <button class="toggle-btn" id="signup-toggle">Sign Up</button>
                 </div>
                 
-                <div class="form-group">
-                    <i class="fas fa-lock input-icon"></i>
-                    <input type="password" id="login-password" class="form-control" placeholder="Password" required>
-                    <i class="fas fa-eye password-toggle-icon" onclick="togglePassword('login-password', this)"></i>
-                </div>
-                
-                <div class="remember-forgot">
-                    <label class="remember-me">
-                        <input type="checkbox" id="remember-me-check">
-                        <span>Remember me</span>
-                    </label>
-                    <a href="#" class="forgot-password" id="forgot-password-link">Forgot Password?</a>
-                </div>
-                
-                <button type="submit" class="btn" id="login-btn">Login to Dashboard</button>
-                
-                <div class="social-login">
-                    <p>Or continue with</p>
-                    <div class="social-icons">
-                        <div class="social-icon facebook" title="Login with Facebook">
-                            <i class="fab fa-facebook-f"></i>
-                        </div>
-                        <div class="social-icon google" id="google-login-btn" title="Login with Google">
-                            <i class="fab fa-google"></i>
-                        </div>
+                <form class="form active" id="login-form">
+                    <h2>Welcome Back</h2>
+                    
+                    <div class="form-group">
+                        <i class="fas fa-envelope input-icon"></i>
+                        <input type="email" id="login-email" class="form-control" placeholder="Email Address" required>
                     </div>
-                </div>
+                    
+                    <div class="form-group">
+                        <i class="fas fa-lock input-icon"></i>
+                        <input type="password" id="login-password" class="form-control" placeholder="Password" required>
+                        <i class="fas fa-eye password-toggle" onclick="togglePassword('login-password', this)"></i>
+                    </div>
+                    
+                    <div class="remember-forgot">
+                        <div class="remember-me">
+                            <input type="checkbox" id="remember">
+                            <label for="remember">Remember me</label>
+                        </div>
+                        <a href="#" class="forgot-password" id="forgot-password-link">Forgot Password?</a>
+                    </div>
+                    
+                    <button type="submit" class="btn" id="login-btn">Login to Dashboard</button>
+                    
+                    <div class="social-login">
+                        <p>Or login with</p>
+                        <div class="social-icons">
+                            <div class="social-icon facebook">
+                                <i class="fab fa-facebook-f"></i>
+                            </div>
+                            <div class="social-icon google" id="google-login-btn">
+                                <i class="fab fa-google"></i>
+                            </div>
+                            </div>
+                    </div>
+                    
+                    <div class="form-footer">
+                        <p>Don't have an account? <a href="#" id="go-to-signup">Sign Up</a></p>
+                    </div>
+                </form>
                 
-                <div class="form-footer">
-                    <p>New to EdutopScholars? <a href="#" id="go-to-signup">Sign Up Free</a></p>
-                </div>
-            </form>
-            
-            <form class="form" id="signup-form">
-                <h2>Create Account</h2>
+                <form class="form" id="signup-form">
+                    <h2>Create Account</h2>
+                    
+                    <div class="form-group">
+                        <i class="fas fa-user input-icon"></i>
+                        <input type="text" id="signup-fullname" class="form-control" placeholder="Full Name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <i class="fas fa-envelope input-icon"></i>
+                        <input type="email" id="signup-email" class="form-control" placeholder="Email Address" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <i class="fas fa-phone input-icon"></i>
+                        <input type="tel" id="signup-phone" class="form-control" placeholder="Phone Number" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <i class="fas fa-lock input-icon"></i>
+                        <input type="password" id="signup-password" class="form-control" placeholder="Password (Min 6 chars)" required minlength="6">
+                        <i class="fas fa-eye password-toggle" onclick="togglePassword('signup-password', this)"></i>
+                    </div>
+                    
+                    <div class="form-group">
+                        <i class="fas fa-lock input-icon"></i>
+                        <input type="password" id="signup-confirm-password" class="form-control" placeholder="Confirm Password" required>
+                        <i class="fas fa-eye password-toggle" onclick="togglePassword('signup-confirm-password', this)"></i>
+                    </div>
+                    
+                    <div class="form-group">
+                        <select id="signup-plan" class="form-control" style="padding-left: 45px;" required>
+                            <option value="" disabled selected>Select Subscription Plan</option>
+                            <option value="basic">Basic (₦2,500/month)</option>
+                            <option value="standard">Standard (₦5,000/month)</option>
+                            <option value="premium">Premium (₦8,000/month)</option>
+                        </select>
+                        <i class="fas fa-graduation-cap input-icon" style="top: 20px;"></i>
+                    </div>
+                    
+                    <button type="submit" class="btn" id="signup-btn">Create Account</button>
+                    
+                    <div class="form-footer">
+                        <p>Already have an account? <a href="#" id="go-to-login">Login</a></p>
+                    </div>
+                </form>
                 
-                <div class="form-group">
-                    <i class="fas fa-user input-icon"></i>
-                    <input type="text" id="signup-fullname" class="form-control" placeholder="Full Name" required>
+                <div class="features-preview">
+                    <h4><i class="fas fa-star"></i> Platform Features:</h4>
+                    <ul>
+                        <li>Over 2000+ questions per subject with global shuffle</li>
+                        <li>Real JAMB CBT exam simulation</li>
+                        <li>Collaborative practice with friends</li>
+                        <li>Access to all subjects & literature texts</li>
+                        <li>Performance tracking & analytics</li>
+                    </ul>
                 </div>
-                
-                <div class="form-group">
-                    <i class="fas fa-envelope input-icon"></i>
-                    <input type="email" id="signup-email" class="form-control" placeholder="Email Address" required>
-                </div>
-                
-                <div class="form-group">
-                    <i class="fas fa-phone input-icon"></i>
-                    <input type="tel" id="signup-phone" class="form-control" placeholder="Phone Number" required>
-                </div>
-                
-                <div class="form-group">
-                    <i class="fas fa-lock input-icon"></i>
-                    <input type="password" id="signup-password" class="form-control" placeholder="Password (Min 6 chars)" required minlength="6">
-                    <i class="fas fa-eye password-toggle-icon" onclick="togglePassword('signup-password', this)"></i>
-                </div>
-                
-                <div class="form-group">
-                    <i class="fas fa-lock input-icon"></i>
-                    <input type="password" id="signup-confirm-password" class="form-control" placeholder="Confirm Password" required>
-                </div>
-                
-                <div class="form-group">
-                    <i class="fas fa-graduation-cap input-icon"></i>
-                    <select id="signup-plan" class="form-control" required>
-                        <option value="" disabled selected>Select Subscription Plan</option>
-                        <option value="basic">Basic (₦2,500/month)</option>
-                        <option value="standard">Standard (₦5,000/month)</option>
-                        <option value="premium">Premium (₦8,000/month)</option>
-                    </select>
-                </div>
-                
-                <button type="submit" class="btn" id="signup-btn">Get Started</button>
-                
-                <div class="form-footer">
-                    <p>Already have an account? <a href="#" id="go-to-login">Login</a></p>
-                </div>
-            </form>
+            </div>
         </div>
     </div>
 
     <script>
-        // --- VISUAL/UI LOGIC ---
-
-        // 1. Password Visibility Toggle
-        function togglePassword(inputId, icon) {
-            const input = document.getElementById(inputId);
-            if (input.type === "password") {
-                input.type = "text";
-                icon.classList.remove("fa-eye");
-                icon.classList.add("fa-eye-slash");
-            } else {
-                input.type = "password";
-                icon.classList.remove("fa-eye-slash");
-                icon.classList.add("fa-eye");
-            }
-        }
-
-        // 2. Slider Logic
+        // --- Slider & UI Logic ---
         let currentSlide = 0;
         const slides = document.querySelectorAll('.slide');
         const indicators = document.querySelectorAll('.indicator');
@@ -342,17 +253,24 @@
             currentSlide = index;
         }
         
-        setInterval(() => {
-            let nextSlide = (currentSlide + 1) % slides.length;
-            showSlide(nextSlide);
-        }, 6000);
-
-        // 3. Form Switching
+        function initSlider() {
+            indicators.forEach((indicator, index) => {
+                indicator.addEventListener('click', () => showSlide(index));
+            });
+            setInterval(() => {
+                let nextSlide = (currentSlide + 1) % slides.length;
+                showSlide(nextSlide);
+            }, 5000);
+        }
+        
+        // --- Form Toggling ---
         const loginToggle = document.getElementById('login-toggle');
         const signupToggle = document.getElementById('signup-toggle');
         const loginForm = document.getElementById('login-form');
         const signupForm = document.getElementById('signup-form');
-
+        const goToSignup = document.getElementById('go-to-signup');
+        const goToLogin = document.getElementById('go-to-login');
+        
         function toggleForms(isLogin) {
             if(isLogin) {
                 loginToggle.classList.add('active');
@@ -369,12 +287,34 @@
 
         loginToggle.addEventListener('click', () => toggleForms(true));
         signupToggle.addEventListener('click', () => toggleForms(false));
-        document.getElementById('go-to-signup').addEventListener('click', (e) => { e.preventDefault(); toggleForms(false); });
-        document.getElementById('go-to-login').addEventListener('click', (e) => { e.preventDefault(); toggleForms(true); });
+        goToSignup.addEventListener('click', (e) => { e.preventDefault(); toggleForms(false); });
+        goToLogin.addEventListener('click', (e) => { e.preventDefault(); toggleForms(true); });
 
+        // --- Password Visibility Toggle ---
+        function togglePassword(inputId, icon) {
+            const input = document.getElementById(inputId);
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            } else {
+                input.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initSlider();
+            document.querySelectorAll('.social-icon').forEach(icon => {
+                icon.addEventListener('mouseenter', () => icon.style.transform = 'translateY(-5px) scale(1.1)');
+                icon.addEventListener('mouseleave', () => icon.style.transform = 'translateY(0) scale(1)');
+            });
+        });
     </script>
 
     <script type="module">
+        // Import Firebase Functions (Modular SDK)
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
         import { 
             getAuth, 
@@ -383,15 +323,15 @@
             GoogleAuthProvider, 
             signInWithPopup, 
             updateProfile, 
+            onAuthStateChanged,
             sendPasswordResetEmail,
             setPersistence,
             browserLocalPersistence,
-            browserSessionPersistence,
-            onAuthStateChanged 
+            browserSessionPersistence
         } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
         import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-        // CONFIGURATION
+        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyCictHNxtslYs9VR0hoicxlwPn_QghkgIA",
             authDomain: "edutop-7ff51.firebaseapp.com",
@@ -402,87 +342,24 @@
             measurementId: "G-GGGH590BYS"
         };
 
-        // INITIALIZE
+        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // --- AUTH STATE CHECKER ---
-        // If user is already logged in, redirect immediately (optional, based on UX preference)
+        // --- AUTH STATE OBSERVER ---
+        // Checks if user is already logged in on page load
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                console.log("Session restored for:", user.email);
-                // window.location.href = "dashboard.html"; // Uncomment to auto-redirect returning users
-            }
-        });
-
-        // --- FORGOT PASSWORD LOGIC ---
-        document.getElementById('forgot-password-link').addEventListener('click', async (e) => {
-            e.preventDefault();
-            const emailInput = document.getElementById('login-email').value;
-            
-            // If email field is empty, ask user to fill it or prompt them
-            let emailToReset = emailInput;
-            
-            if (!emailToReset) {
-                emailToReset = prompt("Please enter your registered email address to receive the reset link:");
-            }
-
-            if (emailToReset) {
-                try {
-                    await sendPasswordResetEmail(auth, emailToReset);
-                    alert(`Password reset link has been sent to ${emailToReset}. Please check your inbox (and spam folder).`);
-                } catch (error) {
-                    console.error(error);
-                    let msg = "Error sending reset link.";
-                    if(error.code === 'auth/user-not-found') msg = "No account found with this email.";
-                    if(error.code === 'auth/invalid-email') msg = "Invalid email format.";
-                    alert(msg);
-                }
-            }
-        });
-
-        // --- LOGIN LOGIC ---
-        document.getElementById('login-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
-            const rememberMe = document.getElementById('remember-me-check').checked;
-            const btn = document.getElementById('login-btn');
-
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
-            btn.disabled = true;
-
-            try {
-                // 1. Set Persistence (Remember Me vs Session Only)
-                const persistenceType = rememberMe ? browserLocalPersistence : browserSessionPersistence;
-                await setPersistence(auth, persistenceType);
-
-                // 2. Perform Login
-                const userCredential = await signInWithEmailAndPassword(auth, email, password);
-                
-                // 3. Success Feedback & Redirect
-                // alert(`Welcome back, ${userCredential.user.displayName || 'Scholar'}!`); // Optional Alert
-                window.location.href = "dashboard.html";
-
-            } catch (error) {
-                console.error("Login Error:", error);
-                let message = "Login failed. Please try again.";
-                if(error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
-                    message = "Invalid email or password.";
-                }
-                if(error.code === 'auth/too-many-requests') {
-                    message = "Too many failed attempts. Please try again later.";
-                }
-                alert(message);
-                btn.innerText = "Login to Dashboard";
-                btn.disabled = false;
+                console.log("User already logged in:", user.email);
+                // Redirect to dashboard if session exists
+                 window.location.href = "dashboard.html"; 
             }
         });
 
         // --- SIGN UP LOGIC ---
-        document.getElementById('signup-form').addEventListener('submit', async (e) => {
+        const signupForm = document.getElementById('signup-form');
+        signupForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
             const fullName = document.getElementById('signup-fullname').value;
@@ -498,59 +375,116 @@
                 return;
             }
 
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Account...';
+            const originalBtnText = btn.innerText;
+            btn.innerText = "Creating Account...";
             btn.disabled = true;
 
             try {
-                // 1. Create Auth User
+                // 1. Create User
                 const userCredential = await createUserWithEmailAndPassword(auth, email, password);
                 const user = userCredential.user;
 
-                // 2. Update Profile Name
+                // 2. Update Display Name
                 await updateProfile(user, { displayName: fullName });
 
-                // 3. Save User Data to Firestore
+                // 3. Save details to Firestore
                 await setDoc(doc(db, "users", user.uid), {
-                    uid: user.uid,
                     fullName: fullName,
                     email: email,
                     phone: phone,
                     subscriptionPlan: plan,
-                    createdAt: new Date().toISOString(),
-                    role: 'student'
+                    createdAt: new Date().toISOString()
                 });
 
-                // 4. Success & Redirect
-                alert("Account created successfully!");
-                window.location.href = "dashboard.html";
+                alert(`Account created successfully! Welcome to Edutop Scholars.`);
+                // 4. Redirect
+                window.location.href = 'dashboard.html';
                 
             } catch (error) {
                 console.error("Signup Error:", error);
-                let message = "An error occurred during signup.";
+                let message = "An error occurred.";
                 if(error.code === 'auth/email-already-in-use') message = "This email is already registered.";
                 if(error.code === 'auth/weak-password') message = "Password should be at least 6 characters.";
                 alert(message);
-                
-                btn.innerText = "Get Started";
+                btn.innerText = originalBtnText;
                 btn.disabled = false;
             }
         });
 
-        // --- GOOGLE SIGN IN ---
-        document.getElementById('google-login-btn').addEventListener('click', async () => {
+        // --- LOGIN LOGIC ---
+        const loginForm = document.getElementById('login-form');
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            const rememberMe = document.getElementById('remember').checked;
+            const btn = document.getElementById('login-btn');
+
+            btn.innerText = "Authenticating...";
+            btn.disabled = true;
+
+            try {
+                // 1. Set Persistence (Remember Me)
+                const mode = rememberMe ? browserLocalPersistence : browserSessionPersistence;
+                await setPersistence(auth, mode);
+
+                // 2. Sign In
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                
+                // 3. Redirect
+                window.location.href = 'dashboard.html';
+
+            } catch (error) {
+                console.error("Login Error:", error);
+                let message = "Login failed.";
+                if(error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+                    message = "Invalid email or password.";
+                }
+                alert(message);
+                btn.innerText = "Login to Dashboard";
+                btn.disabled = false;
+            }
+        });
+
+        // --- FORGOT PASSWORD LOGIC ---
+        const forgotBtn = document.getElementById('forgot-password-link');
+        forgotBtn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            
+            // First check if user typed email in the login box
+            let email = document.getElementById('login-email').value;
+            
+            if (!email) {
+                // If box empty, prompt them
+                email = prompt("Please enter your email address to reset your password:");
+            }
+
+            if (email) {
+                try {
+                    await sendPasswordResetEmail(auth, email);
+                    alert("Success! A password reset link has been sent to " + email + ". Please check your inbox (and spam folder).");
+                } catch (error) {
+                    console.error(error);
+                    let errMsg = "Error sending reset email.";
+                    if (error.code === 'auth/user-not-found') errMsg = "No account found with this email.";
+                    if (error.code === 'auth/invalid-email') errMsg = "Please enter a valid email address.";
+                    alert(errMsg);
+                }
+            } else {
+                alert("Email address is required to reset password.");
+            }
+        });
+
+        // --- GOOGLE LOGIN ---
+        const googleBtn = document.getElementById('google-login-btn');
+        googleBtn.addEventListener('click', async () => {
             const provider = new GoogleAuthProvider();
             try {
-                // Determine persistence based on the remember me checkbox state
-                // Note: Popup sign-in sometimes handles persistence differently, but we can try setting it first
-                const rememberMe = document.getElementById('remember-me-check').checked;
-                const persistenceType = rememberMe ? browserLocalPersistence : browserSessionPersistence;
-                await setPersistence(auth, persistenceType);
-
+                // Remember me logic applies here too implicitly based on browser default, 
+                // or we can set it explicitly like in email login.
                 const result = await signInWithPopup(auth, provider);
-                
-                // Check if user exists in DB, if not create doc (Optional logic usually needed here)
-                // For now, we redirect
-                window.location.href = "dashboard.html";
+                window.location.href = 'dashboard.html';
 
             } catch (error) {
                 console.error("Google Sign In Error", error);
