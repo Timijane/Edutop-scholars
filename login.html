@@ -148,7 +148,7 @@
 
     /* Hero Section */
     .hero {
-      padding: 12rem 5% 8rem;
+      padding: 12rem 5% 4rem;
       background: var(--gradient);
       color: white;
       position: relative;
@@ -172,7 +172,7 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 4rem;
-      align-items: center;
+      align-items: start;
     }
 
     .hero-text h1 {
@@ -223,6 +223,7 @@
       box-shadow: var(--shadow-lg);
       position: relative;
       overflow: hidden;
+      margin-bottom: 2rem;
     }
 
     .auth-section::before {
@@ -385,9 +386,107 @@
       display: block;
     }
 
+    /* Image Slider */
+    .image-slider {
+      width: 100%;
+      background: white;
+      border-radius: var(--radius);
+      padding: 2rem;
+      box-shadow: var(--shadow-lg);
+      margin-top: 2rem;
+    }
+
+    .slider-title {
+      text-align: center;
+      color: var(--primary);
+      margin-bottom: 1.5rem;
+      font-size: 1.5rem;
+    }
+
+    .slider-container {
+      position: relative;
+      width: 100%;
+      height: 300px;
+      overflow: hidden;
+      border-radius: 12px;
+    }
+
+    .slider-track {
+      display: flex;
+      transition: transform 0.5s ease-in-out;
+      height: 100%;
+    }
+
+    .slide {
+      min-width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    .slider-nav {
+      position: absolute;
+      top: 50%;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      transform: translateY(-50%);
+      padding: 0 1rem;
+    }
+
+    .slider-btn {
+      background: rgba(255, 255, 255, 0.8);
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.2rem;
+      color: var(--primary);
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .slider-btn:hover {
+      background: white;
+      transform: scale(1.1);
+    }
+
+    .slider-dots {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+
+    .slider-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #cbd5e1;
+      border: none;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .slider-dot.active {
+      background: var(--secondary);
+      transform: scale(1.2);
+    }
+
     /* Features Section */
     .features {
-      padding: 8rem 5%;
+      padding: 6rem 5%;
       background: white;
     }
 
@@ -520,6 +619,10 @@
       .hero-stats {
         justify-content: center;
       }
+      
+      .image-slider {
+        margin-top: 0;
+      }
     }
 
     @media (max-width: 768px) {
@@ -536,7 +639,7 @@
       }
 
       .hero {
-        padding: 10rem 5% 5rem;
+        padding: 10rem 5% 4rem;
       }
 
       .hero-text h1 {
@@ -549,6 +652,10 @@
 
       .section-title {
         font-size: 2rem;
+      }
+
+      .slider-container {
+        height: 250px;
       }
     }
 
@@ -566,6 +673,10 @@
       .auth-tab {
         padding: 0.5rem 1rem;
         font-size: 0.9rem;
+      }
+
+      .slider-container {
+        height: 200px;
       }
     }
 
@@ -625,8 +736,8 @@
 
   <!-- Hero Section -->
   <section class="hero" id="home">
-    <div class="hero-content animate-up">
-      <div class="hero-text">
+    <div class="hero-content">
+      <div class="hero-text animate-up">
         <div class="hero-tagline">Welcome to the home of scholars where excellence is certain</div>
         <h1>Transform Your Academic Journey With AI-Powered Learning</h1>
         <p>Edutop Scholars combines cutting-edge technology with proven pedagogical methods to deliver personalized education experiences. Join thousands of successful students worldwide.</p>
@@ -646,50 +757,81 @@
         </div>
       </div>
       
-      <!-- Auth Section -->
-      <div class="auth-section animate-up" style="animation-delay: 0.2s">
-        <div class="auth-header">
-          <div>
-            <h2 class="auth-title" id="formTitle">Login to Your Account</h2>
-            <p class="auth-subtitle">Access your personalized learning dashboard</p>
-          </div>
-          <div class="auth-tabs">
-            <button class="auth-tab active" id="loginTab">Login</button>
-            <button class="auth-tab" id="signupTab">Sign Up</button>
-          </div>
-        </div>
-        
-        <form id="authForm" class="auth-form">
-          <div class="form-group">
-            <label for="email" class="form-label">Email Address</label>
-            <input type="email" id="email" class="form-input" placeholder="Enter your email" required>
-          </div>
-          
-          <div class="form-group">
-            <label for="password" class="form-label">Password</label>
-            <div class="password-container">
-              <input type="password" id="password" class="form-input" placeholder="Enter your password" required>
-              <button type="button" class="password-toggle" id="togglePassword">
-                <i class="fas fa-eye"></i>
-              </button>
+      <div class="hero-side">
+        <!-- Auth Section -->
+        <div class="auth-section animate-up" style="animation-delay: 0.2s">
+          <div class="auth-header">
+            <div>
+              <h2 class="auth-title" id="formTitle">Login to Your Account</h2>
+              <p class="auth-subtitle">Access your personalized learning dashboard</p>
+            </div>
+            <div class="auth-tabs">
+              <button class="auth-tab active" id="loginTab">Login</button>
+              <button class="auth-tab" id="signupTab">Sign Up</button>
             </div>
           </div>
           
-          <button type="submit" class="auth-button" id="submitBtn">
-            <span id="buttonText">Login to Dashboard</span>
-            <span class="spinner" id="buttonSpinner" style="display: none;"></span>
-          </button>
-          
-          <div class="auth-footer">
-            <a href="#" class="auth-link" id="forgotPassword">Forgot Password?</a>
-            <p style="margin-top: 1rem;">
-              <span id="switchText">Don't have an account?</span>
-              <a href="#" class="auth-link" id="switchBtn">Sign up now</a>
-            </p>
+          <form id="authForm" class="auth-form">
+            <div class="form-group">
+              <label for="email" class="form-label">Email Address</label>
+              <input type="email" id="email" class="form-input" placeholder="Enter your email" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="password" class="form-label">Password</label>
+              <div class="password-container">
+                <input type="password" id="password" class="form-input" placeholder="Enter your password" required>
+                <button type="button" class="password-toggle" id="togglePassword">
+                  <i class="fas fa-eye"></i>
+                </button>
+              </div>
+            </div>
+            
+            <button type="submit" class="auth-button" id="submitBtn">
+              <span id="buttonText">Login to Dashboard</span>
+              <span class="spinner" id="buttonSpinner" style="display: none;"></span>
+            </button>
+            
+            <div class="auth-footer">
+              <a href="#" class="auth-link" id="forgotPassword">Forgot Password?</a>
+              <p style="margin-top: 1rem;">
+                <span id="switchText">Don't have an account?</span>
+                <a href="#" class="auth-link" id="switchBtn">Sign up now</a>
+              </p>
+            </div>
+            
+            <div id="message" class="auth-message"></div>
+          </form>
+        </div>
+
+        <!-- Image Slider -->
+        <div class="image-slider animate-up" style="animation-delay: 0.4s">
+          <h3 class="slider-title">Our Learning Environment</h3>
+          <div class="slider-container">
+            <div class="slider-track" id="sliderTrack">
+              <div class="slide">
+                <img src="j1.jpg" alt="Modern Classroom" onerror="this.src='https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80'">
+              </div>
+              <div class="slide">
+                <img src="j2.jpg" alt="Students Collaborating" onerror="this.src='https://images.unsplash.com/photo-1523580494863-6f3031224c94?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80'">
+              </div>
+              <div class="slide">
+                <img src="j3.jpg" alt="Technology Lab" onerror="this.src='https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w-1350&q=80'">
+              </div>
+              <div class="slide">
+                <img src="j4.jpg" alt="Library Study" onerror="this.src='https://images.unsplash.com/photo-1503676260728-1c00da094a0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80'">
+              </div>
+              <div class="slide">
+                <img src="j5.jpg" alt="Graduation Celebration" onerror="this.src='https://images.unsplash.com/photo-1524178234883-043d5c3f3cf4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80'">
+              </div>
+            </div>
+            <div class="slider-nav">
+              <button class="slider-btn prev-btn"><i class="fas fa-chevron-left"></i></button>
+              <button class="slider-btn next-btn"><i class="fas fa-chevron-right"></i></button>
+            </div>
           </div>
-          
-          <div id="message" class="auth-message"></div>
-        </form>
+          <div class="slider-dots" id="sliderDots"></div>
+        </div>
       </div>
     </div>
   </section>
@@ -786,19 +928,12 @@
     </div>
   </footer>
 
-  <!-- Firebase and App Script -->
-  <script type="module">
-    // Import Firebase modules
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import {
-      getAuth,
-      createUserWithEmailAndPassword,
-      signInWithEmailAndPassword,
-      sendEmailVerification,
-      sendPasswordResetEmail
-    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"></script>
 
-    // Firebase configuration
+  <script>
+    // Initialize Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyCictHNxtslYs9VR0hoicxlwPn_QghkgIA",
       authDomain: "edutop-7ff51.firebaseapp.com",
@@ -810,8 +945,8 @@
     };
 
     // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
 
     // DOM Elements
     const form = document.getElementById('authForm');
@@ -830,8 +965,60 @@
     const signupTab = document.getElementById('signupTab');
     const navAuthBtn = document.getElementById('navAuthBtn');
 
+    // Image Slider Elements
+    const sliderTrack = document.getElementById('sliderTrack');
+    const prevBtn = document.querySelector('.prev-btn');
+    const nextBtn = document.querySelector('.next-btn');
+    const sliderDots = document.getElementById('sliderDots');
+
     // State
     let isLogin = true;
+    let currentSlide = 0;
+    const totalSlides = 5;
+
+    // Initialize Image Slider
+    function initSlider() {
+      // Create dots
+      for (let i = 0; i < totalSlides; i++) {
+        const dot = document.createElement('button');
+        dot.classList.add('slider-dot');
+        if (i === 0) dot.classList.add('active');
+        dot.addEventListener('click', () => goToSlide(i));
+        sliderDots.appendChild(dot);
+      }
+      
+      // Auto slide
+      setInterval(() => {
+        nextSlide();
+      }, 5000);
+    }
+
+    function goToSlide(slideIndex) {
+      currentSlide = slideIndex;
+      sliderTrack.style.transform = `translateX(-${currentSlide * 100}%)`;
+      
+      // Update dots
+      document.querySelectorAll('.slider-dot').forEach((dot, index) => {
+        dot.classList.toggle('active', index === currentSlide);
+      });
+    }
+
+    function nextSlide() {
+      currentSlide = (currentSlide + 1) % totalSlides;
+      goToSlide(currentSlide);
+    }
+
+    function prevSlide() {
+      currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+      goToSlide(currentSlide);
+    }
+
+    // Slider Event Listeners
+    prevBtn.addEventListener('click', prevSlide);
+    nextBtn.addEventListener('click', nextSlide);
+
+    // Initialize slider
+    initSlider();
 
     // Update UI based on login/signup state
     function updateUI() {
@@ -885,6 +1072,11 @@
       messageDiv.textContent = text;
       messageDiv.className = 'auth-message ' + (isError ? 'error' : 'success');
       messageDiv.style.display = 'block';
+      
+      // Auto hide after 5 seconds
+      setTimeout(() => {
+        clearMessage();
+      }, 5000);
     }
 
     // Clear message
@@ -919,7 +1111,7 @@
       try {
         if (isLogin) {
           // Login
-          const userCred = await signInWithEmailAndPassword(auth, email, password);
+          const userCred = await auth.signInWithEmailAndPassword(email, password);
           
           if (!userCred.user.emailVerified) {
             showMessage('Please verify your email before logging in.', true);
@@ -939,9 +1131,9 @@
           
         } else {
           // Sign up
-          const userCred = await createUserWithEmailAndPassword(auth, email, password);
+          const userCred = await auth.createUserWithEmailAndPassword(email, password);
           
-          await sendEmailVerification(userCred.user);
+          await userCred.user.sendEmailVerification();
           showMessage('Account created! Please check your email for verification link.');
           
           // Switch to login after successful signup
@@ -997,7 +1189,7 @@
       setLoading(true);
       
       try {
-        await sendPasswordResetEmail(auth, email);
+        await auth.sendPasswordResetEmail(email);
         showMessage('Password reset email sent. Please check your inbox.');
       } catch (error) {
         showMessage('Error sending reset email. Please check your email address.', true);
@@ -1032,6 +1224,10 @@
     document.querySelectorAll('.feature-card').forEach(card => {
       observer.observe(card);
     });
+
+    // Observe image slider
+    const slider = document.querySelector('.image-slider');
+    if (slider) observer.observe(slider);
   </script>
 </body>
-</html>
+  </html>
