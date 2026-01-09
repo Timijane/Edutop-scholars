@@ -17,7 +17,10 @@
         .logo span { color: var(--secondary); }
         .user-info { display: flex; align-items: center; gap: 20px; }
         .notification { position: relative; font-size: 20px; color: var(--gray); cursor: pointer; }
-        .notification-count { position: absolute; top: -5px; right: -5px; background: var(--danger); color: white; font-size: 12px; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        
+        /* Added display: none to hide badge if count is 0 */
+        .notification-count { position: absolute; top: -5px; right: -5px; background: var(--danger); color: white; font-size: 12px; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; display: none; }
+        
         .user-profile { display: flex; align-items: center; gap: 10px; }
         .user-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; }
         .user-name { font-weight: 600; }
@@ -100,7 +103,7 @@
         <div class="user-info">
             <div class="notification">
                 <i class="fas fa-bell"></i>
-                <div class="notification-count">3</div>
+                <div class="notification-count" id="notification-badge"></div>
             </div>
             <div class="user-profile">
                 <div class="user-avatar" id="user-avatar-display">...</div>
@@ -177,7 +180,7 @@
                         <i class="fas fa-check-circle"></i>
                     </div>
                     <div class="stat-info">
-                        <h3>87%</h3>
+                        <h3 id="stat-score">--%</h3>
                         <p>Overall Score</p>
                     </div>
                 </div>
@@ -186,7 +189,7 @@
                         <i class="fas fa-clipboard-list"></i>
                     </div>
                     <div class="stat-info">
-                        <h3>0</h3>
+                        <h3 id="stat-exams">0</h3>
                         <p>Exams Taken</p>
                     </div>
                 </div>
@@ -195,7 +198,7 @@
                         <i class="fas fa-clock"></i>
                     </div>
                     <div class="stat-info">
-                        <h3>0h</h3>
+                        <h3 id="stat-hours">0h</h3>
                         <p>Study Hours</p>
                     </div>
                 </div>
@@ -204,7 +207,7 @@
                         <i class="fas fa-trophy"></i>
                     </div>
                     <div class="stat-info">
-                        <h3>--</h3>
+                        <h3 id="stat-ranking">--</h3>
                         <p>National Ranking</p>
                     </div>
                 </div>
@@ -354,48 +357,49 @@
             if (user) {
                 currentUserUid = user.uid;
                 
-                // Real-time listener for user document
-                // This replaces "getDoc" so it feels real-time
                 const userRef = doc(db, "users", currentUserUid);
                 
                 onSnapshot(userRef, async (docSnap) => {
                     if (docSnap.exists()) {
-                        // DOCUMENT EXISTS: Load Data
                         const data = docSnap.data();
                         updateUI(data);
                     } else {
-                        // DOCUMENT MISSING: Create it immediately (Self-Correction)
-                        // This fixes the "mocked" feeling if sign-up didn't work perfectly
+                        // Create profile with default STATS if missing
                         const defaultData = {
                             fullName: user.displayName || "New Scholar",
                             email: user.email,
                             subscriptionPlan: "Free",
                             selectedSubjects: [],
+                            // Default Stats Initialization
+                            stats: {
+                                overallScore: 0,
+                                examsTaken: 0,
+                                studyHours: 0,
+                                ranking: "--"
+                            },
+                            // Default Notifications
+                            notifications: [],
                             createdAt: new Date().toISOString()
                         };
                         
                         try {
                             await setDoc(userRef, defaultData);
-                            console.log("Created missing profile document");
-                            // The listener will trigger again immediately after this setDoc
                         } catch (e) {
                             console.error("Error creating profile:", e);
                         }
                     }
                 }, (error) => {
                     console.error("Listener error:", error);
-                    // Handle permission errors (unlikely given your rules)
                 });
 
             } else {
-                // Not logged in -> Redirect
                 window.location.href = "index.html";
             }
         });
 
         // 2. UPDATE UI FUNCTION
         function updateUI(userData) {
-            // Name & Initials
+            // --- BASIC INFO ---
             const fullName = userData.fullName || "Scholar";
             document.getElementById('user-name-display').innerText = fullName;
             document.getElementById('welcome-msg').innerText = `Welcome back, ${fullName.split(' ')[0]}!`;
@@ -403,14 +407,35 @@
             const initials = fullName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
             document.getElementById('user-avatar-display').innerText = initials;
 
-            // Plan
             const plan = (userData.subscriptionPlan || "Free").toUpperCase();
             document.getElementById('user-plan-display').innerText = `${plan} Plan`;
             document.getElementById('sidebar-plan-name').innerText = `${plan} Plan`;
 
-            // Subjects
-            selectedSubjects = userData.selectedSubjects || [];
+            // --- REAL-TIME STATS ---
+            // We use '|| 0' so it defaults to 0 if the field doesn't exist yet
+            const stats = userData.stats || {};
             
+            document.getElementById('stat-score').innerText = (stats.overallScore || 0) + '%';
+            document.getElementById('stat-exams').innerText = stats.examsTaken || 0;
+            document.getElementById('stat-hours').innerText = (stats.studyHours || 0) + 'h';
+            document.getElementById('stat-ranking').innerText = stats.ranking || '--';
+
+            // --- REAL-TIME NOTIFICATIONS ---
+            const notifications = userData.notifications || [];
+            // Logic: Count how many are unread (assuming you might add 'read: true' later)
+            // For now, just counting the array length
+            const notifCount = notifications.length;
+            
+            const badge = document.getElementById('notification-badge');
+            if(notifCount > 0) {
+                badge.style.display = 'flex';
+                badge.innerText = notifCount > 9 ? '9+' : notifCount;
+            } else {
+                badge.style.display = 'none';
+            }
+
+            // --- SUBJECTS ---
+            selectedSubjects = userData.selectedSubjects || [];
             const welcomeSubtext = document.getElementById('welcome-subtext');
             const subjectBtn = document.querySelector('#subject-selection-btn .action-btn');
 
@@ -422,13 +447,12 @@
                 subjectBtn.textContent = 'Select Subjects';
             }
             
-            // Re-render modal in case it's open
             if(document.getElementById('subjectModal').style.display === 'flex'){
                 renderSubjectSelection();
             }
         }
 
-        // 3. MODAL LOGIC
+        // 3. MODAL LOGIC (UNCHANGED)
         const subjectModal = document.getElementById('subjectModal');
         const subjectSelectionBtn = document.getElementById('subject-selection-btn');
         const closeModal = document.getElementById('closeModal');
@@ -438,7 +462,6 @@
         const selectionCount = document.getElementById('selectionCount');
         const saveSubjectsBtn = document.getElementById('saveSubjects');
 
-        // Open/Close
         subjectSelectionBtn.addEventListener('click', () => { 
             subjectModal.style.display = 'flex'; 
             renderSubjectSelection(); 
@@ -448,7 +471,6 @@
         cancelSelection.addEventListener('click', hideModal);
         subjectModal.addEventListener('click', (e) => { if (e.target === subjectModal) hideModal(); });
 
-        // Selection Logic
         subjectCards.forEach(card => {
             card.addEventListener('click', function() {
                 const subject = this.getAttribute('data-subject');
@@ -507,7 +529,6 @@
                 
                 alert("Subjects saved!");
                 hideModal();
-                // No need to manually update UI, the onSnapshot listener will do it automatically!
             } catch (error) {
                 console.error("Error:", error);
                 alert("Failed to save: " + error.message);
