@@ -266,6 +266,17 @@
             font-weight: 600;
         }
         
+        .loader {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .loader i {
+            font-size: 40px;
+            color: var(--primary);
+        }
+        
         @media (max-width: 768px) {
             .exam-options {
                 grid-template-columns: 1fr;
@@ -282,7 +293,7 @@
         <div class="logo">
             <h1>Edutop<span>Scholars</span></h1>
         </div>
-        <button class="back-btn" onclick="window.location.href='dashboard.html'">
+        <button class="back-btn" id="backBtn">
             <i class="fas fa-arrow-left"></i>
             Back to Dashboard
         </button>
@@ -331,7 +342,7 @@
                     </div>
                 </div>
                 
-                <button class="exam-btn" id="startStandardBtn" onclick="startStandardExam()">
+                <button class="exam-btn" id="startStandardBtn">
                     <i class="fas fa-play-circle"></i> Start Standard Exam
                 </button>
             </div>
@@ -378,7 +389,7 @@
                     <div class="selected-count" id="selectedCount">0 subjects selected</div>
                 </div>
                 
-                <button class="exam-btn" id="startShortBtn" disabled onclick="startShortExam()">
+                <button class="exam-btn" id="startShortBtn" disabled>
                     <i class="fas fa-play-circle"></i> Start Short Exam
                 </button>
             </div>
@@ -391,27 +402,29 @@
                 For Standard Exam, you must have exactly 4 subjects selected in your profile.
             </div>
         </div>
+        
+        <!-- Loading indicator -->
+        <div class="loader" id="loader">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p style="margin-top: 10px;">Preparing exam... Please wait</p>
+        </div>
     </div>
 
     <!-- Confirmation Modal -->
     <div class="modal-overlay" id="confirmationModal">
         <div class="modal">
-            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <button class="modal-close" id="modalCloseBtn">&times;</button>
             <h2 id="modalTitle" style="color: var(--primary); margin-bottom: 20px; text-align: center;">Start Exam</h2>
             <p id="modalMessage" style="text-align: center; margin-bottom: 30px; color: var(--gray);"></p>
             <div class="modal-actions">
-                <button class="modal-btn secondary" onclick="closeModal()">Cancel</button>
-                <button class="modal-btn primary" onclick="confirmStartExam()">Start Exam</button>
+                <button class="modal-btn secondary" id="cancelModalBtn">Cancel</button>
+                <button class="modal-btn primary" id="confirmModalBtn">Start Exam</button>
             </div>
         </div>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
-
-        // Firebase Config
+    <script>
+        // Firebase Config (using vanilla JavaScript approach)
         const firebaseConfig = {
             apiKey: "AIzaSyCictHNxtslYs9VR0hoicxlwPn_QghkgIA",
             authDomain: "edutop-7ff51.firebaseapp.com",
@@ -422,9 +435,10 @@
             measurementId: "G-GGGH590BYS"
         };
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
         
         let currentUser = null;
         let userSubjects = [];
@@ -438,39 +452,77 @@
             "Geography", "Commerce", "Accounting", "CRS"
         ];
 
+        // DOM Elements
+        const backBtn = document.getElementById('backBtn');
+        const startStandardBtn = document.getElementById('startStandardBtn');
+        const startShortBtn = document.getElementById('startShortBtn');
+        const shortExamSubjects = document.getElementById('shortExamSubjects');
+        const selectedCount = document.getElementById('selectedCount');
+        const confirmationModal = document.getElementById('confirmationModal');
+        const modalCloseBtn = document.getElementById('modalCloseBtn');
+        const cancelModalBtn = document.getElementById('cancelModalBtn');
+        const confirmModalBtn = document.getElementById('confirmModalBtn');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalMessage = document.getElementById('modalMessage');
+        const loader = document.getElementById('loader');
+
         // Initialize on page load
         document.addEventListener('DOMContentLoaded', function() {
             // Check auth
-            onAuthStateChanged(auth, async (user) => {
+            auth.onAuthStateChanged(async (user) => {
                 if (user) {
                     currentUser = user;
                     await loadUserData();
                     renderSubjectCheckboxes();
+                    setupEventListeners();
                 } else {
                     window.location.href = "index.html";
                 }
             });
         });
 
+        function setupEventListeners() {
+            // Back button
+            backBtn.addEventListener('click', () => {
+                window.location.href = 'dashboard.html';
+            });
+            
+            // Standard exam button
+            startStandardBtn.addEventListener('click', startStandardExam);
+            
+            // Short exam button
+            startShortBtn.addEventListener('click', startShortExam);
+            
+            // Modal buttons
+            modalCloseBtn.addEventListener('click', closeModal);
+            cancelModalBtn.addEventListener('click', closeModal);
+            confirmModalBtn.addEventListener('click', confirmStartExam);
+            
+            // Subject checkboxes (event delegation)
+            shortExamSubjects.addEventListener('change', updateSelectedSubjects);
+        }
+
         async function loadUserData() {
-            const userDoc = await getDoc(doc(db, "users", currentUser.uid));
-            if (userDoc.exists()) {
-                const data = userDoc.data();
-                userSubjects = data.selectedSubjects || [];
-                
-                // Check if user has subjects for standard exam
-                const standardBtn = document.getElementById('startStandardBtn');
-                if (userSubjects.length !== 4) {
-                    standardBtn.disabled = true;
-                    standardBtn.innerHTML = '<i class="fas fa-exclamation-circle"></i> Select 4 Subjects First';
-                    standardBtn.title = "You need exactly 4 selected subjects in your profile";
+            try {
+                const userDoc = await db.collection("users").doc(currentUser.uid).get();
+                if (userDoc.exists) {
+                    const data = userDoc.data();
+                    userSubjects = data.selectedSubjects || [];
+                    
+                    // Check if user has subjects for standard exam
+                    if (userSubjects.length !== 4) {
+                        startStandardBtn.disabled = true;
+                        startStandardBtn.innerHTML = '<i class="fas fa-exclamation-circle"></i> Select 4 Subjects First';
+                        startStandardBtn.title = "You need exactly 4 selected subjects in your profile";
+                    }
                 }
+            } catch (error) {
+                console.error("Error loading user data:", error);
             }
         }
 
         function renderSubjectCheckboxes() {
-            const container = document.getElementById('shortExamSubjects');
-            container.innerHTML = '';
+            shortExamSubjects.innerHTML = '';
             
             allSubjects.forEach(subject => {
                 const isEnglish = subject === 'English';
@@ -479,13 +531,12 @@
                 div.innerHTML = `
                     <input type="checkbox" id="subj-${subject}" 
                            value="${subject}" 
-                           ${isEnglish ? 'checked disabled' : ''}
-                           onchange="updateSelectedSubjects()">
+                           ${isEnglish ? 'checked disabled' : ''}>
                     <label for="subj-${subject}">
                         ${subject} ${isEnglish ? '(Compulsory)' : ''}
                     </label>
                 `;
-                container.appendChild(div);
+                shortExamSubjects.appendChild(div);
             });
             
             // Always select English by default
@@ -498,17 +549,15 @@
             selectedShortSubjects = Array.from(checkboxes).map(cb => cb.value);
             
             const count = selectedShortSubjects.length;
-            const countElement = document.getElementById('selectedCount');
-            const startBtn = document.getElementById('startShortBtn');
             
-            countElement.textContent = `${count} subjects selected`;
+            selectedCount.textContent = `${count} subjects selected`;
             
             if (count >= 1 && count <= 4) {
-                startBtn.disabled = false;
-                countElement.style.color = 'var(--success)';
+                startShortBtn.disabled = false;
+                selectedCount.style.color = 'var(--success)';
             } else {
-                startBtn.disabled = true;
-                countElement.style.color = count > 4 ? 'var(--danger)' : 'var(--warning)';
+                startShortBtn.disabled = true;
+                selectedCount.style.color = count > 4 ? 'var(--danger)' : 'var(--warning)';
             }
         }
 
@@ -520,12 +569,8 @@
             }
             
             examMode = 'standard';
-            const modal = document.getElementById('confirmationModal');
-            const title = document.getElementById('modalTitle');
-            const message = document.getElementById('modalMessage');
-            
-            title.textContent = 'Start Standard Exam';
-            message.innerHTML = `
+            modalTitle.textContent = 'Start Standard Exam';
+            modalMessage.innerHTML = `
                 <strong>Exam Details:</strong><br><br>
                 • Duration: 120 minutes (2 hours)<br>
                 • Total Questions: 220<br>
@@ -539,14 +584,12 @@
                 Are you ready to begin?
             `;
             
-            modal.style.display = 'flex';
+            confirmationModal.style.display = 'flex';
         }
 
         function startShortExam() {
             examMode = 'short';
-            const modal = document.getElementById('confirmationModal');
-            const title = document.getElementById('modalTitle');
-            const message = document.getElementById('modalMessage');
+            modalTitle.textContent = 'Start Short Exam';
             
             const subjectList = selectedShortSubjects.map(subj => {
                 const count = subj === 'English' ? 15 : 10;
@@ -557,8 +600,7 @@
                 return total + (subj === 'English' ? 15 : 10);
             }, 0);
             
-            title.textContent = 'Start Short Exam';
-            message.innerHTML = `
+            modalMessage.innerHTML = `
                 <strong>Exam Details:</strong><br><br>
                 ${subjectList}<br><br>
                 <strong>Total Questions:</strong> ${totalQuestions}<br>
@@ -570,28 +612,67 @@
                 Are you ready to begin?
             `;
             
-            modal.style.display = 'flex';
+            confirmationModal.style.display = 'flex';
         }
 
         function closeModal() {
-            document.getElementById('confirmationModal').style.display = 'none';
+            confirmationModal.style.display = 'none';
         }
 
         function confirmStartExam() {
             closeModal();
+            showLoader();
             
             // Store exam settings in localStorage
             const examSettings = {
                 mode: examMode,
                 subjects: examMode === 'standard' ? userSubjects : selectedShortSubjects,
                 timestamp: new Date().toISOString(),
-                userId: currentUser.uid
+                userId: currentUser.uid,
+                examId: generateExamId()
             };
             
             localStorage.setItem('currentExam', JSON.stringify(examSettings));
             
-            // Redirect to exam interface
-            window.location.href = 'exam-interface.html';
+            // Save exam session to Firestore
+            saveExamSession(examSettings);
+        }
+
+        function generateExamId() {
+            return 'exam_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        }
+
+        async function saveExamSession(examSettings) {
+            try {
+                const examSession = {
+                    userId: currentUser.uid,
+                    examMode: examSettings.mode,
+                    subjects: examSettings.subjects,
+                    startedAt: new Date(),
+                    status: 'in_progress',
+                    examId: examSettings.examId
+                };
+                
+                await db.collection("examSessions").doc(examSettings.examId).set(examSession);
+                
+                // Redirect to exam interface
+                setTimeout(() => {
+                    window.location.href = 'exam-interface.html';
+                }, 1000);
+                
+            } catch (error) {
+                console.error("Error saving exam session:", error);
+                // Still redirect even if there's an error
+                window.location.href = 'exam-interface.html';
+            }
+        }
+
+        function showLoader() {
+            loader.style.display = 'block';
+        }
+
+        function hideLoader() {
+            loader.style.display = 'none';
         }
 
         // Add keyboard shortcuts
@@ -608,5 +689,10 @@
         });
 
     </script>
+    
+    <!-- Include Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 </body>
 </html>
