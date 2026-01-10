@@ -24,10 +24,6 @@
         .user-profile { display: flex; align-items: center; gap: 10px; }
         .user-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; }
         .user-name { font-weight: 600; }
-        
-        /* Theme toggle button */
-        .theme-toggle { font-size: 20px; color: var(--gray); cursor: pointer; padding: 8px; border-radius: 50%; transition: all 0.3s; }
-        .theme-toggle:hover { background: var(--light-gray); }
 
         .dashboard-container { display: flex; min-height: calc(100vh - 80px); }
         .sidebar { width: 250px; background: white; padding: 25px 0; box-shadow: 3px 0 10px rgba(0, 0, 0, 0.05); display: flex; flex-direction: column; }
@@ -95,21 +91,35 @@
         .activity-info p { color: var(--gray); font-size: 14px; }
         .footer { background: white; padding: 20px; text-align: center; color: var(--gray); font-size: 14px; margin-top: 40px; border-top: 1px solid var(--light-gray); }
 
-        /* Dark mode styles */
-        body.dark-mode { background: #121212; color: #f0f0f0; }
-        body.dark-mode .header { background: #1e1e1e; }
-        body.dark-mode .sidebar { background: #1e1e1e; }
-        body.dark-mode .stat-card,
-        body.dark-mode .action-card,
-        body.dark-mode .recent-activity,
-        body.dark-mode .modal { background: #2d2d2d; color: #f0f0f0; }
-        body.dark-mode .footer { background: #1e1e1e; color: #aaa; }
-        body.dark-mode .sidebar-item { color: #f0f0f0; }
-        body.dark-mode .sidebar-item:hover { background: #333; }
-        body.dark-mode .subject-card { background: #333; }
-        body.dark-mode .subject-icon { color: #aaa; }
-        body.dark-mode .selected-subjects { background: #252525; }
-
+        /* Day/Night Mode Toggle Button */
+        .mode-toggle { display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 8px 15px; border-radius: 20px; background: var(--light-gray); transition: all 0.3s; margin-right: 10px; }
+        .mode-toggle:hover { background: var(--primary-light); color: white; }
+        .mode-toggle i { font-size: 18px; }
+        
+        /* Night Mode Styles */
+        body.night-mode { 
+            background: linear-gradient(135deg, #0a0a2a 0%, #1a1a3a 100%); 
+            color: #e0e0e0; 
+        }
+        body.night-mode .header { background: #1a1a3a; color: white; }
+        body.night-mode .sidebar { background: #1a1a3a; color: white; }
+        body.night-mode .stat-card,
+        body.night-mode .action-card,
+        body.night-mode .recent-activity,
+        body.night-mode .modal,
+        body.night-mode .footer { 
+            background: #2a2a4a; 
+            color: #e0e0e0; 
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); 
+        }
+        body.night-mode .sidebar-item { color: #e0e0e0; }
+        body.night-mode .sidebar-item:hover { background: #3a3a5a; }
+        body.night-mode .subject-card { background: #2a2a4a; color: #e0e0e0; }
+        body.night-mode .subject-card.selected { background: var(--primary); }
+        body.night-mode .selected-subjects { background: #1a2a3a; }
+        body.night-mode .activity-item { background: #3a3a5a; }
+        body.night-mode .mode-toggle { background: #3a3a5a; color: white; }
+        
         @media (max-width: 992px) { .dashboard-container { flex-direction: column; } .sidebar { width: 100%; flex-direction: row; flex-wrap: wrap; padding: 15px; } .sidebar-section { margin-bottom: 15px; } .action-grid { grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); } }
         @media (max-width: 768px) { .header { padding: 15px; flex-direction: column; gap: 15px; } .stats-cards { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); } .action-grid { grid-template-columns: 1fr; } .subject-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); } }
     </style>
@@ -120,12 +130,15 @@
             <h1>Edutop<span>Scholars</span></h1>
         </div>
         <div class="user-info">
+            <!-- Day/Night Mode Toggle Button -->
+            <div class="mode-toggle" id="modeToggle">
+                <i class="fas fa-moon"></i>
+                <span>Night Mode</span>
+            </div>
+            
             <div class="notification">
                 <i class="fas fa-bell"></i>
                 <div class="notification-count" id="notification-badge"></div>
-            </div>
-            <div class="theme-toggle" id="theme-toggle">
-                <i class="fas fa-moon"></i>
             </div>
             <div class="user-profile">
                 <div class="user-avatar" id="user-avatar-display">...</div>
@@ -336,13 +349,14 @@
                     <div class="subject-card" data-subject="Accounting"><div class="subject-icon"><i class="fas fa-calculator"></i></div><h4>Accounting</h4></div>
                     <div class="subject-card" data-subject="CRS"><div class="subject-icon"><i class="fas fa-church"></i></div><h4>CRS</h4></div>
                     <div class="subject-card" data-subject="IRS"><div class="subject-icon"><i class="fas fa-mosque"></i></div><h4>IRS</h4></div>
-                    <div class="subject-card" data-subject="Further Mathematics"><div class="subject-icon"><i class="fas fa-calculator"></i></div><h4>Further Mathematics</h4></div>
-                    <div class="subject-card" data-subject="Agricultural Science"><div class="subject-icon"><i class="fas fa-tractor"></i></div><h4>Agricultural Science</h4></div>
-                    <div class="subject-card" data-subject="Hausa"><div class="subject-icon"><i class="fas fa-language"></i></div><h4>Hausa</h4></div>
-                    <div class="subject-card" data-subject="Igbo"><div class="subject-icon"><i class="fas fa-language"></i></div><h4>Igbo</h4></div>
-                    <div class="subject-card" data-subject="Yoruba"><div class="subject-icon"><i class="fas fa-language"></i></div><h4>Yoruba</h4></div>
+                    <div class="subject-card" data-subject="Further Mathematics"><div class="subject-icon"><i class="fas fa-calculator"></i></div><h4>Further Maths</h4></div>
+                    <div class="subject-card" data-subject="Agricultural Science"><div class="subject-icon"><i class="fas fa-tractor"></i></div><h4>Agric Science</h4></div>
+                    <div class="subject-card" data-subject="History"><div class="subject-icon"><i class="fas fa-history"></i></div><h4>History</h4></div>
                     <div class="subject-card" data-subject="French"><div class="subject-icon"><i class="fas fa-language"></i></div><h4>French</h4></div>
                     <div class="subject-card" data-subject="Music"><div class="subject-icon"><i class="fas fa-music"></i></div><h4>Music</h4></div>
+                    <div class="subject-card" data-subject="Fine Arts"><div class="subject-icon"><i class="fas fa-palette"></i></div><h4>Fine Arts</h4></div>
+                    <div class="subject-card" data-subject="Computer Studies"><div class="subject-icon"><i class="fas fa-laptop-code"></i></div><h4>Computer Studies</h4></div>
+                    <div class="subject-card" data-subject="Technical Drawing"><div class="subject-icon"><i class="fas fa-ruler-combined"></i></div><h4>Tech Drawing</h4></div>
                 </div>
                 
                 <div class="selected-subjects">
@@ -382,25 +396,32 @@
         let currentUserUid = null;
         let selectedSubjects = [];
 
-        // Theme Toggle Functionality
-        const themeToggle = document.getElementById('theme-toggle');
-        const themeIcon = themeToggle.querySelector('i');
+        // Day/Night Mode Toggle
+        const modeToggle = document.getElementById('modeToggle');
+        const modeIcon = modeToggle.querySelector('i');
+        const modeText = modeToggle.querySelector('span');
         
         // Check for saved theme or prefer-color-scheme
-        const savedTheme = localStorage.getItem('theme') || 'light';
-        if (savedTheme === 'dark') {
-            document.body.classList.add('dark-mode');
-            themeIcon.className = 'fas fa-sun';
+        const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+        const savedTheme = localStorage.getItem('theme');
+        
+        if (savedTheme === 'night' || (!savedTheme && prefersDarkScheme.matches)) {
+            document.body.classList.add('night-mode');
+            modeIcon.className = 'fas fa-sun';
+            modeText.textContent = 'Day Mode';
         }
         
-        themeToggle.addEventListener('click', () => {
-            document.body.classList.toggle('dark-mode');
-            if (document.body.classList.contains('dark-mode')) {
-                localStorage.setItem('theme', 'dark');
-                themeIcon.className = 'fas fa-sun';
+        modeToggle.addEventListener('click', () => {
+            if (document.body.classList.contains('night-mode')) {
+                document.body.classList.remove('night-mode');
+                modeIcon.className = 'fas fa-moon';
+                modeText.textContent = 'Night Mode';
+                localStorage.setItem('theme', 'day');
             } else {
-                localStorage.setItem('theme', 'light');
-                themeIcon.className = 'fas fa-moon';
+                document.body.classList.add('night-mode');
+                modeIcon.className = 'fas fa-sun';
+                modeText.textContent = 'Day Mode';
+                localStorage.setItem('theme', 'night');
             }
         });
 
@@ -598,4 +619,4 @@
 
     </script>
 </body>
-                                                                                                                                 </html>
+                </html>
