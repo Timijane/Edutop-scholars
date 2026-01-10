@@ -1,0 +1,1371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edutop Scholars - Attempt with Friends</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #311b92;
+            --primary-light: #4527a0;
+            --secondary: #ff5722;
+            --accent: #00bcd4;
+            --light: #f5f5f7;
+            --dark: #333;
+            --success: #4caf50;
+            --warning: #ff9800;
+            --danger: #f44336;
+            --gray: #777;
+            --light-gray: #eee;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            color: var(--dark);
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo h1 {
+            color: var(--primary);
+            font-size: 28px;
+        }
+        
+        .logo span {
+            color: var(--secondary);
+        }
+        
+        .back-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        
+        .multiplayer-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .option-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+        
+        .option-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .option-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 25px;
+            color: white;
+            font-size: 35px;
+        }
+        
+        .option-card h2 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-size: 28px;
+        }
+        
+        .option-card p {
+            color: var(--gray);
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+        
+        .create-session {
+            margin-top: 30px;
+        }
+        
+        .session-form {
+            margin-top: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid var(--light-gray);
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .form-select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid var(--light-gray);
+            border-radius: 10px;
+            font-size: 16px;
+            background: white;
+            cursor: pointer;
+        }
+        
+        .form-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .form-checkbox input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        
+        .btn {
+            padding: 15px 30px;
+            border-radius: 50px;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            width: 100%;
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-light);
+            transform: scale(1.05);
+        }
+        
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #3d8b40;
+        }
+        
+        .invite-link-container {
+            background: #f0f7ff;
+            border: 2px dashed var(--primary);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 30px;
+            display: none;
+        }
+        
+        .invite-link {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .invite-link input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            font-size: 14px;
+            background: white;
+        }
+        
+        .copy-btn {
+            padding: 12px 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .participants-list {
+            margin-top: 30px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .participant-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            background: var(--light);
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .participant-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .participant-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .participant-status {
+            font-size: 12px;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+        
+        .status-waiting {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-ready {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+        
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .active-sessions {
+            margin-top: 40px;
+        }
+        
+        .sessions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .session-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s;
+        }
+        
+        .session-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .session-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .session-host {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .session-status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .status-open {
+            background: #d4edda;
+            color: var(--success);
+        }
+        
+        .status-full {
+            background: #f8d7da;
+            color: var(--danger);
+        }
+        
+        .status-started {
+            background: #cce5ff;
+            color: #004085;
+        }
+        
+        .session-info {
+            margin: 15px 0;
+        }
+        
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px dashed var(--light-gray);
+        }
+        
+        .info-label {
+            color: var(--gray);
+        }
+        
+        .info-value {
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        .session-participants {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 15px;
+            font-size: 14px;
+            color: var(--gray);
+        }
+        
+        .join-btn {
+            width: 100%;
+            margin-top: 15px;
+            padding: 12px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .join-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .countdown-timer {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary);
+            text-align: center;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            margin-top: 30px;
+            display: none;
+        }
+        
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .modal {
+            background: white;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            padding: 30px;
+            position: relative;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--gray);
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .modal-btn {
+            padding: 12px 30px;
+            border-radius: 50px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            flex: 1;
+        }
+        
+        .modal-btn.primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .modal-btn.secondary {
+            background: var(--light-gray);
+            color: var(--dark);
+        }
+        
+        .leaderboard-preview {
+            margin-top: 30px;
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .leaderboard-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .leaderboard-rank {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .rank-1 { background: #ffd700; }
+        .rank-2 { background: #c0c0c0; }
+        .rank-3 { background: #cd7f32; }
+        
+        .leaderboard-score {
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        @media (max-width: 768px) {
+            .multiplayer-options {
+                grid-template-columns: 1fr;
+            }
+            
+            .option-card {
+                padding: 30px 20px;
+            }
+            
+            .invite-link {
+                flex-direction: column;
+            }
+            
+            .sessions-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">
+            <h1>Edutop<span>Scholars</span></h1>
+        </div>
+        <button class="back-btn" onclick="window.location.href='dashboard.html'">
+            <i class="fas fa-arrow-left"></i>
+            Back to Dashboard
+        </button>
+    </header>
+
+    <div class="container">
+        <h1 style="color: var(--primary); text-align: center; margin-bottom: 10px; font-size: 36px;">
+            Multiplayer Exam Challenge
+        </h1>
+        <p style="text-align: center; color: var(--gray); margin-bottom: 40px; font-size: 18px;">
+            Compete with friends in real-time JAMB practice exams
+        </p>
+        
+        <div class="multiplayer-options">
+            <!-- Create Session Card -->
+            <div class="option-card">
+                <div class="option-icon">
+                    <i class="fas fa-plus-circle"></i>
+                </div>
+                <h2>Create New Session</h2>
+                <p>Create a multiplayer exam session and invite friends (2-20 participants). Everyone gets the same questions in shuffled order with the same timer.</p>
+                
+                <div class="create-session">
+                    <div class="session-form" id="createForm">
+                        <div class="form-group">
+                            <label for="sessionName"><i class="fas fa-heading"></i> Session Name</label>
+                            <input type="text" id="sessionName" class="form-control" placeholder="Enter session name (e.g., Math Challenge)" maxlength="50">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="examMode"><i class="fas fa-clock"></i> Exam Mode</label>
+                            <select id="examMode" class="form-select">
+                                <option value="standard">Standard Exam (120 mins)</option>
+                                <option value="short">Short Exam (No time limit)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label><i class="fas fa-users"></i> Max Participants (2-20)</label>
+                            <input type="range" id="maxParticipants" min="2" max="20" value="4" class="form-control" style="padding: 0;">
+                            <div style="text-align: center; margin-top: 5px;">
+                                <span id="participantCount">4</span> participants
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label><i class="fas fa-lock"></i> Session Privacy</label>
+                            <div class="form-checkbox">
+                                <input type="radio" id="public" name="privacy" value="public" checked>
+                                <label for="public">Public (Anyone can join)</label>
+                            </div>
+                            <div class="form-checkbox">
+                                <input type="radio" id="private" name="privacy" value="private">
+                                <label for="private">Private (Password required)</label>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group" id="passwordField" style="display: none;">
+                            <label for="sessionPassword"><i class="fas fa-key"></i> Session Password</label>
+                            <input type="password" id="sessionPassword" class="form-control" placeholder="Enter password">
+                        </div>
+                        
+                        <button class="btn btn-primary" id="createSessionBtn">
+                            <i class="fas fa-plus-circle"></i> Create Session
+                        </button>
+                    </div>
+                    
+                    <div class="invite-link-container" id="inviteLinkContainer">
+                        <h4 style="color: var(--primary); margin-bottom: 10px;">
+                            <i class="fas fa-link"></i> Invite Friends
+                        </h4>
+                        <p style="color: var(--gray); font-size: 14px;">
+                            Share this link with your friends. They can join directly.
+                        </p>
+                        <div class="invite-link">
+                            <input type="text" id="inviteLink" readonly>
+                            <button class="copy-btn" onclick="copyInviteLink()">
+                                <i class="far fa-copy"></i> Copy
+                            </button>
+                        </div>
+                        <div style="margin-top: 15px; display: flex; gap: 10px;">
+                            <button class="btn btn-success" onclick="startMultiplayerExam()" id="startExamBtn" style="flex: 1;">
+                                <i class="fas fa-play-circle"></i> Start Exam Now
+                            </button>
+                            <button class="btn btn-secondary" onclick="cancelSession()" style="flex: 1; background: var(--light-gray); color: var(--dark);">
+                                <i class="fas fa-times-circle"></i> Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Join Session Card -->
+            <div class="option-card">
+                <div class="option-icon" style="background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);">
+                    <i class="fas fa-sign-in-alt"></i>
+                </div>
+                <h2>Join Existing Session</h2>
+                <p>Enter a session code or browse available public sessions to join. You can also use an invite link shared by a friend.</p>
+                
+                <div class="form-group">
+                    <label for="sessionCode"><i class="fas fa-hashtag"></i> Session Code</label>
+                    <input type="text" id="sessionCode" class="form-control" placeholder="Enter 6-digit session code">
+                </div>
+                
+                <button class="btn btn-primary" id="joinSessionBtn">
+                    <i class="fas fa-sign-in-alt"></i> Join Session
+                </button>
+                
+                <div class="active-sessions">
+                    <h3 style="color: var(--primary); margin-top: 30px; margin-bottom: 15px;">
+                        <i class="fas fa-list"></i> Available Sessions
+                    </h3>
+                    <div class="sessions-grid" id="availableSessions">
+                        <!-- Sessions will be loaded dynamically -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Countdown Timer -->
+        <div class="countdown-timer" id="countdownTimer">
+            <div style="font-size: 14px; color: var(--gray); margin-bottom: 5px;">
+                Session starts in:
+            </div>
+            <div id="countdownDisplay">00:00</div>
+            <div style="font-size: 14px; color: var(--gray); margin-top: 5px;" id="sessionNameDisplay">
+                Loading session...
+            </div>
+        </div>
+        
+        <!-- Leaderboard Preview -->
+        <div class="leaderboard-preview" id="leaderboardPreview" style="display: none;">
+            <h2 style="color: var(--primary); margin-bottom: 20px;">
+                <i class="fas fa-trophy"></i> Current Rankings
+            </h2>
+            <div id="leaderboardList">
+                <!-- Leaderboard will be updated in real-time -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Session Password Modal -->
+    <div class="modal-overlay" id="passwordModal">
+        <div class="modal">
+            <button class="modal-close" onclick="closePasswordModal()">&times;</button>
+            <h2 style="color: var(--primary); margin-bottom: 20px; text-align: center;">
+                Enter Session Password
+            </h2>
+            <p style="text-align: center; margin-bottom: 30px; color: var(--gray);" id="modalSessionName">
+                Session: Loading...
+            </p>
+            <div class="form-group">
+                <input type="password" id="modalPassword" class="form-control" placeholder="Enter password" autocomplete="off">
+                <p id="passwordError" style="color: var(--danger); margin-top: 10px; display: none; text-align: center;">
+                    <i class="fas fa-exclamation-circle"></i> Incorrect password
+                </p>
+            </div>
+            <div class="modal-actions">
+                <button class="modal-btn secondary" onclick="closePasswordModal()">Cancel</button>
+                <button class="modal-btn primary" onclick="verifyPassword()">Join Session</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, updateDoc, deleteDoc, collection, query, where, onSnapshot, addDoc, serverTimestamp, getDocs } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+        // Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyCictHNxtslYs9VR0hoicxlwPn_QghkgIA",
+            authDomain: "edutop-7ff51.firebaseapp.com",
+            projectId: "edutop-7ff51",
+            storageBucket: "edutop-7ff51.firebasestorage.app",
+            messagingSenderId: "79307850494",
+            appId: "1:79307850494:web:b51ce51204140ec5429baf",
+            measurementId: "G-GGGH590BYS"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        
+        // Global variables
+        let currentUser = null;
+        let userData = null;
+        let currentSession = null;
+        let sessionListener = null;
+        let sessionsListener = null;
+        let countdownInterval = null;
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Check auth
+            onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    currentUser = user;
+                    await loadUserData();
+                    setupEventListeners();
+                    loadAvailableSessions();
+                    setupRealtimeListeners();
+                } else {
+                    window.location.href = "index.html";
+                }
+            });
+            
+            // Setup privacy toggle
+            document.querySelectorAll('input[name="privacy"]').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    const passwordField = document.getElementById('passwordField');
+                    if (this.value === 'private') {
+                        passwordField.style.display = 'block';
+                    } else {
+                        passwordField.style.display = 'none';
+                    }
+                });
+            });
+            
+            // Setup participants slider
+            const participantSlider = document.getElementById('maxParticipants');
+            const participantCount = document.getElementById('participantCount');
+            participantSlider.addEventListener('input', function() {
+                participantCount.textContent = this.value;
+            });
+        });
+
+        async function loadUserData() {
+            const userDoc = await getDoc(doc(db, "users", currentUser.uid));
+            if (userDoc.exists()) {
+                userData = userDoc.data();
+            }
+        }
+
+        function setupEventListeners() {
+            // Create session button
+            document.getElementById('createSessionBtn').addEventListener('click', createSession);
+            
+            // Join session button
+            document.getElementById('joinSessionBtn').addEventListener('click', joinSessionByCode);
+            
+            // Enter key for session code
+            document.getElementById('sessionCode').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    joinSessionByCode();
+                }
+            });
+            
+            // Modal password enter
+            document.getElementById('modalPassword').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    verifyPassword();
+                }
+            });
+        }
+
+        function generateSessionCode() {
+            // Generate a 6-digit alphanumeric code
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let code = '';
+            for (let i = 0; i < 6; i++) {
+                code += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return code;
+        }
+
+        async function createSession() {
+            const sessionName = document.getElementById('sessionName').value.trim();
+            const examMode = document.getElementById('examMode').value;
+            const maxParticipants = parseInt(document.getElementById('maxParticipants').value);
+            const privacy = document.querySelector('input[name="privacy"]:checked').value;
+            const password = privacy === 'private' ? document.getElementById('sessionPassword').value.trim() : null;
+            
+            // Validate inputs
+            if (!sessionName) {
+                alert('Please enter a session name');
+                return;
+            }
+            
+            if (privacy === 'private' && (!password || password.length < 4)) {
+                alert('Please enter a password with at least 4 characters');
+                return;
+            }
+            
+            const createBtn = document.getElementById('createSessionBtn');
+            const originalText = createBtn.innerHTML;
+            createBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating...';
+            createBtn.disabled = true;
+            
+            try {
+                // Generate session data
+                const sessionCode = generateSessionCode();
+                const sessionId = `${currentUser.uid}_${Date.now()}`;
+                
+                const sessionData = {
+                    id: sessionId,
+                    code: sessionCode,
+                    name: sessionName,
+                    hostId: currentUser.uid,
+                    hostName: userData.fullName || currentUser.displayName || 'Anonymous',
+                    examMode: examMode,
+                    maxParticipants: maxParticipants,
+                    privacy: privacy,
+                    password: password,
+                    status: 'waiting', // waiting, starting, active, completed
+                    createdAt: serverTimestamp(),
+                    startsAt: null,
+                    participants: [
+                        {
+                            userId: currentUser.uid,
+                            name: userData.fullName || currentUser.displayName || 'Anonymous',
+                            email: currentUser.email,
+                            avatar: userData.avatar || null,
+                            status: 'ready', // waiting, ready, active, finished
+                            score: null,
+                            rank: null,
+                            joinedAt: serverTimestamp()
+                        }
+                    ],
+                    currentParticipants: 1,
+                    subjects: userData.selectedSubjects || ['English', 'Mathematics', 'Physics', 'Chemistry'],
+                    questions: [], // Will be populated when exam starts
+                    settings: {
+                        shuffleQuestions: true,
+                        showLeaderboard: true,
+                        allowRejoin: true
+                    }
+                };
+                
+                // Save to Firestore
+                await setDoc(doc(db, "multiplayer_sessions", sessionId), sessionData);
+                
+                // Store current session ID in localStorage
+                localStorage.setItem('currentMultiplayerSession', sessionId);
+                localStorage.setItem('isHost', 'true');
+                
+                // Show invite link
+                const inviteLink = `${window.location.origin}/multiplayer-exam.html?session=${sessionCode}`;
+                document.getElementById('inviteLink').value = inviteLink;
+                document.getElementById('inviteLinkContainer').style.display = 'block';
+                document.getElementById('createForm').style.display = 'none';
+                
+                // Start listening for participants
+                startSessionListener(sessionId);
+                
+                // Show countdown timer (hidden initially)
+                document.getElementById('countdownTimer').style.display = 'none';
+                
+            } catch (error) {
+                console.error('Error creating session:', error);
+                alert('Failed to create session: ' + error.message);
+            } finally {
+                createBtn.innerHTML = originalText;
+                createBtn.disabled = false;
+            }
+        }
+
+        function startSessionListener(sessionId) {
+            if (sessionListener) {
+                sessionListener(); // Unsubscribe previous listener
+            }
+            
+            sessionListener = onSnapshot(doc(db, "multiplayer_sessions", sessionId), (docSnap) => {
+                if (docSnap.exists()) {
+                    currentSession = docSnap.data();
+                    updateSessionUI();
+                    
+                    // If session status changed to 'starting', show countdown
+                    if (currentSession.status === 'starting' && currentSession.startsAt) {
+                        startCountdownTimer();
+                    }
+                    
+                    // If session status changed to 'active', redirect to exam
+                    if (currentSession.status === 'active') {
+                        window.location.href = 'multiplayer-exam.html?session=' + currentSession.code;
+                    }
+                }
+            });
+        }
+
+        function updateSessionUI() {
+            if (!currentSession) return;
+            
+            // Update participant list
+            const participantsContainer = document.querySelector('#inviteLinkContainer .participants-list');
+            if (participantsContainer) {
+                participantsContainer.innerHTML = '';
+                
+                currentSession.participants.forEach((participant, index) => {
+                    const div = document.createElement('div');
+                    div.className = 'participant-item';
+                    
+                    const initials = participant.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+                    
+                    div.innerHTML = `
+                        <div class="participant-info">
+                            <div class="participant-avatar">${initials}</div>
+                            <div>
+                                <div style="font-weight: 600;">${participant.name}</div>
+                                <div style="font-size: 12px; color: var(--gray);">${participant.email || ''}</div>
+                            </div>
+                        </div>
+                        <div class="participant-status ${getStatusClass(participant.status)}">
+                            ${participant.status}
+                        </div>
+                    `;
+                    
+                    participantsContainer.appendChild(div);
+                });
+            }
+            
+            // Update start button text based on participant count
+            const startBtn = document.getElementById('startExamBtn');
+            if (currentSession.participants.length < 2) {
+                startBtn.disabled = true;
+                startBtn.innerHTML = '<i class="fas fa-users"></i> Waiting for participants (min: 2)';
+            } else {
+                startBtn.disabled = false;
+                startBtn.innerHTML = '<i class="fas fa-play-circle"></i> Start Exam Now';
+            }
+        }
+
+        function getStatusClass(status) {
+            switch(status) {
+                case 'waiting': return 'status-waiting';
+                case 'ready': return 'status-ready';
+                case 'active': return 'status-active';
+                case 'finished': return 'status-finished';
+                default: return '';
+            }
+        }
+
+        async function startMultiplayerExam() {
+            if (!currentSession || currentSession.participants.length < 2) {
+                alert('Need at least 2 participants to start the exam');
+                return;
+            }
+            
+            const startBtn = document.getElementById('startExamBtn');
+            const originalText = startBtn.innerHTML;
+            startBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Starting...';
+            startBtn.disabled = true;
+            
+            try {
+                // Set start time (30 seconds from now)
+                const startTime = new Date(Date.now() + 30000);
+                
+                await updateDoc(doc(db, "multiplayer_sessions", currentSession.id), {
+                    status: 'starting',
+                    startsAt: startTime,
+                    'settings.examDuration': currentSession.examMode === 'standard' ? 7200 : null // 2 hours in seconds
+                });
+                
+                // Show countdown timer
+                document.getElementById('sessionNameDisplay').textContent = currentSession.name;
+                document.getElementById('countdownTimer').style.display = 'block';
+                startCountdownTimer();
+                
+            } catch (error) {
+                console.error('Error starting exam:', error);
+                alert('Failed to start exam: ' + error.message);
+                startBtn.innerHTML = originalText;
+                startBtn.disabled = false;
+            }
+        }
+
+        function startCountdownTimer() {
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+            }
+            
+            countdownInterval = setInterval(() => {
+                if (!currentSession || !currentSession.startsAt) return;
+                
+                const startTime = new Date(currentSession.startsAt.seconds * 1000);
+                const now = new Date();
+                const timeLeft = startTime - now;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(countdownInterval);
+                    document.getElementById('countdownDisplay').textContent = '00:00';
+                    
+                    // Auto-start exam
+                    if (currentSession.status === 'starting') {
+                        updateDoc(doc(db, "multiplayer_sessions", currentSession.id), {
+                            status: 'active'
+                        });
+                    }
+                    return;
+                }
+                
+                const minutes = Math.floor(timeLeft / 60000);
+                const seconds = Math.floor((timeLeft % 60000) / 1000);
+                
+                document.getElementById('countdownDisplay').textContent = 
+                    `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        function copyInviteLink() {
+            const inviteLink = document.getElementById('inviteLink');
+            inviteLink.select();
+            inviteLink.setSelectionRange(0, 99999); // For mobile devices
+            navigator.clipboard.writeText(inviteLink.value);
+            
+            const copyBtn = document.querySelector('.copy-btn');
+            const originalText = copyBtn.innerHTML;
+            copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+            copyBtn.style.background = 'var(--success)';
+            
+            setTimeout(() => {
+                copyBtn.innerHTML = originalText;
+                copyBtn.style.background = 'var(--primary)';
+            }, 2000);
+        }
+
+        function cancelSession() {
+            if (confirm('Are you sure you want to cancel this session? All participants will be disconnected.')) {
+                if (currentSession) {
+                    deleteDoc(doc(db, "multiplayer_sessions", currentSession.id));
+                }
+                location.reload();
+            }
+        }
+
+        async function loadAvailableSessions() {
+            const sessionsRef = collection(db, "multiplayer_sessions");
+            const q = query(
+                sessionsRef,
+                where("status", "in", ["waiting", "starting"]),
+                where("privacy", "==", "public")
+            );
+            
+            try {
+                const querySnapshot = await getDocs(q);
+                const sessionsContainer = document.getElementById('availableSessions');
+                sessionsContainer.innerHTML = '';
+                
+                if (querySnapshot.empty) {
+                    sessionsContainer.innerHTML = `
+                        <div style="text-align: center; padding: 40px; color: var(--gray);">
+                            <i class="fas fa-users-slash" style="font-size: 48px; margin-bottom: 15px;"></i>
+                            <p>No active sessions available</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                querySnapshot.forEach((docSnap) => {
+                    const session = docSnap.data();
+                    if (session.hostId === currentUser.uid) return; // Skip own sessions
+                    
+                    const sessionCard = createSessionCard(session);
+                    sessionsContainer.appendChild(sessionCard);
+                });
+                
+            } catch (error) {
+                console.error('Error loading sessions:', error);
+            }
+        }
+
+        function createSessionCard(session) {
+            const div = document.createElement('div');
+            div.className = 'session-card';
+            
+            const participantsText = `${session.currentParticipants}/${session.maxParticipants}`;
+            const isFull = session.currentParticipants >= session.maxParticipants;
+            
+            div.innerHTML = `
+                <div class="session-header">
+                    <div class="session-host">
+                        <div style="width: 30px; height: 30px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 12px;">
+                            ${session.hostName.substring(0, 1).toUpperCase()}
+                        </div>
+                        <span style="font-weight: 600;">${session.hostName}</span>
+                    </div>
+                    <div class="session-status ${isFull ? 'status-full' : 'status-open'}">
+                        ${isFull ? 'FULL' : 'OPEN'}
+                    </div>
+                </div>
+                
+                <h3 style="color: var(--primary); margin: 10px 0;">${session.name}</h3>
+                
+                <div class="session-info">
+                    <div class="info-item">
+                        <span class="info-label">Mode:</span>
+                        <span class="info-value">${session.examMode === 'standard' ? 'Standard' : 'Short'}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Subjects:</span>
+                        <span class="info-value">${session.subjects.slice(0, 3).join(', ')}${session.subjects.length > 3 ? '...' : ''}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Code:</span>
+                        <span class="info-value" style="font-family: monospace;">${session.code}</span>
+                    </div>
+                </div>
+                
+                <div class="session-participants">
+                    <i class="fas fa-users"></i>
+                    ${participantsText} participants
+                </div>
+                
+                <button class="join-btn" onclick="joinSession('${session.code}')" ${isFull ? 'disabled' : ''}>
+                    ${isFull ? 'Session Full' : 'Join Session'}
+                </button>
+            `;
+            
+            return div;
+        }
+
+        function joinSession(sessionCode) {
+            document.getElementById('sessionCode').value = sessionCode;
+            joinSessionByCode();
+        }
+
+        async function joinSessionByCode() {
+            const sessionCode = document.getElementById('sessionCode').value.trim().toUpperCase();
+            
+            if (!sessionCode || sessionCode.length !== 6) {
+                alert('Please enter a valid 6-digit session code');
+                return;
+            }
+            
+            const joinBtn = document.getElementById('joinSessionBtn');
+            const originalText = joinBtn.innerHTML;
+            joinBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Joining...';
+            joinBtn.disabled = true;
+            
+            try {
+                // Find session by code
+                const sessionsRef = collection(db, "multiplayer_sessions");
+                const q = query(sessionsRef, where("code", "==", sessionCode));
+                const querySnapshot = await getDocs(q);
+                
+                if (querySnapshot.empty) {
+                    throw new Error('Session not found. Please check the code.');
+                }
+                
+                const sessionDoc = querySnapshot.docs[0];
+                const session = sessionDoc.data();
+                const sessionId = sessionDoc.id;
+                
+                // Check if session is joinable
+                if (session.status !== 'waiting' && session.status !== 'starting') {
+                    throw new Error('This session is no longer accepting participants.');
+                }
+                
+                // Check if user is already in session
+                const alreadyJoined = session.participants.some(p => p.userId === currentUser.uid);
+                if (alreadyJoined) {
+                    // Rejoin existing session
+                    localStorage.setItem('currentMultiplayerSession', sessionId);
+                    localStorage.setItem('isHost', 'false');
+                    
+                    if (session.status === 'active') {
+                        window.location.href = 'multiplayer-exam.html?session=' + session.code;
+                    } else {
+                        // Show waiting room
+                        showSessionWaitingRoom(sessionId);
+                    }
+                    return;
+                }
+                
+                // Check if session is full
+                if (session.currentParticipants >= session.maxParticipants) {
+                    throw new Error('Session is full. Maximum participants reached.');
+                }
+                
+                // Check if private session
+                if (session.privacy === 'private') {
+                    // Show password modal
+                    sessionToJoin = { id: sessionId, ...session };
+                    document.getElementById('modalSessionName').textContent = `Session: ${session.name}`;
+                    document.getElementById('passwordModal').style.display = 'flex';
+                } else {
+                    // Join directly
+                    await addParticipantToSession(sessionId, session);
+                }
+                
+            } catch (error) {
+                alert('Error: ' + error.message);
+            } finally {
+                joinBtn.innerHTML = originalText;
+                joinBtn.disabled = false;
+            }
+        }
+
+        let sessionToJoin = null;
+
+        async function verifyPassword() {
+            const password = document.getElementById('modalPassword').value;
+            const errorElement = document.getElementById('passwordError');
+            
+            if (!sessionToJoin) {
+                closePasswordModal();
+                return;
+            }
+            
+            if (password === sessionToJoin.password) {
+                errorElement.style.display = 'none';
+                closePasswordModal();
+                await addParticipantToSession(sessionToJoin.id, sessionToJoin);
+            } else {
+                errorElement.style.display = 'block';
+            }
+        }
+
+        function closePasswordModal() {
+            document.getElementById('passwordModal').style.display = 'none';
+            document.getElementById('modalPassword').value = '';
+            document.getElementById('passwordError').style.display = 'none';
+            sessionToJoin = null;
+        }
+
+        async function addParticipantToSession(sessionId, session) {
+            try {
+                const participantData = {
+                    userId: currentUser.uid,
+                    name: userData.fullName || currentUser.displayName || 'Anonymous',
+                    email: currentUser.email,
+                    avatar: userData.avatar || null,
+                    status: 'ready',
+                    score: null,
+                    rank: null,
+                    joinedAt: serverTimestamp()
+                };
+                
+                await updateDoc(doc(db, "multiplayer_sessions", sessionId), {
+                    participants: [...session.participants, participantData],
+                    currentParticipants: session.currentParticipants + 1
+                });
+                
+                // Store session info
+                localStorage.setItem('currentMultiplayerSession', sessionId);
+                localStorage.setItem('isHost', 'false');
+                
+                // Show waiting room
+                showSessionWaitingRoom(sessionId);
+                
+            } catch (error) {
+                throw new Error('Failed to join session: ' + error.message);
+            }
+        }
+
+        function showSessionWaitingRoom(sessionId) {
+            // Hide main content, show waiting room
+            document.querySelector('.multiplayer-options').style.display = 'none';
+            document.querySelector('.container > h1').style.display = 'none';
+            document.querySelector('.container > p').style.display = 'none';
+            
+            // Create waiting room UI
+            const container = document.querySelector('.container');
+            container.innerHTML = `
+                <div style="text-align: center; padding: 40px;">
+                    <div style="width: 100px; height: 100px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-size: 40px; margin: 0 auto 30px;">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h2 style="color: var(--primary); margin-bottom: 15px;" id="waitingSessionName">Loading...</h2>
+                    <p style="color: var(--gray); margin-bottom: 30px;" id="waitingSessionInfo">
+                        Waiting for host to start the exam...
+                    </p>
+                    
+                    <div class="participants-list" id="waitingParticipants" style="max-width: 500px; margin: 0 auto;">
+                        <!-- Participants will be loaded here -->
+                    </div>
+                    
+                    <div class="countdown-timer" id="waitingCountdown" style="margin-top: 30px; display: none;">
+                        <div style="font-size: 14px; color: var(--gray); margin-bottom: 5px;">
+                            Session starts in:
+                        </div>
+                        <div id="waitingCountdownDisplay">00:00</div>
+                    </div>
+                    
+                    <button class="btn btn-secondary" onclick="leaveSession()" style="margin-top: 30px; background: var(--light-gray); color: var(--dark);">
+                        <i class="fas fa-sign-out-alt"></i> Leave Session
+                    </button>
+                </div>
+            `;
+            
+            // Start listening to session updates
+            startSessionListener(sessionId);
+        }
+
+        async function leaveSession() {
+            if (currentSession && !localStorage.getItem('isHost')) {
+                // Remove participant from session
+                const updatedParticipants = currentSession.participants.filter(p => p.userId !== currentUser.uid);
+                
+                await updateDoc(doc(db, "multiplayer_sessions", currentSession.id), {
+                    participants: updatedParticipants,
+                    currentParticipants: updatedParticipants.length
+                });
+            }
+            
+            // Clear session data
+            localStorage.removeItem('currentMultiplayerSession');
+            localStorage.removeItem('isHost');
+            location.reload();
+        }
+
+        function setupRealtimeListeners() {
+            // Listen for all active sessions
+            const sessionsRef = collection(db, "multiplayer_sessions");
+            const q = query(
+                sessionsRef,
+                where("status", "in", ["waiting", "starting"])
+            );
+            
+            sessionsListener = onSnapshot(q, (snapshot) => {
+                loadAvailableSessions();
+            });
+        }
+
+        // Clean up on page unload
+        window.addEventListener('beforeunload', () => {
+            if (sessionListener) {
+                sessionListener();
+            }
+            if (sessionsListener) {
+                sessionsListener();
+            }
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+            }
+        });
+
+    </script>
+</body>
+</html>
