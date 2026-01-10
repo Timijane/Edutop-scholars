@@ -1,0 +1,1551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edutop Scholars - Q&A Forum</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #311b92;
+            --primary-light: #4527a0;
+            --secondary: #ff5722;
+            --accent: #00bcd4;
+            --light: #f5f5f7;
+            --dark: #333;
+            --success: #4caf50;
+            --warning: #ff9800;
+            --danger: #f44336;
+            --gray: #777;
+            --light-gray: #eee;
+            --card-bg: white;
+            --bg-color: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            --text-color: #333;
+            --sidebar-bg: white;
+            --header-bg: white;
+            --modal-bg: white;
+            --border-color: #eee;
+            --question-bg: #f8f9fa;
+            --answer-bg: #e8f4fc;
+            --admin-bg: #e8f5e9;
+        }
+        
+        [data-theme="dark"] {
+            --primary: #7e57c2;
+            --primary-light: #9575cd;
+            --secondary: #ff8a65;
+            --accent: #26c6da;
+            --light: #1a1a2e;
+            --dark: #e0e0e0;
+            --card-bg: #2d2d44;
+            --bg-color: linear-gradient(135deg, #121212 0%, #1e1e2e 100%);
+            --text-color: #e0e0e0;
+            --sidebar-bg: #2d2d44;
+            --header-bg: #2d2d44;
+            --modal-bg: #2d2d44;
+            --border-color: #444;
+            --gray: #aaa;
+            --light-gray: #333;
+            --question-bg: #2d3748;
+            --answer-bg: #2c3e50;
+            --admin-bg: #1b5e20;
+        }
+        
+        body {
+            background: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: var(--header-bg);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo h1 {
+            color: var(--primary);
+            font-size: 24px;
+        }
+        
+        .logo span {
+            color: var(--secondary);
+        }
+        
+        .nav-controls {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .theme-toggle, .back-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: all 0.3s;
+        }
+        
+        .theme-toggle:hover, .back-btn:hover {
+            background: var(--primary-light);
+            transform: rotate(30deg);
+        }
+        
+        .back-btn {
+            font-size: 16px;
+            padding: 0;
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .user-name {
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .forum-container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+            display: flex;
+            gap: 30px;
+        }
+        
+        .forum-sidebar {
+            width: 300px;
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            height: fit-content;
+            border: 1px solid var(--border-color);
+        }
+        
+        .sidebar-section {
+            margin-bottom: 30px;
+        }
+        
+        .sidebar-section h3 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .forum-stats {
+            background: var(--light);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+        }
+        
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .stat-item:last-child {
+            border-bottom: none;
+        }
+        
+        .filter-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .filter-btn {
+            background: var(--light);
+            border: none;
+            padding: 12px 15px;
+            border-radius: 8px;
+            color: var(--text-color);
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .quick-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .action-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+        
+        .action-btn:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+        }
+        
+        .action-btn.secondary {
+            background: var(--light-gray);
+            color: var(--text-color);
+        }
+        
+        .forum-main {
+            flex: 1;
+        }
+        
+        .forum-header {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+        }
+        
+        .forum-header h2 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        
+        .forum-header p {
+            color: var(--gray);
+            margin-bottom: 20px;
+        }
+        
+        .search-box {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 15px 20px 15px 50px;
+            border: 2px solid var(--border-color);
+            border-radius: 50px;
+            background: var(--light);
+            color: var(--text-color);
+            font-size: 16px;
+        }
+        
+        .search-box i {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+        
+        .ask-question-btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+        
+        .ask-question-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(49, 27, 146, 0.2);
+        }
+        
+        .questions-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .question-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s;
+            border: 1px solid var(--border-color);
+        }
+        
+        .question-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+        
+        .question-title {
+            color: var(--primary);
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .question-subject {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .question-content {
+            color: var(--text-color);
+            line-height: 1.6;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--border-color);
+        }
+        
+        .question-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .question-meta {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--gray);
+            font-size: 14px;
+        }
+        
+        .question-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .action-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--light-gray);
+            color: var(--gray);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .action-icon:hover {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .answers-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid var(--border-color);
+        }
+        
+        .answers-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .answers-header h4 {
+            color: var(--primary);
+            font-size: 18px;
+        }
+        
+        .answer-form {
+            background: var(--light);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .answer-form textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--card-bg);
+            color: var(--text-color);
+            font-size: 14px;
+            min-height: 100px;
+            resize: vertical;
+            margin-bottom: 15px;
+        }
+        
+        .answer-form textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .submit-answer-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .submit-answer-btn:hover {
+            background: var(--primary-light);
+        }
+        
+        .answers-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .answer-card {
+            background: var(--light);
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .answer-card.admin-answer {
+            background: var(--admin-bg);
+            border-left-color: var(--success);
+        }
+        
+        .answer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .answer-author {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .author-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .author-info h5 {
+            font-size: 14px;
+            color: var(--text-color);
+        }
+        
+        .author-info span {
+            font-size: 12px;
+            color: var(--gray);
+        }
+        
+        .admin-badge {
+            background: var(--success);
+            color: white;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        
+        .answer-content {
+            color: var(--text-color);
+            line-height: 1.6;
+            font-size: 14px;
+        }
+        
+        .answer-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .answer-time {
+            font-size: 12px;
+            color: var(--gray);
+        }
+        
+        .answer-actions {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .vote-btn {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: none;
+            border: none;
+            color: var(--gray);
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .vote-btn:hover {
+            color: var(--primary);
+        }
+        
+        .vote-btn.liked {
+            color: var(--primary);
+        }
+        
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .modal {
+            background: var(--modal-bg);
+            border-radius: 15px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 30px;
+            position: relative;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--gray);
+        }
+        
+        .modal h2 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-color);
+            font-weight: 600;
+        }
+        
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--light);
+            color: var(--text-color);
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .form-textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+        
+        .modal-actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .modal-btn {
+            padding: 12px 30px;
+            border-radius: 50px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .modal-btn.primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .modal-btn.secondary {
+            background: var(--light-gray);
+            color: var(--text-color);
+        }
+        
+        .no-questions {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--gray);
+        }
+        
+        .no-questions i {
+            font-size: 60px;
+            margin-bottom: 20px;
+            color: var(--light-gray);
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--gray);
+        }
+        
+        .loading i {
+            font-size: 40px;
+            margin-bottom: 15px;
+            color: var(--primary);
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-top: 40px;
+        }
+        
+        .page-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--light-gray);
+            color: var(--text-color);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .page-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        @media (max-width: 992px) {
+            .forum-container {
+                flex-direction: column;
+            }
+            
+            .forum-sidebar {
+                width: 100%;
+            }
+            
+            .question-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .question-footer {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header {
+                padding: 15px;
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .nav-controls {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .question-meta {
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">
+            <h1>Edutop<span>Scholars</span> Forum</h1>
+        </div>
+        <div class="nav-controls">
+            <button class="back-btn" onclick="window.location.href='dashboard.html'">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <button class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon"></i>
+            </button>
+            <div class="user-profile">
+                <div class="user-avatar" id="userAvatar">...</div>
+                <div class="user-name" id="userName">Loading...</div>
+            </div>
+        </div>
+    </header>
+
+    <div class="forum-container">
+        <!-- Sidebar -->
+        <div class="forum-sidebar">
+            <div class="sidebar-section">
+                <h3><i class="fas fa-chart-bar"></i> Forum Stats</h3>
+                <div class="forum-stats">
+                    <div class="stat-item">
+                        <span>Total Questions</span>
+                        <strong id="totalQuestions">0</strong>
+                    </div>
+                    <div class="stat-item">
+                        <span>Total Answers</span>
+                        <strong id="totalAnswers">0</strong>
+                    </div>
+                    <div class="stat-item">
+                        <span>My Questions</span>
+                        <strong id="myQuestions">0</strong>
+                    </div>
+                    <div class="stat-item">
+                        <span>My Answers</span>
+                        <strong id="myAnswers">0</strong>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="sidebar-section">
+                <h3><i class="fas fa-filter"></i> Filter Questions</h3>
+                <div class="filter-options">
+                    <button class="filter-btn active" data-filter="all">
+                        <i class="fas fa-globe"></i> All Questions
+                    </button>
+                    <button class="filter-btn" data-filter="unanswered">
+                        <i class="fas fa-question-circle"></i> Unanswered
+                    </button>
+                    <button class="filter-btn" data-filter="myquestions">
+                        <i class="fas fa-user"></i> My Questions
+                    </button>
+                    <button class="filter-btn" data-filter="answered">
+                        <i class="fas fa-check-circle"></i> Answered
+                    </button>
+                    <button class="filter-btn" data-filter="popular">
+                        <i class="fas fa-fire"></i> Popular
+                    </button>
+                </div>
+            </div>
+            
+            <div class="sidebar-section">
+                <h3><i class="fas fa-lightbulb"></i> Quick Actions</h3>
+                <div class="quick-actions">
+                    <button class="action-btn" id="askQuestionBtn">
+                        <i class="fas fa-plus-circle"></i> Ask a Question
+                    </button>
+                    <button class="action-btn secondary" onclick="window.location.href='dashboard.html'">
+                        <i class="fas fa-home"></i> Back to Dashboard
+                    </button>
+                </div>
+            </div>
+            
+            <div class="sidebar-section">
+                <h3><i class="fas fa-info-circle"></i> Forum Rules</h3>
+                <div style="background: var(--light); padding: 15px; border-radius: 8px;">
+                    <ul style="color: var(--gray); font-size: 13px; line-height: 1.6; padding-left: 20px;">
+                        <li>Be respectful to others</li>
+                        <li>Stay on topic with academic questions</li>
+                        <li>No spam or self-promotion</li>
+                        <li>Use appropriate language</li>
+                        <li>Answers will be verified by admin</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="forum-main">
+            <div class="forum-header">
+                <h2>Academic Q&A Forum</h2>
+                <p>Ask questions, get answers, and help other students. Our team of educators monitors all discussions.</p>
+                
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Search for questions...">
+                </div>
+                
+                <button class="ask-question-btn" id="openAskQuestionBtn">
+                    <i class="fas fa-plus-circle"></i> Ask a Question
+                </button>
+            </div>
+            
+            <div class="questions-container" id="questionsContainer">
+                <!-- Questions will be loaded here -->
+                <div class="loading">
+                    <i class="fas fa-spinner"></i>
+                    <p>Loading questions...</p>
+                </div>
+            </div>
+            
+            <div class="pagination" id="pagination">
+                <!-- Pagination will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Ask Question Modal -->
+    <div class="modal-overlay" id="askQuestionModal">
+        <div class="modal">
+            <button class="modal-close" id="closeQuestionModal">&times;</button>
+            <h2>Ask a Question</h2>
+            <form id="askQuestionForm">
+                <div class="form-group">
+                    <label class="form-label">Question Title</label>
+                    <input type="text" class="form-input" id="questionTitle" placeholder="What is your question about?" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Subject</label>
+                    <select class="form-select" id="questionSubject" required>
+                        <option value="">Select Subject</option>
+                        <option value="Mathematics">Mathematics</option>
+                        <option value="Physics">Physics</option>
+                        <option value="Chemistry">Chemistry</option>
+                        <option value="Biology">Biology</option>
+                        <option value="English">English</option>
+                        <option value="Literature">Literature</option>
+                        <option value="Government">Government</option>
+                        <option value="Economics">Economics</option>
+                        <option value="Geography">Geography</option>
+                        <option value="Commerce">Commerce</option>
+                        <option value="Accounting">Accounting</option>
+                        <option value="CRS">CRS</option>
+                        <option value="General">General</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Question Details</label>
+                    <textarea class="form-textarea" id="questionDetails" placeholder="Provide detailed information about your question..." required></textarea>
+                </div>
+                
+                <div class="modal-actions">
+                    <button type="button" class="modal-btn secondary" id="cancelQuestion">Cancel</button>
+                    <button type="submit" class="modal-btn primary">Post Question</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+        import { getFirestore, collection, addDoc, query, where, orderBy, onSnapshot, updateDoc, doc, getDocs, getDoc, serverTimestamp, arrayUnion } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCictHNxtslYs9VR0hoicxlwPn_QghkgIA",
+            authDomain: "edutop-7ff51.firebaseapp.com",
+            projectId: "edutop-7ff51",
+            storageBucket: "edutop-7ff51.firebasestorage.app",
+            messagingSenderId: "79307850494",
+            appId: "1:79307850494:web:b51ce51204140ec5429baf",
+            measurementId: "G-GGGH590BYS"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        
+        let currentUser = null;
+        let currentUserData = null;
+        let currentFilter = 'all';
+        let currentSearch = '';
+        let questionsPerPage = 5;
+        let currentPage = 1;
+        let allQuestions = [];
+
+        // Theme Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = themeToggle.querySelector('i');
+        
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            
+            if (savedTheme === 'dark' || (savedTheme === 'auto' && prefersDark)) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                themeIcon.className = 'fas fa-sun';
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+                themeIcon.className = 'fas fa-moon';
+            }
+        }
+        
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            if (currentTheme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'light');
+                localStorage.setItem('theme', 'light');
+                themeIcon.className = 'fas fa-moon';
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+                themeIcon.className = 'fas fa-sun';
+            }
+        }
+        
+        themeToggle.addEventListener('click', toggleTheme);
+        initTheme();
+
+        // Initialize Forum
+        document.addEventListener('DOMContentLoaded', () => {
+            onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    currentUser = user;
+                    await loadUserData();
+                    setupEventListeners();
+                    loadQuestions();
+                } else {
+                    window.location.href = 'index.html';
+                }
+            });
+        });
+
+        async function loadUserData() {
+            const userDoc = await getDoc(doc(db, "users", currentUser.uid));
+            if (userDoc.exists()) {
+                currentUserData = userDoc.data();
+                updateUserUI();
+            }
+        }
+
+        function updateUserUI() {
+            const fullName = currentUserData?.fullName || "User";
+            const initials = fullName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+            
+            document.getElementById('userAvatar').textContent = initials;
+            document.getElementById('userName').textContent = fullName.split(' ')[0];
+        }
+
+        function setupEventListeners() {
+            // Ask Question Buttons
+            document.getElementById('askQuestionBtn').addEventListener('click', openAskQuestionModal);
+            document.getElementById('openAskQuestionModal').addEventListener('click', openAskQuestionModal);
+            document.getElementById('closeQuestionModal').addEventListener('click', closeAskQuestionModal);
+            document.getElementById('cancelQuestion').addEventListener('click', closeAskQuestionModal);
+            
+            // Ask Question Form
+            document.getElementById('askQuestionForm').addEventListener('submit', submitQuestion);
+            
+            // Filter Buttons
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentFilter = btn.dataset.filter;
+                    currentPage = 1;
+                    loadQuestions();
+                });
+            });
+            
+            // Search Input
+            document.getElementById('searchInput').addEventListener('input', (e) => {
+                currentSearch = e.target.value.toLowerCase();
+                currentPage = 1;
+                loadQuestions();
+            });
+            
+            // Modal click outside
+            document.getElementById('askQuestionModal').addEventListener('click', (e) => {
+                if (e.target === document.getElementById('askQuestionModal')) {
+                    closeAskQuestionModal();
+                }
+            });
+        }
+
+        function openAskQuestionModal() {
+            document.getElementById('askQuestionModal').style.display = 'flex';
+        }
+
+        function closeAskQuestionModal() {
+            document.getElementById('askQuestionModal').style.display = 'none';
+            document.getElementById('askQuestionForm').reset();
+        }
+
+        async function submitQuestion(e) {
+            e.preventDefault();
+            
+            const title = document.getElementById('questionTitle').value;
+            const subject = document.getElementById('questionSubject').value;
+            const details = document.getElementById('questionDetails').value;
+            
+            const submitBtn = document.querySelector('#askQuestionForm button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = "Posting...";
+            submitBtn.disabled = true;
+            
+            try {
+                const questionData = {
+                    title: title,
+                    subject: subject,
+                    content: details,
+                    userId: currentUser.uid,
+                    userName: currentUserData?.fullName || currentUser.email,
+                    userEmail: currentUser.email,
+                    createdAt: serverTimestamp(),
+                    updatedAt: serverTimestamp(),
+                    answerCount: 0,
+                    viewCount: 0,
+                    likeCount: 0,
+                    isAnswered: false,
+                    isFeatured: false,
+                    answers: [],
+                    tags: []
+                };
+                
+                const docRef = await addDoc(collection(db, "forumQuestions"), questionData);
+                
+                // Update user's question count
+                await updateDoc(doc(db, "users", currentUser.uid), {
+                    'forumStats.questionsAsked': (currentUserData?.forumStats?.questionsAsked || 0) + 1,
+                    activityHistory: arrayUnion({
+                        type: "forum",
+                        message: "Question Posted",
+                        details: `Asked: "${title.substring(0, 30)}..."`,
+                        timestamp: new Date().toISOString(),
+                        icon: "question-circle",
+                        color: "primary"
+                    })
+                });
+                
+                alert('Your question has been posted successfully!');
+                closeAskQuestionModal();
+                loadQuestions();
+                
+            } catch (error) {
+                console.error('Error posting question:', error);
+                alert('Failed to post question. Please try again.');
+            } finally {
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }
+        }
+
+        function loadQuestions() {
+            const questionsContainer = document.getElementById('questionsContainer');
+            questionsContainer.innerHTML = `
+                <div class="loading">
+                    <i class="fas fa-spinner"></i>
+                    <p>Loading questions...</p>
+                </div>
+            `;
+            
+            const questionsQuery = query(collection(db, "forumQuestions"), orderBy("createdAt", "desc"));
+            
+            const unsubscribe = onSnapshot(questionsQuery, async (snapshot) => {
+                allQuestions = [];
+                snapshot.forEach(doc => {
+                    allQuestions.push({ id: doc.id, ...doc.data() });
+                });
+                
+                // Apply filters
+                let filteredQuestions = filterQuestions(allQuestions);
+                
+                // Apply search
+                if (currentSearch) {
+                    filteredQuestions = filteredQuestions.filter(q =>
+                        q.title.toLowerCase().includes(currentSearch) ||
+                        q.content.toLowerCase().includes(currentSearch) ||
+                        q.subject.toLowerCase().includes(currentSearch)
+                    );
+                }
+                
+                // Calculate stats
+                updateForumStats(allQuestions, filteredQuestions);
+                
+                // Paginate
+                const totalPages = Math.ceil(filteredQuestions.length / questionsPerPage);
+                const startIndex = (currentPage - 1) * questionsPerPage;
+                const endIndex = startIndex + questionsPerPage;
+                const paginatedQuestions = filteredQuestions.slice(startIndex, endIndex);
+                
+                // Render questions
+                renderQuestions(paginatedQuestions);
+                
+                // Render pagination
+                renderPagination(totalPages);
+                
+                unsubscribe(); // Stop listening after first load
+            }, (error) => {
+                console.error('Error loading questions:', error);
+                questionsContainer.innerHTML = `
+                    <div class="no-questions">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <h3>Error loading questions</h3>
+                        <p>Please try refreshing the page.</p>
+                    </div>
+                `;
+            });
+        }
+
+        function filterQuestions(questions) {
+            switch(currentFilter) {
+                case 'unanswered':
+                    return questions.filter(q => !q.isAnswered || q.answerCount === 0);
+                case 'myquestions':
+                    return questions.filter(q => q.userId === currentUser.uid);
+                case 'answered':
+                    return questions.filter(q => q.isAnswered && q.answerCount > 0);
+                case 'popular':
+                    return questions.sort((a, b) => (b.likeCount || 0) - (a.likeCount || 0));
+                default:
+                    return questions;
+            }
+        }
+
+        function updateForumStats(allQuestions, filteredQuestions) {
+            const myQuestions = allQuestions.filter(q => q.userId === currentUser.uid).length;
+            const myAnswers = allQuestions.reduce((count, q) => {
+                return count + (q.answers?.filter(a => a.userId === currentUser.uid).length || 0);
+            }, 0);
+            
+            document.getElementById('totalQuestions').textContent = allQuestions.length;
+            document.getElementById('totalAnswers').textContent = allQuestions.reduce((sum, q) => sum + (q.answerCount || 0), 0);
+            document.getElementById('myQuestions').textContent = myQuestions;
+            document.getElementById('myAnswers').textContent = myAnswers;
+        }
+
+        function renderQuestions(questions) {
+            const questionsContainer = document.getElementById('questionsContainer');
+            
+            if (questions.length === 0) {
+                questionsContainer.innerHTML = `
+                    <div class="no-questions">
+                        <i class="fas fa-comment-slash"></i>
+                        <h3>No questions found</h3>
+                        <p>Be the first to ask a question!</p>
+                        <button class="ask-question-btn" onclick="openAskQuestionModal()" style="margin-top: 20px;">
+                            <i class="fas fa-plus-circle"></i> Ask a Question
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+            
+            questionsContainer.innerHTML = '';
+            
+            questions.forEach(question => {
+                const questionCard = document.createElement('div');
+                questionCard.className = 'question-card';
+                questionCard.dataset.id = question.id;
+                
+                const timeAgo = question.createdAt ? formatTimeAgo(question.createdAt.toDate()) : 'Recently';
+                const isMyQuestion = question.userId === currentUser.uid;
+                
+                questionCard.innerHTML = `
+                    <div class="question-header">
+                        <div>
+                            <div class="question-subject">${question.subject}</div>
+                            <h3 class="question-title">${question.title}</h3>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            ${question.isAnswered ? '<span class="admin-badge" style="background: var(--success);">Answered</span>' : ''}
+                            ${question.isFeatured ? '<span class="admin-badge" style="background: var(--warning);">Featured</span>' : ''}
+                        </div>
+                    </div>
+                    
+                    <div class="question-content">
+                        ${question.content}
+                    </div>
+                    
+                    <div class="question-footer">
+                        <div class="question-meta">
+                            <div class="meta-item">
+                                <i class="fas fa-user"></i>
+                                <span>${question.userName || 'Anonymous'}</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="fas fa-clock"></i>
+                                <span>${timeAgo}</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="fas fa-comment"></i>
+                                <span>${question.answerCount || 0} answers</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="fas fa-eye"></i>
+                                <span>${question.viewCount || 0} views</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="fas fa-thumbs-up"></i>
+                                <span>${question.likeCount || 0} likes</span>
+                            </div>
+                        </div>
+                        
+                        <div class="question-actions">
+                            <div class="action-icon" onclick="viewQuestion('${question.id}')" title="View Answers">
+                                <i class="fas fa-comments"></i>
+                            </div>
+                            <div class="action-icon" onclick="likeQuestion('${question.id}')" title="Like Question">
+                                <i class="fas fa-thumbs-up"></i>
+                            </div>
+                            ${isMyQuestion ? `
+                                <div class="action-icon" onclick="editQuestion('${question.id}')" title="Edit Question">
+                                    <i class="fas fa-edit"></i>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                    
+                    <div class="answers-section" id="answers-${question.id}" style="display: none;">
+                        <div class="answers-header">
+                            <h4>Answers (${question.answerCount || 0})</h4>
+                            <button class="action-btn" onclick="showAnswerForm('${question.id}')" style="padding: 8px 15px; font-size: 14px;">
+                                <i class="fas fa-plus"></i> Add Answer
+                            </button>
+                        </div>
+                        
+                        <div class="answer-form" id="answer-form-${question.id}" style="display: none;">
+                            <textarea placeholder="Type your answer here..." id="answer-text-${question.id}"></textarea>
+                            <button class="submit-answer-btn" onclick="submitAnswer('${question.id}')">Submit Answer</button>
+                        </div>
+                        
+                        <div class="answers-list" id="answers-list-${question.id}">
+                            ${renderAnswers(question.answers || [])}
+                        </div>
+                    </div>
+                `;
+                
+                questionsContainer.appendChild(questionCard);
+            });
+            
+            // Add event listeners for answer forms
+            setupAnswerForms();
+        }
+
+        function renderAnswers(answers) {
+            if (answers.length === 0) {
+                return '<p style="color: var(--gray); text-align: center; padding: 20px;">No answers yet. Be the first to answer!</p>';
+            }
+            
+            // Sort answers: admin answers first, then by likes
+            answers.sort((a, b) => {
+                if (a.isAdmin && !b.isAdmin) return -1;
+                if (!a.isAdmin && b.isAdmin) return 1;
+                return (b.likes || 0) - (a.likes || 0);
+            });
+            
+            return answers.map(answer => `
+                <div class="answer-card ${answer.isAdmin ? 'admin-answer' : ''}">
+                    <div class="answer-header">
+                        <div class="answer-author">
+                            <div class="author-avatar">${answer.userName?.charAt(0) || 'A'}</div>
+                            <div class="author-info">
+                                <h5>${answer.userName || 'Anonymous'} ${answer.isAdmin ? '<span class="admin-badge">Admin</span>' : ''}</h5>
+                                <span>${answer.userEmail || ''}</span>
+                            </div>
+                        </div>
+                        <span class="answer-time">${formatTimeAgo(answer.timestamp?.toDate())}</span>
+                    </div>
+                    <div class="answer-content">${answer.content}</div>
+                    <div class="answer-footer">
+                        <span class="answer-time">
+                            ${answer.isVerified ? '<i class="fas fa-check-circle" style="color: var(--success);"></i> Verified Answer' : ''}
+                        </span>
+                        <div class="answer-actions">
+                            <button class="vote-btn ${answer.userLiked ? 'liked' : ''}" onclick="likeAnswer('${answer.id}')">
+                                <i class="fas fa-thumbs-up"></i>
+                                <span>${answer.likes || 0}</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function setupAnswerForms() {
+            // Setup answer form toggles
+            window.showAnswerForm = function(questionId) {
+                const answerForm = document.getElementById(`answer-form-${questionId}`);
+                answerForm.style.display = answerForm.style.display === 'none' ? 'block' : 'none';
+            };
+            
+            window.viewQuestion = function(questionId) {
+                const answersSection = document.getElementById(`answers-${questionId}`);
+                answersSection.style.display = answersSection.style.display === 'none' ? 'block' : 'none';
+                
+                // Load answers if not already loaded
+                if (answersSection.style.display === 'block') {
+                    loadQuestionAnswers(questionId);
+                }
+            };
+        }
+
+        async function loadQuestionAnswers(questionId) {
+            const questionDoc = await getDoc(doc(db, "forumQuestions", questionId));
+            if (questionDoc.exists()) {
+                const question = questionDoc.data();
+                const answersList = document.getElementById(`answers-list-${questionId}`);
+                answersList.innerHTML = renderAnswers(question.answers || []);
+            }
+        }
+
+        async function submitAnswer(questionId) {
+            const answerText = document.getElementById(`answer-text-${questionId}`).value.trim();
+            if (!answerText) {
+                alert('Please enter an answer');
+                return;
+            }
+            
+            const questionRef = doc(db, "forumQuestions", questionId);
+            const questionDoc = await getDoc(questionRef);
+            const question = questionDoc.data();
+            
+            const answerData = {
+                id: Date.now().toString(),
+                content: answerText,
+                userId: currentUser.uid,
+                userName: currentUserData?.fullName || currentUser.email,
+                userEmail: currentUser.email,
+                timestamp: serverTimestamp(),
+                likes: 0,
+                isAdmin: currentUserData?.isAdmin || false,
+                isVerified: false,
+                userLiked: false
+            };
+            
+            try {
+                await updateDoc(questionRef, {
+                    answers: arrayUnion(answerData),
+                    answerCount: (question.answerCount || 0) + 1,
+                    isAnswered: true,
+                    updatedAt: serverTimestamp()
+                });
+                
+                // Update user's answer count
+                await updateDoc(doc(db, "users", currentUser.uid), {
+                    'forumStats.answersPosted': (currentUserData?.forumStats?.answersPosted || 0) + 1,
+                    activityHistory: arrayUnion({
+                        type: "forum",
+                        message: "Answer Posted",
+                        details: `Answered: "${question.title.substring(0, 30)}..."`,
+                        timestamp: new Date().toISOString(),
+                        icon: "comment",
+                        color: "success"
+                    })
+                });
+                
+                // Reset form
+                document.getElementById(`answer-text-${questionId}`).value = '';
+                document.getElementById(`answer-form-${questionId}`).style.display = 'none';
+                
+                // Reload answers
+                loadQuestionAnswers(questionId);
+                
+                alert('Your answer has been posted!');
+                
+            } catch (error) {
+                console.error('Error posting answer:', error);
+                alert('Failed to post answer. Please try again.');
+            }
+        }
+
+        async function likeQuestion(questionId) {
+            const questionRef = doc(db, "forumQuestions", questionId);
+            const questionDoc = await getDoc(questionRef);
+            const question = questionDoc.data();
+            
+            // Check if user already liked
+            const likedBy = question.likedBy || [];
+            if (likedBy.includes(currentUser.uid)) {
+                alert('You already liked this question');
+                return;
+            }
+            
+            try {
+                await updateDoc(questionRef, {
+                    likeCount: (question.likeCount || 0) + 1,
+                    likedBy: arrayUnion(currentUser.uid)
+                });
+                
+                // Reload questions
+                loadQuestions();
+                
+            } catch (error) {
+                console.error('Error liking question:', error);
+            }
+        }
+
+        function renderPagination(totalPages) {
+            const pagination = document.getElementById('pagination');
+            
+            if (totalPages <= 1) {
+                pagination.innerHTML = '';
+                return;
+            }
+            
+            let paginationHTML = '';
+            
+            // Previous button
+            paginationHTML += `
+                <button class="page-btn" onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+            `;
+            
+            // Page numbers
+            for (let i = 1; i <= totalPages; i++) {
+                if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
+                    paginationHTML += `
+                        <button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="changePage(${i})">
+                            ${i}
+                        </button>
+                    `;
+                } else if (i === currentPage - 2 || i === currentPage + 2) {
+                    paginationHTML += `<span>...</span>`;
+                }
+            }
+            
+            // Next button
+            paginationHTML += `
+                <button class="page-btn" onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            `;
+            
+            pagination.innerHTML = paginationHTML;
+        }
+
+        window.changePage = function(page) {
+            currentPage = page;
+            loadQuestions();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        function formatTimeAgo(date) {
+            const now = new Date();
+            const diffMs = now - date;
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMs / 3600000);
+            const diffDays = Math.floor(diffMs / 86400000);
+            
+            if (diffMins < 1) return 'Just now';
+            if (diffMins < 60) return `${diffMins}m ago`;
+            if (diffHours < 24) return `${diffHours}h ago`;
+            if (diffDays < 7) return `${diffDays}d ago`;
+            
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        }
+
+        // Make functions available globally
+        window.openAskQuestionModal = openAskQuestionModal;
+        window.closeAskQuestionModal = closeAskQuestionModal;
+        window.viewQuestion = viewQuestion;
+        window.showAnswerForm = showAnswerForm;
+        window.submitAnswer = submitAnswer;
+        window.likeQuestion = likeQuestion;
+
+    </script>
+</body>
+</html>
