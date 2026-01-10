@@ -549,20 +549,20 @@
             </div>
             
             <div class="exam-controls">
-                <button class="control-btn secondary" onclick="previousQuestion()">
+                <button class="control-btn secondary" id="previousBtn">
                     <i class="fas fa-arrow-left"></i> Previous
                 </button>
                 
                 <div class="action-buttons">
-                    <button class="control-btn warning" onclick="skipQuestion()">
+                    <button class="control-btn warning" id="skipBtn">
                         <i class="fas fa-forward"></i> Skip
                     </button>
-                    <button class="control-btn primary" onclick="nextQuestion()">
+                    <button class="control-btn primary" id="nextBtn">
                         Next <i class="fas fa-arrow-right"></i>
                     </button>
                 </div>
                 
-                <button class="control-btn danger" onclick="showSubmitModal()">
+                <button class="control-btn danger" id="submitBtn">
                     <i class="fas fa-paper-plane"></i> Submit Exam
                 </button>
             </div>
@@ -595,10 +595,10 @@
                 </div>
             </div>
             <div class="submit-modal-buttons">
-                <button class="submit-modal-btn secondary" onclick="closeSubmitModal()">
+                <button class="submit-modal-btn secondary" id="continueExamBtn">
                     Continue Exam
                 </button>
-                <button class="submit-modal-btn primary" onclick="submitExam()">
+                <button class="submit-modal-btn primary" id="confirmSubmitBtn">
                     <i class="fas fa-check"></i> Submit Now
                 </button>
             </div>
@@ -635,28 +635,28 @@
         let examStarted = false;
         let totalQuestions = 0;
 
-        // Sample Questions Database (In real app, this would come from Firebase)
+        // Sample Questions Database
         const questionBank = {
             "English": [
                 {
                     id: 1,
                     text: "Choose the word that has the same vowel sound as the one represented by the letter(s) underlined. l<u>ea</u>ve",
                     options: ["believe", "break", "bread", "severe"],
-                    correctAnswer: 3, // D
+                    correctAnswer: 3,
                     image: null
                 },
                 {
                     id: 2,
                     text: "In the following sentence, there is an underlined word and one gap. From the list of words lettered A to D, choose the one that is most nearly opposite in meaning to the underlined word and that will at the same time, correctly fill the gap in the sentence. Rather than being ________, the young man was quite cautious in his dealings with people.",
                     options: ["audacious", "venturesome", "timid", "reckless"],
-                    correctAnswer: 2, // C
+                    correctAnswer: 2,
                     image: null
                 },
                 {
                     id: 3,
                     text: "Choose the option that best completes the following sentence. If I had known about the traffic, I ________ earlier.",
                     options: ["would have left", "will leave", "would leave", "had left"],
-                    correctAnswer: 0, // A
+                    correctAnswer: 0,
                     image: null
                 }
             ],
@@ -665,14 +665,14 @@
                     id: 1,
                     text: "Simplify: 2√27 + 3√75 - √48",
                     options: ["15√3", "13√3", "11√3", "9√3"],
-                    correctAnswer: 1, // B
+                    correctAnswer: 1,
                     image: null
                 },
                 {
                     id: 2,
                     text: "If the sum of the first n terms of an AP is given by Sn = 3n² - n, find the 10th term.",
                     options: ["56", "57", "58", "59"],
-                    correctAnswer: 3, // D
+                    correctAnswer: 3,
                     image: null
                 }
             ],
@@ -681,7 +681,7 @@
                     id: 1,
                     text: "A force of 20N acts on a body of mass 5kg at rest. What is the acceleration of the body?",
                     options: ["4 m/s²", "5 m/s²", "10 m/s²", "100 m/s²"],
-                    correctAnswer: 0, // A
+                    correctAnswer: 0,
                     image: null
                 }
             ],
@@ -690,7 +690,7 @@
                     id: 1,
                     text: "Which of the following elements has the electronic configuration 1s²2s²2p⁶3s²3p⁶4s²?",
                     options: ["Calcium", "Potassium", "Argon", "Scandium"],
-                    correctAnswer: 0, // A
+                    correctAnswer: 0,
                     image: null
                 }
             ],
@@ -699,16 +699,22 @@
                     id: 1,
                     text: "Which of the following is NOT a characteristic of living things?",
                     options: ["Respiration", "Reproduction", "Movement", "Metabolism"],
-                    correctAnswer: 2, // C
+                    correctAnswer: 2,
                     image: null
                 }
             ]
         };
 
         document.addEventListener('DOMContentLoaded', async function() {
+            console.log('Exam interface page loaded');
+            
+            // Setup event listeners
+            setupEventListeners();
+            
             // Check auth
             onAuthStateChanged(auth, async (user) => {
                 if (!user) {
+                    console.log('No user, redirecting to login');
                     window.location.href = "index.html";
                     return;
                 }
@@ -716,17 +722,41 @@
                 // Load exam settings from localStorage
                 const examSettings = localStorage.getItem('currentExam');
                 if (!examSettings) {
+                    console.error('No exam session found');
                     alert('No exam session found. Redirecting to exam selection.');
-                    window.location.href = 'exam.html';
+                    window.location.href = 'exam-selection.html';
                     return;
                 }
                 
-                examData = JSON.parse(examSettings);
-                await initializeExam();
+                try {
+                    examData = JSON.parse(examSettings);
+                    console.log('Loaded exam data:', examData);
+                    await initializeExam();
+                } catch (error) {
+                    console.error('Error parsing exam data:', error);
+                    alert('Error loading exam. Redirecting to exam selection.');
+                    window.location.href = 'exam-selection.html';
+                }
             });
         });
 
+        function setupEventListeners() {
+            // Control buttons
+            document.getElementById('previousBtn').addEventListener('click', previousQuestion);
+            document.getElementById('nextBtn').addEventListener('click', nextQuestion);
+            document.getElementById('skipBtn').addEventListener('click', skipQuestion);
+            document.getElementById('submitBtn').addEventListener('click', showSubmitModal);
+            
+            // Modal buttons
+            document.getElementById('continueExamBtn').addEventListener('click', closeSubmitModal);
+            document.getElementById('confirmSubmitBtn').addEventListener('click', submitExam);
+            
+            console.log('Exam interface event listeners set up');
+        }
+
         async function initializeExam() {
+            console.log('Initializing exam...');
+            
             // Set exam mode display
             document.getElementById('examModeDisplay').textContent = 
                 examData.mode === 'standard' ? 'Standard Exam' : 'Short Exam';
@@ -734,6 +764,8 @@
             // Generate questions based on mode and subjects
             questions = generateQuestions();
             totalQuestions = questions.length;
+            
+            console.log(`Generated ${totalQuestions} questions`);
             
             // Initialize user answers object
             userAnswers = {};
@@ -750,6 +782,10 @@
             if (examData.mode === 'standard') {
                 timeLeft = 120 * 60; // 120 minutes in seconds
                 startTimer();
+                console.log('Timer started for standard exam');
+            } else {
+                document.getElementById('timerDisplay').innerHTML = '<i class="fas fa-infinity"></i> <span>Untimed</span>';
+                console.log('Short exam - no timer');
             }
             
             // Update UI
@@ -762,6 +798,7 @@
             setupKeyboardShortcuts();
             
             examStarted = true;
+            console.log('Exam initialized successfully');
         }
 
         function generateQuestions() {
@@ -776,7 +813,7 @@
                     questionCount = subject === 'English' ? 15 : 10;
                 }
                 
-                // Get questions from question bank (in real app, this would be from Firebase)
+                // Get questions from question bank
                 const subjectQuestions = questionBank[subject] || [];
                 
                 // Duplicate questions if needed (for demo)
@@ -793,14 +830,12 @@
         }
 
         function startTimer() {
+            // Initial display
+            updateTimerDisplay();
+            
             timer = setInterval(() => {
                 timeLeft--;
-                
-                // Update timer display
-                const minutes = Math.floor(timeLeft / 60);
-                const seconds = timeLeft % 60;
-                document.getElementById('timerText').textContent = 
-                    `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                updateTimerDisplay();
                 
                 // Update timer color based on remaining time
                 const timerDisplay = document.getElementById('timerDisplay');
@@ -817,10 +852,17 @@
                 // Auto-submit when time is up
                 if (timeLeft <= 0) {
                     clearInterval(timer);
-                    alert('Time is up! Submitting your exam...');
+                    console.log('Time is up, auto-submitting exam');
                     submitExam();
                 }
             }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            document.getElementById('timerText').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
         }
 
         function updateQuestionDisplay() {
@@ -874,13 +916,6 @@
             document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
             document.querySelectorAll('.option')[optionIndex].classList.add('selected');
             
-            // Auto-advance to next question after selection
-            setTimeout(() => {
-                if (currentQuestionIndex < questions.length - 1) {
-                    nextQuestion();
-                }
-            }, 500);
-            
             updateProgress();
         }
 
@@ -888,7 +923,9 @@
             if (currentQuestionIndex < questions.length - 1) {
                 currentQuestionIndex++;
                 updateQuestionDisplay();
-                updateQuestionNumbers();
+            } else {
+                // If it's the last question, show submit modal
+                showSubmitModal();
             }
         }
 
@@ -896,7 +933,6 @@
             if (currentQuestionIndex > 0) {
                 currentQuestionIndex--;
                 updateQuestionDisplay();
-                updateQuestionNumbers();
             }
         }
 
@@ -907,7 +943,8 @@
             if (currentQuestionIndex < questions.length - 1) {
                 currentQuestionIndex++;
                 updateQuestionDisplay();
-                updateQuestionNumbers();
+            } else {
+                showSubmitModal();
             }
             
             updateProgress();
@@ -941,13 +978,13 @@
                         <span>${subject}</span>
                         <span style="font-size: 12px;">${attempted}/${subjectQuestions.length}</span>
                     </div>
-                    <div class="question-grid" id="grid-${subject}"></div>
+                    <div class="question-grid" id="grid-${subject.replace(/\s+/g, '-')}"></div>
                 `;
                 
                 subjectSections.appendChild(section);
                 
                 // Add question numbers to grid
-                const grid = document.getElementById(`grid-${subject}`);
+                const grid = document.getElementById(`grid-${subject.replace(/\s+/g, '-')}`);
                 subjectQuestions.forEach(({ index, number }) => {
                     const qNum = document.createElement('div');
                     qNum.className = `question-number ${userAnswers[index].status} ${index === currentQuestionIndex ? 'current' : ''}`;
@@ -955,7 +992,6 @@
                     qNum.onclick = () => {
                         currentQuestionIndex = index;
                         updateQuestionDisplay();
-                        updateQuestionNumbers();
                     };
                     grid.appendChild(qNum);
                 });
@@ -987,6 +1023,7 @@
         }
 
         async function submitExam() {
+            console.log('Submitting exam...');
             closeSubmitModal();
             
             if (timer) {
@@ -995,18 +1032,20 @@
             
             // Calculate score
             let correct = 0;
-            let total = 0;
+            let totalAttempted = 0;
             
             questions.forEach((question, index) => {
                 if (userAnswers[index].selected !== null) {
-                    total++;
+                    totalAttempted++;
                     if (userAnswers[index].selected === question.correctAnswer) {
                         correct++;
                     }
                 }
             });
             
-            const score = total > 0 ? Math.round((correct / total) * 100) : 0;
+            const score = totalAttempted > 0 ? Math.round((correct / totalAttempted) * 100) : 0;
+            
+            console.log(`Score: ${score}% (${correct}/${totalAttempted} correct)`);
             
             // Save exam results to Firebase
             const user = auth.currentUser;
@@ -1016,7 +1055,8 @@
                     subjects: examData.subjects,
                     score: score,
                     correctAnswers: correct,
-                    totalQuestions: total,
+                    totalQuestions: questions.length,
+                    totalAttempted: totalAttempted,
                     attempted: Object.values(userAnswers).filter(a => a.status === 'attempted').length,
                     skipped: Object.values(userAnswers).filter(a => a.status === 'skipped').length,
                     timestamp: new Date().toISOString(),
@@ -1033,30 +1073,22 @@
                         lastExam: examResult
                     });
                     
-                    // Update overall score (average of all exams)
-                    const userDoc = await getDoc(doc(db, "users", user.uid));
-                    if (userDoc.exists()) {
-                        const userData = userDoc.data();
-                        const examHistory = userData.examHistory || [];
-                        examHistory.push(examResult);
-                        
-                        const totalScore = examHistory.reduce((sum, exam) => sum + exam.score, 0);
-                        const averageScore = Math.round(totalScore / examHistory.length);
-                        
-                        await updateDoc(doc(db, "users", user.uid), {
-                            'stats.overallScore': averageScore
-                        });
-                    }
-                    
                     // Show result and redirect
-                    alert(`Exam submitted successfully!\nScore: ${score}% (${correct}/${total} correct)`);
+                    alert(`Exam submitted successfully!\nScore: ${score}% (${correct}/${totalAttempted} correct)`);
                     localStorage.removeItem('currentExam');
-                    window.location.href = `exam-result.html?score=${score}&correct=${correct}&total=${total}&mode=${examData.mode}`;
+                    window.location.href = `exam-result.html?score=${score}&correct=${correct}&total=${questions.length}&mode=${examData.mode}`;
                     
                 } catch (error) {
                     console.error('Error saving exam results:', error);
-                    alert('Error saving exam results. Please try again.');
+                    alert('Error saving exam results. Your score was: ' + score + '%');
+                    localStorage.removeItem('currentExam');
+                    window.location.href = `exam-result.html?score=${score}&correct=${correct}&total=${questions.length}&mode=${examData.mode}`;
                 }
+            } else {
+                // If no user, just show result and redirect
+                alert(`Exam completed!\nScore: ${score}% (${correct}/${totalAttempted} correct)`);
+                localStorage.removeItem('currentExam');
+                window.location.href = `exam-result.html?score=${score}&correct=${correct}&total=${questions.length}&mode=${examData.mode}`;
             }
         }
 
@@ -1085,12 +1117,12 @@
                             selectOption(optionIndex);
                         }
                     }
-                }
-                
-                // Space for skip
-                if (e.key === ' ' || e.key === 'Spacebar') {
-                    e.preventDefault();
-                    skipQuestion();
+                    
+                    // Space for skip
+                    if (e.key === ' ' || e.key === 'Spacebar') {
+                        e.preventDefault();
+                        skipQuestion();
+                    }
                 }
             });
         }
@@ -1103,19 +1135,6 @@
             }
         });
 
-        // Add question number click handler
-        document.addEventListener('click', (e) => {
-            if (e.target.classList.contains('question-number')) {
-                const questionNum = parseInt(e.target.textContent);
-                const questionIndex = questions.findIndex(q => q.number === questionNum);
-                if (questionIndex !== -1) {
-                    currentQuestionIndex = questionIndex;
-                    updateQuestionDisplay();
-                    updateQuestionNumbers();
-                }
-            }
-        });
-
     </script>
 </body>
-</html>
+    </html>
