@@ -1,0 +1,1337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - Edutop Scholars</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #311b92;
+            --primary-light: #4527a0;
+            --secondary: #ff5722;
+            --accent: #00bcd4;
+            --light: #f5f5f7;
+            --dark: #333;
+            --success: #4caf50;
+            --warning: #ff9800;
+            --danger: #f44336;
+            --gray: #777;
+            --light-gray: #eee;
+            --dark-bg: #121212;
+            --dark-card: #1e1e1e;
+            --dark-text: #ffffff;
+        }
+        
+        body {
+            background: var(--light);
+            color: var(--dark);
+            min-height: 100vh;
+            transition: background 0.3s, color 0.3s;
+        }
+        
+        body.dark-mode {
+            background: var(--dark-bg);
+            color: var(--dark-text);
+        }
+        
+        .header {
+            background: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        }
+        
+        body.dark-mode .header {
+            background: var(--dark-card);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo h1 {
+            color: var(--primary);
+            font-size: 28px;
+        }
+        
+        .logo span {
+            color: var(--secondary);
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .nav-link {
+            color: var(--dark);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+        
+        body.dark-mode .nav-link {
+            color: var(--dark-text);
+        }
+        
+        .nav-link:hover {
+            background: rgba(49, 27, 146, 0.1);
+        }
+        
+        .nav-link.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        
+        .profile-header {
+            display: flex;
+            gap: 30px;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+        
+        body.dark-mode .profile-header {
+            background: var(--dark-card);
+        }
+        
+        .profile-avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 48px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        
+        .profile-info {
+            flex: 1;
+        }
+        
+        .profile-name {
+            color: var(--primary);
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        
+        body.dark-mode .profile-name {
+            color: #bb86fc;
+        }
+        
+        .profile-email {
+            color: var(--gray);
+            margin-bottom: 20px;
+        }
+        
+        .profile-stats {
+            display: flex;
+            gap: 30px;
+            margin-top: 20px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        body.dark-mode .stat-value {
+            color: #bb86fc;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: var(--gray);
+        }
+        
+        .profile-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--light-gray);
+            padding-bottom: 10px;
+        }
+        
+        .tab-btn {
+            padding: 12px 25px;
+            background: none;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: var(--gray);
+        }
+        
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .tab-btn:hover:not(.active) {
+            background: rgba(49, 27, 146, 0.1);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .tab-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        body.dark-mode .card {
+            background: var(--dark-card);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .card-title {
+            color: var(--primary);
+            font-size: 20px;
+        }
+        
+        body.dark-mode .card-title {
+            color: #bb86fc;
+        }
+        
+        .exam-history {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .exam-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid var(--light-gray);
+            transition: all 0.3s;
+        }
+        
+        .exam-item:hover {
+            background: var(--light);
+            border-radius: 10px;
+        }
+        
+        body.dark-mode .exam-item:hover {
+            background: #2d2d2d;
+        }
+        
+        .exam-info h4 {
+            margin-bottom: 5px;
+            color: var(--primary);
+        }
+        
+        body.dark-mode .exam-info h4 {
+            color: #bb86fc;
+        }
+        
+        .exam-info p {
+            font-size: 14px;
+            color: var(--gray);
+        }
+        
+        .exam-score {
+            font-weight: bold;
+            font-size: 20px;
+            color: var(--primary);
+        }
+        
+        .score-excellent { color: var(--success); }
+        .score-good { color: #2196f3; }
+        .score-average { color: var(--warning); }
+        .score-poor { color: var(--danger); }
+        
+        .chart-container {
+            height: 300px;
+            margin-top: 20px;
+            position: relative;
+        }
+        
+        .subject-performance {
+            margin-top: 20px;
+        }
+        
+        .subject-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        
+        .subject-name {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+        
+        .subject-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .progress-bar {
+            flex: 1;
+            height: 8px;
+            background: var(--light-gray);
+            border-radius: 4px;
+            margin: 0 20px;
+            overflow: hidden;
+        }
+        
+        body.dark-mode .progress-bar {
+            background: #333;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            border-radius: 4px;
+        }
+        
+        .subject-score {
+            font-weight: bold;
+            min-width: 60px;
+            text-align: right;
+        }
+        
+        .reading-track {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .reading-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: var(--light);
+            border-radius: 10px;
+        }
+        
+        body.dark-mode .reading-item {
+            background: #2d2d2d;
+        }
+        
+        .reading-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+        
+        .reading-info {
+            flex: 1;
+        }
+        
+        .reading-info h4 {
+            margin-bottom: 5px;
+            color: var(--primary);
+        }
+        
+        body.dark-mode .reading-info h4 {
+            color: #bb86fc;
+        }
+        
+        .reading-meta {
+            display: flex;
+            gap: 15px;
+            font-size: 14px;
+            color: var(--gray);
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border-radius: 50px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-light);
+        }
+        
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: var(--gray);
+        }
+        
+        .no-data i {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+        
+        .performance-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .summary-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        body.dark-mode .summary-card {
+            background: var(--dark-card);
+        }
+        
+        .summary-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+        
+        body.dark-mode .summary-value {
+            color: #bb86fc;
+        }
+        
+        .summary-label {
+            font-size: 14px;
+            color: var(--gray);
+        }
+        
+        @media (max-width: 992px) {
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .profile-stats {
+                justify-content: center;
+            }
+            
+            .tab-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                padding: 15px;
+            }
+            
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .profile-tabs {
+                overflow-x: auto;
+                flex-wrap: nowrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">
+            <h1>Edutop<span>Scholars</span></h1>
+        </div>
+        <div class="nav-links">
+            <a href="dashboard.html" class="nav-link"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="resources.html" class="nav-link"><i class="fas fa-book-open"></i> Study Materials</a>
+            <a href="profile.html" class="nav-link active"><i class="fas fa-user-circle"></i> Profile</a>
+            <a href="subscription.html" class="nav-link"><i class="fas fa-credit-card"></i> Subscription</a>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="profile-header">
+            <div class="profile-avatar" id="profileAvatar">
+                <!-- Avatar will be loaded here -->
+            </div>
+            <div class="profile-info">
+                <h1 class="profile-name" id="profileName">Loading...</h1>
+                <p class="profile-email" id="profileEmail">Loading...</p>
+                <p id="profilePlan" style="color: var(--primary); font-weight: 600; margin-bottom: 10px;">Loading...</p>
+                <p id="profileJoined" style="color: var(--gray); font-size: 14px;">Member since: Loading...</p>
+                
+                <div class="profile-stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="statExams">0</div>
+                        <div class="stat-label">Exams Taken</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="statHours">0h</div>
+                        <div class="stat-label">Study Hours</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="statRank">--</div>
+                        <div class="stat-label">National Rank</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="statAccuracy">0%</div>
+                        <div class="stat-label">Accuracy</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="profile-tabs">
+            <button class="tab-btn active" data-tab="exams"><i class="fas fa-history"></i> Exam History</button>
+            <button class="tab-btn" data-tab="analytics"><i class="fas fa-chart-line"></i> Performance Analytics</button>
+            <button class="tab-btn" data-tab="reading"><i class="fas fa-book-reader"></i> Reading Track</button>
+            <button class="tab-btn" data-tab="edit"><i class="fas fa-edit"></i> Edit Profile</button>
+        </div>
+        
+        <!-- Exam History Tab -->
+        <div class="tab-content active" id="examsTab">
+            <div class="performance-summary">
+                <div class="summary-card">
+                    <div class="summary-value" id="overallScore">0%</div>
+                    <div class="summary-label">Overall Score</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-value" id="highestScore">0%</div>
+                    <div class="summary-label">Highest Score</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-value" id="averageScore">0%</div>
+                    <div class="summary-label">Average Score</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-value" id="totalExams">0</div>
+                    <div class="summary-label">Total Exams</div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fas fa-history"></i> Recent Exam History</h2>
+                    <button class="btn btn-primary" onclick="viewAllExams()">View All</button>
+                </div>
+                <div class="exam-history" id="examHistory">
+                    <!-- Exam history will be loaded here -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Analytics Tab -->
+        <div class="tab-content" id="analyticsTab">
+            <div class="tab-grid">
+                <div class="card">
+                    <h2 class="card-title"><i class="fas fa-chart-bar"></i> Score Trend</h2>
+                    <div class="chart-container">
+                        <canvas id="scoreChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2 class="card-title"><i class="fas fa-chart-pie"></i> Subject Performance</h2>
+                    <div class="subject-performance" id="subjectPerformance">
+                        <!-- Subject performance will be loaded here -->
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2 class="card-title"><i class="fas fa-clock"></i> Study Time Distribution</h2>
+                    <div class="chart-container">
+                        <canvas id="timeChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2 class="card-title"><i class="fas fa-trophy"></i> Performance Insights</h2>
+                    <div id="performanceInsights" style="padding: 10px;">
+                        <!-- Insights will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Reading Track Tab -->
+        <div class="tab-content" id="readingTab">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fas fa-book-reader"></i> Recently Studied Materials</h2>
+                    <button class="btn btn-primary" onclick="window.location.href='resources.html'">
+                        <i class="fas fa-book-open"></i> Study More
+                    </button>
+                </div>
+                <div class="reading-track" id="readingTrack">
+                    <!-- Reading track will be loaded here -->
+                </div>
+            </div>
+            
+            <div class="card" style="margin-top: 30px;">
+                <h2 class="card-title"><i class="fas fa-chart-line"></i> Reading Progress</h2>
+                <div style="padding: 20px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <span>Total Materials Read</span>
+                        <span id="totalRead">0/50</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="readingProgressFill" style="width: 0%"></div>
+                    </div>
+                    <div style="margin-top: 15px; color: var(--gray); font-size: 14px;">
+                        <i class="fas fa-info-circle"></i> Read more materials to improve your knowledge base
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Edit Profile Tab -->
+        <div class="tab-content" id="editTab">
+            <div class="tab-grid">
+                <div class="card">
+                    <h2 class="card-title"><i class="fas fa-user-edit"></i> Edit Profile Information</h2>
+                    <form id="profileForm" style="margin-top: 20px;">
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 8px; font-weight: 600;">Full Name</label>
+                            <input type="text" id="editName" style="width: 100%; padding: 12px; border: 2px solid var(--light-gray); border-radius: 8px;" required>
+                        </div>
+                        
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 8px; font-weight: 600;">Email Address</label>
+                            <input type="email" id="editEmail" style="width: 100%; padding: 12px; border: 2px solid var(--light-gray); border-radius: 8px;" disabled>
+                        </div>
+                        
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 8px; font-weight: 600;">Phone Number</label>
+                            <input type="tel" id="editPhone" style="width: 100%; padding: 12px; border: 2px solid var(--light-gray); border-radius: 8px;">
+                        </div>
+                        
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 8px; font-weight: 600;">Date of Birth</label>
+                            <input type="date" id="editDob" style="width: 100%; padding: 12px; border: 2px solid var(--light-gray); border-radius: 8px;">
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">
+                            <i class="fas fa-save"></i> Save Changes
+                        </button>
+                    </form>
+                </div>
+                
+                <div class="card">
+                    <h2 class="card-title"><i class="fas fa-graduation-cap"></i> Educational Information</h2>
+                    <form id="educationForm" style="margin-top: 20px;">
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 8px; font-weight: 600;">School/Institution</label>
+                            <input type="text" id="editSchool" style="width: 100%; padding: 12px; border: 2px solid var(--light-gray); border-radius: 8px;">
+                        </div>
+                        
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 8px; font-weight: 600;">Current Class</label>
+                            <select id="editClass" style="width: 100%; padding: 12px; border: 2px solid var(--light-gray); border-radius: 8px;">
+                                <option value="">Select Class</option>
+                                <option value="ss1">SS1</option>
+                                <option value="ss2">SS2</option>
+                                <option value="ss3">SS3</option>
+                                <option value="undergraduate">Undergraduate</option>
+                                <option value="graduate">Graduate</option>
+                            </select>
+                        </div>
+                        
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 8px; font-weight: 600;">Target Course/Field</label>
+                            <input type="text" id="editCourse" style="width: 100%; padding: 12px; border: 2px solid var(--light-gray); border-radius: 8px;" placeholder="e.g., Medicine, Engineering, Law">
+                        </div>
+                        
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 8px; font-weight: 600;">Target University</label>
+                            <input type="text" id="editUniversity" style="width: 100%; padding: 12px; border: 2px solid var(--light-gray); border-radius: 8px;">
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">
+                            <i class="fas fa-save"></i> Save Education Info
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+        import { Chart } from "https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js";
+
+        // Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyCictHNxtslYs9VR0hoicxlwPn_QghkgIA",
+            authDomain: "edutop-7ff51.firebaseapp.com",
+            projectId: "edutop-7ff51",
+            storageBucket: "edutop-7ff51.firebasestorage.app",
+            messagingSenderId: "79307850494",
+            appId: "1:79307850494:web:b51ce51204140ec5429baf",
+            measurementId: "G-GGGH590BYS"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        
+        let currentUser = null;
+        let userData = null;
+        let examHistory = [];
+        let scoreChart = null;
+        let timeChart = null;
+
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Check auth
+            onAuthStateChanged(auth, async (user) => {
+                if (!user) {
+                    window.location.href = "index.html";
+                    return;
+                }
+                
+                currentUser = user;
+                await loadUserData();
+                setupEventListeners();
+            });
+        });
+
+        async function loadUserData() {
+            const userDoc = await getDoc(doc(db, "users", currentUser.uid));
+            if (userDoc.exists()) {
+                userData = userDoc.data();
+                updateProfileUI();
+                
+                // Load exam history
+                if (userData.examHistory) {
+                    examHistory = userData.examHistory;
+                    renderExamHistory();
+                    updateExamStats();
+                    renderSubjectPerformance();
+                    renderPerformanceInsights();
+                }
+                
+                // Load reading track
+                if (userData.recentlyViewed) {
+                    renderReadingTrack(userData.recentlyViewed.slice(-10).reverse());
+                    updateReadingProgress();
+                }
+                
+                // Load edit forms
+                populateEditForms();
+                
+                // Initialize charts
+                setTimeout(() => {
+                    initializeCharts();
+                }, 100);
+            }
+        }
+
+        function updateProfileUI() {
+            // Update avatar
+            const avatar = document.getElementById('profileAvatar');
+            const fullName = userData.fullName || currentUser.displayName || 'User';
+            const initials = fullName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+            avatar.textContent = initials;
+            
+            // Update profile info
+            document.getElementById('profileName').textContent = fullName;
+            document.getElementById('profileEmail').textContent = currentUser.email;
+            
+            const plan = userData.subscriptionPlan || 'Free';
+            document.getElementById('profilePlan').textContent = `${plan} Plan`;
+            document.getElementById('profilePlan').style.color = plan === 'Premium' ? 'var(--warning)' : 'var(--primary)';
+            
+            if (userData.createdAt) {
+                const joinDate = new Date(userData.createdAt).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+                document.getElementById('profileJoined').textContent = `Member since: ${joinDate}`;
+            }
+            
+            // Update stats
+            const stats = userData.stats || {};
+            document.getElementById('statExams').textContent = stats.examsTaken || 0;
+            document.getElementById('statHours').textContent = (stats.studyHours || 0) + 'h';
+            document.getElementById('statRank').textContent = stats.ranking || '--';
+            
+            // Calculate accuracy
+            if (examHistory.length > 0) {
+                const totalCorrect = examHistory.reduce((sum, exam) => sum + (exam.correctAnswers || 0), 0);
+                const totalQuestions = examHistory.reduce((sum, exam) => sum + (exam.totalQuestions || 0), 0);
+                const accuracy = totalQuestions > 0 ? Math.round((totalCorrect / totalQuestions) * 100) : 0;
+                document.getElementById('statAccuracy').textContent = accuracy + '%';
+            }
+        }
+
+        function renderExamHistory() {
+            const examHistoryContainer = document.getElementById('examHistory');
+            
+            if (!examHistory || examHistory.length === 0) {
+                examHistoryContainer.innerHTML = `
+                    <div class="no-data">
+                        <i class="fas fa-clipboard-list"></i>
+                        <p>No exam history available</p>
+                        <button class="btn btn-primary" onclick="window.location.href='exam.html'" style="margin-top: 15px;">
+                            <i class="fas fa-play-circle"></i> Take Your First Exam
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+            
+            examHistoryContainer.innerHTML = '';
+            const recentExams = examHistory.slice(-10).reverse();
+            
+            recentExams.forEach((exam, index) => {
+                const examItem = document.createElement('div');
+                examItem.className = 'exam-item';
+                
+                const examDate = exam.timestamp ? new Date(exam.timestamp).toLocaleDateString('en-US', {
+                    weekday: 'short',
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                }) : 'Recent';
+                
+                const examMode = exam.mode === 'standard' ? 'Standard' : exam.mode === 'short' ? 'Short' : 'Exam';
+                const isMultiplayer = exam.mode === 'multiplayer';
+                const score = exam.score || 0;
+                
+                let scoreClass = 'score-average';
+                if (score >= 80) scoreClass = 'score-excellent';
+                else if (score >= 60) scoreClass = 'score-good';
+                else if (score < 40) scoreClass = 'score-poor';
+                
+                examItem.innerHTML = `
+                    <div class="exam-info">
+                        <h4>${examMode} ${isMultiplayer ? 'Multiplayer' : ''} Exam</h4>
+                        <p>
+                            <i class="far fa-calendar"></i> ${examDate}
+                            ${exam.subjects ? `<span style="margin: 0 10px;">•</span> <i class="fas fa-book"></i> ${exam.subjects.slice(0, 2).join(', ')}${exam.subjects.length > 2 ? '...' : ''}` : ''}
+                        </p>
+                        ${exam.correctAnswers !== undefined ? `
+                        <p style="font-size: 12px; margin-top: 5px;">
+                            <i class="fas fa-check-circle"></i> ${exam.correctAnswers || 0}/${exam.totalQuestions || 0} correct
+                        </p>
+                        ` : ''}
+                    </div>
+                    <div class="exam-score ${scoreClass}">${score}%</div>
+                `;
+                
+                examHistoryContainer.appendChild(examItem);
+            });
+        }
+
+        function updateExamStats() {
+            if (examHistory.length === 0) {
+                document.getElementById('overallScore').textContent = '0%';
+                document.getElementById('highestScore').textContent = '0%';
+                document.getElementById('averageScore').textContent = '0%';
+                document.getElementById('totalExams').textContent = '0';
+                return;
+            }
+            
+            const scores = examHistory.map(exam => exam.score || 0);
+            const overallScore = userData.stats?.overallScore || 0;
+            const highestScore = Math.max(...scores);
+            const averageScore = Math.round(scores.reduce((a, b) => a + b) / scores.length);
+            
+            document.getElementById('overallScore').textContent = overallScore + '%';
+            document.getElementById('highestScore').textContent = highestScore + '%';
+            document.getElementById('averageScore').textContent = averageScore + '%';
+            document.getElementById('totalExams').textContent = examHistory.length;
+        }
+
+        function renderSubjectPerformance() {
+            const subjectContainer = document.getElementById('subjectPerformance');
+            
+            if (!examHistory || examHistory.length === 0) {
+                subjectContainer.innerHTML = `
+                    <div class="no-data" style="padding: 20px;">
+                        <i class="fas fa-book"></i>
+                        <p>No subject data available</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Calculate subject performance from exam history
+            const subjectScores = {};
+            const subjectAttempts = {};
+            
+            examHistory.forEach(exam => {
+                if (exam.subjectBreakdown) {
+                    Object.entries(exam.subjectBreakdown).forEach(([subject, data]) => {
+                        if (!subjectScores[subject]) {
+                            subjectScores[subject] = 0;
+                            subjectAttempts[subject] = 0;
+                        }
+                        subjectScores[subject] += data.score || 0;
+                        subjectAttempts[subject]++;
+                    });
+                }
+            });
+            
+            // Get user's selected subjects
+            const selectedSubjects = userData.selectedSubjects || ['Mathematics', 'English', 'Physics', 'Chemistry'];
+            
+            subjectContainer.innerHTML = '';
+            
+            selectedSubjects.forEach(subject => {
+                const avgScore = subjectAttempts[subject] 
+                    ? Math.round(subjectScores[subject] / subjectAttempts[subject])
+                    : 0;
+                
+                const subjectDiv = document.createElement('div');
+                subjectDiv.className = 'subject-item';
+                
+                const subjectIcons = {
+                    'Mathematics': 'fa-square-root-alt',
+                    'English': 'fa-language',
+                    'Physics': 'fa-atom',
+                    'Chemistry': 'fa-flask',
+                    'Biology': 'fa-dna',
+                    'Government': 'fa-landmark',
+                    'Economics': 'fa-chart-line',
+                    'Literature': 'fa-book-reader',
+                    'Geography': 'fa-globe-africa',
+                    'Commerce': 'fa-shopping-cart',
+                    'Accounting': 'fa-calculator',
+                    'CRS': 'fa-church'
+                };
+                
+                subjectDiv.innerHTML = `
+                    <div class="subject-name">
+                        <div class="subject-icon">
+                            <i class="fas ${subjectIcons[subject] || 'fa-book'}"></i>
+                        </div>
+                        ${subject}
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${avgScore}%"></div>
+                    </div>
+                    <div class="subject-score">
+                        ${avgScore}%
+                    </div>
+                `;
+                
+                subjectContainer.appendChild(subjectDiv);
+            });
+        }
+
+        function renderPerformanceInsights() {
+            const insightsContainer = document.getElementById('performanceInsights');
+            
+            if (!examHistory || examHistory.length === 0) {
+                insightsContainer.innerHTML = `
+                    <div style="text-align: center; padding: 20px; color: var(--gray);">
+                        <p>Take more exams to get performance insights</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            const scores = examHistory.map(exam => exam.score || 0);
+            const recentScores = examHistory.slice(-5).map(exam => exam.score || 0);
+            const avgScore = scores.reduce((a, b) => a + b) / scores.length;
+            const recentAvg = recentScores.reduce((a, b) => a + b) / recentScores.length;
+            
+            let insights = [];
+            
+            if (recentAvg > avgScore + 10) {
+                insights.push({
+                    icon: 'fa-arrow-up',
+                    color: 'var(--success)',
+                    text: 'Your recent performance is improving significantly!'
+                });
+            } else if (recentAvg < avgScore - 10) {
+                insights.push({
+                    icon: 'fa-arrow-down',
+                    color: 'var(--danger)',
+                    text: 'Your recent scores have dropped. Consider reviewing weak areas.'
+                });
+            }
+            
+            // Check for consistency
+            const scoreRange = Math.max(...scores) - Math.min(...scores);
+            if (scoreRange < 20) {
+                insights.push({
+                    icon: 'fa-chart-line',
+                    color: 'var(--success)',
+                    text: 'Your performance is consistent across exams.'
+                });
+            } else {
+                insights.push({
+                    icon: 'fa-random',
+                    color: 'var(--warning)',
+                    text: 'Your scores vary significantly. Focus on consistent preparation.'
+                });
+            }
+            
+            // Time of day analysis (simulated)
+            insights.push({
+                icon: 'fa-clock',
+                color: 'var(--accent)',
+                text: 'You perform best in evening sessions (based on your activity).'
+            });
+            
+            // Subject advice
+            const subjects = userData.selectedSubjects || [];
+            if (subjects.length > 0) {
+                insights.push({
+                    icon: 'fa-lightbulb',
+                    color: 'var(--primary)',
+                    text: `Focus more on ${subjects[0]} for maximum score improvement.`
+                });
+            }
+            
+            insightsContainer.innerHTML = '';
+            insights.forEach(insight => {
+                const insightDiv = document.createElement('div');
+                insightDiv.style.cssText = `
+                    display: flex;
+                    align-items: center;
+                    gap: 15px;
+                    padding: 15px;
+                    background: rgba(0,0,0,0.03);
+                    border-radius: 10px;
+                    margin-bottom: 10px;
+                `;
+                
+                insightDiv.innerHTML = `
+                    <div style="width: 40px; height: 40px; border-radius: 50%; background: ${insight.color}; color: white; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas ${insight.icon}"></i>
+                    </div>
+                    <div style="flex: 1; font-size: 14px;">${insight.text}</div>
+                `;
+                
+                insightsContainer.appendChild(insightDiv);
+            });
+        }
+
+        function renderReadingTrack(recentItems) {
+            const readingTrack = document.getElementById('readingTrack');
+            
+            if (!recentItems || recentItems.length === 0) {
+                readingTrack.innerHTML = `
+                    <div class="no-data">
+                        <i class="fas fa-book-open"></i>
+                        <p>No reading activity yet</p>
+                        <button class="btn btn-primary" onclick="window.location.href='resources.html'" style="margin-top: 15px;">
+                            <i class="fas fa-book"></i> Start Reading
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+            
+            readingTrack.innerHTML = '';
+            
+            recentItems.forEach(item => {
+                const readingItem = document.createElement('div');
+                readingItem.className = 'reading-item';
+                
+                const timeAgo = item.timestamp ? formatTimeAgo(new Date(item.timestamp)) : 'Recently';
+                
+                readingItem.innerHTML = `
+                    <div class="reading-icon">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <div class="reading-info">
+                        <h4>${item.title || 'Study Material'}</h4>
+                        <div class="reading-meta">
+                            <span><i class="fas fa-bookmark"></i> ${item.category || 'General'}</span>
+                            <span><i class="far fa-clock"></i> ${timeAgo}</span>
+                        </div>
+                    </div>
+                `;
+                
+                readingItem.addEventListener('click', () => {
+                    window.location.href = `resource-detail.html?id=${item.id}`;
+                });
+                
+                readingTrack.appendChild(readingItem);
+            });
+        }
+
+        function updateReadingProgress() {
+            const totalMaterials = 50; // Total available materials
+            const viewedMaterials = userData.readingProgress?.viewedMaterials || {};
+            const viewedCount = Object.keys(viewedMaterials).length;
+            const percentage = Math.round((viewedCount / totalMaterials) * 100);
+            
+            document.getElementById('totalRead').textContent = `${viewedCount}/${totalMaterials}`;
+            document.getElementById('readingProgressFill').style.width = `${percentage}%`;
+        }
+
+        function formatTimeAgo(date) {
+            const now = new Date();
+            const diffMs = now - date;
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMs / 3600000);
+            const diffDays = Math.floor(diffMs / 86400000);
+            
+            if (diffMins < 60) {
+                return `${diffMins}m ago`;
+            } else if (diffHours < 24) {
+                return `${diffHours}h ago`;
+            } else if (diffDays < 7) {
+                return `${diffDays}d ago`;
+            } else {
+                return date.toLocaleDateString();
+            }
+        }
+
+        function populateEditForms() {
+            // Profile form
+            document.getElementById('editName').value = userData.fullName || currentUser.displayName || '';
+            document.getElementById('editEmail').value = currentUser.email || '';
+            document.getElementById('editPhone').value = userData.phone || '';
+            
+            if (userData.dateOfBirth) {
+                const dob = new Date(userData.dateOfBirth);
+                document.getElementById('editDob').value = dob.toISOString().split('T')[0];
+            }
+            
+            // Education form
+            document.getElementById('editSchool').value = userData.school || '';
+            document.getElementById('editClass').value = userData.class || '';
+            document.getElementById('editCourse').value = userData.targetCourse || '';
+            document.getElementById('editUniversity').value = userData.targetUniversity || '';
+        }
+
+        function initializeCharts() {
+            // Destroy existing charts
+            if (scoreChart) scoreChart.destroy();
+            if (timeChart) timeChart.destroy();
+            
+            // Score Trend Chart
+            const scoreCtx = document.getElementById('scoreChart').getContext('2d');
+            const examDates = examHistory.slice(-10).map(exam => {
+                return exam.timestamp ? new Date(exam.timestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'Exam';
+            }).reverse();
+            
+            const examScores = examHistory.slice(-10).map(exam => exam.score || 0).reverse();
+            
+            scoreChart = new Chart(scoreCtx, {
+                type: 'line',
+                data: {
+                    labels: examDates,
+                    datasets: [{
+                        label: 'Exam Scores',
+                        data: examScores,
+                        borderColor: 'rgb(49, 27, 146)',
+                        backgroundColor: 'rgba(49, 27, 146, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Study Time Distribution Chart
+            const timeCtx = document.getElementById('timeChart').getContext('2d');
+            
+            // Sample data for time distribution
+            const timeData = {
+                'Mathematics': 8,
+                'English': 6,
+                'Physics': 5,
+                'Chemistry': 4,
+                'Biology': 3,
+                'Others': 2
+            };
+            
+            timeChart = new Chart(timeCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(timeData),
+                    datasets: [{
+                        data: Object.values(timeData),
+                        backgroundColor: [
+                            'rgb(49, 27, 146)',
+                            'rgb(255, 87, 34)',
+                            'rgb(0, 188, 212)',
+                            'rgb(76, 175, 80)',
+                            'rgb(255, 152, 0)',
+                            'rgb(158, 158, 158)'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+
+        function setupEventListeners() {
+            // Tab switching
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const tabId = this.getAttribute('data-tab');
+                    
+                    // Update active tab button
+                    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Show active tab content
+                    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                    document.getElementById(`${tabId}Tab`).classList.add('active');
+                    
+                    // Reinitialize charts if needed
+                    if (tabId === 'analytics') {
+                        setTimeout(() => {
+                            initializeCharts();
+                        }, 100);
+                    }
+                });
+            });
+            
+            // Profile form submission
+            document.getElementById('profileForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const updatedData = {
+                    fullName: document.getElementById('editName').value,
+                    phone: document.getElementById('editPhone').value,
+                    dateOfBirth: document.getElementById('editDob').value || null
+                };
+                
+                try {
+                    await updateDoc(doc(db, "users", currentUser.uid), updatedData);
+                    alert('Profile updated successfully!');
+                    await loadUserData(); // Reload data
+                } catch (error) {
+                    console.error('Error updating profile:', error);
+                    alert('Failed to update profile: ' + error.message);
+                }
+            });
+            
+            // Education form submission
+            document.getElementById('educationForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const updatedData = {
+                    school: document.getElementById('editSchool').value,
+                    class: document.getElementById('editClass').value,
+                    targetCourse: document.getElementById('editCourse').value,
+                    targetUniversity: document.getElementById('editUniversity').value
+                };
+                
+                try {
+                    await updateDoc(doc(db, "users", currentUser.uid), updatedData);
+                    alert('Education information updated successfully!');
+                    await loadUserData(); // Reload data
+                } catch (error) {
+                    console.error('Error updating education info:', error);
+                    alert('Failed to update education information: ' + error.message);
+                }
+            });
+        }
+
+        function viewAllExams() {
+            // In a real app, this would show a modal or navigate to a dedicated page
+            alert('This would show all exam history in a detailed view. For now, check the recent exams below.');
+        }
+
+        // Check for dark mode preference
+        const darkMode = localStorage.getItem('darkMode') === 'true';
+        if (darkMode) {
+            document.body.classList.add('dark-mode');
+        }
+
+    </script>
+</body>
+</html>
