@@ -1,0 +1,1433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edutop Scholars - Multiplayer Exam</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #311b92;
+            --primary-light: #4527a0;
+            --secondary: #ff5722;
+            --accent: #00bcd4;
+            --light: #f5f5f7;
+            --dark: #333;
+            --success: #4caf50;
+            --warning: #ff9800;
+            --danger: #f44336;
+            --gray: #777;
+            --light-gray: #eee;
+            --attempted: #2196f3;
+            --skipped: #f44336;
+            --not-attempted: #9e9e9e;
+        }
+        
+        body {
+            background: #f0f2f5;
+            color: var(--dark);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .exam-header {
+            background: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo h1 {
+            color: var(--primary);
+            font-size: 24px;
+        }
+        
+        .logo span {
+            color: var(--secondary);
+        }
+        
+        .exam-info {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+        
+        .timer-container {
+            background: var(--primary);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 180px;
+            justify-content: center;
+        }
+        
+        .question-counter {
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 18px;
+        }
+        
+        .session-info {
+            background: #e8f4fc;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .exam-body {
+            display: flex;
+            max-width: 1400px;
+            margin: 20px auto;
+            padding: 0 20px;
+            gap: 20px;
+        }
+        
+        .main-content {
+            flex: 1;
+            display: flex;
+            gap: 20px;
+        }
+        
+        .questions-panel {
+            width: 300px;
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            height: fit-content;
+            position: sticky;
+            top: 90px;
+        }
+        
+        .question-display {
+            flex: 1;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            min-height: 500px;
+        }
+        
+        .leaderboard-panel {
+            width: 300px;
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            height: fit-content;
+            position: sticky;
+            top: 90px;
+        }
+        
+        .subject-section {
+            margin-bottom: 25px;
+        }
+        
+        .subject-header {
+            background: var(--primary);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .question-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            margin-top: 10px;
+        }
+        
+        .question-number {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+        
+        .question-number:hover {
+            transform: scale(1.1);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+        
+        .question-number.current {
+            border-color: var(--primary);
+            transform: scale(1.1);
+            box-shadow: 0 0 0 3px rgba(49, 27, 146, 0.2);
+        }
+        
+        .question-number.attempted {
+            background: var(--attempted);
+            color: white;
+        }
+        
+        .question-number.skipped {
+            background: var(--skipped);
+            color: white;
+        }
+        
+        .question-number.not-attempted {
+            background: var(--not-attempted);
+            color: white;
+        }
+        
+        .question-content {
+            margin-bottom: 30px;
+        }
+        
+        .question-text {
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--light-gray);
+        }
+        
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .option {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            padding: 15px 20px;
+            border: 2px solid var(--light-gray);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .option:hover {
+            border-color: var(--primary);
+            background: rgba(49, 27, 146, 0.05);
+        }
+        
+        .option.selected {
+            border-color: var(--primary);
+            background: rgba(49, 27, 146, 0.1);
+        }
+        
+        .option-letter {
+            width: 35px;
+            height: 35px;
+            border-radius: 8px;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        
+        .option-text {
+            flex: 1;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+        
+        .exam-controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid var(--light-gray);
+        }
+        
+        .control-btn {
+            padding: 12px 30px;
+            border-radius: 50px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+        
+        .control-btn.primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .control-btn.secondary {
+            background: var(--light-gray);
+            color: var(--dark);
+        }
+        
+        .control-btn.danger {
+            background: var(--danger);
+            color: white;
+        }
+        
+        .control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .leaderboard-header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--light-gray);
+        }
+        
+        .leaderboard-header h3 {
+            color: var(--primary);
+            font-size: 20px;
+        }
+        
+        .leaderboard-list {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        
+        .leaderboard-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            border-bottom: 1px solid var(--light-gray);
+            transition: all 0.3s;
+        }
+        
+        .leaderboard-item:hover {
+            background: var(--light);
+            border-radius: 10px;
+        }
+        
+        .leaderboard-item.current-user {
+            background: rgba(49, 27, 146, 0.1);
+            border-radius: 10px;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .leaderboard-rank {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        
+        .rank-1 { background: #ffd700; }
+        .rank-2 { background: #c0c0c0; }
+        .rank-3 { background: #cd7f32; }
+        
+        .participant-info {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .participant-name {
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .participant-status {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            display: inline-block;
+            margin-top: 3px;
+        }
+        
+        .status-active { background: #d4edda; color: #155724; }
+        .status-finished { background: #cce5ff; color: #004085; }
+        
+        .participant-score {
+            font-weight: bold;
+            color: var(--primary);
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+        
+        .progress-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+            font-size: 14px;
+            color: var(--gray);
+        }
+        
+        .progress-bar {
+            flex: 1;
+            height: 8px;
+            background: var(--light-gray);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            width: 0%;
+            transition: width 0.3s;
+        }
+        
+        .chat-panel {
+            margin-top: 20px;
+            border-top: 2px solid var(--light-gray);
+            padding-top: 20px;
+        }
+        
+        .chat-messages {
+            height: 200px;
+            overflow-y: auto;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: var(--light);
+            border-radius: 10px;
+        }
+        
+        .chat-message {
+            margin-bottom: 10px;
+            padding: 8px 12px;
+            background: white;
+            border-radius: 10px;
+            font-size: 14px;
+        }
+        
+        .chat-message.system {
+            background: #e8f4fc;
+            font-style: italic;
+            text-align: center;
+        }
+        
+        .chat-input {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .chat-input input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 2px solid var(--light-gray);
+            border-radius: 20px;
+            font-size: 14px;
+        }
+        
+        .chat-input button {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .real-time-updates {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            max-width: 300px;
+            display: none;
+            z-index: 1000;
+        }
+        
+        .update-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--light-gray);
+            font-size: 14px;
+        }
+        
+        .update-item:last-child {
+            border-bottom: none;
+        }
+        
+        @media (max-width: 1200px) {
+            .exam-body {
+                flex-direction: column;
+            }
+            
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .questions-panel, .leaderboard-panel {
+                width: 100%;
+                position: static;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .exam-header {
+                flex-direction: column;
+                gap: 15px;
+                padding: 15px;
+            }
+            
+            .exam-info {
+                flex-direction: column;
+                gap: 15px;
+                width: 100%;
+            }
+            
+            .question-grid {
+                grid-template-columns: repeat(8, 1fr);
+            }
+            
+            .exam-controls {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="exam-header">
+        <div class="logo">
+            <h1>Edutop<span>Scholars</span> - <span id="examModeDisplay">Multiplayer</span></h1>
+        </div>
+        
+        <div class="exam-info">
+            <div class="timer-container" id="timerDisplay">
+                <i class="fas fa-clock"></i>
+                <span id="timerText">--:--</span>
+            </div>
+            <div class="question-counter">
+                Question <span id="currentQuestionNum">1</span> of <span id="totalQuestions">--</span>
+            </div>
+            <div class="session-info" id="sessionInfo">
+                <i class="fas fa-users"></i>
+                <span id="participantCount">0</span> participants
+            </div>
+        </div>
+    </header>
+
+    <div class="exam-body">
+        <div class="main-content">
+            <!-- Left Panel: Question Numbers -->
+            <div class="questions-panel">
+                <div style="color: var(--primary); font-weight: 600; margin-bottom: 15px; font-size: 14px; text-transform: uppercase;">
+                    Session: <span id="currentSessionName">Loading...</span>
+                </div>
+                
+                <div id="subjectSections">
+                    <!-- Subject sections will be dynamically added here -->
+                </div>
+                
+                <div class="progress-info">
+                    <div>Progress:</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <div id="progressText">0%</div>
+                </div>
+            </div>
+            
+            <!-- Middle Panel: Question Display -->
+            <div class="question-display">
+                <div class="question-content">
+                    <div id="currentSubject" style="color: var(--primary); font-weight: 600; margin-bottom: 10px; font-size: 14px; text-transform: uppercase;">
+                        Subject: Loading...
+                    </div>
+                    <div class="question-text" id="questionText">
+                        Loading question...
+                    </div>
+                    
+                    <div id="questionImageContainer" style="display: none;">
+                        <img src="" alt="Question Image" class="question-image" id="questionImage">
+                    </div>
+                    
+                    <div class="options-container" id="optionsContainer">
+                        <!-- Options will be dynamically added here -->
+                    </div>
+                </div>
+                
+                <div class="exam-controls">
+                    <button class="control-btn secondary" onclick="previousQuestion()">
+                        <i class="fas fa-arrow-left"></i> Previous
+                    </button>
+                    
+                    <div style="display: flex; gap: 15px;">
+                        <button class="control-btn warning" onclick="skipQuestion()">
+                            <i class="fas fa-forward"></i> Skip
+                        </button>
+                        <button class="control-btn primary" onclick="nextQuestion()">
+                            Next <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                    
+                    <button class="control-btn danger" onclick="submitMultiplayerExam()">
+                        <i class="fas fa-paper-plane"></i> Submit
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Right Panel: Leaderboard -->
+        <div class="leaderboard-panel">
+            <div class="leaderboard-header">
+                <h3><i class="fas fa-trophy"></i> Live Leaderboard</h3>
+                <div style="font-size: 12px; color: var(--gray); margin-top: 5px;">
+                    Updates in real-time
+                </div>
+            </div>
+            
+            <div class="leaderboard-list" id="leaderboardList">
+                <!-- Leaderboard will be updated in real-time -->
+            </div>
+            
+            <div class="chat-panel">
+                <div class="chat-messages" id="chatMessages">
+                    <div class="chat-message system">
+                        Welcome to the multiplayer exam!
+                    </div>
+                </div>
+                <div class="chat-input">
+                    <input type="text" id="chatInput" placeholder="Type a message...">
+                    <button onclick="sendChatMessage()">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Real-time Updates Panel -->
+    <div class="real-time-updates" id="realTimeUpdates">
+        <div style="font-weight: 600; color: var(--primary); margin-bottom: 10px;">
+            <i class="fas fa-bolt"></i> Live Updates
+        </div>
+        <div id="updatesList">
+            <!-- Updates will be added here -->
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, updateDoc, onSnapshot, arrayUnion, increment, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+        // Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyCictHNxtslYs9VR0hoicxlwPn_QghkgIA",
+            authDomain: "edutop-7ff51.firebaseapp.com",
+            projectId: "edutop-7ff51",
+            storageBucket: "edutop-7ff51.firebasestorage.app",
+            messagingSenderId: "79307850494",
+            appId: "1:79307850494:web:b51ce51204140ec5429baf",
+            measurementId: "G-GGGH590BYS"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        
+        // Exam State
+        let currentSession = null;
+        let sessionId = null;
+        let isHost = false;
+        let questions = [];
+        let currentQuestionIndex = 0;
+        let userAnswers = {};
+        let timer = null;
+        let timeLeft = 0;
+        let examStarted = false;
+        let totalQuestions = 0;
+        let userOrder = []; // Shuffled order for this user
+
+        // Question Bank (Same as single player)
+        const questionBank = {
+            "English": [
+                {
+                    id: 1,
+                    text: "Choose the word that has the same vowel sound as the one represented by the letter(s) underlined. l<u>ea</u>ve",
+                    options: ["believe", "break", "bread", "severe"],
+                    correctAnswer: 3, // D
+                    image: null
+                },
+                {
+                    id: 2,
+                    text: "In the following sentence, there is an underlined word and one gap. From the list of words lettered A to D, choose the one that is most nearly opposite in meaning to the underlined word and that will at the same time, correctly fill the gap in the sentence. Rather than being ________, the young man was quite cautious in his dealings with people.",
+                    options: ["audacious", "venturesome", "timid", "reckless"],
+                    correctAnswer: 2, // C
+                    image: null
+                },
+                {
+                    id: 3,
+                    text: "Choose the option that best completes the following sentence. If I had known about the traffic, I ________ earlier.",
+                    options: ["would have left", "will leave", "would leave", "had left"],
+                    correctAnswer: 0, // A
+                    image: null
+                }
+            ],
+            "Mathematics": [
+                {
+                    id: 1,
+                    text: "Simplify: 2√27 + 3√75 - √48",
+                    options: ["15√3", "13√3", "11√3", "9√3"],
+                    correctAnswer: 1, // B
+                    image: null
+                },
+                {
+                    id: 2,
+                    text: "If the sum of the first n terms of an AP is given by Sn = 3n² - n, find the 10th term.",
+                    options: ["56", "57", "58", "59"],
+                    correctAnswer: 3, // D
+                    image: null
+                }
+            ],
+            "Physics": [
+                {
+                    id: 1,
+                    text: "A force of 20N acts on a body of mass 5kg at rest. What is the acceleration of the body?",
+                    options: ["4 m/s²", "5 m/s²", "10 m/s²", "100 m/s²"],
+                    correctAnswer: 0, // A
+                    image: null
+                }
+            ],
+            "Chemistry": [
+                {
+                    id: 1,
+                    text: "Which of the following elements has the electronic configuration 1s²2s²2p⁶3s²3p⁶4s²?",
+                    options: ["Calcium", "Potassium", "Argon", "Scandium"],
+                    correctAnswer: 0, // A
+                    image: null
+                }
+            ],
+            "Biology": [
+                {
+                    id: 1,
+                    text: "Which of the following is NOT a characteristic of living things?",
+                    options: ["Respiration", "Reproduction", "Movement", "Metabolism"],
+                    correctAnswer: 2, // C
+                    image: null
+                }
+            ]
+        };
+
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Get session ID from URL or localStorage
+            const urlParams = new URLSearchParams(window.location.search);
+            const sessionCode = urlParams.get('session');
+            
+            if (!sessionCode) {
+                alert('No session specified. Redirecting to multiplayer page.');
+                window.location.href = 'multiplayer.html';
+                return;
+            }
+            
+            // Check auth
+            onAuthStateChanged(auth, async (user) => {
+                if (!user) {
+                    window.location.href = "index.html";
+                    return;
+                }
+                
+                await initializeMultiplayerExam(sessionCode);
+            });
+        });
+
+        async function initializeMultiplayerExam(sessionCode) {
+            try {
+                // Find session by code (in real app, use Firestore query)
+                // For now, get from localStorage
+                sessionId = localStorage.getItem('currentMultiplayerSession');
+                isHost = localStorage.getItem('isHost') === 'true';
+                
+                if (!sessionId) {
+                    throw new Error('Session not found in local storage');
+                }
+                
+                // Get session data
+                const sessionDoc = await getDoc(doc(db, "multiplayer_sessions", sessionId));
+                if (!sessionDoc.exists()) {
+                    throw new Error('Session not found in database');
+                }
+                
+                currentSession = sessionDoc.data();
+                
+                // Check if exam has started
+                if (currentSession.status !== 'active') {
+                    alert('Exam has not started yet. Please wait for the host to start.');
+                    window.location.href = 'multiplayer.html';
+                    return;
+                }
+                
+                // Update UI
+                document.getElementById('currentSessionName').textContent = currentSession.name;
+                document.getElementById('examModeDisplay').textContent = 
+                    `${currentSession.examMode === 'standard' ? 'Standard' : 'Short'} Multiplayer`;
+                document.getElementById('participantCount').textContent = 
+                    currentSession.currentParticipants;
+                
+                // Generate or retrieve questions
+                if (currentSession.questions && currentSession.questions.length > 0) {
+                    questions = currentSession.questions;
+                } else {
+                    questions = generateQuestions();
+                    // Save questions to session (host only)
+                    if (isHost) {
+                        await updateDoc(doc(db, "multiplayer_sessions", sessionId), {
+                            questions: questions
+                        });
+                    }
+                }
+                
+                // Generate user-specific shuffled order
+                userOrder = generateShuffledOrder(questions.length, auth.currentUser.uid);
+                
+                totalQuestions = questions.length;
+                
+                // Initialize user answers
+                userAnswers = {};
+                questions.forEach((q, index) => {
+                    userAnswers[index] = {
+                        selected: null,
+                        status: 'not-attempted',
+                        subject: q.subject,
+                        questionId: q.id
+                    };
+                });
+                
+                // Initialize timer for standard exam
+                if (currentSession.examMode === 'standard') {
+                    timeLeft = currentSession.settings?.examDuration || 7200; // 2 hours in seconds
+                    startTimer();
+                }
+                
+                // Update UI
+                document.getElementById('totalQuestions').textContent = totalQuestions;
+                updateQuestionDisplay();
+                updateQuestionNumbers();
+                updateProgress();
+                
+                // Setup real-time listeners
+                setupRealtimeListeners();
+                
+                // Mark user as active
+                await updateParticipantStatus('active');
+                
+                examStarted = true;
+                
+                // Add system message
+                addSystemMessage(`${currentUser.displayName || 'You'} has started the exam`);
+                
+            } catch (error) {
+                console.error('Error initializing multiplayer exam:', error);
+                alert('Error: ' + error.message);
+                window.location.href = 'multiplayer.html';
+            }
+        }
+
+        function generateQuestions() {
+            const allQuestions = [];
+            
+            currentSession.subjects.forEach(subject => {
+                let questionCount = 0;
+                
+                if (currentSession.examMode === 'standard') {
+                    questionCount = subject === 'English' ? 60 : 40;
+                } else {
+                    questionCount = subject === 'English' ? 15 : 10;
+                }
+                
+                // Get questions from question bank
+                const subjectQuestions = questionBank[subject] || [];
+                
+                // Duplicate questions if needed (for demo)
+                for (let i = 0; i < questionCount; i++) {
+                    const questionIndex = i % subjectQuestions.length;
+                    const question = { ...subjectQuestions[questionIndex] };
+                    question.subject = subject;
+                    question.number = allQuestions.length + 1;
+                    question.id = `${subject}_${i}`;
+                    allQuestions.push(question);
+                }
+            });
+            
+            return allQuestions;
+        }
+
+        function generateShuffledOrder(totalQuestions, userId) {
+            // Create array of indices
+            const order = Array.from({length: totalQuestions}, (_, i) => i);
+            
+            // Use userId as seed for consistent shuffle
+            const seed = hashCode(userId);
+            const random = seededRandom(seed);
+            
+            // Fisher-Yates shuffle with seed
+            for (let i = order.length - 1; i > 0; i--) {
+                const j = Math.floor(random() * (i + 1));
+                [order[i], order[j]] = [order[j], order[i]];
+            }
+            
+            return order;
+        }
+
+        function hashCode(str) {
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                hash = ((hash << 5) - hash) + str.charCodeAt(i);
+                hash |= 0; // Convert to 32bit integer
+            }
+            return Math.abs(hash);
+        }
+
+        function seededRandom(seed) {
+            const x = Math.sin(seed++) * 10000;
+            return x - Math.floor(x);
+        }
+
+        function startTimer() {
+            timer = setInterval(() => {
+                timeLeft--;
+                
+                // Update timer display
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                document.getElementById('timerText').textContent = 
+                    `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                // Auto-submit when time is up
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    submitMultiplayerExam();
+                }
+            }, 1000);
+        }
+
+        function updateQuestionDisplay() {
+            if (!questions.length || currentQuestionIndex >= questions.length) return;
+            
+            const actualIndex = userOrder[currentQuestionIndex];
+            const question = questions[actualIndex];
+            
+            // Update question text
+            document.getElementById('currentSubject').textContent = `Subject: ${question.subject}`;
+            document.getElementById('questionText').textContent = `${currentQuestionIndex + 1}. ${question.text}`;
+            document.getElementById('currentQuestionNum').textContent = currentQuestionIndex + 1;
+            
+            // Update options
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+            
+            const optionLetters = ['A', 'B', 'C', 'D'];
+            optionLetters.forEach((letter, index) => {
+                if (question.options[index]) {
+                    const optionDiv = document.createElement('div');
+                    optionDiv.className = `option ${userAnswers[actualIndex].selected === index ? 'selected' : ''}`;
+                    optionDiv.onclick = () => selectOption(index);
+                    
+                    optionDiv.innerHTML = `
+                        <div class="option-letter">${letter}</div>
+                        <div class="option-text">${question.options[index]}</div>
+                    `;
+                    
+                    optionsContainer.appendChild(optionDiv);
+                }
+            });
+            
+            // Update question image if exists
+            const imageContainer = document.getElementById('questionImageContainer');
+            if (question.image) {
+                document.getElementById('questionImage').src = question.image;
+                imageContainer.style.display = 'block';
+            } else {
+                imageContainer.style.display = 'none';
+            }
+            
+            // Update question numbers highlight
+            updateQuestionNumbers();
+        }
+
+        function selectOption(optionIndex) {
+            const actualIndex = userOrder[currentQuestionIndex];
+            userAnswers[actualIndex].selected = optionIndex;
+            userAnswers[actualIndex].status = 'attempted';
+            
+            // Update UI
+            document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+            document.querySelectorAll('.option')[optionIndex].classList.add('selected');
+            
+            // Save answer to Firestore (optional real-time sync)
+            saveAnswerToFirestore(actualIndex, optionIndex);
+            
+            // Auto-advance to next question after selection
+            setTimeout(() => {
+                if (currentQuestionIndex < questions.length - 1) {
+                    nextQuestion();
+                }
+            }, 500);
+            
+            updateProgress();
+        }
+
+        async function saveAnswerToFirestore(questionIndex, answerIndex) {
+            try {
+                // Update user's answers in session
+                const userIndex = currentSession.participants.findIndex(p => p.userId === auth.currentUser.uid);
+                if (userIndex !== -1) {
+                    const answers = currentSession.participants[userIndex].answers || {};
+                    answers[questionIndex] = answerIndex;
+                    
+                    await updateDoc(doc(db, "multiplayer_sessions", sessionId), {
+                        [`participants.${userIndex}.answers`]: answers,
+                        [`participants.${userIndex}.lastActivity`]: serverTimestamp()
+                    });
+                }
+            } catch (error) {
+                console.error('Error saving answer:', error);
+            }
+        }
+
+        async function updateParticipantStatus(status) {
+            try {
+                const userIndex = currentSession.participants.findIndex(p => p.userId === auth.currentUser.uid);
+                if (userIndex !== -1) {
+                    await updateDoc(doc(db, "multiplayer_sessions", sessionId), {
+                        [`participants.${userIndex}.status`]: status,
+                        [`participants.${userIndex}.lastActivity`]: serverTimestamp()
+                    });
+                }
+            } catch (error) {
+                console.error('Error updating status:', error);
+            }
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                updateQuestionDisplay();
+                updateQuestionNumbers();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                updateQuestionDisplay();
+                updateQuestionNumbers();
+            }
+        }
+
+        function skipQuestion() {
+            const actualIndex = userOrder[currentQuestionIndex];
+            userAnswers[actualIndex].status = 'skipped';
+            
+            // Auto-advance to next question
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                updateQuestionDisplay();
+                updateQuestionNumbers();
+            }
+            
+            updateProgress();
+        }
+
+        function updateQuestionNumbers() {
+            const subjectSections = document.getElementById('subjectSections');
+            subjectSections.innerHTML = '';
+            
+            // Group questions by subject
+            const questionsBySubject = {};
+            userOrder.forEach((actualIndex, displayIndex) => {
+                const question = questions[actualIndex];
+                if (!questionsBySubject[question.subject]) {
+                    questionsBySubject[question.subject] = [];
+                }
+                questionsBySubject[question.subject].push({ 
+                    actualIndex, 
+                    displayIndex: displayIndex + 1 
+                });
+            });
+            
+            // Create sections for each subject
+            Object.keys(questionsBySubject).forEach(subject => {
+                const section = document.createElement('div');
+                section.className = 'subject-section';
+                
+                const subjectQuestions = questionsBySubject[subject];
+                const attempted = subjectQuestions.filter(q => 
+                    userAnswers[q.actualIndex].status === 'attempted'
+                ).length;
+                
+                section.innerHTML = `
+                    <div class="subject-header">
+                        <span>${subject}</span>
+                        <span style="font-size: 12px;">${attempted}/${subjectQuestions.length}</span>
+                    </div>
+                    <div class="question-grid" id="grid-${subject}"></div>
+                `;
+                
+                subjectSections.appendChild(section);
+                
+                // Add question numbers to grid
+                const grid = document.getElementById(`grid-${subject}`);
+                subjectQuestions.forEach(({ actualIndex, displayIndex }) => {
+                    const qNum = document.createElement('div');
+                    qNum.className = `question-number ${userAnswers[actualIndex].status} ${displayIndex - 1 === currentQuestionIndex ? 'current' : ''}`;
+                    qNum.textContent = displayIndex;
+                    qNum.onclick = () => {
+                        currentQuestionIndex = displayIndex - 1;
+                        updateQuestionDisplay();
+                        updateQuestionNumbers();
+                    };
+                    grid.appendChild(qNum);
+                });
+            });
+        }
+
+        function updateProgress() {
+            const attempted = Object.values(userAnswers).filter(a => a.status === 'attempted').length;
+            const progress = (attempted / totalQuestions) * 100;
+            
+            document.getElementById('progressFill').style.width = `${progress}%`;
+            document.getElementById('progressText').textContent = `${Math.round(progress)}%`;
+        }
+
+        function setupRealtimeListeners() {
+            // Listen for session updates
+            onSnapshot(doc(db, "multiplayer_sessions", sessionId), (docSnap) => {
+                if (docSnap.exists()) {
+                    const updatedSession = docSnap.data();
+                    
+                    // Update participant count
+                    document.getElementById('participantCount').textContent = 
+                        updatedSession.currentParticipants;
+                    
+                    // Update leaderboard
+                    updateLeaderboard(updatedSession.participants);
+                    
+                    // Check for new system messages
+                    if (updatedSession.messages) {
+                        updateChat(updatedSession.messages);
+                    }
+                    
+                    // Update current session data
+                    currentSession = updatedSession;
+                }
+            });
+        }
+
+        function updateLeaderboard(participants) {
+            const leaderboardList = document.getElementById('leaderboardList');
+            leaderboardList.innerHTML = '';
+            
+            // Calculate scores for participants who have submitted
+            const rankedParticipants = participants.map(participant => {
+                let score = participant.score;
+                
+                // If score not calculated yet, show progress
+                if (score === null || score === undefined) {
+                    const answers = participant.answers || {};
+                    const answeredCount = Object.keys(answers).length;
+                    score = Math.round((answeredCount / totalQuestions) * 100);
+                }
+                
+                return {
+                    ...participant,
+                    calculatedScore: score
+                };
+            });
+            
+            // Sort by score (descending)
+            rankedParticipants.sort((a, b) => b.calculatedScore - a.calculatedScore);
+            
+            // Display leaderboard
+            rankedParticipants.forEach((participant, index) => {
+                const isCurrentUser = participant.userId === auth.currentUser.uid;
+                
+                const item = document.createElement('div');
+                item.className = `leaderboard-item ${isCurrentUser ? 'current-user' : ''}`;
+                
+                const initials = participant.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+                
+                item.innerHTML = `
+                    <div class="leaderboard-rank rank-${index + 1}">
+                        ${index + 1}
+                    </div>
+                    <div class="participant-info">
+                        <div class="participant-name">${participant.name}</div>
+                        <div class="participant-status status-${participant.status}">
+                            ${participant.status}
+                        </div>
+                    </div>
+                    <div class="participant-score">
+                        ${participant.calculatedScore}%
+                    </div>
+                `;
+                
+                leaderboardList.appendChild(item);
+            });
+            
+            // Show real-time updates when someone finishes
+            const finishedParticipants = participants.filter(p => p.status === 'finished');
+            if (finishedParticipants.length > 0) {
+                showRealTimeUpdate(`${finishedParticipants[0].name} has finished the exam!`);
+            }
+        }
+
+        function updateChat(messages) {
+            const chatMessages = document.getElementById('chatMessages');
+            chatMessages.innerHTML = '';
+            
+            messages.slice(-10).forEach(msg => { // Show last 10 messages
+                const msgDiv = document.createElement('div');
+                msgDiv.className = `chat-message ${msg.type === 'system' ? 'system' : ''}`;
+                msgDiv.textContent = msg.text;
+                chatMessages.appendChild(msgDiv);
+            });
+            
+            // Auto-scroll to bottom
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        async function sendChatMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            try {
+                await updateDoc(doc(db, "multiplayer_sessions", sessionId), {
+                    messages: arrayUnion({
+                        type: 'user',
+                        userId: auth.currentUser.uid,
+                        userName: currentUser.displayName || 'Anonymous',
+                        text: message,
+                        timestamp: serverTimestamp()
+                    })
+                });
+                
+                input.value = '';
+            } catch (error) {
+                console.error('Error sending message:', error);
+            }
+        }
+
+        function addSystemMessage(message) {
+            const chatMessages = document.getElementById('chatMessages');
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'chat-message system';
+            msgDiv.textContent = message;
+            chatMessages.appendChild(msgDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function showRealTimeUpdate(message) {
+            const updatesPanel = document.getElementById('realTimeUpdates');
+            const updatesList = document.getElementById('updatesList');
+            
+            // Show panel
+            updatesPanel.style.display = 'block';
+            
+            // Add new update
+            const updateDiv = document.createElement('div');
+            updateDiv.className = 'update-item';
+            updateDiv.innerHTML = `
+                <i class="fas fa-bolt" style="color: var(--warning);"></i>
+                <span>${message}</span>
+            `;
+            
+            updatesList.appendChild(updateDiv);
+            
+            // Limit to 3 updates
+            if (updatesList.children.length > 3) {
+                updatesList.removeChild(updatesList.firstChild);
+            }
+            
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                updatesPanel.style.display = 'none';
+                updatesList.innerHTML = '';
+            }, 5000);
+        }
+
+        async function submitMultiplayerExam() {
+            if (!confirm('Are you sure you want to submit your exam? You cannot change answers after submission.')) {
+                return;
+            }
+            
+            // Calculate score
+            let correct = 0;
+            let totalAnswered = 0;
+            
+            questions.forEach((question, index) => {
+                if (userAnswers[index].selected !== null) {
+                    totalAnswered++;
+                    if (userAnswers[index].selected === question.correctAnswer) {
+                        correct++;
+                    }
+                }
+            });
+            
+            const score = totalAnswered > 0 ? Math.round((correct / totalAnswered) * 100) : 0;
+            
+            // Update participant status and score
+            try {
+                const userIndex = currentSession.participants.findIndex(p => p.userId === auth.currentUser.uid);
+                if (userIndex !== -1) {
+                    await updateDoc(doc(db, "multiplayer_sessions", sessionId), {
+                        [`participants.${userIndex}.status`]: 'finished',
+                        [`participants.${userIndex}.score`]: score,
+                        [`participants.${userIndex}.correctAnswers`]: correct,
+                        [`participants.${userIndex}.totalAnswered`]: totalAnswered,
+                        [`participants.${userIndex}.finishedAt`]: serverTimestamp(),
+                        [`participants.${userIndex}.answers`]: userAnswers
+                    });
+                    
+                    // Add system message
+                    await updateDoc(doc(db, "multiplayer_sessions", sessionId), {
+                        messages: arrayUnion({
+                            type: 'system',
+                            text: `${currentUser.displayName || 'A participant'} has finished the exam with ${score}%`,
+                            timestamp: serverTimestamp()
+                        })
+                    });
+                    
+                    // Update user stats in profile
+                    await updateUserStats(score, correct, totalAnswered);
+                    
+                    // Redirect to results page
+                    localStorage.setItem('multiplayerResult', JSON.stringify({
+                        score: score,
+                        correct: correct,
+                        totalAnswered: totalAnswered,
+                        sessionId: sessionId,
+                        isHost: isHost
+                    }));
+                    
+                    window.location.href = `multiplayer-result.html?session=${currentSession.code}`;
+                    
+                }
+            } catch (error) {
+                console.error('Error submitting exam:', error);
+                alert('Error submitting exam: ' + error.message);
+            }
+        }
+
+        async function updateUserStats(score, correct, totalAnswered) {
+            try {
+                const userRef = doc(db, "users", auth.currentUser.uid);
+                const userDoc = await getDoc(userRef);
+                
+                if (userDoc.exists()) {
+                    const userData = userDoc.data();
+                    const currentStats = userData.stats || {};
+                    
+                    await updateDoc(userRef, {
+                        'stats.examsTaken': increment(1),
+                        'stats.studyHours': increment(currentSession.examMode === 'standard' ? 2 : 0.5),
+                        multiplayerHistory: arrayUnion({
+                            sessionId: sessionId,
+                            sessionName: currentSession.name,
+                            score: score,
+                            correct: correct,
+                            total: totalAnswered,
+                            mode: currentSession.examMode,
+                            timestamp: serverTimestamp()
+                        })
+                    });
+                }
+            } catch (error) {
+                console.error('Error updating user stats:', error);
+            }
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey) {
+                if (e.key === 'ArrowLeft') {
+                    e.preventDefault();
+                    previousQuestion();
+                } else if (e.key === 'ArrowRight') {
+                    e.preventDefault();
+                    nextQuestion();
+                } else if (e.key === 'Enter') {
+                    e.preventDefault();
+                    submitMultiplayerExam();
+                }
+            }
+            
+            // Number keys 1-4 for options
+            if (!e.ctrlKey && !e.shiftKey && !e.altKey) {
+                const key = e.key.toUpperCase();
+                if (key >= 'A' && key <= 'D') {
+                    const optionIndex = key.charCodeAt(0) - 65; // A=0, B=1, C=2, D=3
+                    if (optionIndex >= 0 && optionIndex <= 3) {
+                        selectOption(optionIndex);
+                    }
+                }
+            }
+        });
+
+        // Prevent accidental page refresh
+        window.addEventListener('beforeunload', (e) => {
+            if (examStarted) {
+                e.preventDefault();
+                e.returnValue = 'Are you sure you want to leave? Your exam progress will be lost.';
+            }
+        });
+
+        // Clean up on page unload
+        window.addEventListener('unload', async () => {
+            if (examStarted && !sessionId) {
+                await updateParticipantStatus('left');
+            }
+            
+            if (timer) {
+                clearInterval(timer);
+            }
+        });
+
+    </script>
+</body>
+</html>
