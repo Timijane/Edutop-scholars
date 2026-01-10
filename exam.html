@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edutop Scholars - Exam System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #311b92;
+            --primary-light: #4527a0;
+            --secondary: #ff5722;
+            --accent: #00bcd4;
+            --light: #f5f5f7;
+            --dark: #333;
+            --success: #4caf50;
+            --warning: #ff9800;
+            --danger: #f44336;
+            --gray: #777;
+            --light-gray: #eee;
+            --attempted: #2196f3;
+            --skipped: #f44336;
+            --not-attempted: #9e9e9e;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            color: var(--dark);
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo h1 {
+            color: var(--primary);
+            font-size: 28px;
+        }
+        
+        .logo span {
+            color: var(--secondary);
+        }
+        
+        .back-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+        }
+        
+        .exam-container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        
+        .exam-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .exam-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+            text-align: center;
+        }
+        
+        .exam-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .exam-icon {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            color: white;
+            font-size: 40px;
+        }
+        
+        .exam-card h2 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-size: 28px;
+        }
+        
+        .exam-details {
+            text-align: left;
+            margin: 25px 0;
+            padding: 20px;
+            background: var(--light);
+            border-radius: 10px;
+        }
+        
+        .exam-details h4 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+        
+        .exam-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 20px;
+            width: 100%;
+        }
+        
+        .exam-btn:hover {
+            background: var(--primary-light);
+            transform: scale(1.05);
+        }
+        
+        .exam-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .subject-selection {
+            margin-top: 20px;
+        }
+        
+        .subject-checkboxes {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .subject-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px;
+            background: var(--light);
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .subject-checkbox input {
+            width: 18px;
+            height: 18px;
+        }
+        
+        .warning-message {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            color: #856404;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .modal {
+            background: white;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            padding: 30px;
+            position: relative;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--gray);
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .modal-btn {
+            padding: 12px 30px;
+            border-radius: 50px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            flex: 1;
+        }
+        
+        .modal-btn.primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .modal-btn.secondary {
+            background: var(--light-gray);
+            color: var(--dark);
+        }
+        
+        .selected-count {
+            margin-top: 15px;
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        @media (max-width: 768px) {
+            .exam-options {
+                grid-template-columns: 1fr;
+            }
+            
+            .exam-card {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">
+            <h1>Edutop<span>Scholars</span></h1>
+        </div>
+        <button class="back-btn" onclick="window.location.href='dashboard.html'">
+            <i class="fas fa-arrow-left"></i>
+            Back to Dashboard
+        </button>
+    </header>
+
+    <div class="exam-container">
+        <h1 style="color: var(--primary); text-align: center; margin-bottom: 10px; font-size: 36px;">
+            JAMB Practice System
+        </h1>
+        <p style="text-align: center; color: var(--gray); margin-bottom: 40px; font-size: 18px;">
+            Choose your preferred exam mode to begin practice
+        </p>
+        
+        <div class="exam-options">
+            <!-- Standard Exam Card -->
+            <div class="exam-card">
+                <div class="exam-icon">
+                    <i class="fas fa-university"></i>
+                </div>
+                <h2>Standard Exam</h2>
+                <p style="color: var(--gray); margin-bottom: 20px;">
+                    Simulate the real JAMB experience with full-length exams
+                </p>
+                
+                <div class="exam-details">
+                    <h4><i class="fas fa-info-circle"></i> Exam Details:</h4>
+                    <div class="detail-item">
+                        <span>Duration:</span>
+                        <strong>120 minutes</strong>
+                    </div>
+                    <div class="detail-item">
+                        <span>Questions:</span>
+                        <strong>220 total</strong>
+                    </div>
+                    <div class="detail-item">
+                        <span>English:</span>
+                        <strong>60 questions</strong>
+                    </div>
+                    <div class="detail-item">
+                        <span>Other Subjects:</span>
+                        <strong>40 each (3 subjects)</strong>
+                    </div>
+                    <div class="detail-item">
+                        <span>Timed:</span>
+                        <strong>Yes</strong>
+                    </div>
+                </div>
+                
+                <button class="exam-btn" id="startStandardBtn" onclick="startStandardExam()">
+                    <i class="fas fa-play-circle"></i> Start Standard Exam
+                </button>
+            </div>
+            
+            <!-- Short Exam Card -->
+            <div class="exam-card">
+                <div class="exam-icon" style="background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <h2>Short Minutes Exam</h2>
+                <p style="color: var(--gray); margin-bottom: 20px;">
+                    Quick practice session with fewer questions
+                </p>
+                
+                <div class="exam-details">
+                    <h4><i class="fas fa-info-circle"></i> Exam Details:</h4>
+                    <div class="detail-item">
+                        <span>Duration:</span>
+                        <strong>Untimed</strong>
+                    </div>
+                    <div class="detail-item">
+                        <span>Questions:</span>
+                        <strong>15-55 total</strong>
+                    </div>
+                    <div class="detail-item">
+                        <span>English:</span>
+                        <strong>15 questions</strong>
+                    </div>
+                    <div class="detail-item">
+                        <span>Other Subjects:</span>
+                        <strong>10 each (1-3 subjects)</strong>
+                    </div>
+                    <div class="detail-item">
+                        <span>Timed:</span>
+                        <strong>No</strong>
+                    </div>
+                </div>
+                
+                <div class="subject-selection">
+                    <h4 style="color: var(--primary); margin-bottom: 10px;">Select Subjects (1-4):</h4>
+                    <div class="subject-checkboxes" id="shortExamSubjects">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                    <div class="selected-count" id="selectedCount">0 subjects selected</div>
+                </div>
+                
+                <button class="exam-btn" id="startShortBtn" disabled onclick="startShortExam()">
+                    <i class="fas fa-play-circle"></i> Start Short Exam
+                </button>
+            </div>
+        </div>
+        
+        <div class="warning-message">
+            <i class="fas fa-exclamation-triangle"></i>
+            <div>
+                <strong>Important:</strong> English Language is compulsory for both exam modes. 
+                For Standard Exam, you must have exactly 4 subjects selected in your profile.
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div class="modal-overlay" id="confirmationModal">
+        <div class="modal">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <h2 id="modalTitle" style="color: var(--primary); margin-bottom: 20px; text-align: center;">Start Exam</h2>
+            <p id="modalMessage" style="text-align: center; margin-bottom: 30px; color: var(--gray);"></p>
+            <div class="modal-actions">
+                <button class="modal-btn secondary" onclick="closeModal()">Cancel</button>
+                <button class="modal-btn primary" onclick="confirmStartExam()">Start Exam</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+        // Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyCictHNxtslYs9VR0hoicxlwPn_QghkgIA",
+            authDomain: "edutop-7ff51.firebaseapp.com",
+            projectId: "edutop-7ff51",
+            storageBucket: "edutop-7ff51.firebasestorage.app",
+            messagingSenderId: "79307850494",
+            appId: "1:79307850494:web:b51ce51204140ec5429baf",
+            measurementId: "G-GGGH590BYS"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        
+        let currentUser = null;
+        let userSubjects = [];
+        let selectedShortSubjects = [];
+        let examMode = 'standard'; // 'standard' or 'short'
+
+        // All JAMB Subjects
+        const allSubjects = [
+            "Mathematics", "Physics", "Chemistry", "Biology", 
+            "English", "Literature", "Government", "Economics", 
+            "Geography", "Commerce", "Accounting", "CRS"
+        ];
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check auth
+            onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    currentUser = user;
+                    await loadUserData();
+                    renderSubjectCheckboxes();
+                } else {
+                    window.location.href = "index.html";
+                }
+            });
+        });
+
+        async function loadUserData() {
+            const userDoc = await getDoc(doc(db, "users", currentUser.uid));
+            if (userDoc.exists()) {
+                const data = userDoc.data();
+                userSubjects = data.selectedSubjects || [];
+                
+                // Check if user has subjects for standard exam
+                const standardBtn = document.getElementById('startStandardBtn');
+                if (userSubjects.length !== 4) {
+                    standardBtn.disabled = true;
+                    standardBtn.innerHTML = '<i class="fas fa-exclamation-circle"></i> Select 4 Subjects First';
+                    standardBtn.title = "You need exactly 4 selected subjects in your profile";
+                }
+            }
+        }
+
+        function renderSubjectCheckboxes() {
+            const container = document.getElementById('shortExamSubjects');
+            container.innerHTML = '';
+            
+            allSubjects.forEach(subject => {
+                const isEnglish = subject === 'English';
+                const div = document.createElement('div');
+                div.className = 'subject-checkbox';
+                div.innerHTML = `
+                    <input type="checkbox" id="subj-${subject}" 
+                           value="${subject}" 
+                           ${isEnglish ? 'checked disabled' : ''}
+                           onchange="updateSelectedSubjects()">
+                    <label for="subj-${subject}">
+                        ${subject} ${isEnglish ? '(Compulsory)' : ''}
+                    </label>
+                `;
+                container.appendChild(div);
+            });
+            
+            // Always select English by default
+            selectedShortSubjects = ['English'];
+            updateSelectedSubjects();
+        }
+
+        function updateSelectedSubjects() {
+            const checkboxes = document.querySelectorAll('.subject-checkbox input[type="checkbox"]:checked');
+            selectedShortSubjects = Array.from(checkboxes).map(cb => cb.value);
+            
+            const count = selectedShortSubjects.length;
+            const countElement = document.getElementById('selectedCount');
+            const startBtn = document.getElementById('startShortBtn');
+            
+            countElement.textContent = `${count} subjects selected`;
+            
+            if (count >= 1 && count <= 4) {
+                startBtn.disabled = false;
+                countElement.style.color = 'var(--success)';
+            } else {
+                startBtn.disabled = true;
+                countElement.style.color = count > 4 ? 'var(--danger)' : 'var(--warning)';
+            }
+        }
+
+        function startStandardExam() {
+            if (userSubjects.length !== 4) {
+                alert('Please select exactly 4 subjects in your profile first.');
+                window.location.href = 'dashboard.html#subject-selection-btn';
+                return;
+            }
+            
+            examMode = 'standard';
+            const modal = document.getElementById('confirmationModal');
+            const title = document.getElementById('modalTitle');
+            const message = document.getElementById('modalMessage');
+            
+            title.textContent = 'Start Standard Exam';
+            message.innerHTML = `
+                <strong>Exam Details:</strong><br><br>
+                • Duration: 120 minutes (2 hours)<br>
+                • Total Questions: 220<br>
+                • English: 60 questions<br>
+                • ${userSubjects.filter(s => s !== 'English').join(', ')}: 40 questions each<br><br>
+                <strong>Rules:</strong><br>
+                • Timer will start immediately<br>
+                • You cannot pause the exam<br>
+                • All questions must be answered<br>
+                • You can skip and return to questions<br><br>
+                Are you ready to begin?
+            `;
+            
+            modal.style.display = 'flex';
+        }
+
+        function startShortExam() {
+            examMode = 'short';
+            const modal = document.getElementById('confirmationModal');
+            const title = document.getElementById('modalTitle');
+            const message = document.getElementById('modalMessage');
+            
+            const subjectList = selectedShortSubjects.map(subj => {
+                const count = subj === 'English' ? 15 : 10;
+                return `• ${subj}: ${count} questions`;
+            }).join('<br>');
+            
+            const totalQuestions = selectedShortSubjects.reduce((total, subj) => {
+                return total + (subj === 'English' ? 15 : 10);
+            }, 0);
+            
+            title.textContent = 'Start Short Exam';
+            message.innerHTML = `
+                <strong>Exam Details:</strong><br><br>
+                ${subjectList}<br><br>
+                <strong>Total Questions:</strong> ${totalQuestions}<br>
+                <strong>Duration:</strong> Untimed<br><br>
+                <strong>Rules:</strong><br>
+                • No time limit<br>
+                • You can take breaks<br>
+                • Review all answers before submitting<br><br>
+                Are you ready to begin?
+            `;
+            
+            modal.style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('confirmationModal').style.display = 'none';
+        }
+
+        function confirmStartExam() {
+            closeModal();
+            
+            // Store exam settings in localStorage
+            const examSettings = {
+                mode: examMode,
+                subjects: examMode === 'standard' ? userSubjects : selectedShortSubjects,
+                timestamp: new Date().toISOString(),
+                userId: currentUser.uid
+            };
+            
+            localStorage.setItem('currentExam', JSON.stringify(examSettings));
+            
+            // Redirect to exam interface
+            window.location.href = 'exam-interface.html';
+        }
+
+        // Add keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeModal();
+            if (e.ctrlKey && e.key === 's') {
+                e.preventDefault();
+                startStandardExam();
+            }
+            if (e.ctrlKey && e.key === 'q') {
+                e.preventDefault();
+                startShortExam();
+            }
+        });
+
+    </script>
+</body>
+</html>
