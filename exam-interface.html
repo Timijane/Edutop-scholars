@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edutop Scholars - Exam Interface</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #311b92;
+            --primary-light: #4527a0;
+            --secondary: #ff5722;
+            --accent: #00bcd4;
+            --light: #f5f5f7;
+            --dark: #333;
+            --success: #4caf50;
+            --warning: #ff9800;
+            --danger: #f44336;
+            --gray: #777;
+            --light-gray: #eee;
+            --attempted: #2196f3;
+            --skipped: #f44336;
+            --not-attempted: #9e9e9e;
+            --correct: #4caf50;
+            --incorrect: #f44336;
+        }
+        
+        body {
+            background: #f0f2f5;
+            color: var(--dark);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .exam-header {
+            background: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo h1 {
+            color: var(--primary);
+            font-size: 24px;
+        }
+        
+        .logo span {
+            color: var(--secondary);
+        }
+        
+        .exam-info {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+        
+        .timer-container {
+            background: var(--primary);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 180px;
+            justify-content: center;
+        }
+        
+        .timer-warning {
+            background: var(--warning) !important;
+            animation: pulse 1s infinite;
+        }
+        
+        .timer-danger {
+            background: var(--danger) !important;
+            animation: blink 0.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .question-counter {
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 18px;
+        }
+        
+        .exam-body {
+            display: flex;
+            max-width: 1400px;
+            margin: 20px auto;
+            padding: 0 20px;
+            gap: 20px;
+        }
+        
+        .questions-panel {
+            width: 300px;
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            height: fit-content;
+            position: sticky;
+            top: 90px;
+        }
+        
+        .subject-section {
+            margin-bottom: 25px;
+        }
+        
+        .subject-header {
+            background: var(--primary);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .question-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            margin-top: 10px;
+        }
+        
+        .question-number {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+        
+        .question-number:hover {
+            transform: scale(1.1);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+        
+        .question-number.current {
+            border-color: var(--primary);
+            transform: scale(1.1);
+            box-shadow: 0 0 0 3px rgba(49, 27, 146, 0.2);
+        }
+        
+        .question-number.attempted {
+            background: var(--attempted);
+            color: white;
+        }
+        
+        .question-number.skipped {
+            background: var(--skipped);
+            color: white;
+        }
+        
+        .question-number.not-attempted {
+            background: var(--not-attempted);
+            color: white;
+        }
+        
+        .question-display {
+            flex: 1;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            min-height: 500px;
+        }
+        
+        .question-content {
+            margin-bottom: 30px;
+        }
+        
+        .question-text {
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--light-gray);
+        }
+        
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .option {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            padding: 15px 20px;
+            border: 2px solid var(--light-gray);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .option:hover {
+            border-color: var(--primary);
+            background: rgba(49, 27, 146, 0.05);
+        }
+        
+        .option.selected {
+            border-color: var(--primary);
+            background: rgba(49, 27, 146, 0.1);
+        }
+        
+        .option-letter {
+            width: 35px;
+            height: 35px;
+            border-radius: 8px;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        
+        .option-text {
+            flex: 1;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+        
+        .exam-controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid var(--light-gray);
+        }
+        
+        .control-btn {
+            padding: 12px 30px;
+            border-radius: 50px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+        
+        .control-btn.primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .control-btn.secondary {
+            background: var(--light-gray);
+            color: var(--dark);
+        }
+        
+        .control-btn.warning {
+            background: var(--warning);
+            color: white;
+        }
+        
+        .control-btn.danger {
+            background: var(--danger);
+            color: white;
+        }
+        
+        .control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .question-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            margin: 15px 0;
+            border: 2px solid var(--light-gray);
+        }
+        
+        .instructions-panel {
+            background: #e8f4fc;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .instructions-panel h4 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .keyboard-shortcuts {
+            background: var(--light);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 25px;
+            font-size: 14px;
+        }
+        
+        .shortcut-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            border-bottom: 1px dashed rgba(0,0,0,0.1);
+        }
+        
+        .submit-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .submit-modal-content {
+            background: white;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .submit-modal h2 {
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+        
+        .submit-modal-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .submit-modal-btn {
+            flex: 1;
+            padding: 15px;
+            border-radius: 10px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .submit-modal-btn.primary {
+            background: var(--success);
+            color: white;
+        }
+        
+        .submit-modal-btn.secondary {
+            background: var(--light-gray);
+            color: var(--dark);
+        }
+        
+        .exam-progress {
+            flex: 1;
+            max-width: 400px;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: var(--light-gray);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 5px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            width: 0%;
+            transition: width 0.3s;
+        }
+        
+        @media (max-width: 1024px) {
+            .exam-body {
+                flex-direction: column;
+            }
+            
+            .questions-panel {
+                width: 100%;
+                position: static;
+            }
+            
+            .question-grid {
+                grid-template-columns: repeat(8, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .exam-header {
+                flex-direction: column;
+                gap: 15px;
+                padding: 15px;
+            }
+            
+            .exam-info {
+                flex-direction: column;
+                gap: 15px;
+                width: 100%;
+            }
+            
+            .question-grid {
+                grid-template-columns: repeat(6, 1fr);
+            }
+            
+            .exam-controls {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .control-btn {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="exam-header">
+        <div class="logo">
+            <h1>Edutop<span>Scholars</span> - <span id="examModeDisplay">Exam</span></h1>
+        </div>
+        
+        <div class="exam-info">
+            <div class="timer-container" id="timerDisplay">
+                <i class="fas fa-clock"></i>
+                <span id="timerText">--:--</span>
+            </div>
+            <div class="question-counter">
+                Question <span id="currentQuestionNum">1</span> of <span id="totalQuestions">--</span>
+            </div>
+            <div class="exam-progress">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div style="font-size: 14px; color: var(--gray); text-align: center;">
+                    <span id="progressText">0% Complete</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="exam-body">
+        <!-- Left Panel: Question Numbers -->
+        <div class="questions-panel">
+            <div class="instructions-panel">
+                <h4><i class="fas fa-info-circle"></i> Navigation Guide</h4>
+                <p style="font-size: 14px; color: var(--gray);">
+                    <span style="display: inline-block; width: 15px; height: 15px; background: var(--attempted); border-radius: 3px; margin-right: 5px;"></span> Attempted
+                    <span style="display: inline-block; width: 15px; height: 15px; background: var(--skipped); border-radius: 3px; margin: 0 5px 0 15px;"></span> Skipped
+                    <span style="display: inline-block; width: 15px; height: 15px; background: var(--not-attempted); border-radius: 3px; margin: 0 5px 0 15px;"></span> Not Attempted
+                </p>
+            </div>
+            
+            <div id="subjectSections">
+                <!-- Subject sections will be dynamically added here -->
+            </div>
+            
+            <div class="keyboard-shortcuts">
+                <h4 style="color: var(--primary); margin-bottom: 10px; font-size: 14px;">Keyboard Shortcuts</h4>
+                <div class="shortcut-item">
+                    <span>Previous Question</span>
+                    <kbd>Ctrl + ←</kbd>
+                </div>
+                <div class="shortcut-item">
+                    <span>Next Question</span>
+                    <kbd>Ctrl + →</kbd>
+                </div>
+                <div class="shortcut-item">
+                    <span>Select Option A-D</span>
+                    <kbd>A</kbd> <kbd>B</kbd> <kbd>C</kbd> <kbd>D</kbd>
+                </div>
+                <div class="shortcut-item">
+                    <span>Submit Exam</span>
+                    <kbd>Ctrl + Enter</kbd>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Right Panel: Question Display -->
+        <div class="question-display">
+            <div class="question-content">
+                <div id="currentSubject" style="color: var(--primary); font-weight: 600; margin-bottom: 10px; font-size: 14px; text-transform: uppercase;">
+                    Subject: Loading...
+                </div>
+                <div class="question-text" id="questionText">
+                    Loading question...
+                </div>
+                
+                <div id="questionImageContainer" style="display: none;">
+                    <img src="" alt="Question Image" class="question-image" id="questionImage">
+                </div>
+                
+                <div class="options-container" id="optionsContainer">
+                    <!-- Options will be dynamically added here -->
+                </div>
+            </div>
+            
+            <div class="exam-controls">
+                <button class="control-btn secondary" onclick="previousQuestion()">
+                    <i class="fas fa-arrow-left"></i> Previous
+                </button>
+                
+                <div class="action-buttons">
+                    <button class="control-btn warning" onclick="skipQuestion()">
+                        <i class="fas fa-forward"></i> Skip
+                    </button>
+                    <button class="control-btn primary" onclick="nextQuestion()">
+                        Next <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+                
+                <button class="control-btn danger" onclick="showSubmitModal()">
+                    <i class="fas fa-paper-plane"></i> Submit Exam
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Submit Confirmation Modal -->
+    <div class="submit-modal" id="submitModal">
+        <div class="submit-modal-content">
+            <h2>Submit Exam</h2>
+            <div id="submitStats">
+                <p>Please review your answers before submitting:</p>
+                <div style="text-align: left; margin: 20px 0; background: var(--light); padding: 20px; border-radius: 10px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <span>Attempted Questions:</span>
+                        <strong id="attemptedCount">0</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <span>Skipped Questions:</span>
+                        <strong id="skippedCount">0</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <span>Unanswered Questions:</span>
+                        <strong id="unansweredCount">0</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-top: 15px; padding-top: 15px; border-top: 2px dashed var(--gray);">
+                        <span>Total Questions:</span>
+                        <strong id="totalSubmitCount">0</strong>
+                    </div>
+                </div>
+            </div>
+            <div class="submit-modal-buttons">
+                <button class="submit-modal-btn secondary" onclick="closeSubmitModal()">
+                    Continue Exam
+                </button>
+                <button class="submit-modal-btn primary" onclick="submitExam()">
+                    <i class="fas fa-check"></i> Submit Now
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+        import { getFirestore, doc, updateDoc, arrayUnion, increment, getDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+        // Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyCictHNxtslYs9VR0hoicxlwPn_QghkgIA",
+            authDomain: "edutop-7ff51.firebaseapp.com",
+            projectId: "edutop-7ff51",
+            storageBucket: "edutop-7ff51.firebasestorage.app",
+            messagingSenderId: "79307850494",
+            appId: "1:79307850494:web:b51ce51204140ec5429baf",
+            measurementId: "G-GGGH590BYS"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        
+        // Exam State
+        let examData = null;
+        let questions = [];
+        let currentQuestionIndex = 0;
+        let userAnswers = {};
+        let timer = null;
+        let timeLeft = 0;
+        let examStarted = false;
+        let totalQuestions = 0;
+
+        // Sample Questions Database (In real app, this would come from Firebase)
+        const questionBank = {
+            "English": [
+                {
+                    id: 1,
+                    text: "Choose the word that has the same vowel sound as the one represented by the letter(s) underlined. l<u>ea</u>ve",
+                    options: ["believe", "break", "bread", "severe"],
+                    correctAnswer: 3, // D
+                    image: null
+                },
+                {
+                    id: 2,
+                    text: "In the following sentence, there is an underlined word and one gap. From the list of words lettered A to D, choose the one that is most nearly opposite in meaning to the underlined word and that will at the same time, correctly fill the gap in the sentence. Rather than being ________, the young man was quite cautious in his dealings with people.",
+                    options: ["audacious", "venturesome", "timid", "reckless"],
+                    correctAnswer: 2, // C
+                    image: null
+                },
+                {
+                    id: 3,
+                    text: "Choose the option that best completes the following sentence. If I had known about the traffic, I ________ earlier.",
+                    options: ["would have left", "will leave", "would leave", "had left"],
+                    correctAnswer: 0, // A
+                    image: null
+                }
+            ],
+            "Mathematics": [
+                {
+                    id: 1,
+                    text: "Simplify: 2√27 + 3√75 - √48",
+                    options: ["15√3", "13√3", "11√3", "9√3"],
+                    correctAnswer: 1, // B
+                    image: null
+                },
+                {
+                    id: 2,
+                    text: "If the sum of the first n terms of an AP is given by Sn = 3n² - n, find the 10th term.",
+                    options: ["56", "57", "58", "59"],
+                    correctAnswer: 3, // D
+                    image: null
+                }
+            ],
+            "Physics": [
+                {
+                    id: 1,
+                    text: "A force of 20N acts on a body of mass 5kg at rest. What is the acceleration of the body?",
+                    options: ["4 m/s²", "5 m/s²", "10 m/s²", "100 m/s²"],
+                    correctAnswer: 0, // A
+                    image: null
+                }
+            ],
+            "Chemistry": [
+                {
+                    id: 1,
+                    text: "Which of the following elements has the electronic configuration 1s²2s²2p⁶3s²3p⁶4s²?",
+                    options: ["Calcium", "Potassium", "Argon", "Scandium"],
+                    correctAnswer: 0, // A
+                    image: null
+                }
+            ],
+            "Biology": [
+                {
+                    id: 1,
+                    text: "Which of the following is NOT a characteristic of living things?",
+                    options: ["Respiration", "Reproduction", "Movement", "Metabolism"],
+                    correctAnswer: 2, // C
+                    image: null
+                }
+            ]
+        };
+
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Check auth
+            onAuthStateChanged(auth, async (user) => {
+                if (!user) {
+                    window.location.href = "index.html";
+                    return;
+                }
+                
+                // Load exam settings from localStorage
+                const examSettings = localStorage.getItem('currentExam');
+                if (!examSettings) {
+                    alert('No exam session found. Redirecting to exam selection.');
+                    window.location.href = 'exam.html';
+                    return;
+                }
+                
+                examData = JSON.parse(examSettings);
+                await initializeExam();
+            });
+        });
+
+        async function initializeExam() {
+            // Set exam mode display
+            document.getElementById('examModeDisplay').textContent = 
+                examData.mode === 'standard' ? 'Standard Exam' : 'Short Exam';
+            
+            // Generate questions based on mode and subjects
+            questions = generateQuestions();
+            totalQuestions = questions.length;
+            
+            // Initialize user answers object
+            userAnswers = {};
+            questions.forEach((q, index) => {
+                userAnswers[index] = {
+                    selected: null,
+                    status: 'not-attempted',
+                    subject: q.subject,
+                    questionId: q.id
+                };
+            });
+            
+            // Initialize timer for standard exam
+            if (examData.mode === 'standard') {
+                timeLeft = 120 * 60; // 120 minutes in seconds
+                startTimer();
+            }
+            
+            // Update UI
+            document.getElementById('totalQuestions').textContent = totalQuestions;
+            updateQuestionDisplay();
+            updateQuestionNumbers();
+            updateProgress();
+            
+            // Setup keyboard shortcuts
+            setupKeyboardShortcuts();
+            
+            examStarted = true;
+        }
+
+        function generateQuestions() {
+            const allQuestions = [];
+            
+            examData.subjects.forEach(subject => {
+                let questionCount = 0;
+                
+                if (examData.mode === 'standard') {
+                    questionCount = subject === 'English' ? 60 : 40;
+                } else {
+                    questionCount = subject === 'English' ? 15 : 10;
+                }
+                
+                // Get questions from question bank (in real app, this would be from Firebase)
+                const subjectQuestions = questionBank[subject] || [];
+                
+                // Duplicate questions if needed (for demo)
+                for (let i = 0; i < questionCount; i++) {
+                    const questionIndex = i % subjectQuestions.length;
+                    const question = { ...subjectQuestions[questionIndex] };
+                    question.subject = subject;
+                    question.number = allQuestions.length + 1;
+                    allQuestions.push(question);
+                }
+            });
+            
+            return allQuestions;
+        }
+
+        function startTimer() {
+            timer = setInterval(() => {
+                timeLeft--;
+                
+                // Update timer display
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                document.getElementById('timerText').textContent = 
+                    `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                // Update timer color based on remaining time
+                const timerDisplay = document.getElementById('timerDisplay');
+                if (timeLeft <= 300) { // 5 minutes left
+                    timerDisplay.classList.add('timer-danger');
+                    timerDisplay.classList.remove('timer-warning');
+                } else if (timeLeft <= 600) { // 10 minutes left
+                    timerDisplay.classList.add('timer-warning');
+                    timerDisplay.classList.remove('timer-danger');
+                } else {
+                    timerDisplay.classList.remove('timer-warning', 'timer-danger');
+                }
+                
+                // Auto-submit when time is up
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    alert('Time is up! Submitting your exam...');
+                    submitExam();
+                }
+            }, 1000);
+        }
+
+        function updateQuestionDisplay() {
+            if (!questions.length || currentQuestionIndex >= questions.length) return;
+            
+            const question = questions[currentQuestionIndex];
+            
+            // Update question text
+            document.getElementById('currentSubject').textContent = `Subject: ${question.subject}`;
+            document.getElementById('questionText').textContent = `${question.number}. ${question.text}`;
+            document.getElementById('currentQuestionNum').textContent = question.number;
+            
+            // Update options
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+            
+            const optionLetters = ['A', 'B', 'C', 'D'];
+            optionLetters.forEach((letter, index) => {
+                if (question.options[index]) {
+                    const optionDiv = document.createElement('div');
+                    optionDiv.className = `option ${userAnswers[currentQuestionIndex].selected === index ? 'selected' : ''}`;
+                    optionDiv.onclick = () => selectOption(index);
+                    
+                    optionDiv.innerHTML = `
+                        <div class="option-letter">${letter}</div>
+                        <div class="option-text">${question.options[index]}</div>
+                    `;
+                    
+                    optionsContainer.appendChild(optionDiv);
+                }
+            });
+            
+            // Update question image if exists
+            const imageContainer = document.getElementById('questionImageContainer');
+            if (question.image) {
+                document.getElementById('questionImage').src = question.image;
+                imageContainer.style.display = 'block';
+            } else {
+                imageContainer.style.display = 'none';
+            }
+            
+            // Update question numbers highlight
+            updateQuestionNumbers();
+        }
+
+        function selectOption(optionIndex) {
+            userAnswers[currentQuestionIndex].selected = optionIndex;
+            userAnswers[currentQuestionIndex].status = 'attempted';
+            
+            // Update UI
+            document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+            document.querySelectorAll('.option')[optionIndex].classList.add('selected');
+            
+            // Auto-advance to next question after selection
+            setTimeout(() => {
+                if (currentQuestionIndex < questions.length - 1) {
+                    nextQuestion();
+                }
+            }, 500);
+            
+            updateProgress();
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                updateQuestionDisplay();
+                updateQuestionNumbers();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                updateQuestionDisplay();
+                updateQuestionNumbers();
+            }
+        }
+
+        function skipQuestion() {
+            userAnswers[currentQuestionIndex].status = 'skipped';
+            
+            // Auto-advance to next question
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                updateQuestionDisplay();
+                updateQuestionNumbers();
+            }
+            
+            updateProgress();
+        }
+
+        function updateQuestionNumbers() {
+            const subjectSections = document.getElementById('subjectSections');
+            subjectSections.innerHTML = '';
+            
+            // Group questions by subject
+            const questionsBySubject = {};
+            questions.forEach((q, index) => {
+                if (!questionsBySubject[q.subject]) {
+                    questionsBySubject[q.subject] = [];
+                }
+                questionsBySubject[q.subject].push({ index, number: q.number });
+            });
+            
+            // Create sections for each subject
+            Object.keys(questionsBySubject).forEach(subject => {
+                const section = document.createElement('div');
+                section.className = 'subject-section';
+                
+                const subjectQuestions = questionsBySubject[subject];
+                const attempted = subjectQuestions.filter(q => 
+                    userAnswers[q.index].status === 'attempted'
+                ).length;
+                
+                section.innerHTML = `
+                    <div class="subject-header">
+                        <span>${subject}</span>
+                        <span style="font-size: 12px;">${attempted}/${subjectQuestions.length}</span>
+                    </div>
+                    <div class="question-grid" id="grid-${subject}"></div>
+                `;
+                
+                subjectSections.appendChild(section);
+                
+                // Add question numbers to grid
+                const grid = document.getElementById(`grid-${subject}`);
+                subjectQuestions.forEach(({ index, number }) => {
+                    const qNum = document.createElement('div');
+                    qNum.className = `question-number ${userAnswers[index].status} ${index === currentQuestionIndex ? 'current' : ''}`;
+                    qNum.textContent = number;
+                    qNum.onclick = () => {
+                        currentQuestionIndex = index;
+                        updateQuestionDisplay();
+                        updateQuestionNumbers();
+                    };
+                    grid.appendChild(qNum);
+                });
+            });
+        }
+
+        function updateProgress() {
+            const attempted = Object.values(userAnswers).filter(a => a.status === 'attempted').length;
+            const skipped = Object.values(userAnswers).filter(a => a.status === 'skipped').length;
+            const progress = (attempted / totalQuestions) * 100;
+            
+            document.getElementById('progressFill').style.width = `${progress}%`;
+            document.getElementById('progressText').textContent = `${Math.round(progress)}% Complete`;
+            
+            // Update submit modal stats
+            document.getElementById('attemptedCount').textContent = attempted;
+            document.getElementById('skippedCount').textContent = skipped;
+            document.getElementById('unansweredCount').textContent = totalQuestions - attempted - skipped;
+            document.getElementById('totalSubmitCount').textContent = totalQuestions;
+        }
+
+        function showSubmitModal() {
+            updateProgress();
+            document.getElementById('submitModal').style.display = 'flex';
+        }
+
+        function closeSubmitModal() {
+            document.getElementById('submitModal').style.display = 'none';
+        }
+
+        async function submitExam() {
+            closeSubmitModal();
+            
+            if (timer) {
+                clearInterval(timer);
+            }
+            
+            // Calculate score
+            let correct = 0;
+            let total = 0;
+            
+            questions.forEach((question, index) => {
+                if (userAnswers[index].selected !== null) {
+                    total++;
+                    if (userAnswers[index].selected === question.correctAnswer) {
+                        correct++;
+                    }
+                }
+            });
+            
+            const score = total > 0 ? Math.round((correct / total) * 100) : 0;
+            
+            // Save exam results to Firebase
+            const user = auth.currentUser;
+            if (user) {
+                const examResult = {
+                    mode: examData.mode,
+                    subjects: examData.subjects,
+                    score: score,
+                    correctAnswers: correct,
+                    totalQuestions: total,
+                    attempted: Object.values(userAnswers).filter(a => a.status === 'attempted').length,
+                    skipped: Object.values(userAnswers).filter(a => a.status === 'skipped').length,
+                    timestamp: new Date().toISOString(),
+                    duration: examData.mode === 'standard' ? (120 * 60 - timeLeft) : null,
+                    answers: userAnswers
+                };
+                
+                try {
+                    // Save to user's exam history
+                    await updateDoc(doc(db, "users", user.uid), {
+                        examHistory: arrayUnion(examResult),
+                        'stats.examsTaken': increment(1),
+                        'stats.studyHours': increment(examData.mode === 'standard' ? 2 : 0.5),
+                        lastExam: examResult
+                    });
+                    
+                    // Update overall score (average of all exams)
+                    const userDoc = await getDoc(doc(db, "users", user.uid));
+                    if (userDoc.exists()) {
+                        const userData = userDoc.data();
+                        const examHistory = userData.examHistory || [];
+                        examHistory.push(examResult);
+                        
+                        const totalScore = examHistory.reduce((sum, exam) => sum + exam.score, 0);
+                        const averageScore = Math.round(totalScore / examHistory.length);
+                        
+                        await updateDoc(doc(db, "users", user.uid), {
+                            'stats.overallScore': averageScore
+                        });
+                    }
+                    
+                    // Show result and redirect
+                    alert(`Exam submitted successfully!\nScore: ${score}% (${correct}/${total} correct)`);
+                    localStorage.removeItem('currentExam');
+                    window.location.href = `exam-result.html?score=${score}&correct=${correct}&total=${total}&mode=${examData.mode}`;
+                    
+                } catch (error) {
+                    console.error('Error saving exam results:', error);
+                    alert('Error saving exam results. Please try again.');
+                }
+            }
+        }
+
+        function setupKeyboardShortcuts() {
+            document.addEventListener('keydown', (e) => {
+                // Ctrl + Arrow keys for navigation
+                if (e.ctrlKey) {
+                    if (e.key === 'ArrowLeft') {
+                        e.preventDefault();
+                        previousQuestion();
+                    } else if (e.key === 'ArrowRight') {
+                        e.preventDefault();
+                        nextQuestion();
+                    } else if (e.key === 'Enter') {
+                        e.preventDefault();
+                        showSubmitModal();
+                    }
+                }
+                
+                // Number keys 1-4 for options
+                if (!e.ctrlKey && !e.shiftKey && !e.altKey) {
+                    const key = e.key.toUpperCase();
+                    if (key >= 'A' && key <= 'D') {
+                        const optionIndex = key.charCodeAt(0) - 65; // A=0, B=1, C=2, D=3
+                        if (optionIndex >= 0 && optionIndex <= 3) {
+                            selectOption(optionIndex);
+                        }
+                    }
+                }
+                
+                // Space for skip
+                if (e.key === ' ' || e.key === 'Spacebar') {
+                    e.preventDefault();
+                    skipQuestion();
+                }
+            });
+        }
+
+        // Prevent accidental page refresh
+        window.addEventListener('beforeunload', (e) => {
+            if (examStarted) {
+                e.preventDefault();
+                e.returnValue = 'Are you sure you want to leave? Your exam progress will be lost.';
+            }
+        });
+
+        // Add question number click handler
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('question-number')) {
+                const questionNum = parseInt(e.target.textContent);
+                const questionIndex = questions.findIndex(q => q.number === questionNum);
+                if (questionIndex !== -1) {
+                    currentQuestionIndex = questionIndex;
+                    updateQuestionDisplay();
+                    updateQuestionNumbers();
+                }
+            }
+        });
+
+    </script>
+</body>
+</html>
