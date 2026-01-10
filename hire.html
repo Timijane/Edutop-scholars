@@ -1,0 +1,1695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edutop Scholars - Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        :root {
+            --primary: #311b92;
+            --primary-light: #4527a0;
+            --secondary: #ff5722;
+            --accent: #00bcd4;
+            --light: #f5f5f7;
+            --dark: #333;
+            --success: #4caf50;
+            --warning: #ff9800;
+            --danger: #f44336;
+            --gray: #777;
+            --light-gray: #eee;
+            --card-bg: white;
+            --bg-color: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            --text-color: #333;
+            --sidebar-bg: white;
+            --header-bg: white;
+            --modal-bg: white;
+            --border-color: #eee;
+        }
+        
+        [data-theme="dark"] {
+            --primary: #7e57c2;
+            --primary-light: #9575cd;
+            --secondary: #ff8a65;
+            --accent: #26c6da;
+            --light: #1a1a2e;
+            --dark: #e0e0e0;
+            --card-bg: #2d2d44;
+            --bg-color: linear-gradient(135deg, #121212 0%, #1e1e2e 100%);
+            --text-color: #e0e0e0;
+            --sidebar-bg: #2d2d44;
+            --header-bg: #2d2d44;
+            --modal-bg: #2d2d44;
+            --border-color: #444;
+            --gray: #aaa;
+            --light-gray: #333;
+        }
+        
+        body { 
+            background: var(--bg-color); 
+            color: var(--text-color); 
+            min-height: 100vh;
+        }
+        
+        .header { 
+            background: var(--header-bg); 
+            padding: 15px 30px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08); 
+            position: sticky; 
+            top: 0; 
+            z-index: 100; 
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .logo { 
+            display: flex; 
+            align-items: center; 
+        }
+        
+        .logo h1 { 
+            color: var(--primary); 
+            font-size: 28px; 
+        }
+        
+        .logo span { 
+            color: var(--secondary); 
+        }
+        
+        .user-info { 
+            display: flex; 
+            align-items: center; 
+            gap: 20px; 
+        }
+        
+        .theme-toggle {
+            background: var(--primary);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: all 0.3s;
+        }
+        
+        .theme-toggle:hover {
+            background: var(--primary-light);
+            transform: rotate(30deg);
+        }
+        
+        .notification { 
+            position: relative; 
+            font-size: 20px; 
+            color: var(--gray); 
+            cursor: pointer; 
+        }
+        
+        .notification-count { 
+            position: absolute; 
+            top: -5px; 
+            right: -5px; 
+            background: var(--danger); 
+            color: white; 
+            font-size: 12px; 
+            width: 18px; 
+            height: 18px; 
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            display: none; 
+        }
+        
+        .user-profile { 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+        }
+        
+        .user-avatar { 
+            width: 40px; 
+            height: 40px; 
+            border-radius: 50%; 
+            background: var(--primary); 
+            color: white; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-weight: bold; 
+        }
+        
+        .user-name { 
+            font-weight: 600; 
+        }
+
+        .dashboard-container { 
+            display: flex; 
+            min-height: calc(100vh - 80px); 
+        }
+        
+        .sidebar { 
+            width: 250px; 
+            background: var(--sidebar-bg); 
+            padding: 25px 0; 
+            box-shadow: 3px 0 10px rgba(0, 0, 0, 0.05); 
+            display: flex; 
+            flex-direction: column; 
+            border-right: 1px solid var(--border-color);
+        }
+        
+        .sidebar-section { 
+            margin-bottom: 30px; 
+            padding: 0 20px; 
+        }
+        
+        .sidebar-section h3 { 
+            color: var(--primary); 
+            margin-bottom: 15px; 
+            font-size: 16px; 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+        }
+        
+        .sidebar-item { 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            padding: 12px 15px; 
+            margin-bottom: 8px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            transition: all 0.3s; 
+            color: var(--text-color); 
+            text-decoration: none; 
+        }
+        
+        .sidebar-item:hover { 
+            background: var(--light-gray); 
+        }
+        
+        .sidebar-item.active { 
+            background: var(--primary); 
+            color: white; 
+        }
+        
+        .sidebar-item i { 
+            width: 20px; 
+            text-align: center; 
+        }
+        
+        .subscription-status { 
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); 
+            color: white; 
+            padding: 15px; 
+            margin: 20px; 
+            border-radius: 10px; 
+            text-align: center; 
+        }
+        
+        .subscription-status h4 { 
+            margin-bottom: 5px; 
+        }
+        
+        .subscription-status p { 
+            font-size: 14px; 
+            opacity: 0.9; 
+        }
+
+        .main-content { 
+            flex: 1; 
+            padding: 30px; 
+        }
+        
+        .welcome-section { 
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); 
+            color: white; 
+            padding: 25px; 
+            border-radius: 15px; 
+            margin-bottom: 30px; 
+            box-shadow: 0 10px 20px rgba(49, 27, 146, 0.2); 
+        }
+        
+        .welcome-section h2 { 
+            font-size: 28px; 
+            margin-bottom: 10px; 
+        }
+        
+        .welcome-section p { 
+            opacity: 0.9; 
+            max-width: 600px; 
+        }
+        
+        .stats-cards { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); 
+            gap: 20px; 
+            margin-bottom: 30px; 
+        }
+        
+        .stat-card { 
+            background: var(--card-bg); 
+            padding: 20px; 
+            border-radius: 10px; 
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05); 
+            display: flex; 
+            align-items: center; 
+            gap: 15px; 
+            transition: transform 0.3s; 
+            border: 1px solid var(--border-color);
+        }
+        
+        .stat-card:hover { 
+            transform: translateY(-5px); 
+        }
+        
+        .stat-icon { 
+            width: 50px; 
+            height: 50px; 
+            border-radius: 10px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 22px; 
+            color: white; 
+        }
+        
+        .stat-info h3 { 
+            font-size: 24px; 
+            margin-bottom: 5px; 
+        }
+        
+        .stat-info p { 
+            color: var(--gray); 
+            font-size: 14px; 
+        }
+
+        .dashboard-actions { 
+            margin-bottom: 40px; 
+        }
+        
+        .dashboard-actions h2 { 
+            margin-bottom: 20px; 
+            color: var(--primary); 
+            font-size: 24px; 
+        }
+        
+        .action-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
+            gap: 25px; 
+        }
+        
+        .action-card { 
+            background: var(--card-bg); 
+            border-radius: 15px; 
+            padding: 25px; 
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06); 
+            transition: all 0.3s; 
+            cursor: pointer; 
+            border: 2px solid transparent; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            text-align: center; 
+            border: 1px solid var(--border-color);
+        }
+        
+        .action-card:hover { 
+            transform: translateY(-10px); 
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1); 
+            border-color: var(--primary); 
+        }
+        
+        .action-icon { 
+            width: 70px; 
+            height: 70px; 
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 30px; 
+            color: white; 
+            margin-bottom: 20px; 
+        }
+        
+        .action-card h3 { 
+            margin-bottom: 10px; 
+            color: var(--primary); 
+        }
+        
+        .action-card p { 
+            color: var(--gray); 
+            font-size: 14px; 
+            line-height: 1.5; 
+            margin-bottom: 20px; 
+        }
+        
+        .action-btn { 
+            padding: 10px 20px; 
+            background: var(--primary); 
+            color: white; 
+            border: none; 
+            border-radius: 50px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            transition: background 0.3s; 
+            width: 100%; 
+            max-width: 200px; 
+        }
+        
+        .action-btn:hover { 
+            background: var(--primary-light); 
+        }
+        
+        .action-btn:disabled { 
+            background: var(--gray); 
+            cursor: not-allowed; 
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-color);
+            font-weight: 600;
+        }
+        
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--light);
+            color: var(--text-color);
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .form-input[readonly] {
+            background: var(--light-gray);
+            cursor: not-allowed;
+        }
+        
+        .subjects-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .subject-tag {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 15px;
+            background: var(--light);
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .subject-tag:hover {
+            background: var(--light-gray);
+        }
+        
+        .subject-tag.selected {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .subject-tag input {
+            display: none;
+        }
+        
+        .whatsapp-info {
+            background: #25D366;
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .whatsapp-info i {
+            font-size: 24px;
+        }
+
+        .modal-overlay { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            right: 0; 
+            bottom: 0; 
+            background: rgba(0, 0, 0, 0.7); 
+            display: none; 
+            align-items: center; 
+            justify-content: center; 
+            z-index: 1000; 
+        }
+        
+        .modal { 
+            background: var(--modal-bg); 
+            border-radius: 15px; 
+            width: 90%; 
+            max-width: 500px; 
+            max-height: 90vh; 
+            overflow-y: auto; 
+            padding: 30px; 
+            position: relative; 
+        }
+        
+        .modal-close { 
+            position: absolute; 
+            top: 20px; 
+            right: 20px; 
+            background: none; 
+            border: none; 
+            font-size: 24px; 
+            cursor: pointer; 
+            color: var(--gray); 
+        }
+        
+        .modal h2 { 
+            color: var(--primary); 
+            margin-bottom: 20px; 
+            text-align: center; 
+        }
+        
+        .subject-selection { 
+            margin-bottom: 30px; 
+        }
+        
+        .subject-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); 
+            gap: 15px; 
+            margin-top: 20px; 
+        }
+        
+        .subject-card { 
+            background: var(--light); 
+            border-radius: 10px; 
+            padding: 15px; 
+            text-align: center; 
+            cursor: pointer; 
+            transition: all 0.3s; 
+            border: 2px solid transparent; 
+        }
+        
+        .subject-card.selected { 
+            background: var(--primary); 
+            color: white; 
+            border-color: var(--primary); 
+        }
+        
+        .subject-card:hover:not(.selected) { 
+            border-color: var(--primary); 
+        }
+        
+        .subject-icon { 
+            font-size: 30px; 
+            margin-bottom: 10px; 
+            color: var(--primary); 
+        }
+        
+        .subject-card.selected .subject-icon { 
+            color: white; 
+        }
+        
+        .selected-subjects { 
+            background: var(--light); 
+            padding: 20px; 
+            border-radius: 10px; 
+            margin-top: 30px; 
+        }
+        
+        .selected-subjects h4 { 
+            margin-bottom: 15px; 
+            color: var(--primary); 
+        }
+        
+        .selected-list { 
+            display: flex; 
+            flex-wrap: wrap; 
+            gap: 10px; 
+        }
+        
+        .selected-tag { 
+            background: var(--primary); 
+            color: white; 
+            padding: 8px 15px; 
+            border-radius: 50px; 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+        }
+        
+        .remove-subject { 
+            background: none; 
+            border: none; 
+            color: white; 
+            cursor: pointer; 
+            font-size: 14px; 
+        }
+        
+        .modal-actions { 
+            display: flex; 
+            justify-content: center; 
+            gap: 15px; 
+            margin-top: 30px; 
+        }
+        
+        .modal-btn { 
+            padding: 12px 30px; 
+            border-radius: 50px; 
+            border: none; 
+            font-weight: 600; 
+            cursor: pointer; 
+            transition: all 0.3s; 
+        }
+        
+        .modal-btn.primary { 
+            background: var(--primary); 
+            color: white; 
+        }
+        
+        .modal-btn.secondary { 
+            background: var(--light-gray); 
+            color: var(--text-color); 
+        }
+        
+        .recent-activity { 
+            background: var(--card-bg); 
+            border-radius: 15px; 
+            padding: 25px; 
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06); 
+            border: 1px solid var(--border-color);
+        }
+        
+        .recent-activity h2 { 
+            color: var(--primary); 
+            margin-bottom: 20px; 
+            font-size: 24px; 
+        }
+        
+        .activity-list { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 15px; 
+        }
+        
+        .activity-item { 
+            display: flex; 
+            align-items: center; 
+            gap: 15px; 
+            padding: 15px; 
+            border-radius: 10px; 
+            background: var(--light); 
+        }
+        
+        .activity-icon { 
+            width: 40px; 
+            height: 40px; 
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            color: white; 
+            font-size: 18px; 
+        }
+        
+        .activity-info h4 { 
+            margin-bottom: 5px; 
+        }
+        
+        .activity-info p { 
+            color: var(--gray); 
+            font-size: 14px; 
+        }
+        
+        .footer { 
+            background: var(--header-bg); 
+            padding: 20px; 
+            text-align: center; 
+            color: var(--gray); 
+            font-size: 14px; 
+            margin-top: 40px; 
+            border-top: 1px solid var(--border-color); 
+        }
+
+        /* Multiplayer Button Styling */
+        .multiplayer-btn {
+            background: linear-gradient(135deg, #2196f3 0%, #0d47a1 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        
+        .multiplayer-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(33, 150, 243, 0.4);
+        }
+
+        /* Performance Chart */
+        .performance-chart {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 30px 0;
+            border: 1px solid var(--border-color);
+        }
+        
+        .chart-container {
+            height: 250px;
+            position: relative;
+            margin-top: 20px;
+        }
+        
+        .chart-bar {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .chart-bar-label {
+            width: 120px;
+            font-size: 14px;
+            color: var(--text-color);
+        }
+        
+        .chart-bar-progress {
+            flex: 1;
+            height: 20px;
+            background: var(--light-gray);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .chart-bar-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 1s ease;
+        }
+
+        @media (max-width: 992px) { 
+            .dashboard-container { 
+                flex-direction: column; 
+            } 
+            
+            .sidebar { 
+                width: 100%; 
+                flex-direction: row; 
+                flex-wrap: wrap; 
+                padding: 15px; 
+            } 
+            
+            .sidebar-section { 
+                margin-bottom: 15px; 
+            } 
+            
+            .action-grid { 
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); 
+            } 
+        }
+        
+        @media (max-width: 768px) { 
+            .header { 
+                padding: 15px; 
+                flex-direction: column; 
+                gap: 15px; 
+            } 
+            
+            .stats-cards { 
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); 
+            } 
+            
+            .action-grid { 
+                grid-template-columns: 1fr; 
+            } 
+            
+            .subject-grid { 
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); 
+            } 
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">
+            <h1>Edutop<span>Scholars</span></h1>
+        </div>
+        <div class="user-info">
+            <button class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon"></i>
+            </button>
+            
+            <div class="notification">
+                <i class="fas fa-bell"></i>
+                <div class="notification-count" id="notification-badge"></div>
+            </div>
+            <div class="user-profile">
+                <div class="user-avatar" id="user-avatar-display">...</div>
+                <div>
+                    <div class="user-name" id="user-name-display">Loading...</div>
+                    <div style="font-size: 12px; color: var(--gray);" id="user-plan-display">Checking...</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="dashboard-container">
+        <nav class="sidebar">
+            <div class="sidebar-section">
+                <h3>Navigation</h3>
+                <a href="#" class="sidebar-item active">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="exam-history.html" class="sidebar-item">
+                    <i class="fas fa-history"></i>
+                    <span>Exam History</span>
+                </a>
+                <a href="performance-analysis.html" class="sidebar-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Performance Analytics</span>
+                </a>
+                <a href="study-groups.html" class="sidebar-item">
+                    <i class="fas fa-users"></i>
+                    <span>Study Groups</span>
+                </a>
+                <a href="multiplayer.html" class="sidebar-item">
+                    <i class="fas fa-gamepad"></i>
+                    <span>Multiplayer Mode</span>
+                </a>
+                <a href="resources.html" class="sidebar-item">
+                    <i class="fas fa-book-open"></i>
+                    <span>Study Materials</span>
+                </a>
+            </div>
+
+            <div class="sidebar-section">
+                <h3>Account</h3>
+                <a href="profile.html" class="sidebar-item">
+                    <i class="fas fa-user-circle"></i>
+                    <span>My Profile</span>
+                </a>
+                <a href="subscription.html" class="sidebar-item">
+                    <i class="fas fa-credit-card"></i>
+                    <span>Subscription</span>
+                </a>
+                <a href="settings.html" class="sidebar-item">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+                <a href="#" class="sidebar-item" id="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+
+            <div class="subscription-status">
+                <h4 id="sidebar-plan-name">Loading...</h4>
+                <p>Status: Active</p>
+                <p style="margin-top: 10px; font-size: 12px;">Next billing: 30 Nov 2026</p>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <section class="welcome-section">
+                <h2 id="welcome-msg">Welcome!</h2>
+                <p id="welcome-subtext">Fetching your profile data...</p>
+            </section>
+
+            <div class="stats-cards">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: var(--primary);">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="stat-score">--%</h3>
+                        <p>Overall Score</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: var(--success);">
+                        <i class="fas fa-clipboard-list"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="stat-exams">0</h3>
+                        <p>Exams Taken</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: var(--accent);">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="stat-hours">0h</h3>
+                        <p>Study Hours</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: var(--warning);">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="stat-ranking">--</h3>
+                        <p>National Ranking</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Performance Analysis Section -->
+            <section class="performance-chart">
+                <h2 style="color: var(--primary); margin-bottom: 20px; font-size: 24px;">Performance Analysis</h2>
+                <div class="chart-container" id="performanceChart">
+                    <div class="chart-bar">
+                        <div class="chart-bar-label">Mathematics</div>
+                        <div class="chart-bar-progress">
+                            <div class="chart-bar-fill" style="width: 75%; background: var(--primary);"></div>
+                        </div>
+                        <span style="margin-left: 15px; font-weight: 600; color: var(--text-color);">75%</span>
+                    </div>
+                    <div class="chart-bar">
+                        <div class="chart-bar-label">English</div>
+                        <div class="chart-bar-progress">
+                            <div class="chart-bar-fill" style="width: 82%; background: var(--success);"></div>
+                        </div>
+                        <span style="margin-left: 15px; font-weight: 600; color: var(--text-color);">82%</span>
+                    </div>
+                    <div class="chart-bar">
+                        <div class="chart-bar-label">Physics</div>
+                        <div class="chart-bar-progress">
+                            <div class="chart-bar-fill" style="width: 65%; background: var(--accent);"></div>
+                        </div>
+                        <span style="margin-left: 15px; font-weight: 600; color: var(--text-color);">65%</span>
+                    </div>
+                    <div class="chart-bar">
+                        <div class="chart-bar-label">Chemistry</div>
+                        <div class="chart-bar-progress">
+                            <div class="chart-bar-fill" style="width: 70%; background: var(--secondary);"></div>
+                        </div>
+                        <span style="margin-left: 15px; font-weight: 600; color: var(--text-color);">70%</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="dashboard-actions">
+                <h2>Quick Actions</h2>
+                <div class="action-grid">
+                    <div class="action-card" id="subject-selection-btn">
+                        <div class="action-icon" style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <h3>Select Subjects</h3>
+                        <p>Choose your 4 JAMB subjects for personalized practice and exams</p>
+                        <button class="action-btn">Select Subjects</button>
+                    </div>
+
+                    <div class="action-card" onclick="window.location.href='exam-selection.html'">
+                        <div class="action-icon" style="background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);">
+                            <i class="fas fa-user-clock"></i>
+                        </div>
+                        <h3>Attempt Exam Alone</h3>
+                        <p>Take a timed practice exam with questions from your selected subjects</p>
+                        <button class="action-btn">Start Exam</button>
+                    </div>
+
+                    <div class="action-card" onclick="window.location.href='multiplayer.html'">
+                        <div class="action-icon" style="background: linear-gradient(135deg, #2196f3 0%, #0d47a1 100%);">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h3>Attempt with Friends</h3>
+                        <p>Invite friends for a collaborative exam session and compare scores</p>
+                        <button class="action-btn" style="background: #2196f3;">Invite Friends</button>
+                    </div>
+
+                    <div class="action-card" id="hireTeacherBtn">
+                        <div class="action-icon" style="background: linear-gradient(135deg, #f44336 0%, #c62828 100%);">
+                            <i class="fas fa-chalkboard-teacher"></i>
+                        </div>
+                        <h3>Hire Private Tutor</h3>
+                        <p>Connect with certified tutors for one-on-one personalized lessons</p>
+                        <button class="action-btn" style="background: #f44336;">Find Tutor</button>
+                    </div>
+
+                    <div class="action-card" onclick="window.location.href='exam-history.html'">
+                        <div class="action-icon" style="background: linear-gradient(135deg, #9c27b0 0%, #6a1b9a 100%);">
+                            <i class="fas fa-history"></i>
+                        </div>
+                        <h3>Exam History</h3>
+                        <p>Review your past exam performances and track your progress</p>
+                        <button class="action-btn" style="background: #9c27b0;">View History</button>
+                    </div>
+
+                    <div class="action-card" onclick="window.location.href='study-groups.html'">
+                        <div class="action-icon" style="background: linear-gradient(135deg, #ff9800 0%, #ef6c00 100%);">
+                            <i class="fas fa-user-friends"></i>
+                        </div>
+                        <h3>Study Groups</h3>
+                        <p>Join or create study groups to collaborate with other students</p>
+                        <button class="action-btn" style="background: #ff9800;">Join Group</button>
+                    </div>
+                </div>
+            </section>
+
+            <section class="recent-activity">
+                <h2>Recent Activity</h2>
+                <div class="activity-list" id="activityList">
+                    <!-- Activities will be loaded dynamically -->
+                    <div class="activity-item">
+                        <div class="activity-icon" style="background: var(--primary);">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                        <div class="activity-info">
+                            <h4>Login Successful</h4>
+                            <p>You accessed your dashboard</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Multiplayer Quick Access -->
+            <div style="text-align: center; margin-top: 40px;">
+                <button class="multiplayer-btn" onclick="window.location.href='multiplayer.html'">
+                    <i class="fas fa-gamepad"></i>
+                    Quick Multiplayer Challenge
+                </button>
+                <p style="color: var(--gray); margin-top: 10px; font-size: 14px;">
+                    Challenge your friends in real-time exams!
+                </p>
+            </div>
+        </main>
+    </div>
+
+    <footer class="footer">
+        <p>Edutop Scholars &copy; 2026. All rights reserved. | Over 2000+ questions per subject</p>
+    </footer>
+
+    <!-- Subject Selection Modal -->
+    <div class="modal-overlay" id="subjectModal">
+        <div class="modal">
+            <button class="modal-close" id="closeModal">&times;</button>
+            <h2>Select Your 4 JAMB Subjects</h2>
+            <p style="text-align: center; margin-bottom: 20px; color: var(--gray);">You can select up to 4 subjects. Your selection will determine your practice materials and exam questions.</p>
+            
+            <div class="subject-selection">
+                <div class="subject-grid">
+                    <div class="subject-card" data-subject="Mathematics"><div class="subject-icon"><i class="fas fa-square-root-alt"></i></div><h4>Mathematics</h4></div>
+                    <div class="subject-card" data-subject="Physics"><div class="subject-icon"><i class="fas fa-atom"></i></div><h4>Physics</h4></div>
+                    <div class="subject-card" data-subject="Chemistry"><div class="subject-icon"><i class="fas fa-flask"></i></div><h4>Chemistry</h4></div>
+                    <div class="subject-card" data-subject="Biology"><div class="subject-icon"><i class="fas fa-dna"></i></div><h4>Biology</h4></div>
+                    <div class="subject-card" data-subject="English"><div class="subject-icon"><i class="fas fa-language"></i></div><h4>English</h4></div>
+                    <div class="subject-card" data-subject="Literature"><div class="subject-icon"><i class="fas fa-book-reader"></i></div><h4>Literature</h4></div>
+                    <div class="subject-card" data-subject="Government"><div class="subject-icon"><i class="fas fa-landmark"></i></div><h4>Government</h4></div>
+                    <div class="subject-card" data-subject="Economics"><div class="subject-icon"><i class="fas fa-chart-line"></i></div><h4>Economics</h4></div>
+                    <div class="subject-card" data-subject="Geography"><div class="subject-icon"><i class="fas fa-globe-africa"></i></div><h4>Geography</h4></div>
+                    <div class="subject-card" data-subject="Commerce"><div class="subject-icon"><i class="fas fa-shopping-cart"></i></div><h4>Commerce</h4></div>
+                    <div class="subject-card" data-subject="Accounting"><div class="subject-icon"><i class="fas fa-calculator"></i></div><h4>Accounting</h4></div>
+                    <div class="subject-card" data-subject="CRS"><div class="subject-icon"><i class="fas fa-church"></i></div><h4>CRS</h4></div>
+                </div>
+                
+                <div class="selected-subjects">
+                    <h4>Selected Subjects (4 maximum)</h4>
+                    <div class="selected-list" id="selectedList"></div>
+                    <p id="selectionCount" style="margin-top: 15px; color: var(--gray); font-size: 14px;">0 subjects selected</p>
+                </div>
+            </div>
+            
+            <div class="modal-actions">
+                <button class="modal-btn secondary" id="cancelSelection">Cancel</button>
+                <button class="modal-btn primary" id="saveSubjects">Save Selection</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hire Teacher Modal -->
+    <div class="modal-overlay" id="hireTeacherModal">
+        <div class="modal">
+            <button class="modal-close" id="closeTeacherModal">&times;</button>
+            <h2>Hire a Private Tutor</h2>
+            <p style="text-align: center; margin-bottom: 20px; color: var(--gray);">Fill out this form to request a private tutor. We'll connect you with certified tutors within 24 hours.</p>
+            
+            <div class="whatsapp-info">
+                <i class="fab fa-whatsapp"></i>
+                <div>
+                    <strong>Quick Response Guaranteed</strong>
+                    <p style="font-size: 14px; opacity: 0.9;">Your request will be sent directly to our tutor coordination team via WhatsApp.</p>
+                </div>
+            </div>
+            
+            <form id="hireTeacherForm">
+                <div class="form-group">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" class="form-input" id="tutorName" readonly required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" class="form-input" id="tutorEmail" readonly required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Phone Number</label>
+                    <input type="tel" class="form-input" id="tutorPhone" placeholder="Enter your WhatsApp number" required pattern="[0-9]{11}" title="Enter a valid 11-digit Nigerian phone number">
+                    <small style="color: var(--gray); font-size: 12px;">Enter your WhatsApp number for faster communication</small>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Department</label>
+                    <select class="form-select" id="tutorDepartment" required>
+                        <option value="">Select Department</option>
+                        <option value="Science">Science</option>
+                        <option value="Art (Humanity)">Art (Humanity)</option>
+                        <option value="Commercial">Commercial</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Subject(s) You Need Tutoring For</label>
+                    <small style="color: var(--gray); font-size: 12px; display: block; margin-bottom: 10px;">Select all subjects you need help with</small>
+                    <div class="subjects-container" id="tutorSubjects">
+                        <label class="subject-tag" data-subject="Mathematics">
+                            <input type="checkbox" name="tutorSubjects" value="Mathematics">
+                            Mathematics
+                        </label>
+                        <label class="subject-tag" data-subject="Physics">
+                            <input type="checkbox" name="tutorSubjects" value="Physics">
+                            Physics
+                        </label>
+                        <label class="subject-tag" data-subject="Chemistry">
+                            <input type="checkbox" name="tutorSubjects" value="Chemistry">
+                            Chemistry
+                        </label>
+                        <label class="subject-tag" data-subject="Biology">
+                            <input type="checkbox" name="tutorSubjects" value="Biology">
+                            Biology
+                        </label>
+                        <label class="subject-tag" data-subject="English">
+                            <input type="checkbox" name="tutorSubjects" value="English">
+                            English
+                        </label>
+                        <label class="subject-tag" data-subject="Literature">
+                            <input type="checkbox" name="tutorSubjects" value="Literature">
+                            Literature
+                        </label>
+                        <label class="subject-tag" data-subject="Government">
+                            <input type="checkbox" name="tutorSubjects" value="Government">
+                            Government
+                        </label>
+                        <label class="subject-tag" data-subject="Economics">
+                            <input type="checkbox" name="tutorSubjects" value="Economics">
+                            Economics
+                        </label>
+                        <label class="subject-tag" data-subject="Geography">
+                            <input type="checkbox" name="tutorSubjects" value="Geography">
+                            Geography
+                        </label>
+                        <label class="subject-tag" data-subject="Commerce">
+                            <input type="checkbox" name="tutorSubjects" value="Commerce">
+                            Commerce
+                        </label>
+                        <label class="subject-tag" data-subject="Accounting">
+                            <input type="checkbox" name="tutorSubjects" value="Accounting">
+                            Accounting
+                        </label>
+                        <label class="subject-tag" data-subject="CRS">
+                            <input type="checkbox" name="tutorSubjects" value="CRS">
+                            CRS
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Additional Information (Optional)</label>
+                    <textarea class="form-textarea" id="tutorAdditional" rows="3" placeholder="Any specific requirements, preferred schedule, or other details..."></textarea>
+                </div>
+                
+                <div class="modal-actions">
+                    <button type="button" class="modal-btn secondary" id="cancelTutor">Cancel</button>
+                    <button type="submit" class="modal-btn primary" id="sendTutorRequest">
+                        <i class="fab fa-whatsapp"></i> Send Request
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+        import { getFirestore, doc, onSnapshot, setDoc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+        // Your Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyCictHNxtslYs9VR0hoicxlwPn_QghkgIA",
+            authDomain: "edutop-7ff51.firebaseapp.com",
+            projectId: "edutop-7ff51",
+            storageBucket: "edutop-7ff51.firebasestorage.app",
+            messagingSenderId: "79307850494",
+            appId: "1:79307850494:web:b51ce51204140ec5429baf",
+            measurementId: "G-GGGH590BYS"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        
+        let currentUserUid = null;
+        let selectedSubjects = [];
+        let currentUserData = null;
+
+        // Theme Toggle Functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = themeToggle.querySelector('i');
+        
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            
+            if (savedTheme === 'dark' || (savedTheme === 'auto' && prefersDark)) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                themeIcon.className = 'fas fa-sun';
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+                themeIcon.className = 'fas fa-moon';
+            }
+        }
+        
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            if (currentTheme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'light');
+                localStorage.setItem('theme', 'light');
+                themeIcon.className = 'fas fa-moon';
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+                themeIcon.className = 'fas fa-sun';
+            }
+        }
+        
+        themeToggle.addEventListener('click', toggleTheme);
+        initTheme();
+
+        // 1. AUTH & REAL-TIME DATA LISTENER
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUserUid = user.uid;
+                
+                const userRef = doc(db, "users", currentUserUid);
+                
+                onSnapshot(userRef, async (docSnap) => {
+                    if (docSnap.exists()) {
+                        const data = docSnap.data();
+                        currentUserData = data;
+                        updateUI(data);
+                        updatePerformanceChart(data);
+                        updateActivityList(data);
+                    } else {
+                        // Create profile with default STATS if missing
+                        const defaultData = {
+                            fullName: user.displayName || "New Scholar",
+                            email: user.email,
+                            subscriptionPlan: "Free",
+                            selectedSubjects: [],
+                            stats: {
+                                overallScore: 0,
+                                examsTaken: 0,
+                                studyHours: 0,
+                                ranking: "--",
+                                subjectPerformance: {
+                                    Mathematics: 75,
+                                    English: 82,
+                                    Physics: 65,
+                                    Chemistry: 70
+                                }
+                            },
+                            notifications: [],
+                            activityHistory: [
+                                {
+                                    type: "login",
+                                    message: "Login Successful",
+                                    details: "You accessed your dashboard",
+                                    timestamp: new Date().toISOString(),
+                                    icon: "user-plus",
+                                    color: "primary"
+                                }
+                            ],
+                            createdAt: new Date().toISOString()
+                        };
+                        
+                        try {
+                            await setDoc(userRef, defaultData);
+                        } catch (e) {
+                            console.error("Error creating profile:", e);
+                        }
+                    }
+                }, (error) => {
+                    console.error("Listener error:", error);
+                });
+
+            } else {
+                window.location.href = "index.html";
+            }
+        });
+
+        // 2. UPDATE UI FUNCTION
+        function updateUI(userData) {
+            // --- BASIC INFO ---
+            const fullName = userData.fullName || "Scholar";
+            document.getElementById('user-name-display').innerText = fullName;
+            document.getElementById('welcome-msg').innerText = `Welcome back, ${fullName.split(' ')[0]}!`;
+            
+            const initials = fullName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+            document.getElementById('user-avatar-display').innerText = initials;
+
+            const plan = (userData.subscriptionPlan || "Free").toUpperCase();
+            document.getElementById('user-plan-display').innerText = `${plan} Plan`;
+            document.getElementById('sidebar-plan-name').innerText = `${plan} Plan`;
+
+            // --- REAL-TIME STATS ---
+            const stats = userData.stats || {};
+            
+            document.getElementById('stat-score').innerText = (stats.overallScore || 0) + '%';
+            document.getElementById('stat-exams').innerText = stats.examsTaken || 0;
+            document.getElementById('stat-hours').innerText = (stats.studyHours || 0) + 'h';
+            document.getElementById('stat-ranking').innerText = stats.ranking || '--';
+
+            // --- REAL-TIME NOTIFICATIONS ---
+            const notifications = userData.notifications || [];
+            const notifCount = notifications.length;
+            
+            const badge = document.getElementById('notification-badge');
+            if(notifCount > 0) {
+                badge.style.display = 'flex';
+                badge.innerText = notifCount > 9 ? '9+' : notifCount;
+            } else {
+                badge.style.display = 'none';
+            }
+
+            // --- SUBJECTS ---
+            selectedSubjects = userData.selectedSubjects || [];
+            const welcomeSubtext = document.getElementById('welcome-subtext');
+            const subjectBtn = document.querySelector('#subject-selection-btn .action-btn');
+
+            if (selectedSubjects.length > 0) {
+                welcomeSubtext.innerHTML = `You are practicing: <strong>${selectedSubjects.join(', ')}</strong>`;
+                subjectBtn.textContent = 'Change Subjects';
+            } else {
+                welcomeSubtext.innerText = "You haven't selected your subjects yet. Please select them to get personalized recommendations.";
+                subjectBtn.textContent = 'Select Subjects';
+            }
+            
+            if(document.getElementById('subjectModal').style.display === 'flex'){
+                renderSubjectSelection();
+            }
+        }
+
+        // 3. UPDATE PERFORMANCE CHART
+        function updatePerformanceChart(userData) {
+            const stats = userData.stats || {};
+            const subjectPerformance = stats.subjectPerformance || {};
+            
+            // Update chart bars based on performance data
+            Object.keys(subjectPerformance).forEach(subject => {
+                const score = subjectPerformance[subject];
+                const chartBar = Array.from(document.querySelectorAll('.chart-bar-label'))
+                    .find(el => el.textContent.includes(subject))?.closest('.chart-bar');
+                
+                if (chartBar) {
+                    const fill = chartBar.querySelector('.chart-bar-fill');
+                    const scoreSpan = chartBar.querySelector('span');
+                    
+                    if (fill) {
+                        fill.style.width = `${score}%`;
+                        // Set color based on score
+                        if (score >= 80) fill.style.background = 'var(--success)';
+                        else if (score >= 60) fill.style.background = 'var(--warning)';
+                        else fill.style.background = 'var(--danger)';
+                    }
+                    
+                    if (scoreSpan) {
+                        scoreSpan.textContent = `${score}%`;
+                    }
+                }
+            });
+        }
+
+        // 4. UPDATE ACTIVITY LIST
+        function updateActivityList(userData) {
+            const activityList = document.getElementById('activityList');
+            const activities = userData.activityHistory || [
+                {
+                    type: "login",
+                    message: "Login Successful",
+                    details: "You accessed your dashboard",
+                    timestamp: new Date().toISOString(),
+                    icon: "user-plus",
+                    color: "primary"
+                }
+            ];
+            
+            // Sort by timestamp (newest first) and limit to 5
+            const sortedActivities = activities
+                .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+                .slice(0, 5);
+            
+            activityList.innerHTML = '';
+            
+            sortedActivities.forEach(activity => {
+                const activityItem = document.createElement('div');
+                activityItem.className = 'activity-item';
+                
+                // Map icon names to actual icons
+                let iconClass = 'fas fa-user-plus';
+                switch(activity.icon) {
+                    case 'exam': iconClass = 'fas fa-clipboard-list'; break;
+                    case 'score': iconClass = 'fas fa-chart-line'; break;
+                    case 'subject': iconClass = 'fas fa-book'; break;
+                    case 'group': iconClass = 'fas fa-users'; break;
+                    case 'login': iconClass = 'fas fa-user-plus'; break;
+                    case 'tutor': iconClass = 'fas fa-chalkboard-teacher'; break;
+                }
+                
+                // Map color names to CSS variables
+                let bgColor = 'var(--primary)';
+                switch(activity.color) {
+                    case 'primary': bgColor = 'var(--primary)'; break;
+                    case 'success': bgColor = 'var(--success)'; break;
+                    case 'warning': bgColor = 'var(--warning)'; break;
+                    case 'danger': bgColor = 'var(--danger)'; break;
+                    case 'accent': bgColor = 'var(--accent)'; break;
+                }
+                
+                activityItem.innerHTML = `
+                    <div class="activity-icon" style="background: ${bgColor}">
+                        <i class="${iconClass}"></i>
+                    </div>
+                    <div class="activity-info">
+                        <h4>${activity.message}</h4>
+                        <p>${activity.details} • ${formatDate(activity.timestamp)}</p>
+                    </div>
+                `;
+                
+                activityList.appendChild(activityItem);
+            });
+        }
+
+        // Helper function to format dates
+        function formatDate(timestamp) {
+            const date = new Date(timestamp);
+            const now = new Date();
+            const diffMs = now - date;
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMs / 3600000);
+            const diffDays = Math.floor(diffMs / 86400000);
+            
+            if (diffMins < 1) return 'Just now';
+            if (diffMins < 60) return `${diffMins} minutes ago`;
+            if (diffHours < 24) return `${diffHours} hours ago`;
+            if (diffDays < 7) return `${diffDays} days ago`;
+            
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        }
+
+        // 5. SUBJECT SELECTION MODAL LOGIC
+        const subjectModal = document.getElementById('subjectModal');
+        const subjectSelectionBtn = document.getElementById('subject-selection-btn');
+        const closeModal = document.getElementById('closeModal');
+        const cancelSelection = document.getElementById('cancelSelection');
+        const subjectCards = document.querySelectorAll('.subject-card');
+        const selectedList = document.getElementById('selectedList');
+        const selectionCount = document.getElementById('selectionCount');
+        const saveSubjectsBtn = document.getElementById('saveSubjects');
+
+        subjectSelectionBtn.addEventListener('click', () => { 
+            subjectModal.style.display = 'flex'; 
+            renderSubjectSelection(); 
+        });
+        
+        const hideSubjectModal = () => { subjectModal.style.display = 'none'; };
+        closeModal.addEventListener('click', hideSubjectModal);
+        cancelSelection.addEventListener('click', hideSubjectModal);
+        subjectModal.addEventListener('click', (e) => { if (e.target === subjectModal) hideSubjectModal(); });
+
+        subjectCards.forEach(card => {
+            card.addEventListener('click', function() {
+                const subject = this.getAttribute('data-subject');
+                const index = selectedSubjects.indexOf(subject);
+                
+                if (index === -1) {
+                    if (selectedSubjects.length < 4) selectedSubjects.push(subject);
+                    else alert('Maximum 4 subjects allowed.');
+                } else {
+                    selectedSubjects.splice(index, 1);
+                }
+                renderSubjectSelection();
+            });
+        });
+
+        function renderSubjectSelection() {
+            document.querySelectorAll('.subject-card').forEach(c => c.classList.remove('selected'));
+            selectedSubjects.forEach(sub => {
+                const card = document.querySelector(`.subject-card[data-subject="${sub}"]`);
+                if(card) card.classList.add('selected');
+            });
+
+            selectedList.innerHTML = '';
+            selectedSubjects.forEach(subject => {
+                const tag = document.createElement('div');
+                tag.className = 'selected-tag';
+                tag.innerHTML = `${subject}`;
+                selectedList.appendChild(tag);
+            });
+
+            selectionCount.textContent = `${selectedSubjects.length} subjects selected`;
+            
+            if (selectedSubjects.length === 4) {
+                saveSubjectsBtn.disabled = false;
+                saveSubjectsBtn.style.opacity = '1';
+                selectionCount.style.color = 'var(--success)';
+            } else {
+                saveSubjectsBtn.disabled = true;
+                saveSubjectsBtn.style.opacity = '0.6';
+                selectionCount.style.color = 'var(--gray)';
+            }
+        }
+
+        // 6. SAVE SUBJECTS TO FIREBASE
+        saveSubjectsBtn.addEventListener('click', async () => {
+            if (!currentUserUid) return;
+            const originalText = saveSubjectsBtn.innerText;
+            saveSubjectsBtn.innerText = "Saving...";
+            
+            try {
+                const userRef = doc(db, "users", currentUserUid);
+                await updateDoc(userRef, { 
+                    selectedSubjects: selectedSubjects,
+                    lastUpdated: new Date().toISOString(),
+                    activityHistory: arrayUnion({
+                        type: "subject",
+                        message: "Subjects Updated",
+                        details: `Changed selected subjects to: ${selectedSubjects.join(', ')}`,
+                        timestamp: new Date().toISOString(),
+                        icon: "book",
+                        color: "primary"
+                    })
+                });
+                
+                alert("Subjects saved!");
+                hideSubjectModal();
+            } catch (error) {
+                console.error("Error:", error);
+                alert("Failed to save: " + error.message);
+            } finally {
+                saveSubjectsBtn.innerText = originalText;
+            }
+        });
+
+        // 7. HIRE TEACHER MODAL LOGIC
+        const hireTeacherModal = document.getElementById('hireTeacherModal');
+        const hireTeacherBtn = document.getElementById('hireTeacherBtn');
+        const closeTeacherModal = document.getElementById('closeTeacherModal');
+        const cancelTutor = document.getElementById('cancelTutor');
+        const hireTeacherForm = document.getElementById('hireTeacherForm');
+        const sendTutorRequest = document.getElementById('sendTutorRequest');
+        const tutorSubjects = document.querySelectorAll('#tutorSubjects .subject-tag');
+        
+        // Subject tag selection
+        tutorSubjects.forEach(tag => {
+            tag.addEventListener('click', function() {
+                const checkbox = this.querySelector('input');
+                checkbox.checked = !checkbox.checked;
+                this.classList.toggle('selected', checkbox.checked);
+            });
+        });
+
+        // Open hire teacher modal
+        hireTeacherBtn.addEventListener('click', () => {
+            hireTeacherModal.style.display = 'flex';
+            
+            // Auto-fill user data
+            if (currentUserData) {
+                document.getElementById('tutorName').value = currentUserData.fullName || '';
+                document.getElementById('tutorEmail').value = currentUserData.email || '';
+            }
+            
+            // Pre-select current user's subjects
+            if (selectedSubjects.length > 0) {
+                selectedSubjects.forEach(subject => {
+                    const checkbox = document.querySelector(`input[name="tutorSubjects"][value="${subject}"]`);
+                    if (checkbox) {
+                        checkbox.checked = true;
+                        checkbox.parentElement.classList.add('selected');
+                    }
+                });
+            }
+        });
+        
+        // Close hire teacher modal
+        const hideTeacherModal = () => { hireTeacherModal.style.display = 'none'; };
+        closeTeacherModal.addEventListener('click', hideTeacherModal);
+        cancelTutor.addEventListener('click', hideTeacherModal);
+        hireTeacherModal.addEventListener('click', (e) => { if (e.target === hireTeacherModal) hideTeacherModal(); });
+
+        // Handle form submission
+        hireTeacherForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('tutorName').value;
+            const email = document.getElementById('tutorEmail').value;
+            const phone = document.getElementById('tutorPhone').value;
+            const department = document.getElementById('tutorDepartment').value;
+            const additional = document.getElementById('tutorAdditional').value;
+            
+            // Get selected subjects
+            const selectedSubjectCheckboxes = document.querySelectorAll('input[name="tutorSubjects"]:checked');
+            const selectedTutorSubjects = Array.from(selectedSubjectCheckboxes).map(cb => cb.value);
+            
+            if (!phone || !department || selectedTutorSubjects.length === 0) {
+                alert('Please fill in all required fields: Phone Number, Department, and at least one subject.');
+                return;
+            }
+            
+            if (!phone.match(/^[0-9]{11}$/)) {
+                alert('Please enter a valid 11-digit Nigerian phone number.');
+                return;
+            }
+            
+            // Create WhatsApp message
+            const whatsappMessage = `*New Tutor Request from Edutop Scholars*
+            
+*Student Information:*
+• Name: ${name}
+• Email: ${email}
+• Phone: ${phone}
+
+*Tutoring Requirements:*
+• Department: ${department}
+• Subjects: ${selectedTutorSubjects.join(', ')}
+${additional ? `• Additional Info: ${additional}` : ''}
+
+*Request Time:* ${new Date().toLocaleString()}`;
+
+            // Encode message for URL
+            const encodedMessage = encodeURIComponent(whatsappMessage);
+            const whatsappNumber = "2349056658964"; // Nigerian number format without leading 0
+            
+            // Create WhatsApp URL
+            const whatsappURL = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+            
+            // Send request to Firebase
+            const originalText = sendTutorRequest.innerText;
+            sendTutorRequest.innerText = "Sending...";
+            sendTutorRequest.disabled = true;
+            
+            try {
+                const userRef = doc(db, "users", currentUserUid);
+                await updateDoc(userRef, { 
+                    tutorRequests: arrayUnion({
+                        name: name,
+                        email: email,
+                        phone: phone,
+                        department: department,
+                        subjects: selectedTutorSubjects,
+                        additionalInfo: additional,
+                        timestamp: new Date().toISOString(),
+                        status: "pending"
+                    }),
+                    activityHistory: arrayUnion({
+                        type: "tutor",
+                        message: "Tutor Request Sent",
+                        details: `Requested tutor for ${department} department`,
+                        timestamp: new Date().toISOString(),
+                        icon: "chalkboard-teacher",
+                        color: "success"
+                    })
+                });
+                
+                // Open WhatsApp in new tab
+                window.open(whatsappURL, '_blank');
+                
+                // Show success message
+                alert('Your tutor request has been sent successfully! Our team will contact you within 24 hours.');
+                
+                // Reset form and close modal
+                hireTeacherForm.reset();
+                tutorSubjects.forEach(tag => tag.classList.remove('selected'));
+                hideTeacherModal();
+                
+            } catch (error) {
+                console.error("Error:", error);
+                alert("Failed to send request: " + error.message);
+            } finally {
+                sendTutorRequest.innerText = originalText;
+                sendTutorRequest.disabled = false;
+            }
+        });
+
+        // 8. LOGOUT
+        document.getElementById('logout-btn').addEventListener('click', async (e) => {
+            e.preventDefault();
+            await signOut(auth);
+            window.location.href = "index.html";
+        });
+
+    </script>
+</body>
+</html>
