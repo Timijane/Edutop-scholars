@@ -6,7 +6,6 @@
     <title>Read - Mr. Timi Edutop Scholar</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Same CSS as before - keep your existing styles */
         * {
             margin: 0;
             padding: 0;
@@ -421,16 +420,18 @@
 
         async function loadAllSummaries(bookId) {
             try {
-                // Only load published summaries for students
-                const q = query(
-                    collection(db, "summaries"), 
-                    where("bookId", "==", bookId),
-                    where("published", "==", true),
-                    orderBy("sectionName")
-                );
-                const snapshot = await getDocs(q);
-                const summaries = [];
+                // First try to get published summaries, if no published, get all
+                let q = query(collection(db, "summaries"), where("bookId", "==", bookId), where("published", "==", true), orderBy("sectionName"));
+                let snapshot = await getDocs(q);
+                let summaries = [];
                 snapshot.forEach(doc => summaries.push({ id: doc.id, ...doc.data() }));
+                
+                // If no published summaries, get all (for testing)
+                if (summaries.length === 0) {
+                    q = query(collection(db, "summaries"), where("bookId", "==", bookId), orderBy("sectionName"));
+                    snapshot = await getDocs(q);
+                    snapshot.forEach(doc => summaries.push({ id: doc.id, ...doc.data() }));
+                }
                 return summaries;
             } catch (error) {
                 console.error("Error loading summaries:", error);
@@ -442,8 +443,7 @@
             try {
                 const docId = `${bookId}_${sectionName.toLowerCase().replace(/[^a-z0-9]/g, '_')}`;
                 const docSnap = await getDoc(doc(db, "summaries", docId));
-                // Only return if published
-                if (docSnap.exists() && docSnap.data().published === true) {
+                if (docSnap.exists()) {
                     return { id: docSnap.id, ...docSnap.data() };
                 }
                 return null;
@@ -478,7 +478,7 @@
             }
 
             if (!summaryData) {
-                document.getElementById('readingContainer').innerHTML = `<div class="error"><p>Summary not found or not published yet.</p><p style="margin-top: 15px;"><a href="prose-detail.html?book=${bookId}" style="color: var(--primary);">Back to Book</a></p></div>`;
+                document.getElementById('readingContainer').innerHTML = `<div class="error"><p>Summary not found. Please check back later.</p><p style="margin-top: 15px;"><a href="prose-detail.html?book=${bookId}" style="color: var(--primary);">Back to Book</a></p></div>`;
                 return;
             }
 
@@ -601,12 +601,17 @@
                     loadSummary(bookId, decodeURIComponent(section))
                 ]);
                 
+                if (!summaryData) {
+                    document.getElementById('readingContainer').innerHTML = `<div class="error"><p>Summary not found. Please make sure you published it first.</p><p style="margin-top: 15px;"><a href="prose-detail.html?book=${bookId}" style="color: var(--primary);">Back to Book</a></p></div>`;
+                    return;
+                }
+                
                 const category = booksInfo[bookId]?.category?.toLowerCase().includes('drama') ? 'drama' : 
                                (booksInfo[bookId]?.category === 'Poetry' ? 'poetry' : 'prose');
                 renderReading(bookId, decodeURIComponent(section), summaryData, allSummaries, category);
             } catch (error) {
                 console.error('Error:', error);
-                document.getElementById('readingContainer').innerHTML = `<div class="error"><p>Error loading content. Please try again later.</p></div>`;
+                document.getElementById('readingContainer').innerHTML = `<div class="error"><p>Error loading content. Please try again later.</p><p style="margin-top: 15px; font-size: 12px;">${error.message}</p></div>`;
             }
         });
     </script>
