@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Book Detail - Mr. Timi Edutop Scholar</title>
+    <title>Prose - Mr. Timi Edutop Scholar</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -21,6 +21,7 @@
             --dark: #333;
             --gray: #777;
             --light-gray: #eee;
+            --success: #4caf50;
         }
 
         body {
@@ -28,6 +29,7 @@
             min-height: 100vh;
         }
 
+        /* Header */
         .header {
             background: white;
             padding: 12px 16px;
@@ -38,6 +40,8 @@
             position: sticky;
             top: 0;
             z-index: 100;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         .logo h1 {
@@ -67,8 +71,9 @@
             gap: 6px;
         }
 
+        /* Main Container */
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
             padding: 20px 16px;
         }
@@ -82,8 +87,8 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
         }
 
-        .book-hero-cover {
-            height: 200px;
+        .book-cover {
+            height: 180px;
             background-size: cover;
             background-position: center;
             position: relative;
@@ -92,23 +97,23 @@
             padding: 20px;
         }
 
-        .book-hero-cover::before {
+        .book-cover::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: linear-gradient(135deg, rgba(49,27,146,0.8) 0%, rgba(0,0,0,0.6) 100%);
+            background: linear-gradient(135deg, rgba(49,27,146,0.85) 0%, rgba(0,0,0,0.6) 100%);
         }
 
-        .book-hero-info {
+        .book-info {
             position: relative;
             z-index: 2;
             color: white;
         }
 
-        .book-hero-category {
+        .book-category {
             background: var(--secondary);
             display: inline-block;
             padding: 4px 12px;
@@ -118,13 +123,13 @@
             margin-bottom: 12px;
         }
 
-        .book-hero-title {
+        .book-title {
             font-size: 28px;
             font-weight: 700;
             margin-bottom: 8px;
         }
 
-        .book-hero-author {
+        .book-author {
             font-size: 14px;
             opacity: 0.9;
             display: flex;
@@ -132,7 +137,7 @@
             gap: 6px;
         }
 
-        .book-stats-bar {
+        .book-stats {
             display: flex;
             gap: 20px;
             padding: 16px 20px;
@@ -150,18 +155,17 @@
 
         .book-stat i {
             color: var(--primary);
-            width: 20px;
         }
 
-        /* Chapter Section */
-        .chapters-section {
+        /* Summaries Section */
+        .summaries-section {
             background: white;
             border-radius: 24px;
             padding: 20px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
         }
 
-        .chapters-header {
+        .section-header {
             display: flex;
             justify-content: space-between;
             align-items: baseline;
@@ -170,9 +174,12 @@
             gap: 10px;
         }
 
-        .chapters-header h2 {
+        .section-header h2 {
             color: var(--primary);
             font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .quiz-all-btn {
@@ -189,85 +196,168 @@
             gap: 6px;
         }
 
-        .chapters-list {
+        /* Summary Cards */
+        .summaries-list {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 16px;
         }
 
-        .chapter-item {
+        .summary-card {
+            background: var(--light);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+
+        .summary-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(49, 27, 146, 0.1);
+        }
+
+        .summary-header {
+            padding: 16px 20px;
+            background: white;
+            cursor: pointer;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 14px 16px;
-            background: var(--light);
-            border-radius: 14px;
-            cursor: pointer;
-            transition: all 0.2s;
+            flex-wrap: wrap;
+            gap: 10px;
+            border-bottom: 1px solid var(--light-gray);
         }
 
-        .chapter-item:hover {
-            background: #e8eaf6;
-            transform: translateX(4px);
-        }
-
-        .chapter-info {
+        .summary-title {
             display: flex;
             align-items: center;
             gap: 12px;
+            flex: 1;
         }
 
-        .chapter-number {
-            width: 32px;
-            height: 32px;
+        .summary-number {
+            width: 36px;
+            height: 36px;
             background: var(--primary);
             color: white;
-            border-radius: 50%;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 600;
-            font-size: 13px;
+            font-weight: 700;
+            font-size: 14px;
         }
 
-        .chapter-title {
-            font-weight: 600;
-            color: var(--dark);
+        .summary-title h3 {
+            font-size: 18px;
+            color: var(--primary);
+            margin: 0;
         }
 
-        .chapter-actions {
+        .summary-actions {
             display: flex;
             gap: 12px;
         }
 
-        .chapter-read {
+        .summary-actions button {
             background: none;
             border: none;
-            color: var(--primary);
+            padding: 8px 12px;
+            border-radius: 30px;
             cursor: pointer;
-            font-size: 14px;
-            padding: 6px 10px;
-            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
             transition: all 0.2s;
         }
 
-        .chapter-quiz {
-            background: none;
-            border: none;
-            color: var(--secondary);
-            cursor: pointer;
-            font-size: 14px;
-            padding: 6px 10px;
+        .read-btn {
+            background: var(--primary);
+            color: white;
+        }
+
+        .quiz-btn {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .summary-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out;
+            background: white;
+        }
+
+        .summary-content.expanded {
+            max-height: 1000px;
+            transition: max-height 0.4s ease-in;
+        }
+
+        .summary-text {
+            padding: 20px;
+            font-size: 15px;
+            line-height: 1.7;
+            color: var(--dark);
+            border-top: 1px solid var(--light-gray);
+        }
+
+        .summary-text img {
+            max-width: 100%;
+            border-radius: 12px;
+        }
+
+        .summary-text p {
+            margin-bottom: 12px;
+        }
+
+        .summary-text h1, .summary-text h2, .summary-text h3 {
+            color: var(--primary);
+            margin: 16px 0 8px 0;
+        }
+
+        .summary-text ul, .summary-text ol {
+            padding-left: 24px;
+            margin: 12px 0;
+        }
+
+        .summary-text li {
+            margin-bottom: 6px;
+        }
+
+        .summary-footer {
+            padding: 12px 20px;
+            background: var(--light);
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            border-top: 1px solid var(--light-gray);
+            font-size: 12px;
+            color: var(--gray);
+        }
+
+        .key-points-section, .characters-section {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .key-points-section i, .characters-section i {
+            color: var(--primary);
+        }
+
+        .character-tag {
+            background: white;
+            padding: 4px 12px;
             border-radius: 20px;
+            font-size: 12px;
+            color: var(--primary);
         }
 
-        .chapter-read:hover, .chapter-quiz:hover {
-            background: rgba(49,27,146,0.1);
-        }
-
+        /* Loading & Empty States */
         .loading {
             text-align: center;
-            padding: 40px;
+            padding: 60px;
             color: var(--gray);
         }
 
@@ -281,10 +371,23 @@
             margin: 0 auto 16px;
         }
 
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--gray);
+        }
+
+        .empty-state i {
+            font-size: 64px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
 
+        /* Footer */
         .footer {
             text-align: center;
             padding: 20px;
@@ -294,17 +397,19 @@
             margin-top: 40px;
         }
 
-        @media (max-width: 480px) {
-            .book-hero-title {
+        @media (max-width: 768px) {
+            .book-title {
                 font-size: 22px;
             }
-            .chapter-item {
+            .summary-header {
                 flex-direction: column;
                 align-items: flex-start;
-                gap: 10px;
             }
-            .chapter-actions {
+            .summary-actions {
                 align-self: flex-end;
+            }
+            .summary-title h3 {
+                font-size: 16px;
             }
         }
     </style>
@@ -324,7 +429,7 @@
     <div class="container" id="container">
         <div class="loading">
             <div class="loading-spinner"></div>
-            <p>Loading book details...</p>
+            <p>Loading book content...</p>
         </div>
     </div>
 
@@ -335,7 +440,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, query, where, orderBy } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCictHNxtslYs9VR0hoicxlwPn_QghkgIA",
@@ -351,160 +456,244 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        const booksData = {
+        // Book information
+        const booksInfo = {
             "to-kill-a-mockingbird": {
-                id: "to-kill-a-mockingbird",
                 title: "To Kill a Mockingbird",
                 author: "Harper Lee",
-                category: "non-african",
-                description: "A classic novel about racial injustice and moral growth in the American South during the 1930s, told through the eyes of young Scout Finch.",
-                chapters: 31,
+                category: "Non-African Prose",
                 year: 1960,
-                coverColor: "#2c3e50",
-                chaptersList: Array.from({length: 31}, (_, i) => ({
-                    number: i + 1,
-                    title: `Chapter ${i + 1}`
-                }))
+                color: "#2c3e50",
+                description: "A classic novel about racial injustice and moral growth in the American South during the 1930s, told through the eyes of young Scout Finch."
             },
             "path-of-lucas": {
-                id: "path-of-lucas",
                 title: "Path of Lucas: The Journey He Endured",
                 author: "Susanne Bellefeuille",
-                category: "non-african",
-                description: "A powerful story of resilience, family bonds, and the journey through life's challenges.",
-                chapters: 42,
+                category: "Non-African Prose",
                 year: 2018,
-                coverColor: "#8e44ad",
-                chaptersList: Array.from({length: 42}, (_, i) => ({
-                    number: i + 1,
-                    title: `Chapter ${i + 1}`
-                }))
+                color: "#8e44ad",
+                description: "A powerful story of resilience, family bonds, and the journey through life's challenges."
             },
             "so-the-path-does-not-die": {
-                id: "so-the-path-does-not-die",
                 title: "So the Path Does Not Die",
                 author: "Pede Hollist",
-                category: "african",
-                description: "A compelling narrative exploring identity, belonging, and the connection between African diaspora and homeland.",
-                chapters: 24,
+                category: "African Prose",
                 year: 2020,
-                coverColor: "#27ae60",
-                chaptersList: Array.from({length: 24}, (_, i) => ({
-                    number: i + 1,
-                    title: `Chapter ${i + 1}`
-                }))
+                color: "#27ae60",
+                description: "A compelling narrative exploring identity, belonging, and the connection between African diaspora and homeland."
             },
             "redemption-road": {
-                id: "redemption-road",
                 title: "Redemption Road",
                 author: "Elma Shaw",
-                category: "african",
-                description: "A poignant story set in Liberia, exploring themes of healing, forgiveness, and rebuilding after civil war.",
-                chapters: 28,
+                category: "African Prose",
                 year: 2020,
-                coverColor: "#e67e22",
-                chaptersList: Array.from({length: 28}, (_, i) => ({
-                    number: i + 1,
-                    title: `Chapter ${i + 1}`
-                }))
+                color: "#e67e22",
+                description: "A poignant story set in Liberia, exploring themes of healing, forgiveness, and rebuilding after civil war."
             }
         };
 
-        function getBookFromUrl() {
+        function getBookIdFromUrl() {
             const params = new URLSearchParams(window.location.search);
             return params.get('book');
         }
 
-        function renderBookDetail(bookId) {
-            const book = booksData[bookId];
+        async function loadSummaries(bookId) {
+            const summariesRef = collection(db, "summaries");
+            const q = query(
+                summariesRef, 
+                where("bookId", "==", bookId),
+                orderBy("sectionName")
+            );
+            
+            const querySnapshot = await getDocs(q);
+            const summaries = [];
+            
+            querySnapshot.forEach((doc) => {
+                const data = doc.data();
+                summaries.push({
+                    id: doc.id,
+                    ...data
+                });
+            });
+            
+            return summaries;
+        }
+
+        function renderBook(bookId, summaries) {
+            const book = booksInfo[bookId];
             if (!book) {
                 document.getElementById('container').innerHTML = '<div class="loading"><p>Book not found.</p></div>';
                 return;
             }
 
-            const coverUrl = `https://placehold.co/600x200/${book.coverColor.substring(1)}/white?text=${encodeURIComponent(book.title.substring(0, 20))}`;
+            const coverUrl = `https://placehold.co/800x200/${book.color.substring(1)}/white?text=${encodeURIComponent(book.title.substring(0, 20))}`;
 
             const html = `
                 <div class="book-hero">
-                    <div class="book-hero-cover" style="background-image: url('${coverUrl}'), linear-gradient(135deg, ${book.coverColor}, ${book.coverColor}cc);">
-                        <div class="book-hero-info">
-                            <span class="book-hero-category">${book.category === 'non-african' ? 'Non-African Prose' : 'African Prose'}</span>
-                            <h1 class="book-hero-title">${book.title}</h1>
-                            <div class="book-hero-author">
+                    <div class="book-cover" style="background-image: url('${coverUrl}'), linear-gradient(135deg, ${book.color}, ${book.color}cc);">
+                        <div class="book-info">
+                            <span class="book-category">${book.category}</span>
+                            <h1 class="book-title">${book.title}</h1>
+                            <div class="book-author">
                                 <i class="fas fa-user-pen"></i> by ${book.author}
                             </div>
                         </div>
                     </div>
-                    <div class="book-stats-bar">
-                        <div class="book-stat"><i class="fas fa-book-open"></i> ${book.chapters} Chapters</div>
+                    <div class="book-stats">
+                        <div class="book-stat"><i class="fas fa-book-open"></i> ${summaries.length} Summaries</div>
                         <div class="book-stat"><i class="fas fa-calendar"></i> ${book.year}</div>
                     </div>
                 </div>
 
-                <div class="chapters-section">
-                    <div class="chapters-header">
-                        <h2><i class="fas fa-list"></i> Chapters & Summaries</h2>
-                        <button class="quiz-all-btn" id="quizAllBtn">
-                            <i class="fas fa-puzzle-piece"></i> Take Full Book Quiz
-                        </button>
+                <div class="summaries-section">
+                    <div class="section-header">
+                        <h2><i class="fas fa-list"></i> Summaries & Analysis</h2>
+                        ${summaries.length > 0 ? `
+                            <button class="quiz-all-btn" id="quizAllBtn">
+                                <i class="fas fa-puzzle-piece"></i> Take Full Book Quiz
+                            </button>
+                        ` : ''}
                     </div>
-                    <div class="chapters-list" id="chaptersList"></div>
+                    
+                    <div class="summaries-list" id="summariesList">
+                        ${renderSummaries(summaries)}
+                    </div>
                 </div>
             `;
 
             document.getElementById('container').innerHTML = html;
-
-            // Render chapters
-            const chaptersList = document.getElementById('chaptersList');
-            chaptersList.innerHTML = book.chaptersList.map(chapter => `
-                <div class="chapter-item">
-                    <div class="chapter-info">
-                        <div class="chapter-number">${chapter.number}</div>
-                        <div class="chapter-title">${chapter.title}</div>
-                    </div>
-                    <div class="chapter-actions">
-                        <button class="chapter-read" data-chapter="${chapter.number}">
-                            <i class="fas fa-book"></i> Read Summary
-                        </button>
-                        <button class="chapter-quiz" data-chapter="${chapter.number}">
-                            <i class="fas fa-question-circle"></i> Take Quiz
-                        </button>
-                    </div>
-                </div>
-            `).join('');
-
-            // Add event listeners for chapter read buttons
-            document.querySelectorAll('.chapter-read').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const chapterNum = btn.getAttribute('data-chapter');
-                    window.location.href = `prose-read.html?book=${bookId}&chapter=${chapterNum}`;
+            
+            // Add click handlers for expand/collapse
+            document.querySelectorAll('.summary-header').forEach(header => {
+                header.addEventListener('click', (e) => {
+                    // Don't toggle if clicking on buttons
+                    if (e.target.closest('.summary-actions')) return;
+                    
+                    const card = header.closest('.summary-card');
+                    const content = card.querySelector('.summary-content');
+                    content.classList.toggle('expanded');
                 });
             });
-
-            // Add event listeners for chapter quiz buttons
-            document.querySelectorAll('.chapter-quiz').forEach(btn => {
+            
+            // Add quiz button handlers
+            document.querySelectorAll('.quiz-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
-                    const chapterNum = btn.getAttribute('data-chapter');
-                    window.location.href = `cbt-exam.html?book=${bookId}&chapter=${chapterNum}`;
+                    e.stopPropagation();
+                    const sectionName = btn.getAttribute('data-section');
+                    window.location.href = `cbt-exam.html?book=${bookId}&section=${encodeURIComponent(sectionName)}`;
                 });
             });
-
-            // Full book quiz
-            document.getElementById('quizAllBtn').addEventListener('click', () => {
-                window.location.href = `cbt-exam.html?book=${bookId}&full=true`;
+            
+            document.querySelectorAll('.read-full-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const sectionName = btn.getAttribute('data-section');
+                    window.location.href = `prose-read.html?book=${bookId}&section=${encodeURIComponent(sectionName)}`;
+                });
             });
+            
+            if (document.getElementById('quizAllBtn')) {
+                document.getElementById('quizAllBtn').addEventListener('click', () => {
+                    window.location.href = `cbt-exam.html?book=${bookId}&full=true`;
+                });
+            }
         }
 
-        onAuthStateChanged(auth, (user) => {
+        function renderSummaries(summaries) {
+            if (summaries.length === 0) {
+                return `
+                    <div class="empty-state">
+                        <i class="fas fa-book-open"></i>
+                        <h3>No Summaries Yet</h3>
+                        <p>Summaries for this book are being prepared. Check back soon!</p>
+                    </div>
+                `;
+            }
+            
+            return summaries.map((summary, index) => {
+                // Extract plain text preview (first 200 characters)
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = summary.content || '';
+                const plainText = tempDiv.textContent || tempDiv.innerText || '';
+                const preview = plainText.substring(0, 200) + (plainText.length > 200 ? '...' : '');
+                
+                // Get key points
+                const keyPoints = summary.keyPoints || [];
+                const characters = summary.characters || [];
+                
+                return `
+                    <div class="summary-card">
+                        <div class="summary-header">
+                            <div class="summary-title">
+                                <div class="summary-number">${index + 1}</div>
+                                <h3>${escapeHtml(summary.sectionName || 'Untitled Section')}</h3>
+                            </div>
+                            <div class="summary-actions">
+                                <button class="read-btn read-full-btn" data-section="${escapeHtml(summary.sectionName)}">
+                                    <i class="fas fa-book-open"></i> Read Full
+                                </button>
+                                <button class="quiz-btn" data-section="${escapeHtml(summary.sectionName)}">
+                                    <i class="fas fa-puzzle-piece"></i> Quiz
+                                </button>
+                            </div>
+                        </div>
+                        <div class="summary-content">
+                            <div class="summary-text">
+                                ${summary.content || '<p>No content available.</p>'}
+                            </div>
+                            ${keyPoints.length > 0 || characters.length > 0 ? `
+                                <div class="summary-footer">
+                                    ${keyPoints.length > 0 ? `
+                                        <div class="key-points-section">
+                                            <i class="fas fa-lightbulb"></i>
+                                            <span><strong>Key Points:</strong> ${keyPoints.slice(0, 3).join(' • ')}${keyPoints.length > 3 ? ' • more...' : ''}</span>
+                                        </div>
+                                    ` : ''}
+                                    ${characters.length > 0 ? `
+                                        <div class="characters-section">
+                                            <i class="fas fa-users"></i>
+                                            <span><strong>Characters:</strong></span>
+                                            ${characters.map(c => `<span class="character-tag">${escapeHtml(c)}</span>`).join('')}
+                                        </div>
+                                    ` : ''}
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Auth check and load
+        onAuthStateChanged(auth, async (user) => {
             if (!user) {
                 window.location.href = "index.html";
                 return;
             }
-            const bookId = getBookFromUrl();
-            if (bookId) {
-                renderBookDetail(bookId);
-            } else {
-                document.getElementById('container').innerHTML = '<div class="loading"><p>No book selected.</p></div>';
+            
+            const bookId = getBookIdFromUrl();
+            if (!bookId) {
+                document.getElementById('container').innerHTML = '<div class="loading"><p>No book selected. <a href="prose.html">Go back to books</a></p></div>';
+                return;
+            }
+            
+            try {
+                const summaries = await loadSummaries(bookId);
+                renderBook(bookId, summaries);
+            } catch (error) {
+                console.error('Error loading summaries:', error);
+                document.getElementById('container').innerHTML = `
+                    <div class="loading">
+                        <p>Error loading content. Please try again later.</p>
+                        <small style="color: var(--danger);">${error.message}</small>
+                    </div>
+                `;
             }
         });
     </script>
