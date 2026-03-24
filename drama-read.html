@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Read Drama - Mr. Timi Edutop Scholar</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #311b92;
+            --primary-light: #4527a0;
+            --secondary: #ff5722;
+            --light: #f8f9fa;
+            --dark: #2c3e50;
+            --gray: #6c757d;
+            --border: #e9ecef;
+        }
+
+        body {
+            background: #f5f7fb;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: white;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo h1 {
+            color: var(--primary);
+            font-size: 22px;
+        }
+
+        .logo span {
+            color: var(--secondary);
+        }
+
+        .logo a {
+            text-decoration: none;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .nav-btn {
+            background: var(--light);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            color: var(--dark);
+        }
+
+        .progress-container {
+            position: sticky;
+            top: 70px;
+            width: 100%;
+            height: 4px;
+            background: var(--border);
+            z-index: 99;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--secondary);
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .reading-card {
+            background: white;
+            border-radius: 28px;
+            overflow: hidden;
+            box-shadow: 0 10px 35px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }
+
+        .book-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 30px;
+        }
+
+        .book-meta {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .book-category {
+            background: rgba(255,255,255,0.2);
+            padding: 5px 14px;
+            border-radius: 25px;
+            font-size: 12px;
+        }
+
+        .book-title {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .book-author {
+            font-size: 14px;
+            opacity: 0.9;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-header {
+            padding: 20px 30px 10px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .section-name {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .section-meta {
+            display: flex;
+            gap: 20px;
+            font-size: 12px;
+            color: var(--gray);
+            flex-wrap: wrap;
+        }
+
+        .content-area {
+            padding: 30px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .content-area::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .content-area::-webkit-scrollbar-track {
+            background: var(--border);
+            border-radius: 10px;
+        }
+
+        .content-area::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+
+        .summary-content {
+            font-size: 16px;
+            line-height: 1.8;
+            color: var(--dark);
+        }
+
+        .summary-content p {
+            margin-bottom: 1.2em;
+        }
+
+        .analysis-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding: 25px 30px;
+            background: var(--light);
+            border-top: 1px solid var(--border);
+        }
+
+        .analysis-card {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .analysis-card h3 {
+            color: var(--primary);
+            font-size: 18px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--secondary);
+        }
+
+        .analysis-content {
+            font-size: 15px;
+            line-height: 1.7;
+            color: var(--dark);
+        }
+
+        .quiz-section {
+            background: linear-gradient(135deg, #fff5f0 0%, #ffe8e0 100%);
+            padding: 25px;
+            text-align: center;
+        }
+
+        .quiz-btn {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .loading, .error {
+            text-align: center;
+            padding: 60px;
+            background: white;
+            border-radius: 28px;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .footer {
+            text-align: center;
+            padding: 16px;
+            color: var(--gray);
+            font-size: 11px;
+            border-top: 1px solid var(--border);
+            background: white;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 16px;
+            }
+            .book-header {
+                padding: 20px;
+            }
+            .book-title {
+                font-size: 22px;
+            }
+            .section-name {
+                font-size: 20px;
+            }
+            .content-area {
+                padding: 20px;
+                max-height: 400px;
+            }
+            .analysis-grid {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">
+            <a href="dashboard.html">
+                <h1>Mr. Timi <span>Scholar</span></h1>
+            </a>
+        </div>
+        <div class="nav-buttons">
+            <a href="dashboard.html" class="nav-btn"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="#" id="backToDramaBtn" class="nav-btn"><i class="fas fa-mask"></i> Back to Drama</a>
+        </div>
+    </header>
+
+    <div class="progress-container"><div class="progress-bar" id="progressBar"></div></div>
+    
+    <div class="container" id="container">
+        <div class="loading">
+            <div class="loading-spinner"></div>
+            <p>Loading drama summary...</p>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>Mr. Timi Edutop Scholar &copy; 2026 | Powered by Triangle Tech</p>
+    </footer>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCictHNxtslYs9VR0hoicxlwPn_QghkgIA",
+            authDomain: "edutop-7ff51.firebaseapp.com",
+            projectId: "edutop-7ff51",
+            storageBucket: "edutop-7ff51.firebasestorage.app",
+            messagingSenderId: "79307850494",
+            appId: "1:79307850494:web:b51ce51204140ec5429baf",
+        };
+        
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Drama Books Information
+        const dramaBooksInfo = {
+            "antony-and-cleopatra": { 
+                title: "Antony and Cleopatra", 
+                author: "William Shakespeare", 
+                category: "Shakespearean Tragedy",
+                year: 1606
+            },
+            "once-upon-an-elephant": { 
+                title: "Once Upon an Elephant", 
+                author: "Bosede Ademilua-Afolayan", 
+                category: "African Drama",
+                year: 2015
+            },
+            "marriage-of-anansewa": { 
+                title: "The Marriage of Anansewa", 
+                author: "Efua Sutherland", 
+                category: "African Drama",
+                year: 1975
+            },
+            "inspector-calls": { 
+                title: "An Inspector Calls", 
+                author: "J. B. Priestley", 
+                category: "Non-African Drama",
+                year: 1945
+            },
+            "man-for-all-seasons": { 
+                title: "A Man for All Seasons", 
+                author: "Robert Bolt", 
+                category: "Non-African Drama",
+                year: 1960
+            }
+        };
+
+        // Get URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const BOOK_ID = urlParams.get('book');
+        const SECTION_NAME = urlParams.get('section');
+
+        console.log("Drama Read - Book ID:", BOOK_ID);
+        console.log("Drama Read - Section:", SECTION_NAME);
+
+        // Create document ID the same way admin-write does
+        function getDocId(bookId, sectionName) {
+            if (!sectionName) return null;
+            const clean = sectionName.toLowerCase().replace(/[^a-z0-9]/g, '_');
+            return `${bookId}_${clean}`;
+        }
+
+        async function loadSummary() {
+            if (!BOOK_ID || !SECTION_NAME) {
+                document.getElementById('container').innerHTML = `
+                    <div class="error">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <h3>Invalid Request</h3>
+                        <p>No drama or section specified.</p>
+                        <a href="drama.html" style="color: var(--primary);">Go to Drama</a>
+                    </div>
+                `;
+                return;
+            }
+
+            const docId = getDocId(BOOK_ID, decodeURIComponent(SECTION_NAME));
+            console.log("Looking for document:", docId);
+            
+            try {
+                const docRef = doc(db, "summaries", docId);
+                const docSnap = await getDoc(docRef);
+                
+                if (!docSnap.exists()) {
+                    document.getElementById('container').innerHTML = `
+                        <div class="error">
+                            <i class="fas fa-book-open"></i>
+                            <h3>Summary Not Found</h3>
+                            <p>No summary found for "${decodeURIComponent(SECTION_NAME)}"</p>
+                            <p>Make sure you published it in the admin panel.</p>
+                            <a href="drama-detail.html?book=${BOOK_ID}" style="color: var(--primary);">← Back to Drama</a>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                const data = docSnap.data();
+                const drama = dramaBooksInfo[BOOK_ID] || { 
+                    title: "Drama", 
+                    author: "Unknown", 
+                    category: "Drama",
+                    year: "Unknown"
+                };
+                
+                const readingTime = calculateReadingTime(data.content || '');
+                
+                const html = `
+                    <div class="reading-card">
+                        <div class="book-header">
+                            <div class="book-meta">
+                                <span class="book-category">${drama.category}</span>
+                                <span class="book-category">${drama.year}</span>
+                            </div>
+                            <h1 class="book-title">${escapeHtml(drama.title)}</h1>
+                            <div class="book-author">
+                                <i class="fas fa-user-pen"></i> by ${escapeHtml(drama.author)}
+                            </div>
+                        </div>
+                        
+                        <div class="section-header">
+                            <div class="section-name">${escapeHtml(data.sectionName || SECTION_NAME)}</div>
+                            <div class="section-meta">
+                                <span><i class="fas fa-calendar-alt"></i> Updated: ${data.updatedAt ? new Date(data.updatedAt).toLocaleDateString() : 'Recently'}</span>
+                                <span><i class="fas fa-clock"></i> ${readingTime} min read</span>
+                                ${data.published ? '<span><i class="fas fa-check-circle"></i> Published</span>' : '<span><i class="fas fa-edit"></i> Draft</span>'}
+                            </div>
+                        </div>
+                        
+                        <div class="content-area" id="contentArea">
+                            <div class="summary-content">${data.content || '<p>No content available.</p>'}</div>
+                        </div>
+                        
+                        <div class="analysis-grid">
+                            ${renderCard('Key Points', 'fa-lightbulb', data.keyPoints)}
+                            ${renderCard('Characters', 'fa-users', data.characters)}
+                            ${renderCard('Themes', 'fa-palette', data.themes)}
+                            ${renderCard('Literary Devices', 'fa-feather-alt', data.literaryDevices)}
+                            ${renderCard('Dramatic Devices', 'fa-mask', data.dramaticDevices)}
+                        </div>
+                        
+                        <div class="quiz-section">
+                            <button class="quiz-btn" id="takeQuizBtn">
+                                <i class="fas fa-puzzle-piece"></i> Take Quiz on ${escapeHtml(data.sectionName || SECTION_NAME)}
+                            </button>
+                            <p style="margin-top: 12px; font-size: 13px; color: var(--gray);">
+                                Test your understanding of this drama section
+                            </p>
+                        </div>
+                    </div>
+                `;
+                
+                document.getElementById('container').innerHTML = html;
+                
+                document.getElementById('takeQuizBtn')?.addEventListener('click', () => {
+                    window.location.href = `cbt-exam.html?book=${BOOK_ID}&section=${encodeURIComponent(SECTION_NAME)}&type=drama`;
+                });
+                
+                // Scroll tracking
+                const contentArea = document.getElementById('contentArea');
+                const progressBar = document.getElementById('progressBar');
+                
+                if (contentArea) {
+                    contentArea.addEventListener('scroll', () => {
+                        const scrollTop = contentArea.scrollTop;
+                        const scrollHeight = contentArea.scrollHeight - contentArea.clientHeight;
+                        const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+                        progressBar.style.width = `${progress}%`;
+                    });
+                }
+                
+            } catch (error) {
+                console.error("Error:", error);
+                document.getElementById('container').innerHTML = `
+                    <div class="error">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h3>Error Loading Content</h3>
+                        <p>${error.message}</p>
+                        <a href="drama-detail.html?book=${BOOK_ID}" style="color: var(--primary);">Back to Drama</a>
+                    </div>
+                `;
+            }
+        }
+        
+        function renderCard(title, icon, content) {
+            if (!content || content === '<p><br></p>' || content.trim() === '') return '';
+            return `
+                <div class="analysis-card">
+                    <h3><i class="fas ${icon}"></i> ${title}</h3>
+                    <div class="analysis-content">${content}</div>
+                </div>
+            `;
+        }
+        
+        function calculateReadingTime(content) {
+            if (!content) return 1;
+            const text = content.replace(/<[^>]*>/g, '');
+            const words = text.split(/\s+/).length;
+            return Math.max(1, Math.ceil(words / 200));
+        }
+        
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Back button
+        document.getElementById('backToDramaBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            if (BOOK_ID) {
+                window.location.href = `drama-detail.html?book=${BOOK_ID}`;
+            } else {
+                window.location.href = 'drama.html';
+            }
+        });
+
+        // Auth check
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                window.location.href = "index.html";
+                return;
+            }
+            loadSummary();
+        });
+    </script>
+</body>
+</html>
