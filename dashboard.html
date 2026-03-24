@@ -3,342 +3,504 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Admin Dashboard | Mr. Timi Scholar</title>
+    <title>Mr. Timi Edutop Scholar - Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
-    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
         }
-
-        :root {
-            --primary: #311b92;
-            --primary-light: #4527a0;
-            --secondary: #ff5722;
-            --success: #4caf50;
-            --warning: #ff9800;
-            --danger: #f44336;
-            --light: #f8f9fa;
-            --dark: #2c3e50;
-            --gray: #6c757d;
-            --border: #e9ecef;
+        
+        :root { 
+            --primary: #311b92; 
+            --primary-light: #4527a0; 
+            --secondary: #ff5722; 
+            --accent: #00bcd4; 
+            --light: #f5f5f7; 
+            --dark: #333; 
+            --success: #4caf50; 
+            --warning: #ff9800; 
+            --danger: #f44336; 
+            --gray: #777; 
+            --light-gray: #eee; 
         }
-
-        body {
-            background: #f5f7fb;
-            min-height: 100vh;
+        
+        body { 
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%); 
+            min-height: 100vh; 
         }
-
-        .header {
-            background: white;
-            padding: 12px 24px;
+        
+        /* Compact Header */
+        .header { 
+            background: white; 
+            padding: 12px 16px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); 
+            position: sticky; 
+            top: 0; 
+            z-index: 100; 
+        }
+        
+        .logo h1 { 
+            color: var(--primary); 
+            font-size: 22px; 
+        }
+        
+        .logo span { 
+            color: var(--secondary); 
+        }
+        
+        .user-info { 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+        }
+        
+        .user-profile { 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+        }
+        
+        .user-avatar { 
+            width: 36px; 
+            height: 36px; 
+            border-radius: 50%; 
+            background: var(--primary); 
+            color: white; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-weight: bold; 
+            font-size: 14px;
+        }
+        
+        .user-name { 
+            font-weight: 600; 
+            font-size: 14px;
+        }
+        
+        .user-plan { 
+            font-size: 11px; 
+            color: var(--gray); 
+        }
+        
+        /* Compact Dashboard Container */
+        .dashboard-container { 
+            padding: 16px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        /* Welcome Section - Compact */
+        .welcome-section { 
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); 
+            color: white; 
+            padding: 18px 20px; 
+            border-radius: 16px; 
+            margin-bottom: 20px; 
+            box-shadow: 0 4px 12px rgba(49, 27, 146, 0.2); 
+        }
+        
+        .welcome-section h2 { 
+            font-size: 20px; 
+            margin-bottom: 6px; 
+        }
+        
+        .welcome-section p { 
+            opacity: 0.9; 
+            font-size: 13px;
+        }
+        
+        /* Stats Cards - Compact Grid */
+        .stats-cards { 
+            display: grid; 
+            grid-template-columns: repeat(4, 1fr); 
+            gap: 10px; 
+            margin-bottom: 20px; 
+        }
+        
+        .stat-card { 
+            background: white; 
+            padding: 12px 8px; 
+            border-radius: 12px; 
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04); 
+            text-align: center;
+            transition: transform 0.2s;
+        }
+        
+        .stat-card:hover { 
+            transform: translateY(-2px); 
+        }
+        
+        .stat-icon { 
+            width: 36px; 
+            height: 36px; 
+            border-radius: 10px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 18px; 
+            color: white; 
+            margin: 0 auto 8px;
+        }
+        
+        .stat-info h3 { 
+            font-size: 18px; 
+            margin-bottom: 2px; 
+        }
+        
+        .stat-info p { 
+            color: var(--gray); 
+            font-size: 11px; 
+        }
+        
+        /* Section Headers */
+        .section-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            flex-wrap: wrap;
-            gap: 15px;
+            align-items: baseline;
+            margin-bottom: 16px;
         }
-
-        .logo h1 {
-            color: var(--primary);
-            font-size: 24px;
-        }
-
-        .logo span {
-            color: var(--secondary);
-        }
-
-        .logo a {
-            text-decoration: none;
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 15px;
-            align-items: center;
-        }
-
-        .nav-btn {
-            background: var(--light);
-            border: none;
-            padding: 8px 16px;
-            border-radius: 30px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 13px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            text-decoration: none;
-            color: var(--dark);
-        }
-
-        .admin-badge {
-            background: var(--secondary);
-            color: white;
-            padding: 6px 14px;
-            border-radius: 30px;
-            font-size: 12px;
+        
+        .section-header h2 { 
+            color: var(--primary); 
+            font-size: 18px; 
             font-weight: 600;
         }
-
-        .admin-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .category-tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 25px;
-            flex-wrap: wrap;
-            background: white;
-            padding: 12px 20px;
-            border-radius: 60px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-
-        .tab-btn {
-            background: none;
-            border: none;
-            padding: 10px 28px;
-            border-radius: 40px;
-            font-weight: 600;
-            font-size: 15px;
-            cursor: pointer;
-            color: var(--gray);
-        }
-
-        .tab-btn.active {
-            background: var(--primary);
-            color: white;
-        }
-
-        .content-area {
-            display: flex;
-            gap: 25px;
-            flex-wrap: wrap;
-        }
-
-        .book-sidebar {
-            width: 280px;
-            background: white;
-            border-radius: 20px;
-            padding: 20px;
-            height: fit-content;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-
-        .book-sidebar h3 {
-            color: var(--primary);
-            margin-bottom: 15px;
-            font-size: 16px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid var(--secondary);
-        }
-
-        .book-list {
+        
+        /* Action Grid - Literature Focused */
+        .action-grid { 
             display: flex;
             flex-direction: column;
-            gap: 8px;
-            max-height: 500px;
-            overflow-y: auto;
-        }
-
-        .book-item {
-            padding: 12px 15px;
-            background: var(--light);
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .book-item:hover {
-            background: var(--border);
-            transform: translateX(5px);
-        }
-
-        .book-item.active {
-            background: var(--primary);
-            color: white;
-        }
-
-        .editor-panel {
-            flex: 1;
-            min-width: 300px;
-            background: white;
-            border-radius: 24px;
-            padding: 24px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-        }
-
-        .section-tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 25px;
-            border-bottom: 2px solid var(--border);
-            padding-bottom: 10px;
-        }
-
-        .section-tab {
-            background: none;
-            border: none;
-            padding: 8px 24px;
-            border-radius: 30px;
-            cursor: pointer;
-            font-weight: 600;
-        }
-
-        .section-tab.active {
-            background: var(--primary);
-            color: white;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            font-weight: 600;
-            color: var(--primary);
-            margin-bottom: 8px;
-            font-size: 14px;
-        }
-
-        input {
-            width: 100%;
-            padding: 12px 16px;
-            border: 2px solid var(--border);
-            border-radius: 12px;
-            font-size: 14px;
-        }
-
-        input:focus {
-            border-color: var(--primary);
-            outline: none;
-        }
-
-        .editor-container {
-            border-radius: 12px;
-            overflow: hidden;
-            border: 2px solid var(--border);
-        }
-
-        .rich-editor {
-            height: 250px;
-            background: white;
-        }
-
-        .analysis-card {
-            background: var(--light);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-
-        .analysis-card h4 {
-            color: var(--primary);
-            margin-bottom: 12px;
-            font-size: 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .question-item {
-            background: var(--light);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-
-        .question-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .options-grid {
-            display: grid;
-            gap: 10px;
-            margin: 15px 0;
-        }
-
-        .option-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .option-row input {
-            flex: 1;
-        }
-
-        .btn {
-            padding: 12px 24px;
-            border-radius: 40px;
-            font-weight: 600;
-            cursor: pointer;
-            border: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-        }
-
-        .btn-success {
-            background: var(--success);
-            color: white;
-        }
-
-        .btn-secondary {
-            background: var(--border);
-            color: var(--dark);
-        }
-
-        .action-buttons {
-            display: flex;
             gap: 12px;
-            margin-top: 25px;
-            justify-content: flex-end;
+            margin-bottom: 24px;
         }
-
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            padding: 12px 24px;
-            border-radius: 30px;
-            background: var(--success);
-            color: white;
-            z-index: 1000;
+        
+        .action-card { 
+            background: white; 
+            border-radius: 14px; 
+            padding: 16px; 
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04); 
+            transition: all 0.2s; 
+            cursor: pointer; 
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border: 1px solid transparent;
+        }
+        
+        .action-card:active { 
+            transform: scale(0.98);
+            background: #fafafa;
+        }
+        
+        .action-icon { 
+            width: 48px; 
+            height: 48px; 
+            border-radius: 14px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 22px; 
+            color: white; 
+            flex-shrink: 0;
+        }
+        
+        .action-content {
+            flex: 1;
+        }
+        
+        .action-card h3 { 
+            margin-bottom: 4px; 
+            color: var(--primary); 
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .action-card p { 
+            color: var(--gray); 
+            font-size: 12px; 
+            line-height: 1.4;
+        }
+        
+        .action-arrow {
+            color: var(--gray);
+            font-size: 14px;
+            opacity: 0.6;
+        }
+        
+        /* Recent Activity - Compact */
+        .recent-activity { 
+            background: white; 
+            border-radius: 16px; 
+            padding: 18px; 
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04); 
+        }
+        
+        .recent-activity h2 { 
+            color: var(--primary); 
+            margin-bottom: 16px; 
+            font-size: 18px;
+        }
+        
+        .activity-list { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 12px; 
+        }
+        
+        .activity-item { 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            padding: 12px; 
+            border-radius: 12px; 
+            background: var(--light); 
+        }
+        
+        .activity-icon { 
+            width: 36px; 
+            height: 36px; 
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            color: white; 
+            font-size: 14px; 
+            flex-shrink: 0;
+        }
+        
+        .activity-info h4 { 
+            margin-bottom: 2px; 
+            font-size: 14px;
+        }
+        
+        .activity-info p { 
+            color: var(--gray); 
+            font-size: 11px; 
+        }
+        
+        /* Footer */
+        .footer { 
+            text-align: center; 
+            padding: 16px; 
+            color: var(--gray); 
+            font-size: 11px; 
+            border-top: 1px solid var(--light-gray);
+            margin-top: 20px;
+        }
+        
+        /* Modal - Compact */
+        .modal-overlay { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            right: 0; 
+            bottom: 0; 
+            background: rgba(0, 0, 0, 0.7); 
+            display: none; 
+            align-items: center; 
+            justify-content: center; 
+            z-index: 1000; 
+            padding: 16px;
+        }
+        
+        .modal { 
+            background: white; 
+            border-radius: 20px; 
+            width: 100%; 
+            max-width: 500px; 
+            max-height: 85vh; 
+            overflow-y: auto; 
+            padding: 20px; 
+            position: relative; 
+        }
+        
+        .modal-close { 
+            position: absolute; 
+            top: 15px; 
+            right: 20px; 
+            background: none; 
+            border: none; 
+            font-size: 24px; 
+            cursor: pointer; 
+            color: var(--gray); 
+        }
+        
+        .modal h2 { 
+            color: var(--primary); 
+            margin-bottom: 12px; 
+            text-align: center; 
+            font-size: 20px;
+        }
+        
+        .modal > p {
+            text-align: center;
+            font-size: 13px;
+            color: var(--gray);
+            margin-bottom: 20px;
+        }
+        
+        .subject-grid { 
+            display: grid; 
+            grid-template-columns: repeat(2, 1fr); 
+            gap: 12px; 
+            margin-bottom: 20px;
+        }
+        
+        .subject-card { 
+            background: var(--light); 
+            border-radius: 12px; 
+            padding: 12px; 
+            text-align: center; 
+            cursor: pointer; 
+            transition: all 0.2s; 
+            border: 2px solid transparent; 
+        }
+        
+        .subject-card.selected { 
+            background: var(--primary); 
+            color: white; 
+            border-color: var(--primary); 
+        }
+        
+        .subject-icon { 
+            font-size: 24px; 
+            margin-bottom: 6px; 
+            color: var(--primary); 
+        }
+        
+        .subject-card.selected .subject-icon { 
+            color: white; 
+        }
+        
+        .subject-card h4 {
+            font-size: 13px;
+        }
+        
+        .selected-subjects { 
+            background: #f0f7ff; 
+            padding: 15px; 
+            border-radius: 12px; 
+            margin-bottom: 20px;
+        }
+        
+        .selected-subjects h4 { 
+            margin-bottom: 10px; 
+            color: var(--primary); 
+            font-size: 14px;
+        }
+        
+        .selected-list { 
+            display: flex; 
+            flex-wrap: wrap; 
+            gap: 8px; 
+        }
+        
+        .selected-tag { 
+            background: var(--primary); 
+            color: white; 
+            padding: 6px 12px; 
+            border-radius: 20px; 
+            font-size: 12px;
+        }
+        
+        .modal-actions { 
+            display: flex; 
+            justify-content: center; 
+            gap: 12px; 
+        }
+        
+        .modal-btn { 
+            padding: 10px 24px; 
+            border-radius: 30px; 
+            border: none; 
+            font-weight: 600; 
+            cursor: pointer; 
+            transition: all 0.2s; 
+            font-size: 14px;
+        }
+        
+        .modal-btn.primary { 
+            background: var(--primary); 
+            color: white; 
+        }
+        
+        .modal-btn.secondary { 
+            background: var(--light-gray); 
+            color: var(--dark); 
+        }
+        
+        .modal-btn.primary:disabled { 
+            background: #ccc; 
+            cursor: not-allowed; 
+        }
+        
+        /* Hide sidebar elements we don't need */
+        .sidebar-hidden {
             display: none;
         }
-
-        @media (max-width: 768px) {
-            .content-area {
-                flex-direction: column;
+        
+        /* Loading spinner */
+        .loading-spinner {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.6s linear infinite;
+            margin-right: 6px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 480px) {
+            .stats-cards {
+                gap: 8px;
             }
-            .book-sidebar {
-                width: 100%;
+            
+            .stat-card {
+                padding: 10px 5px;
+            }
+            
+            .stat-icon {
+                width: 30px;
+                height: 30px;
+                font-size: 14px;
+            }
+            
+            .stat-info h3 {
+                font-size: 16px;
+            }
+            
+            .stat-info p {
+                font-size: 10px;
+            }
+            
+            .action-card {
+                padding: 12px;
+            }
+            
+            .action-icon {
+                width: 42px;
+                height: 42px;
+                font-size: 18px;
+            }
+            
+            .action-card h3 {
+                font-size: 15px;
+            }
+            
+            .action-card p {
+                font-size: 11px;
             }
         }
     </style>
@@ -346,126 +508,199 @@
 <body>
     <header class="header">
         <div class="logo">
-            <a href="dashboard.html">
-                <h1>Mr. Timi <span>Scholar</span></h1>
-            </a>
+            <h1>Mr. Timi <span>Scholar</span></h1>
         </div>
-        <div class="header-actions">
-            <a href="dashboard.html" class="nav-btn">
-                <i class="fas fa-home"></i> Dashboard
-            </a>
-            <span class="admin-badge">
-                <i class="fas fa-crown"></i> Admin Panel
-            </span>
+        <div class="user-info">
+            <div class="user-profile">
+                <div class="user-avatar" id="user-avatar-display">...</div>
+                <div>
+                    <div class="user-name" id="user-name-display">Loading...</div>
+                    <div class="user-plan" id="user-plan-display">Scholar</div>
+                </div>
+            </div>
         </div>
     </header>
 
-    <div class="admin-container">
-        <div class="category-tabs">
-            <button class="tab-btn active" data-category="prose">📖 Prose</button>
-            <button class="tab-btn" data-category="drama">🎭 Drama</button>
-            <button class="tab-btn" data-category="poetry">📜 Poetry</button>
+    <div class="dashboard-container">
+        <!-- Welcome Section -->
+        <section class="welcome-section">
+            <h2 id="welcome-msg">Welcome!</h2>
+            <p id="welcome-subtext">Your literature learning journey begins here.</p>
+        </section>
+
+        <!-- Stats Cards -->
+        <div class="stats-cards">
+            <div class="stat-card">
+                <div class="stat-icon" style="background: var(--primary);">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 id="stat-score">--%</h3>
+                    <p>Avg Score</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: var(--success);">
+                    <i class="fas fa-clipboard-list"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 id="stat-exams">0</h3>
+                    <p>Exams</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: var(--accent);">
+                    <i class="fas fa-book-open"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 id="stat-summaries">0</h3>
+                    <p>Summaries</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: var(--warning);">
+                    <i class="fas fa-trophy"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 id="stat-ranking">--</h3>
+                    <p>Rank</p>
+                </div>
+            </div>
         </div>
 
-        <div class="content-area">
-            <div class="book-sidebar">
-                <h3><i class="fas fa-book"></i> Books</h3>
-                <div class="book-list" id="bookList">Loading...</div>
+        <!-- Literature Learning Actions -->
+        <div class="section-header">
+            <h2>Literature Resources</h2>
+        </div>
+        
+        <div class="action-grid">
+            <!-- Read Prose Button -->
+            <div class="action-card" onclick="window.location.href='prose.html'">
+                <div class="action-icon" style="background: linear-gradient(135deg, #311b92 0%, #4527a0 100%);">
+                    <i class="fas fa-book"></i>
+                </div>
+                <div class="action-content">
+                    <h3>Read Prose</h3>
+                    <p>Novels, novellas, and fictional narratives with detailed summaries</p>
+                </div>
+                <i class="fas fa-chevron-right action-arrow"></i>
             </div>
 
-            <div class="editor-panel" id="editorPanel">
-                <div class="section-tabs">
-                    <button class="section-tab active" data-section="summary">📝 Summary</button>
-                    <button class="section-tab" data-section="analysis">🔍 Analysis</button>
-                    <button class="section-tab" data-section="questions">❓ Questions</button>
+            <!-- Read Drama Button -->
+            <div class="action-card" onclick="window.location.href='drama.html'">
+                <div class="action-icon" style="background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);">
+                    <i class="fas fa-mask"></i>
                 </div>
-
-                <!-- Summary Section -->
-                <div id="summarySection">
-                    <div class="form-group">
-                        <label><i class="fas fa-tag"></i> Section/Chapter/Act Name</label>
-                        <input type="text" id="sectionName" placeholder="e.g., Chapter 1, Act 1 Scene 1">
-                    </div>
-                    <div class="form-group">
-                        <label><i class="fas fa-align-left"></i> Summary Content (Full Detailed Notes)</label>
-                        <div class="editor-container">
-                            <div id="summaryEditor" class="rich-editor"></div>
-                        </div>
-                    </div>
+                <div class="action-content">
+                    <h3>Read Drama</h3>
+                    <p>Plays, acts, scenes, and dramatic analysis for JAMB texts</p>
                 </div>
+                <i class="fas fa-chevron-right action-arrow"></i>
+            </div>
 
-                <!-- Analysis Section -->
-                <div id="analysisSection" style="display: none;">
-                    <div class="analysis-card">
-                        <h4><i class="fas fa-lightbulb"></i> Key Points</h4>
-                        <div class="editor-container">
-                            <div id="keyPointsEditor" class="rich-editor" style="height: 150px;"></div>
-                        </div>
+            <!-- Read Poetry Button -->
+            <div class="action-card" onclick="window.location.href='poetry.html'">
+                <div class="action-icon" style="background: linear-gradient(135deg, #ff9800 0%, #ef6c00 100%);">
+                    <i class="fas fa-feather-alt"></i>
+                </div>
+                <div class="action-content">
+                    <h3>Read Poetry</h3>
+                    <p>Poems, verses, literary devices, and poetic analysis</p>
+                </div>
+                <i class="fas fa-chevron-right action-arrow"></i>
+            </div>
+
+            <!-- CBT Literature Exam Button -->
+            <div class="action-card" onclick="window.location.href='cbt-exam.html'">
+                <div class="action-icon" style="background: linear-gradient(135deg, #2196f3 0%, #0d47a1 100%);">
+                    <i class="fas fa-laptop"></i>
+                </div>
+                <div class="action-content">
+                    <h3>CBT Literature Exam</h3>
+                    <p>Practice with JAMB-standard CBT questions on literature</p>
+                </div>
+                <i class="fas fa-chevron-right action-arrow"></i>
+            </div>
+
+            <!-- Hire Private Tutor Button -->
+            <div class="action-card" onclick="window.location.href='tutors.html'">
+                <div class="action-icon" style="background: linear-gradient(135deg, #f44336 0%, #c62828 100%);">
+                    <i class="fas fa-chalkboard-user"></i>
+                </div>
+                <div class="action-content">
+                    <h3>Hire Private Tutor</h3>
+                    <p>Connect with expert literature tutors for personalized guidance</p>
+                </div>
+                <i class="fas fa-chevron-right action-arrow"></i>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <section class="recent-activity">
+            <h2>Recent Activity</h2>
+            <div class="activity-list" id="activity-list">
+                <div class="activity-item">
+                    <div class="activity-icon" style="background: var(--primary);">
+                        <i class="fas fa-user-plus"></i>
                     </div>
-
-                    <div class="analysis-card">
-                        <h4><i class="fas fa-users"></i> Characters</h4>
-                        <div class="editor-container">
-                            <div id="charactersEditor" class="rich-editor" style="height: 150px;"></div>
-                        </div>
-                    </div>
-
-                    <div class="analysis-card">
-                        <h4><i class="fas fa-palette"></i> Themes</h4>
-                        <div class="editor-container">
-                            <div id="themesEditor" class="rich-editor" style="height: 150px;"></div>
-                        </div>
-                    </div>
-
-                    <div class="analysis-card">
-                        <h4><i class="fas fa-feather-alt"></i> Literary Devices</h4>
-                        <div class="editor-container">
-                            <div id="devicesEditor" class="rich-editor" style="height: 150px;"></div>
-                        </div>
-                    </div>
-
-                    <div class="analysis-card" id="toneMoodCard" style="display: none;">
-                        <h4><i class="fas fa-smile"></i> Tone & Mood (Poetry Only)</h4>
-                        <div class="editor-container">
-                            <div id="toneMoodEditor" class="rich-editor" style="height: 150px;"></div>
-                        </div>
-                    </div>
-
-                    <div class="analysis-card" id="dramaticDevicesCard" style="display: none;">
-                        <h4><i class="fas fa-mask"></i> Dramatic Devices (Drama Only)</h4>
-                        <div class="editor-container">
-                            <div id="dramaticDevicesEditor" class="rich-editor" style="height: 150px;"></div>
-                        </div>
+                    <div class="activity-info">
+                        <h4>Welcome to Mr. Timi Scholar</h4>
+                        <p>Start exploring literature summaries today!</p>
                     </div>
                 </div>
+            </div>
+        </section>
+    </div>
 
-                <!-- Questions Section -->
-                <div id="questionsSection" style="display: none;">
-                    <div id="questionsList"></div>
-                    <button id="addQuestionBtn" class="btn btn-secondary" style="width: 100%; margin-top: 15px;">
-                        <i class="fas fa-plus"></i> Add Question
-                    </button>
-                </div>
+    <footer class="footer">
+        <p>Mr. Timi Edutop Scholar &copy; 2026 | Powered by Triangle Tech</p>
+    </footer>
 
-                <div class="action-buttons">
-                    <button id="saveDraftBtn" class="btn btn-secondary">
-                        <i class="fas fa-save"></i> Save Draft
-                    </button>
-                    <button id="publishBtn" class="btn btn-success">
-                        <i class="fas fa-globe"></i> Publish
-                    </button>
+    <!-- Subject Selection Modal (Simplified for Literature) -->
+    <div class="modal-overlay" id="subjectModal">
+        <div class="modal">
+            <button class="modal-close" id="closeModal">&times;</button>
+            <h2>Select Your Focus Areas</h2>
+            <p>Choose which literature areas you want to focus on</p>
+            
+            <div class="subject-grid">
+                <div class="subject-card" data-subject="Prose">
+                    <div class="subject-icon"><i class="fas fa-book"></i></div>
+                    <h4>Prose</h4>
                 </div>
+                <div class="subject-card" data-subject="Drama">
+                    <div class="subject-icon"><i class="fas fa-mask"></i></div>
+                    <h4>Drama</h4>
+                </div>
+                <div class="subject-card" data-subject="Poetry">
+                    <div class="subject-icon"><i class="fas fa-feather-alt"></i></div>
+                    <h4>Poetry</h4>
+                </div>
+                <div class="subject-card" data-subject="CBT Practice">
+                    <div class="subject-icon"><i class="fas fa-laptop"></i></div>
+                    <h4>CBT Practice</h4>
+                </div>
+            </div>
+            
+            <div class="selected-subjects">
+                <h4>Your Focus Areas</h4>
+                <div class="selected-list" id="selectedList"></div>
+                <p id="selectionCount" style="margin-top: 10px; color: var(--gray); font-size: 12px;">0 areas selected</p>
+            </div>
+            
+            <div class="modal-actions">
+                <button class="modal-btn secondary" id="cancelSelection">Cancel</button>
+                <button class="modal-btn primary" id="saveSubjects">Save Selection</button>
             </div>
         </div>
     </div>
 
-    <div id="toast" class="toast"></div>
-
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-        import { getFirestore, collection, doc, getDoc, getDocs, setDoc, query, where, orderBy } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+        import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
+        // Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyCictHNxtslYs9VR0hoicxlwPn_QghkgIA",
             authDomain: "edutop-7ff51.firebaseapp.com",
@@ -473,330 +708,190 @@
             storageBucket: "edutop-7ff51.firebasestorage.app",
             messagingSenderId: "79307850494",
             appId: "1:79307850494:web:b51ce51204140ec5429baf",
+            measurementId: "G-GGGH590BYS"
         };
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-
-        const adminEmails = ["okewunmitimileyin23@gmail.com", "triangleofscholars@gmail.com"];
-
-        const booksData = {
-            prose: [
-                { id: "to-kill-a-mockingbird", title: "To Kill a Mockingbird", author: "Harper Lee" },
-                { id: "path-of-lucas", title: "Path of Lucas", author: "Susanne Bellefeuille" },
-                { id: "so-the-path-does-not-die", title: "So the Path Does Not Die", author: "Pede Hollist" },
-                { id: "redemption-road", title: "Redemption Road", author: "Elma Shaw" }
-            ],
-            drama: [
-                { id: "antony-and-cleopatra", title: "Antony and Cleopatra", author: "William Shakespeare" },
-                { id: "once-upon-an-elephant", title: "Once Upon an Elephant", author: "Bosede Ademilua-Afolayan" },
-                { id: "marriage-of-anansewa", title: "The Marriage of Anansewa", author: "Efua Sutherland" },
-                { id: "inspector-calls", title: "An Inspector Calls", author: "J. B. Priestley" },
-                { id: "man-for-all-seasons", title: "A Man for All Seasons", author: "Robert Bolt" }
-            ],
-            poetry: [
-                { id: "jamb-poetry", title: "JAMB Recommended Poems", author: "Various Poets" }
-            ]
-        };
-
-        let currentCategory = "prose";
-        let currentBook = null;
         
-        let summaryEditor, keyPointsEditor, charactersEditor, themesEditor, devicesEditor, toneMoodEditor, dramaticDevicesEditor;
-        
-        let currentData = {
-            sectionName: "",
-            content: "",
-            keyPoints: "",
-            characters: "",
-            themes: "",
-            literaryDevices: "",
-            toneMood: "",
-            dramaticDevices: "",
-            questions: []
-        };
+        let currentUserUid = null;
+        let selectedSubjects = [];
 
-        function initEditors() {
-            summaryEditor = new Quill('#summaryEditor', {
-                theme: 'snow',
-                placeholder: 'Write your detailed summary here...',
-                modules: { toolbar: [['bold', 'italic', 'underline'], [{ 'list': 'ordered'}, { 'list': 'bullet' }], ['link', 'image'], ['clean']] }
-            });
-            summaryEditor.on('text-change', () => { currentData.content = summaryEditor.root.innerHTML; });
-
-            keyPointsEditor = new Quill('#keyPointsEditor', { theme: 'snow', placeholder: 'Write detailed key points here...' });
-            keyPointsEditor.on('text-change', () => { currentData.keyPoints = keyPointsEditor.root.innerHTML; });
-
-            charactersEditor = new Quill('#charactersEditor', { theme: 'snow', placeholder: 'Write detailed character analysis here...' });
-            charactersEditor.on('text-change', () => { currentData.characters = charactersEditor.root.innerHTML; });
-
-            themesEditor = new Quill('#themesEditor', { theme: 'snow', placeholder: 'Write detailed theme analysis here...' });
-            themesEditor.on('text-change', () => { currentData.themes = themesEditor.root.innerHTML; });
-
-            devicesEditor = new Quill('#devicesEditor', { theme: 'snow', placeholder: 'Write detailed literary devices analysis here...' });
-            devicesEditor.on('text-change', () => { currentData.literaryDevices = devicesEditor.root.innerHTML; });
-
-            toneMoodEditor = new Quill('#toneMoodEditor', { theme: 'snow', placeholder: 'Write detailed tone and mood analysis here...' });
-            toneMoodEditor.on('text-change', () => { currentData.toneMood = toneMoodEditor.root.innerHTML; });
-
-            dramaticDevicesEditor = new Quill('#dramaticDevicesEditor', { theme: 'snow', placeholder: 'Write detailed dramatic devices analysis here...' });
-            dramaticDevicesEditor.on('text-change', () => { currentData.dramaticDevices = dramaticDevicesEditor.root.innerHTML; });
-        }
-
-        function renderBookList() {
-            const books = booksData[currentCategory];
-            const container = document.getElementById('bookList');
-            container.innerHTML = books.map(book => `
-                <div class="book-item" data-id="${book.id}">
-                    <span>${book.title}</span>
-                    <small>${book.author.split(' ').pop()}</small>
-                </div>
-            `).join('');
-            
-            document.querySelectorAll('.book-item').forEach(item => {
-                item.addEventListener('click', () => {
-                    document.querySelectorAll('.book-item').forEach(b => b.classList.remove('active'));
-                    item.classList.add('active');
-                    currentBook = item.getAttribute('data-id');
-                    loadSections();
-                });
-            });
-        }
-
-        async function loadSections() {
-            if (!currentBook) return;
-            
-            const q = query(collection(db, "summaries"), where("bookId", "==", currentBook), orderBy("sectionName"));
-            const snapshot = await getDocs(q);
-            const sections = [];
-            snapshot.forEach(doc => sections.push({ id: doc.id, ...doc.data() }));
-            
-            const bookList = document.getElementById('bookList');
-            const existing = document.getElementById('sectionsPanel');
-            if (existing) existing.remove();
-            
-            const sectionsPanel = document.createElement('div');
-            sectionsPanel.id = 'sectionsPanel';
-            sectionsPanel.style.marginTop = '20px';
-            sectionsPanel.style.borderTop = '1px solid var(--border)';
-            sectionsPanel.style.paddingTop = '15px';
-            sectionsPanel.innerHTML = `
-                <h3 style="font-size: 14px; margin-bottom: 10px;"><i class="fas fa-list"></i> Sections</h3>
-                <div style="display: flex; gap: 8px; margin-bottom: 10px;">
-                    <input type="text" id="newSectionInput" placeholder="New section name..." style="flex: 1; padding: 8px 12px;">
-                    <button id="createSectionBtn" style="background: var(--success); color: white; border: none; padding: 8px 12px; border-radius: 30px;">
-                        <i class="fas fa-plus"></i>
-                    </button>
-                </div>
-                <div id="sectionsList" style="max-height: 250px; overflow-y: auto;">
-                    ${sections.map(s => `
-                        <div class="book-item" style="padding: 8px 12px; margin-bottom: 5px;" data-section="${s.sectionName}">
-                            <span style="font-size: 13px;">${s.sectionName}</span>
-                            <span style="font-size: 10px; color: ${s.published ? 'green' : 'orange'}">${s.published ? '✓' : '📝'}</span>
-                        </div>
-                    `).join('') || '<p style="color: var(--gray); font-size: 12px; text-align: center;">No sections yet</p>'}
-                </div>
-            `;
-            bookList.appendChild(sectionsPanel);
-            
-            document.querySelectorAll('[data-section]').forEach(el => {
-                el.addEventListener('click', () => loadSummary(currentBook, el.getAttribute('data-section')));
-            });
-            
-            document.getElementById('createSectionBtn')?.addEventListener('click', () => {
-                const input = document.getElementById('newSectionInput');
-                if (input.value.trim()) createSection(input.value.trim());
-            });
-        }
-
-        async function createSection(sectionName) {
-            const docId = `${currentBook}_${sectionName.toLowerCase().replace(/[^a-z0-9]/g, '_')}`;
-            await setDoc(doc(db, "summaries", docId), {
-                bookId: currentBook,
-                sectionName: sectionName,
-                content: "",
-                keyPoints: "",
-                characters: "",
-                themes: "",
-                literaryDevices: "",
-                toneMood: "",
-                dramaticDevices: "",
-                questions: [],
-                published: false,
-                createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString()
-            });
-            showToast(`Created "${sectionName}"`);
-            loadSections();
-            loadSummary(currentBook, sectionName);
-        }
-
-        async function loadSummary(bookId, sectionName) {
-            const docId = `${bookId}_${sectionName.toLowerCase().replace(/[^a-z0-9]/g, '_')}`;
-            const docSnap = await getDoc(doc(db, "summaries", docId));
-            
-            if (docSnap.exists()) {
-                const data = docSnap.data();
-                currentData = {
-                    sectionName: data.sectionName || "",
-                    content: data.content || "",
-                    keyPoints: data.keyPoints || "",
-                    characters: data.characters || "",
-                    themes: data.themes || "",
-                    literaryDevices: data.literaryDevices || "",
-                    toneMood: data.toneMood || "",
-                    dramaticDevices: data.dramaticDevices || "",
-                    questions: data.questions || []
-                };
+        // Auth State Observer
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUserUid = user.uid;
                 
-                document.getElementById('sectionName').value = currentData.sectionName;
-                summaryEditor.root.innerHTML = currentData.content;
-                keyPointsEditor.root.innerHTML = currentData.keyPoints;
-                charactersEditor.root.innerHTML = currentData.characters;
-                themesEditor.root.innerHTML = currentData.themes;
-                devicesEditor.root.innerHTML = currentData.literaryDevices;
-                toneMoodEditor.root.innerHTML = currentData.toneMood;
-                dramaticDevicesEditor.root.innerHTML = currentData.dramaticDevices;
-                renderQuestions();
-                showToast(`Loaded: ${sectionName}`);
-            }
-        }
-
-        function renderQuestions() {
-            const container = document.getElementById('questionsList');
-            if (!currentData.questions || currentData.questions.length === 0) {
-                container.innerHTML = '<p style="text-align: center; color: var(--gray); padding: 20px;">No questions yet. Click "Add Question" to create.</p>';
-                return;
-            }
-            
-            container.innerHTML = currentData.questions.map((q, idx) => `
-                <div class="question-item">
-                    <div class="question-header">
-                        <strong>Question ${idx + 1}</strong>
-                        <button class="btn-secondary" style="padding: 4px 12px;" onclick="window.removeQuestion(${idx})">Delete</button>
-                    </div>
-                    <input type="text" value="${escapeHtml(q.text || '')}" placeholder="Question text" style="width: 100%; margin-bottom: 10px;" data-qidx="${idx}" data-field="text">
-                    <div class="options-grid">
-                        ${['A','B','C','D'].map(opt => `
-                            <div class="option-row">
-                                <span style="width: 30px;">${opt}.</span>
-                                <input type="text" value="${escapeHtml((q.options && q.options[opt]) || '')}" placeholder="Option ${opt}" data-qidx="${idx}" data-opt="${opt}">
-                                <input type="radio" name="correct_${idx}" value="${opt}" ${(q.correct === opt) ? 'checked' : ''} data-qidx="${idx}">
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-            `).join('');
-            
-            document.querySelectorAll('[data-qidx]').forEach(el => {
-                el.addEventListener('change', (e) => {
-                    const idx = parseInt(el.getAttribute('data-qidx'));
-                    if (!currentData.questions[idx]) return;
-                    if (el.hasAttribute('data-field')) {
-                        currentData.questions[idx][el.getAttribute('data-field')] = el.value;
-                    } else if (el.hasAttribute('data-opt')) {
-                        if (!currentData.questions[idx].options) currentData.questions[idx].options = {};
-                        currentData.questions[idx].options[el.getAttribute('data-opt')] = el.value;
-                    } else if (el.type === 'radio' && el.checked) {
-                        currentData.questions[idx].correct = el.value;
+                const userRef = doc(db, "users", currentUserUid);
+                
+                onSnapshot(userRef, async (docSnap) => {
+                    if (docSnap.exists()) {
+                        const data = docSnap.data();
+                        updateUI(data);
+                    } else {
+                        const defaultData = {
+                            fullName: user.displayName || "Scholar",
+                            email: user.email,
+                            selectedSubjects: [],
+                            stats: {
+                                overallScore: 0,
+                                examsTaken: 0,
+                                summariesRead: 0,
+                                ranking: "New"
+                            },
+                            createdAt: new Date().toISOString()
+                        };
+                        
+                        try {
+                            await setDoc(userRef, defaultData);
+                        } catch (e) {
+                            console.error("Error creating profile:", e);
+                        }
                     }
+                }, (error) => {
+                    console.error("Listener error:", error);
                 });
-            });
-        }
 
-        window.removeQuestion = (idx) => {
-            currentData.questions.splice(idx, 1);
-            renderQuestions();
-        };
+            } else {
+                window.location.href = "index.html";
+            }
+        });
 
-        async function saveSummary(published) {
-            if (!currentBook || !currentData.sectionName) {
-                showToast('Select book and enter section name', true);
-                return;
+        // Update UI Function
+        function updateUI(userData) {
+            const fullName = userData.fullName || "Scholar";
+            document.getElementById('user-name-display').innerText = fullName.split(' ')[0];
+            document.getElementById('welcome-msg').innerText = `Hello, ${fullName.split(' ')[0]}!`;
+            
+            const initials = fullName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+            document.getElementById('user-avatar-display').innerText = initials;
+            
+            const plan = userData.subscriptionPlan || "Scholar";
+            document.getElementById('user-plan-display').innerText = plan;
+
+            const stats = userData.stats || {};
+            document.getElementById('stat-score').innerText = (stats.overallScore || 0) + '%';
+            document.getElementById('stat-exams').innerText = stats.examsTaken || 0;
+            document.getElementById('stat-summaries').innerText = stats.summariesRead || 0;
+            document.getElementById('stat-ranking').innerText = stats.ranking || '--';
+
+            selectedSubjects = userData.selectedSubjects || [];
+            
+            const welcomeSubtext = document.getElementById('welcome-subtext');
+            if (selectedSubjects.length > 0) {
+                welcomeSubtext.innerHTML = `Focusing on: <strong>${selectedSubjects.join(', ')}</strong>`;
+            } else {
+                welcomeSubtext.innerText = "Select your focus areas to get personalized recommendations.";
             }
             
-            const docId = `${currentBook}_${currentData.sectionName.toLowerCase().replace(/[^a-z0-9]/g, '_')}`;
-            await setDoc(doc(db, "summaries", docId), {
-                ...currentData,
-                bookId: currentBook,
-                published: published,
-                updatedAt: new Date().toISOString(),
-                updatedBy: auth.currentUser?.email
-            });
-            showToast(published ? 'Published successfully!' : 'Saved as draft');
-            loadSections();
+            if(document.getElementById('subjectModal').style.display === 'flex'){
+                renderSubjectSelection();
+            }
         }
 
-        function showToast(msg, isError = false) {
-            const toast = document.getElementById('toast');
-            toast.textContent = msg;
-            toast.style.backgroundColor = isError ? '#f44336' : '#4caf50';
-            toast.style.display = 'block';
-            setTimeout(() => toast.style.display = 'none', 3000);
-        }
+        // Modal Logic
+        const subjectModal = document.getElementById('subjectModal');
+        const closeModal = document.getElementById('closeModal');
+        const cancelSelection = document.getElementById('cancelSelection');
+        const subjectCards = document.querySelectorAll('.subject-card');
+        const selectedList = document.getElementById('selectedList');
+        const selectionCount = document.getElementById('selectionCount');
+        const saveSubjectsBtn = document.getElementById('saveSubjects');
 
-        function escapeHtml(text) {
-            if (!text) return '';
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
+        // Open modal from anywhere - add click handler to a button if needed
+        const hideModal = () => { subjectModal.style.display = 'none'; };
+        
+        if (closeModal) closeModal.addEventListener('click', hideModal);
+        if (cancelSelection) cancelSelection.addEventListener('click', hideModal);
+        if (subjectModal) subjectModal.addEventListener('click', (e) => { if (e.target === subjectModal) hideModal(); });
 
-        // Event Listeners
-        document.querySelectorAll('.tab-btn[data-category]').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.tab-btn[data-category]').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                currentCategory = btn.getAttribute('data-category');
-                currentBook = null;
-                renderBookList();
+        subjectCards.forEach(card => {
+            card.addEventListener('click', function() {
+                const subject = this.getAttribute('data-subject');
+                const index = selectedSubjects.indexOf(subject);
                 
-                const toneMoodCard = document.getElementById('toneMoodCard');
-                const dramaticDevicesCard = document.getElementById('dramaticDevicesCard');
-                
-                if (currentCategory === 'poetry') {
-                    toneMoodCard.style.display = 'block';
-                    dramaticDevicesCard.style.display = 'none';
-                } else if (currentCategory === 'drama') {
-                    toneMoodCard.style.display = 'none';
-                    dramaticDevicesCard.style.display = 'block';
+                if (index === -1) {
+                    if (selectedSubjects.length < 4) selectedSubjects.push(subject);
+                    else alert('Maximum 4 focus areas allowed.');
                 } else {
-                    toneMoodCard.style.display = 'none';
-                    dramaticDevicesCard.style.display = 'none';
+                    selectedSubjects.splice(index, 1);
+                }
+                renderSubjectSelection();
+            });
+        });
+
+        function renderSubjectSelection() {
+            document.querySelectorAll('.subject-card').forEach(c => c.classList.remove('selected'));
+            selectedSubjects.forEach(sub => {
+                const card = document.querySelector(`.subject-card[data-subject="${sub}"]`);
+                if(card) card.classList.add('selected');
+            });
+
+            selectedList.innerHTML = '';
+            selectedSubjects.forEach(subject => {
+                const tag = document.createElement('div');
+                tag.className = 'selected-tag';
+                tag.innerHTML = `${subject}`;
+                selectedList.appendChild(tag);
+            });
+
+            selectionCount.textContent = `${selectedSubjects.length} areas selected`;
+            
+            if (selectedSubjects.length > 0) {
+                saveSubjectsBtn.disabled = false;
+                saveSubjectsBtn.style.opacity = '1';
+            } else {
+                saveSubjectsBtn.disabled = true;
+                saveSubjectsBtn.style.opacity = '0.6';
+            }
+        }
+
+        saveSubjectsBtn.addEventListener('click', async () => {
+            if (!currentUserUid) return;
+            const originalText = saveSubjectsBtn.innerText;
+            saveSubjectsBtn.innerHTML = '<span class="loading-spinner"></span> Saving...';
+            saveSubjectsBtn.disabled = true;
+            
+            try {
+                const userRef = doc(db, "users", currentUserUid);
+                await setDoc(userRef, { 
+                    selectedSubjects: selectedSubjects,
+                    lastUpdated: new Date().toISOString()
+                }, { merge: true });
+                
+                hideModal();
+            } catch (error) {
+                console.error("Error:", error);
+                alert("Failed to save: " + error.message);
+            } finally {
+                saveSubjectsBtn.innerHTML = originalText;
+                saveSubjectsBtn.disabled = false;
+            }
+        });
+
+        // Logout
+        const logoutBtn = document.getElementById('logout-btn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', async (e) => {
+                e.preventDefault();
+                await signOut(auth);
+                window.location.href = "index.html";
+            });
+        }
+        
+        // Add a settings button in header for logout
+        const userProfile = document.querySelector('.user-profile');
+        if (userProfile) {
+            userProfile.style.cursor = 'pointer';
+            userProfile.addEventListener('click', () => {
+                if (confirm('Logout from your account?')) {
+                    signOut(auth).then(() => {
+                        window.location.href = "index.html";
+                    });
                 }
             });
-        });
-
-        document.querySelectorAll('.section-tab').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.section-tab').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                const section = btn.getAttribute('data-section');
-                document.getElementById('summarySection').style.display = section === 'summary' ? 'block' : 'none';
-                document.getElementById('analysisSection').style.display = section === 'analysis' ? 'block' : 'none';
-                document.getElementById('questionsSection').style.display = section === 'questions' ? 'block' : 'none';
-            });
-        });
-
-        document.getElementById('sectionName').addEventListener('change', (e) => { currentData.sectionName = e.target.value; });
-        document.getElementById('addQuestionBtn').addEventListener('click', () => {
-            if (!currentData.questions) currentData.questions = [];
-            currentData.questions.push({ text: "", options: { A: "", B: "", C: "", D: "" }, correct: "A" });
-            renderQuestions();
-        });
-        document.getElementById('saveDraftBtn').addEventListener('click', () => saveSummary(false));
-        document.getElementById('publishBtn').addEventListener('click', () => saveSummary(true));
-
-        onAuthStateChanged(auth, (user) => {
-            if (!user) { window.location.href = "index.html"; return; }
-            if (!adminEmails.includes(user.email)) {
-                document.body.innerHTML = '<div style="text-align:center;padding:80px"><i class="fas fa-lock" style="font-size:64px;color:var(--danger)"></i><h2>Access Denied</h2><a href="dashboard.html">Back to Dashboard</a></div>';
-                return;
-            }
-            initEditors();
-            renderBookList();
-        });
+        }
     </script>
 </body>
 </html>
