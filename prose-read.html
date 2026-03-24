@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Read Summary - Mr. Timi Edutop Scholar</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #311b92;
+            --primary-light: #4527a0;
+            --secondary: #ff5722;
+            --light: #f5f5f7;
+            --dark: #333;
+            --gray: #777;
+            --light-gray: #eee;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            min-height: 100vh;
+        }
+
+        .header {
+            background: white;
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo h1 {
+            color: var(--primary);
+            font-size: 22px;
+        }
+
+        .logo span {
+            color: var(--secondary);
+        }
+
+        .logo a {
+            text-decoration: none;
+        }
+
+        .back-btn {
+            background: var(--light);
+            border: none;
+            padding: 8px 14px;
+            border-radius: 30px;
+            cursor: pointer;
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px 16px;
+        }
+
+        /* Navigation between chapters */
+        .chapter-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            gap: 12px;
+        }
+
+        .nav-btn {
+            background: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s;
+        }
+
+        .nav-btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateX(-2px);
+        }
+
+        .nav-btn.next:hover {
+            transform: translateX(2px);
+        }
+
+        .nav-btn.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .nav-btn.disabled:hover {
+            background: white;
+            color: var(--primary);
+            transform: none;
+        }
+
+        /* Summary Card */
+        .summary-card {
+            background: white;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            margin-bottom: 24px;
+        }
+
+        .summary-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 24px 20px;
+        }
+
+        .book-title {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .chapter-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .chapter-meta {
+            font-size: 13px;
+            opacity: 0.8;
+        }
+
+        .summary-content {
+            padding: 24px 20px;
+        }
+
+        .summary-text {
+            font-size: 16px;
+            line-height: 1.7;
+            color: var(--dark);
+            margin-bottom: 24px;
+        }
+
+        .key-points {
+            background: var(--light);
+            padding: 20px;
+            border-radius: 16px;
+            margin-top: 20px;
+        }
+
+        .key-points h3 {
+            color: var(--primary);
+            margin-bottom: 12px;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .key-points ul {
+            padding-left: 24px;
+            color: var(--gray);
+            line-height: 1.6;
+        }
+
+        .key-points li {
+            margin-bottom: 8px;
+        }
+
+        .characters-section {
+            background: var(--light);
+            padding: 20px;
+            border-radius: 16px;
+            margin-top: 20px;
+        }
+
+        .characters-section h3 {
+            color: var(--primary);
+            margin-bottom: 12px;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .character-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .character-tag {
+            background: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        .quiz-section {
+            background: white;
+            border-radius: 24px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .quiz-btn {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 40px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.2s;
+        }
+
+        .quiz-btn:hover {
+            background: #e64a19;
+            transform: scale(1.02);
+        }
+
+        /* Editor Mode (for adding summaries) */
+        .editor-mode-badge {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--primary);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 12px;
+            cursor: pointer;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .editor-mode-badge:hover {
+            background: var(--primary-light);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px;
+            color: var(--gray);
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--light-gray);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: var(--gray);
+            font-size: 11px;
+            border-top: 1px solid var(--light-gray);
+            margin-top: 40px;
+        }
+
+        @media (max-width: 480px) {
+            .chapter-title {
+                font-size: 20px;
+            }
+            .summary-text {
+                font-size: 15px;
+            }
+            .chapter-nav {
+                flex-wrap: wrap;
+            }
+            .nav-btn {
+                flex: 1;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">
+            <a href="dashboard.html">
+                <h1>Mr. Timi <span>Scholar</span></h1>
+            </a>
+        </div>
+        <button class="back-btn" onclick="window.location.href='prose-detail.html' + window.location.search">
+            <i class="fas fa-arrow-left"></i> Back to Book
+        </button>
+    </header>
+
+    <div class="container" id="container">
+        <div class="loading">
+            <div class="loading-spinner"></div>
+            <p>Loading summary...</p>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>Mr. Timi Edutop Scholar &copy; 2026 | Powered by Triangle Tech</p>
+    </footer>
+
+    <!-- Editor Mode Toggle (for you to add/edit summaries) -->
+    <div class="editor-mode-badge" id="editorToggle">
+        <i class="fas fa-edit"></i> Edit Summary
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCictHNxtslYs9VR0hoicxlwPn_QghkgIA",
+            authDomain: "edutop-7ff51.firebaseapp.com",
+            projectId: "edutop-7ff51",
+            storageBucket: "edutop-7ff51.firebasestorage.app",
+            messagingSenderId: "79307850494",
+            appId: "1:79307850494:web:b51ce51204140ec5429baf",
+            measurementId: "G-GGGH590BYS"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Books data structure
+        const booksInfo = {
+            "to-kill-a-mockingbird": { title: "To Kill a Mockingbird", author: "Harper Lee", totalChapters: 31 },
+            "path-of-lucas": { title: "Path of Lucas", author: "Susanne Bellefeuille", totalChapters: 42 },
+            "so-the-path-does-not-die": { title: "So the Path Does Not Die", author: "Pede Hollist", totalChapters: 24 },
+            "redemption-road": { title: "Redemption Road", author: "Elma Shaw", totalChapters: 28 }
+        };
+
+        // Default summary templates (replace with your actual summaries)
+        const defaultSummaries = {
+            "to-kill-a-mockingbird": {
+                1: {
+                    summary: "The novel opens with Scout Finch living in Maycomb, Alabama with her father Atticus and brother Jem. They meet Dill, a boy who visits for the summer. The children become fascinated with their reclusive neighbor, Boo Radley. Scout begins school but struggles with her teacher Miss Caroline who doesn't understand the local ways.",
+                    keyPoints: ["Introduction to Maycomb setting", "Boo Radley mystery introduced", "Scout's first day at school", "The Finch family dynamic"],
+                    characters: ["Scout Finch", "Jem Finch", "Atticus Finch", "Dill Harris", "Boo Radley", "Miss Caroline"]
+                }
+            }
+        };
+
+        function getParams() {
+            const params = new URLSearchParams(window.location.search);
+            return {
+                bookId: params.get('book'),
+                chapter: parseInt(params.get('chapter'))
+            };
+        }
+
+        let isEditorMode = false;
+        let currentSummary = null;
+
+        async function loadSummary(bookId, chapterNum) {
+            const summaryRef = doc(db, "summaries", `${bookId}_chapter_${chapterNum}`);
+            const summaryDoc = await getDoc(summaryRef);
+            
+            if (summaryDoc.exists()) {
+                return summaryDoc.data();
+            } else {
+                // Return default template if exists, otherwise empty
+                if (defaultSummaries[bookId] && defaultSummaries[bookId][chapterNum]) {
+                    return defaultSummaries[bookId][chapterNum];
+                }
+                return {
+                    summary: `## Chapter ${chapterNum} Summary\n\nWrite your summary here...`,
+                    keyPoints: ["Key point 1", "Key point 2", "Key point 3"],
+                    characters: ["Main characters in this chapter"]
+                };
+            }
+        }
+
+        async function saveSummary(bookId, chapterNum, data) {
+            const summaryRef = doc(db, "summaries", `${bookId}_chapter_${chapterNum}`);
+            await setDoc(summaryRef, {
+                ...data,
+                updatedAt: new Date().toISOString(),
+                bookId,
+                chapter: chapterNum
+            });
+        }
+
+        function renderSummary(bookId, chapterNum, summaryData, bookInfo, totalChapters) {
+            const isEditable = isEditorMode;
+            
+            const html = `
+                <div class="chapter-nav">
+                    <button class="nav-btn prev" id="prevBtn" ${chapterNum <= 1 ? 'disabled' : ''}>
+                        <i class="fas fa-chevron-left"></i> Previous Chapter
+                    </button>
+                    <button class="nav-btn next" id="nextBtn" ${chapterNum >= totalChapters ? 'disabled' : ''}>
+                        Next Chapter <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+
+                <div class="summary-card">
+                    <div class="summary-header">
+                        <div class="book-title">
+                            <i class="fas fa-book"></i> ${bookInfo.title}
+                            <span style="font-size: 12px;">by ${bookInfo.author}</span>
+                        </div>
+                        <div class="chapter-title">Chapter ${chapterNum}</div>
+                        <div class="chapter-meta">
+                            <i class="fas fa-clock"></i> Reading time: 5-10 minutes
+                        </div>
+                    </div>
+                    <div class="summary-content">
+                        <div class="summary-text" id="summaryText" ${isEditable ? 'contenteditable="true"' : ''}>
+                            ${summaryData.summary.replace(/\n/g, '<br>')}
+                        </div>
+                        
+                        <div class="key-points">
+                            <h3><i class="fas fa-lightbulb"></i> Key Points</h3>
+                            <ul id="keyPointsList" ${isEditable ? 'contenteditable="true"' : ''}>
+                                ${summaryData.keyPoints.map(p => `<li>${p}</li>`).join('')}
+                            </ul>
+                        </div>
+                        
+                        <div class="characters-section">
+                            <h3><i class="fas fa-users"></i> Characters in this Chapter</h3>
+                            <div class="character-list" id="charactersList">
+                                ${summaryData.characters.map(c => `<span class="character-tag">${c}</span>`).join('')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quiz-section">
+                    <button class="quiz-btn" id="takeQuizBtn">
+                        <i class="fas fa-puzzle-piece"></i> Take Quiz on Chapter ${chapterNum}
+                    </button>
+                    <p style="margin-top: 12px; font-size: 12px; color: var(--gray);">
+                        Test your understanding of this chapter
+                    </p>
+                </div>
+            `;
+
+            document.getElementById('container').innerHTML = html;
+
+            // Navigation
+            document.getElementById('prevBtn')?.addEventListener('click', () => {
+                if (chapterNum > 1) {
+                    window.location.href = `prose-read.html?book=${bookId}&chapter=${chapterNum - 1}`;
+                }
+            });
+            
+            document.getElementById('nextBtn')?.addEventListener('click', () => {
+                if (chapterNum < totalChapters) {
+                    window.location.href = `prose-read.html?book=${bookId}&chapter=${chapterNum + 1}`;
+                }
+            });
+            
+            document.getElementById('takeQuizBtn')?.addEventListener('click', () => {
+                window.location.href = `cbt-exam.html?book=${bookId}&chapter=${chapterNum}`;
+            });
+
+            if (isEditorMode) {
+                // Add save button
+                const saveBtn = document.createElement('button');
+                saveBtn.innerHTML = '<i class="fas fa-save"></i> Save Changes';
+                saveBtn.style.cssText = `
+                    position: fixed;
+                    bottom: 80px;
+                    right: 20px;
+                    background: var(--success, #4caf50);
+                    color: white;
+                    border: none;
+                    padding: 12px 20px;
+                    border-radius: 30px;
+                    cursor: pointer;
+                    font-weight: 600;
+                    z-index: 1000;
+                    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+                `;
+                document.body.appendChild(saveBtn);
+                
+                saveBtn.addEventListener('click', async () => {
+                    const newSummary = document.getElementById('summaryText').innerHTML.replace(/<br>/g, '\n');
+                    const keyPointsItems = document.querySelectorAll('#keyPointsList li');
+                    const newKeyPoints = Array.from(keyPointsItems).map(li => li.innerText);
+                    const characterTags = document.querySelectorAll('#charactersList .character-tag');
+                    const newCharacters = Array.from(characterTags).map(tag => tag.innerText);
+                    
+                    const updatedData = {
+                        summary: newSummary,
+                        keyPoints: newKeyPoints,
+                        characters: newCharacters
+                    };
+                    
+                    await saveSummary(bookId, chapterNum, updatedData);
+                    alert('Summary saved successfully!');
+                    location.reload();
+                });
+            }
+        }
+
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = "index.html";
+                return;
+            }
+            
+            const { bookId, chapter } = getParams();
+            
+            if (!bookId || !chapter) {
+                document.getElementById('container').innerHTML = '<div class="loading"><p>Invalid request. Please select a chapter from the book.</p></div>';
+                return;
+            }
+            
+            const bookInfo = booksInfo[bookId];
+            if (!bookInfo) {
+                document.getElementById('container').innerHTML = '<div class="loading"><p>Book not found.</p></div>';
+                return;
+            }
+            
+            const summaryData = await loadSummary(bookId, chapter);
+            renderSummary(bookId, chapter, summaryData, bookInfo, bookInfo.totalChapters);
+        });
+        
+        // Editor mode toggle
+        document.getElementById('editorToggle').addEventListener('click', () => {
+            isEditorMode = !isEditorMode;
+            const { bookId, chapter } = getParams();
+            if (bookId && chapter) {
+                location.reload();
+            }
+        });
+    </script>
+</body>
+</html>
