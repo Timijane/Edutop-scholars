@@ -82,7 +82,6 @@
 
         .nav-btn:hover {
             background: var(--border);
-            transform: translateY(-1px);
         }
 
         .admin-badge {
@@ -201,7 +200,6 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            transition: all 0.2s;
         }
 
         .btn-success {
@@ -209,19 +207,9 @@
             color: white;
         }
 
-        .btn-success:hover {
-            background: #3d8b40;
-            transform: translateY(-1px);
-        }
-
         .btn-secondary {
             background: var(--border);
             color: var(--dark);
-        }
-
-        .btn-secondary:hover {
-            background: #ddd;
-            transform: translateY(-1px);
         }
 
         .documents-list {
@@ -283,11 +271,6 @@
             color: #155724;
         }
 
-        .status-draft {
-            background: #fff3cd;
-            color: #856404;
-        }
-
         .icon-btn {
             background: none;
             border: none;
@@ -331,7 +314,7 @@
             </a>
         </div>
         <div class="header-actions">
-            <a href="dashboard.html" class="nav-btn" id="dashboardLink">
+            <a href="dashboard.html" class="nav-btn">
                 <i class="fas fa-home"></i> Dashboard
             </a>
             <span class="admin-badge">
@@ -448,7 +431,6 @@
 
         let quill;
         let keyPointsEditor, charactersEditor, themesEditor, devicesEditor, toneMoodEditor, dramaticDevicesEditor;
-        let currentDocId = null;
 
         let currentData = {
             sectionName: "",
@@ -511,12 +493,13 @@
             
             currentData.sectionName = sectionName;
             
-            const docId = `${book}_${sectionName.toLowerCase().replace(/[^a-z0-9]/g, '_')}`;
-            currentDocId = docId;
+            // Create a clean document ID (no special characters)
+            const cleanSectionName = sectionName.toLowerCase().replace(/[^a-z0-9]/g, '_');
+            const docId = `${book}_${cleanSectionName}`;
             
             const summaryData = {
                 bookId: book,
-                sectionName: currentData.sectionName,
+                sectionName: sectionName,
                 content: currentData.content || "",
                 keyPoints: currentData.keyPoints || "",
                 characters: currentData.characters || "",
@@ -530,12 +513,34 @@
                 updatedBy: auth.currentUser?.email
             };
             
-            console.log("Saving summary:", summaryData);
+            console.log("Saving to:", docId);
+            console.log("Summary data:", summaryData);
             
             try {
                 await setDoc(doc(db, "summaries", docId), summaryData);
                 showToast(published ? '✅ Published successfully!' : '📝 Saved as draft');
                 loadDocuments();
+                // Clear form after successful save
+                if (published) {
+                    document.getElementById('sectionName').value = '';
+                    quill.root.innerHTML = '';
+                    keyPointsEditor.root.innerHTML = '';
+                    charactersEditor.root.innerHTML = '';
+                    themesEditor.root.innerHTML = '';
+                    devicesEditor.root.innerHTML = '';
+                    toneMoodEditor.root.innerHTML = '';
+                    dramaticDevicesEditor.root.innerHTML = '';
+                    currentData = {
+                        sectionName: "",
+                        content: "",
+                        keyPoints: "",
+                        characters: "",
+                        themes: "",
+                        literaryDevices: "",
+                        toneMood: "",
+                        dramaticDevices: ""
+                    };
+                }
             } catch (error) {
                 console.error('Save error:', error);
                 showToast('Error saving: ' + error.message, true);
@@ -581,11 +586,6 @@
                 await deleteDoc(doc(db, "summaries", docId));
                 showToast('🗑️ Deleted successfully');
                 loadDocuments();
-                if (currentDocId === docId) {
-                    document.getElementById('summaryForm').style.display = 'none';
-                    document.getElementById('sectionName').value = '';
-                    quill.root.innerHTML = '';
-                }
             }
         }
 
@@ -659,7 +659,8 @@
             const book = document.getElementById('bookSelect').value;
             const section = document.getElementById('sectionName').value.trim();
             if (book && section) {
-                const docId = `${book}_${section.toLowerCase().replace(/[^a-z0-9]/g, '_')}`;
+                const cleanSection = section.toLowerCase().replace(/[^a-z0-9]/g, '_');
+                const docId = `${book}_${cleanSection}`;
                 loadSummary(docId);
             } else {
                 showToast('Select book and enter section name', true);
@@ -668,12 +669,6 @@
 
         document.getElementById('saveDraftBtn').addEventListener('click', () => saveSummary(false));
         document.getElementById('publishBtn').addEventListener('click', () => saveSummary(true));
-
-        // Dashboard link
-        document.getElementById('dashboardLink').addEventListener('click', (e) => {
-            e.preventDefault();
-            window.location.href = 'dashboard.html';
-        });
 
         // Handle category changes
         document.getElementById('bookSelect').addEventListener('change', (e) => {
