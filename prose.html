@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Prose Summaries - Mr. Timi Edutop Scholar</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #311b92;
+            --primary-light: #4527a0;
+            --secondary: #ff5722;
+            --accent: #00bcd4;
+            --light: #f5f5f7;
+            --dark: #333;
+            --gray: #777;
+            --light-gray: #eee;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo h1 {
+            color: var(--primary);
+            font-size: 22px;
+        }
+
+        .logo span {
+            color: var(--secondary);
+        }
+
+        .logo a {
+            text-decoration: none;
+        }
+
+        .back-btn {
+            background: var(--light);
+            border: none;
+            padding: 8px 14px;
+            border-radius: 30px;
+            cursor: pointer;
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .back-btn:hover {
+            background: var(--light-gray);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px 16px;
+        }
+
+        /* Page Header */
+        .page-header {
+            margin-bottom: 24px;
+        }
+
+        .page-header h1 {
+            color: var(--primary);
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .page-header p {
+            color: var(--gray);
+            font-size: 14px;
+        }
+
+        /* Section Titles */
+        .section-title {
+            font-size: 20px;
+            color: var(--primary);
+            margin: 24px 0 16px 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--secondary);
+            display: inline-block;
+        }
+
+        /* Book Grid */
+        .book-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .book-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .book-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        }
+
+        .book-cover {
+            height: 180px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+            justify-content: flex-start;
+            padding: 16px;
+        }
+
+        .book-cover::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(49,27,146,0.7) 0%, rgba(0,0,0,0.5) 100%);
+        }
+
+        .book-category {
+            position: relative;
+            z-index: 2;
+            background: var(--secondary);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .book-info {
+            padding: 20px;
+        }
+
+        .book-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 6px;
+        }
+
+        .book-author {
+            color: var(--gray);
+            font-size: 14px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .book-author i {
+            font-size: 12px;
+            color: var(--secondary);
+        }
+
+        .book-description {
+            color: #555;
+            font-size: 13px;
+            line-height: 1.5;
+            margin-bottom: 16px;
+        }
+
+        .book-stats {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+            font-size: 12px;
+            color: var(--gray);
+        }
+
+        .book-stats span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .read-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .read-btn:hover {
+            background: var(--primary-light);
+            transform: translateY(-1px);
+        }
+
+        /* Loading State */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--gray);
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--light-gray);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: var(--gray);
+            font-size: 11px;
+            border-top: 1px solid var(--light-gray);
+            margin-top: 40px;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 16px;
+            }
+            .page-header h1 {
+                font-size: 24px;
+            }
+            .book-title {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">
+            <a href="dashboard.html" style="text-decoration: none;">
+                <h1>Mr. Timi <span>Scholar</span></h1>
+            </a>
+        </div>
+        <button class="back-btn" onclick="window.location.href='dashboard.html'">
+            <i class="fas fa-arrow-left"></i> Back
+        </button>
+    </header>
+
+    <div class="container">
+        <div class="page-header">
+            <h1>Prose Summaries</h1>
+            <p>Detailed chapter-by-chapter summaries and analysis for JAMB recommended texts</p>
+        </div>
+
+        <!-- Non-African Prose Section -->
+        <h2 class="section-title">Non-African Prose</h2>
+        <div class="book-grid" id="non-african-books"></div>
+
+        <!-- African Prose Section -->
+        <h2 class="section-title">African Prose</h2>
+        <div class="book-grid" id="african-books"></div>
+    </div>
+
+    <footer class="footer">
+        <p>Mr. Timi Edutop Scholar &copy; 2026 | Powered by Triangle Tech</p>
+    </footer>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+        import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCictHNxtslYs9VR0hoicxlwPn_QghkgIA",
+            authDomain: "edutop-7ff51.firebaseapp.com",
+            projectId: "edutop-7ff51",
+            storageBucket: "edutop-7ff51.firebasestorage.app",
+            messagingSenderId: "79307850494",
+            appId: "1:79307850494:web:b51ce51204140ec5429baf",
+            measurementId: "G-GGGH590BYS"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Books data (will be stored in Firebase, but here's the structure)
+        const books = [
+            // Non-African
+            {
+                id: "to-kill-a-mockingbird",
+                title: "To Kill a Mockingbird",
+                author: "Harper Lee",
+                category: "non-african",
+                description: "A classic novel about racial injustice and moral growth in the American South during the 1930s, told through the eyes of young Scout Finch.",
+                chapters: 31,
+                year: 1960,
+                coverColor: "#2c3e50"
+            },
+            {
+                id: "path-of-lucas",
+                title: "Path of Lucas: The Journey He Endured",
+                author: "Susanne Bellefeuille",
+                category: "non-african",
+                description: "A powerful story of resilience, family bonds, and the journey through life's challenges.",
+                chapters: 42,
+                year: 2018,
+                coverColor: "#8e44ad"
+            },
+            // African
+            {
+                id: "so-the-path-does-not-die",
+                title: "So the Path Does Not Die",
+                author: "Pede Hollist",
+                category: "african",
+                description: "A compelling narrative exploring identity, belonging, and the connection between African diaspora and homeland.",
+                chapters: 24,
+                year: 2020,
+                coverColor: "#27ae60"
+            },
+            {
+                id: "redemption-road",
+                title: "Redemption Road",
+                author: "Elma Shaw",
+                category: "african",
+                description: "A poignant story set in Liberia, exploring themes of healing, forgiveness, and rebuilding after civil war.",
+                chapters: 28,
+                year: 2020,
+                coverColor: "#e67e22"
+            }
+        ];
+
+        function renderBooks() {
+            const nonAfricanContainer = document.getElementById('non-african-books');
+            const africanContainer = document.getElementById('african-books');
+            
+            const nonAfricanBooks = books.filter(b => b.category === 'non-african');
+            const africanBooks = books.filter(b => b.category === 'african');
+            
+            nonAfricanContainer.innerHTML = nonAfricanBooks.map(book => createBookCard(book)).join('');
+            africanContainer.innerHTML = africanBooks.map(book => createBookCard(book)).join('');
+            
+            // Add click handlers to buttons
+            document.querySelectorAll('.read-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const bookId = btn.getAttribute('data-book-id');
+                    window.location.href = `prose-detail.html?book=${bookId}`;
+                });
+            });
+        }
+        
+        function createBookCard(book) {
+            // Generate a placeholder image URL with book title
+            const coverUrl = `https://placehold.co/400x200/${book.coverColor.substring(1)}/white?text=${encodeURIComponent(book.title.substring(0, 20))}`;
+            
+            return `
+                <div class="book-card">
+                    <div class="book-cover" style="background-image: url('${coverUrl}'), linear-gradient(135deg, ${book.coverColor}, ${book.coverColor}cc);">
+                        <span class="book-category">${book.category === 'non-african' ? 'Non-African' : 'African'} Prose</span>
+                    </div>
+                    <div class="book-info">
+                        <h3 class="book-title">${book.title}</h3>
+                        <div class="book-author">
+                            <i class="fas fa-user-pen"></i> ${book.author}
+                        </div>
+                        <div class="book-stats">
+                            <span><i class="fas fa-book-open"></i> ${book.chapters} Chapters</span>
+                            <span><i class="fas fa-calendar"></i> ${book.year}</span>
+                        </div>
+                        <p class="book-description">${book.description}</p>
+                        <button class="read-btn" data-book-id="${book.id}">
+                            <i class="fas fa-book"></i> Read Summary
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Check auth and render
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                window.location.href = "index.html";
+                return;
+            }
+            renderBooks();
+        });
+    </script>
+</body>
+</html>
