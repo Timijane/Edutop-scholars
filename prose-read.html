@@ -387,7 +387,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-        import { getFirestore, collection, getDocs, query, where, orderBy, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+        import { getFirestore, collection, doc, getDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCictHNxtslYs9VR0hoicxlwPn_QghkgIA",
@@ -405,12 +405,7 @@
             "to-kill-a-mockingbird": { title: "To Kill a Mockingbird", author: "Harper Lee", category: "Non-African Prose" },
             "path-of-lucas": { title: "Path of Lucas", author: "Susanne Bellefeuille", category: "Non-African Prose" },
             "so-the-path-does-not-die": { title: "So the Path Does Not Die", author: "Pede Hollist", category: "African Prose" },
-            "redemption-road": { title: "Redemption Road", author: "Elma Shaw", category: "African Prose" },
-            "antony-and-cleopatra": { title: "Antony and Cleopatra", author: "William Shakespeare", category: "Shakespearean Text" },
-            "once-upon-an-elephant": { title: "Once Upon an Elephant", author: "Bosede Ademilua-Afolayan", category: "African Drama" },
-            "marriage-of-anansewa": { title: "The Marriage of Anansewa", author: "Efua Sutherland", category: "African Drama" },
-            "inspector-calls": { title: "An Inspector Calls", author: "J. B. Priestley", category: "Non-African Drama" },
-            "man-for-all-seasons": { title: "A Man for All Seasons", author: "Robert Bolt", category: "Non-African Drama" }
+            "redemption-road": { title: "Redemption Road", author: "Elma Shaw", category: "African Prose" }
         };
 
         function getParams() {
@@ -418,38 +413,57 @@
             return { bookId: params.get('book'), section: params.get('section') };
         }
 
-        async function loadAllSummaries(bookId) {
-            try {
-                // First try to get published summaries, if no published, get all
-                let q = query(collection(db, "summaries"), where("bookId", "==", bookId), where("published", "==", true), orderBy("sectionName"));
-                let snapshot = await getDocs(q);
-                let summaries = [];
-                snapshot.forEach(doc => summaries.push({ id: doc.id, ...doc.data() }));
-                
-                // If no published summaries, get all (for testing)
-                if (summaries.length === 0) {
-                    q = query(collection(db, "summaries"), where("bookId", "==", bookId), orderBy("sectionName"));
-                    snapshot = await getDocs(q);
-                    snapshot.forEach(doc => summaries.push({ id: doc.id, ...doc.data() }));
-                }
-                return summaries;
-            } catch (error) {
-                console.error("Error loading summaries:", error);
-                return [];
-            }
-        }
-
         async function loadSummary(bookId, sectionName) {
             try {
-                const docId = `${bookId}_${sectionName.toLowerCase().replace(/[^a-z0-9]/g, '_')}`;
-                const docSnap = await getDoc(doc(db, "summaries", docId));
-                if (docSnap.exists()) {
+                // Method 1: Try to get by exact section name match
+                const q = query(
+                    collection(db, "summaries"),
+                    where("bookId", "==", bookId),
+                    where("sectionName", "==", sectionName)
+                );
+                const querySnapshot = await getDocs(q);
+                
+                if (!querySnapshot.empty) {
+                    const docSnap = querySnapshot.docs[0];
+                    console.log("Found summary by section name:", docSnap.data());
                     return { id: docSnap.id, ...docSnap.data() };
                 }
+                
+                // Method 2: Try by document ID (clean version)
+                const cleanSection = sectionName.toLowerCase().replace(/[^a-z0-9]/g, '_');
+                const docId = `${bookId}_${cleanSection}`;
+                console.log("Trying document ID:", docId);
+                
+                const docSnap = await getDoc(doc(db, "summaries", docId));
+                if (docSnap.exists()) {
+                    console.log("Found summary by doc ID:", docSnap.data());
+                    return { id: docSnap.id, ...docSnap.data() };
+                }
+                
+                console.log("No summary found for:", bookId, sectionName);
                 return null;
             } catch (error) {
                 console.error("Error loading summary:", error);
                 return null;
+            }
+        }
+
+        async function loadAllSummariesForBook(bookId) {
+            try {
+                const q = query(
+                    collection(db, "summaries"),
+                    where("bookId", "==", bookId),
+                    where("published", "==", true)
+                );
+                const snapshot = await getDocs(q);
+                const summaries = [];
+                snapshot.forEach(doc => {
+                    summaries.push({ id: doc.id, ...doc.data() });
+                });
+                return summaries.sort((a, b) => (a.sectionName || '').localeCompare(b.sectionName || ''));
+            } catch (error) {
+                console.error("Error loading all summaries:", error);
+                return [];
             }
         }
 
@@ -470,7 +484,7 @@
             `;
         }
 
-        function renderReading(bookId, sectionName, summaryData, allSummaries, category) {
+        function renderReading(bookId, sectionName, summaryData, allSummaries) {
             const book = booksInfo[bookId];
             if (!book) {
                 document.getElementById('readingContainer').innerHTML = `<div class="error"><p>Book not found</p></div>`;
@@ -478,17 +492,26 @@
             }
 
             if (!summaryData) {
-                document.getElementById('readingContainer').innerHTML = `<div class="error"><p>Summary not found. Please check back later.</p><p style="margin-top: 15px;"><a href="prose-detail.html?book=${bookId}" style="color: var(--primary);">Back to Book</a></p></div>`;
+                document.getElementById('readingContainer').innerHTML = `
+                    <div class="error">
+                        <i class="fas fa-book-open"></i>
+                        <h3>Summary Not Found</h3>
+                        <p>This summary hasn't been published yet or doesn't exist.</p>
+                        <p style="margin-top: 15px;">Check back later!</p>
+                        <p style="margin-top: 15px;"><a href="prose-detail.html?book=${bookId}" style="color: var(--primary);">← Back to Book</a></p>
+                    </div>
+                `;
                 return;
             }
 
+            // Find current index for navigation
             const currentIndex = allSummaries.findIndex(s => s.sectionName === sectionName);
             const prevSection = currentIndex > 0 ? allSummaries[currentIndex - 1] : null;
             const nextSection = currentIndex < allSummaries.length - 1 ? allSummaries[currentIndex + 1] : null;
             const readingTime = calculateReadingTime(summaryData.content || '');
             
-            const isPoetry = category === 'poetry';
-            const isDrama = category === 'drama';
+            const isPoetry = book.category === 'Poetry';
+            const isDrama = book.category.includes('Drama');
 
             const html = `
                 <div class="section-nav">
@@ -534,12 +557,17 @@
 
             document.getElementById('readingContainer').innerHTML = html;
 
-            document.getElementById('prevBtn')?.addEventListener('click', () => {
-                if (prevSection) window.location.href = `prose-read.html?book=${bookId}&section=${encodeURIComponent(prevSection.sectionName)}`;
-            });
-            document.getElementById('nextBtn')?.addEventListener('click', () => {
-                if (nextSection) window.location.href = `prose-read.html?book=${bookId}&section=${encodeURIComponent(nextSection.sectionName)}`;
-            });
+            // Navigation handlers
+            if (prevSection) {
+                document.getElementById('prevBtn').addEventListener('click', () => {
+                    window.location.href = `prose-read.html?book=${bookId}&section=${encodeURIComponent(prevSection.sectionName)}`;
+                });
+            }
+            if (nextSection) {
+                document.getElementById('nextBtn').addEventListener('click', () => {
+                    window.location.href = `prose-read.html?book=${bookId}&section=${encodeURIComponent(nextSection.sectionName)}`;
+                });
+            }
             document.getElementById('takeQuizBtn')?.addEventListener('click', () => {
                 window.location.href = `cbt-exam.html?book=${bookId}&section=${encodeURIComponent(summaryData.sectionName)}`;
             });
@@ -590,6 +618,8 @@
             }
             
             const { bookId, section } = getParams();
+            console.log("Looking for:", { bookId, section });
+            
             if (!bookId || !section) {
                 document.getElementById('readingContainer').innerHTML = `<div class="error"><p>Invalid request. Please go back and select a section.</p></div>`;
                 return;
@@ -597,21 +627,17 @@
             
             try {
                 const [allSummaries, summaryData] = await Promise.all([
-                    loadAllSummaries(bookId),
+                    loadAllSummariesForBook(bookId),
                     loadSummary(bookId, decodeURIComponent(section))
                 ]);
                 
-                if (!summaryData) {
-                    document.getElementById('readingContainer').innerHTML = `<div class="error"><p>Summary not found. Please make sure you published it first.</p><p style="margin-top: 15px;"><a href="prose-detail.html?book=${bookId}" style="color: var(--primary);">Back to Book</a></p></div>`;
-                    return;
-                }
+                console.log("Found summary data:", summaryData);
+                console.log("Found all summaries:", allSummaries);
                 
-                const category = booksInfo[bookId]?.category?.toLowerCase().includes('drama') ? 'drama' : 
-                               (booksInfo[bookId]?.category === 'Poetry' ? 'poetry' : 'prose');
-                renderReading(bookId, decodeURIComponent(section), summaryData, allSummaries, category);
+                renderReading(bookId, decodeURIComponent(section), summaryData, allSummaries);
             } catch (error) {
                 console.error('Error:', error);
-                document.getElementById('readingContainer').innerHTML = `<div class="error"><p>Error loading content. Please try again later.</p><p style="margin-top: 15px; font-size: 12px;">${error.message}</p></div>`;
+                document.getElementById('readingContainer').innerHTML = `<div class="error"><p>Error loading content: ${error.message}</p></div>`;
             }
         });
     </script>
