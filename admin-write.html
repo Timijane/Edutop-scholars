@@ -77,6 +77,12 @@
             gap: 6px;
             text-decoration: none;
             color: var(--dark);
+            transition: all 0.2s;
+        }
+
+        .nav-btn:hover {
+            background: var(--border);
+            transform: translateY(-1px);
         }
 
         .admin-badge {
@@ -195,6 +201,7 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
+            transition: all 0.2s;
         }
 
         .btn-success {
@@ -202,9 +209,19 @@
             color: white;
         }
 
+        .btn-success:hover {
+            background: #3d8b40;
+            transform: translateY(-1px);
+        }
+
         .btn-secondary {
             background: var(--border);
             color: var(--dark);
+        }
+
+        .btn-secondary:hover {
+            background: #ddd;
+            transform: translateY(-1px);
         }
 
         .documents-list {
@@ -262,6 +279,10 @@
             border-radius: 8px;
         }
 
+        .icon-btn:hover {
+            background: var(--light);
+        }
+
         .toast {
             position: fixed;
             bottom: 30px;
@@ -292,7 +313,7 @@
             </a>
         </div>
         <div class="header-actions">
-            <a href="dashboard.html" class="nav-btn">
+            <a href="dashboard.html" class="nav-btn" id="dashboardLink">
                 <i class="fas fa-home"></i> Dashboard
             </a>
             <span class="admin-badge">
@@ -325,7 +346,6 @@
         </div>
 
         <div class="summary-form" id="summaryForm" style="display: none;">
-            <!-- Summary Content -->
             <div class="form-group">
                 <label><i class="fas fa-align-left"></i> Summary Content</label>
                 <div class="editor-container">
@@ -333,7 +353,6 @@
                 </div>
             </div>
 
-            <!-- Analysis Sections -->
             <div class="analysis-card">
                 <h4><i class="fas fa-lightbulb"></i> Key Points</h4>
                 <div class="small-editor" id="keyPointsEditor"></div>
@@ -411,8 +430,7 @@
 
         let quill;
         let keyPointsEditor, charactersEditor, themesEditor, devicesEditor, toneMoodEditor, dramaticDevicesEditor;
-        let currentBook = null;
-        let currentSectionName = null;
+        let currentDocId = null;
 
         let currentData = {
             sectionName: "",
@@ -476,6 +494,7 @@
             currentData.sectionName = sectionName;
             
             const docId = `${book}_${sectionName.toLowerCase().replace(/[^a-z0-9]/g, '_')}`;
+            currentDocId = docId;
             
             try {
                 await setDoc(doc(db, "summaries", docId), {
@@ -489,10 +508,11 @@
                     toneMood: currentData.toneMood || "",
                     dramaticDevices: currentData.dramaticDevices || "",
                     published: published,
+                    createdAt: new Date().toISOString(),
                     updatedAt: new Date().toISOString(),
                     updatedBy: auth.currentUser?.email
                 });
-                showToast(published ? 'Published successfully!' : 'Saved as draft');
+                showToast(published ? '✅ Published successfully!' : '📝 Saved as draft');
                 loadDocuments();
             } catch (error) {
                 console.error('Save error:', error);
@@ -526,16 +546,24 @@
                 toneMoodEditor.root.innerHTML = currentData.toneMood;
                 dramaticDevicesEditor.root.innerHTML = currentData.dramaticDevices;
                 
+                // Set the book select
+                document.getElementById('bookSelect').value = data.bookId || '';
+                
                 document.getElementById('summaryForm').style.display = 'block';
-                showToast('Loaded successfully');
+                showToast('✅ Loaded successfully');
             }
         }
 
         async function deleteSummary(docId) {
-            if (confirm('Delete this summary permanently?')) {
+            if (confirm('⚠️ Delete this summary permanently?')) {
                 await deleteDoc(doc(db, "summaries", docId));
-                showToast('Deleted successfully');
+                showToast('🗑️ Deleted successfully');
                 loadDocuments();
+                if (currentDocId === docId) {
+                    document.getElementById('summaryForm').style.display = 'none';
+                    document.getElementById('sectionName').value = '';
+                    quill.root.innerHTML = '';
+                }
             }
         }
 
@@ -609,7 +637,13 @@
         document.getElementById('saveDraftBtn').addEventListener('click', () => saveSummary(false));
         document.getElementById('publishBtn').addEventListener('click', () => saveSummary(true));
 
-        // Handle category changes for Tone/Mood and Dramatic Devices
+        // Dashboard link - fixed
+        document.getElementById('dashboardLink').addEventListener('click', (e) => {
+            e.preventDefault();
+            window.location.href = 'dashboard.html';
+        });
+
+        // Handle category changes
         document.getElementById('bookSelect').addEventListener('change', (e) => {
             const bookId = e.target.value;
             const toneMoodCard = document.getElementById('toneMoodCard');
