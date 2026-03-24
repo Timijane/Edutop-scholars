@@ -270,6 +270,24 @@
             color: var(--gray);
         }
 
+        .status-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .status-published {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-draft {
+            background: #fff3cd;
+            color: #856404;
+        }
+
         .icon-btn {
             background: none;
             border: none;
@@ -496,22 +514,26 @@
             const docId = `${book}_${sectionName.toLowerCase().replace(/[^a-z0-9]/g, '_')}`;
             currentDocId = docId;
             
+            const summaryData = {
+                bookId: book,
+                sectionName: currentData.sectionName,
+                content: currentData.content || "",
+                keyPoints: currentData.keyPoints || "",
+                characters: currentData.characters || "",
+                themes: currentData.themes || "",
+                literaryDevices: currentData.literaryDevices || "",
+                toneMood: currentData.toneMood || "",
+                dramaticDevices: currentData.dramaticDevices || "",
+                published: published,
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+                updatedBy: auth.currentUser?.email
+            };
+            
+            console.log("Saving summary:", summaryData);
+            
             try {
-                await setDoc(doc(db, "summaries", docId), {
-                    bookId: book,
-                    sectionName: currentData.sectionName,
-                    content: currentData.content || "",
-                    keyPoints: currentData.keyPoints || "",
-                    characters: currentData.characters || "",
-                    themes: currentData.themes || "",
-                    literaryDevices: currentData.literaryDevices || "",
-                    toneMood: currentData.toneMood || "",
-                    dramaticDevices: currentData.dramaticDevices || "",
-                    published: published,
-                    createdAt: new Date().toISOString(),
-                    updatedAt: new Date().toISOString(),
-                    updatedBy: auth.currentUser?.email
-                });
+                await setDoc(doc(db, "summaries", docId), summaryData);
                 showToast(published ? '✅ Published successfully!' : '📝 Saved as draft');
                 loadDocuments();
             } catch (error) {
@@ -546,11 +568,11 @@
                 toneMoodEditor.root.innerHTML = currentData.toneMood;
                 dramaticDevicesEditor.root.innerHTML = currentData.dramaticDevices;
                 
-                // Set the book select
                 document.getElementById('bookSelect').value = data.bookId || '';
-                
                 document.getElementById('summaryForm').style.display = 'block';
                 showToast('✅ Loaded successfully');
+            } else {
+                showToast('Summary not found', true);
             }
         }
 
@@ -591,18 +613,27 @@
                     return;
                 }
                 
-                container.innerHTML = docs.map(doc => `
-                    <div class="document-item">
-                        <div class="document-info">
-                            <h4>${escapeHtml(doc.sectionName || 'Untitled')}</h4>
-                            <p><i class="fas fa-book"></i> ${doc.bookId} | ${new Date(doc.updatedAt).toLocaleDateString()} | ${doc.published ? '✅ Published' : '📝 Draft'}</p>
+                container.innerHTML = docs.map(doc => {
+                    const isPublished = doc.published === true;
+                    return `
+                        <div class="document-item">
+                            <div class="document-info">
+                                <h4>${escapeHtml(doc.sectionName || 'Untitled')}</h4>
+                                <p>
+                                    <i class="fas fa-book"></i> ${doc.bookId} | 
+                                    ${new Date(doc.updatedAt).toLocaleDateString()} | 
+                                    <span class="status-badge ${isPublished ? 'status-published' : 'status-draft'}">
+                                        ${isPublished ? '✅ Published' : '📝 Draft'}
+                                    </span>
+                                </p>
+                            </div>
+                            <div>
+                                <button class="icon-btn load-doc" data-id="${doc.id}"><i class="fas fa-edit"></i></button>
+                                <button class="icon-btn delete-doc" data-id="${doc.id}"><i class="fas fa-trash"></i></button>
+                            </div>
                         </div>
-                        <div>
-                            <button class="icon-btn load-doc" data-id="${doc.id}"><i class="fas fa-edit"></i></button>
-                            <button class="icon-btn delete-doc" data-id="${doc.id}"><i class="fas fa-trash"></i></button>
-                        </div>
-                    </div>
-                `).join('');
+                    `;
+                }).join('');
                 
                 document.querySelectorAll('.load-doc').forEach(btn => {
                     btn.addEventListener('click', () => loadSummary(btn.getAttribute('data-id')));
@@ -611,6 +642,7 @@
                     btn.addEventListener('click', () => deleteSummary(btn.getAttribute('data-id')));
                 });
             } catch (error) {
+                console.error('Error loading documents:', error);
                 container.innerHTML = '<p style="text-align: center; padding: 40px; color: var(--danger);">Error loading</p>';
             }
         }
@@ -637,7 +669,7 @@
         document.getElementById('saveDraftBtn').addEventListener('click', () => saveSummary(false));
         document.getElementById('publishBtn').addEventListener('click', () => saveSummary(true));
 
-        // Dashboard link - fixed
+        // Dashboard link
         document.getElementById('dashboardLink').addEventListener('click', (e) => {
             e.preventDefault();
             window.location.href = 'dashboard.html';
