@@ -67,7 +67,6 @@
             flex-wrap: wrap;
         }
 
-        /* Admin Badge */
         .admin-badge {
             background: linear-gradient(135deg, var(--secondary), #ff7849);
             color: white;
@@ -262,7 +261,7 @@
             opacity: 0.6;
         }
 
-        /* Admin Card - Special styling */
+        /* Admin Card */
         .admin-card {
             background: linear-gradient(135deg, #fff5f0 0%, #ffe8e0 100%);
             border: 2px solid var(--secondary);
@@ -429,7 +428,6 @@
             </a>
         </div>
         <div class="user-info">
-            <!-- Admin Button - Will show only for admin users -->
             <div id="adminButtonContainer" style="display: none;">
                 <div class="admin-badge" id="adminPanelBtn">
                     <i class="fas fa-crown"></i> Admin Panel
@@ -446,13 +444,11 @@
     </header>
 
     <div class="dashboard-container">
-        <!-- Welcome Section -->
         <section class="welcome-section">
             <h2 id="welcome-msg">Welcome!</h2>
             <p id="welcome-subtext">Your literature learning journey begins here.</p>
         </section>
 
-        <!-- Stats Cards -->
         <div class="stats-cards">
             <div class="stat-card">
                 <div class="stat-icon" style="background: var(--primary);">
@@ -492,86 +488,78 @@
             </div>
         </div>
 
-        <!-- Literature Learning Actions -->
         <div class="section-header">
             <h2>Literature Resources</h2>
         </div>
         
         <div class="action-grid">
-            <!-- Read Prose Button -->
             <div class="action-card" onclick="window.location.href='prose.html'">
                 <div class="action-icon" style="background: linear-gradient(135deg, #311b92 0%, #4527a0 100%);">
                     <i class="fas fa-book"></i>
                 </div>
                 <div class="action-content">
                     <h3>Read Prose</h3>
-                    <p>Novels, novellas, and fictional narratives with detailed summaries</p>
+                    <p>African & Non-African prose summaries</p>
                 </div>
                 <i class="fas fa-chevron-right action-arrow"></i>
             </div>
 
-            <!-- Read Drama Button -->
             <div class="action-card" onclick="window.location.href='drama.html'">
                 <div class="action-icon" style="background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);">
                     <i class="fas fa-mask"></i>
                 </div>
                 <div class="action-content">
                     <h3>Read Drama</h3>
-                    <p>Plays, acts, scenes, and dramatic analysis for JAMB texts</p>
+                    <p>Shakespearean, African & Non-African drama</p>
                 </div>
                 <i class="fas fa-chevron-right action-arrow"></i>
             </div>
 
-            <!-- Read Poetry Button -->
             <div class="action-card" onclick="window.location.href='poetry.html'">
                 <div class="action-icon" style="background: linear-gradient(135deg, #ff9800 0%, #ef6c00 100%);">
                     <i class="fas fa-feather-alt"></i>
                 </div>
                 <div class="action-content">
                     <h3>Read Poetry</h3>
-                    <p>Poems, verses, literary devices, and poetic analysis</p>
+                    <p>Poetry analysis and literary devices</p>
                 </div>
                 <i class="fas fa-chevron-right action-arrow"></i>
             </div>
 
-            <!-- CBT Literature Exam Button -->
             <div class="action-card" onclick="window.location.href='cbt-exam.html'">
                 <div class="action-icon" style="background: linear-gradient(135deg, #2196f3 0%, #0d47a1 100%);">
                     <i class="fas fa-laptop"></i>
                 </div>
                 <div class="action-content">
                     <h3>CBT Literature Exam</h3>
-                    <p>Practice with JAMB-standard CBT questions on literature</p>
+                    <p>Practice with JAMB-standard CBT questions</p>
                 </div>
                 <i class="fas fa-chevron-right action-arrow"></i>
             </div>
 
-            <!-- Hire Private Tutor Button -->
             <div class="action-card" onclick="window.location.href='tutors.html'">
                 <div class="action-icon" style="background: linear-gradient(135deg, #f44336 0%, #c62828 100%);">
                     <i class="fas fa-chalkboard-user"></i>
                 </div>
                 <div class="action-content">
                     <h3>Hire Private Tutor</h3>
-                    <p>Connect with expert literature tutors for personalized guidance</p>
+                    <p>Connect with expert literature tutors</p>
                 </div>
                 <i class="fas fa-chevron-right action-arrow"></i>
             </div>
 
-            <!-- Admin Panel Button - Only visible to admins -->
             <div id="adminActionCard" class="action-card admin-card" style="display: none;" onclick="window.location.href='admin-write.html'">
                 <div class="action-icon" style="background: linear-gradient(135deg, #ff5722 0%, #ff7849 100%);">
                     <i class="fas fa-crown"></i>
                 </div>
                 <div class="action-content">
                     <h3>Admin Panel</h3>
-                    <p>Write summaries, manage content, and publish literature resources</p>
+                    <p>Write summaries, manage content, and publish</p>
                 </div>
                 <i class="fas fa-chevron-right action-arrow"></i>
             </div>
         </div>
 
-        <!-- Recent Activity -->
         <section class="recent-activity">
             <h2>Recent Activity</h2>
             <div class="activity-list" id="activity-list">
@@ -592,7 +580,6 @@
         <p>Mr. Timi Edutop Scholar &copy; 2026 | Powered by Triangle Tech</p>
     </footer>
 
-    <!-- Logout Confirmation Modal -->
     <div id="logoutModal" class="modal-overlay">
         <div class="modal">
             <h3><i class="fas fa-sign-out-alt"></i> Logout</h3>
@@ -607,7 +594,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-        import { getFirestore, doc, onSnapshot, setDoc, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+        import { getFirestore, doc, onSnapshot, setDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCictHNxtslYs9VR0hoicxlwPn_QghkgIA",
@@ -626,21 +613,16 @@
         let currentUserUid = null;
         let isAdmin = false;
 
-        // Admin emails list
         const adminEmails = [
             "okewunmitimileyin23@gmail.com",
             "triangleofscholars@gmail.com"
         ];
 
-        // Auth State Observer
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 currentUserUid = user.uid;
-                
-                // Check if user is admin
                 isAdmin = adminEmails.includes(user.email);
                 
-                // Show/hide admin buttons based on admin status
                 const adminButtonContainer = document.getElementById('adminButtonContainer');
                 const adminActionCard = document.getElementById('adminActionCard');
                 
@@ -679,18 +661,14 @@
                             console.error("Error creating profile:", e);
                         }
                     }
-                }, (error) => {
-                    console.error("Listener error:", error);
                 });
 
-                // Get summaries count
                 try {
                     const summariesRef = collection(db, "summaries");
                     const summariesSnap = await getDocs(summariesRef);
-                    const summariesCount = summariesSnap.size;
-                    document.getElementById('stat-summaries').innerText = summariesCount;
+                    document.getElementById('stat-summaries').innerText = summariesSnap.size;
                 } catch (e) {
-                    console.error("Error getting summaries count:", e);
+                    console.error("Error:", e);
                 }
 
             } else {
@@ -698,7 +676,6 @@
             }
         });
 
-        // Update UI Function
         function updateUI(userData) {
             const fullName = userData.fullName || "Scholar";
             document.getElementById('user-name-display').innerText = fullName.split(' ')[0];
@@ -707,29 +684,16 @@
             const initials = fullName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
             document.getElementById('user-avatar-display').innerText = initials;
             
-            const plan = userData.subscriptionPlan || "Scholar";
-            document.getElementById('user-plan-display').innerText = plan;
-
             const stats = userData.stats || {};
             document.getElementById('stat-score').innerText = (stats.overallScore || 0) + '%';
             document.getElementById('stat-exams').innerText = stats.examsTaken || 0;
             document.getElementById('stat-ranking').innerText = stats.ranking || '--';
-
-            const selectedSubjects = userData.selectedSubjects || [];
-            const welcomeSubtext = document.getElementById('welcome-subtext');
-            if (selectedSubjects.length > 0) {
-                welcomeSubtext.innerHTML = `Focusing on: <strong>${selectedSubjects.join(', ')}</strong>`;
-            } else {
-                welcomeSubtext.innerText = "Select your focus areas to get personalized recommendations.";
-            }
         }
 
-        // Admin Panel Button Click
         document.getElementById('adminPanelBtn')?.addEventListener('click', () => {
             window.location.href = 'admin-write.html';
         });
 
-        // Logout Modal Logic
         const userProfileBtn = document.getElementById('userProfileBtn');
         const logoutModal = document.getElementById('logoutModal');
         const cancelLogoutBtn = document.getElementById('cancelLogoutBtn');
@@ -748,7 +712,6 @@
             window.location.href = "index.html";
         });
 
-        // Close modal on outside click
         window.addEventListener('click', (e) => {
             if (e.target === logoutModal) {
                 logoutModal.style.display = 'none';
