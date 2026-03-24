@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Admin - Write Summary | Mr. Timi Scholar</title>
+    <title>Admin Dashboard | Mr. Timi Scholar</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
     <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
@@ -22,34 +22,36 @@
             --success: #4caf50;
             --warning: #ff9800;
             --danger: #f44336;
-            --light: #f5f5f7;
-            --dark: #333;
-            --gray: #777;
-            --light-gray: #eee;
+            --info: #2196f3;
+            --dark: #2c3e50;
+            --gray: #6c757d;
+            --light: #f8f9fa;
+            --border: #e9ecef;
         }
 
         body {
-            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            background: #f5f7fb;
             min-height: 100vh;
         }
 
+        /* Header */
         .header {
             background: white;
-            padding: 12px 20px;
+            padding: 12px 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
             position: sticky;
             top: 0;
             z-index: 100;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 15px;
         }
 
         .logo h1 {
             color: var(--primary);
-            font-size: 22px;
+            font-size: 24px;
         }
 
         .logo span {
@@ -60,10 +62,10 @@
             text-decoration: none;
         }
 
-        .nav-buttons {
+        .header-actions {
             display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
         }
 
         .nav-btn {
@@ -74,17 +76,16 @@
             cursor: pointer;
             font-weight: 600;
             font-size: 13px;
-            display: inline-flex;
+            display: flex;
             align-items: center;
             gap: 6px;
-            transition: all 0.2s;
             text-decoration: none;
-            color: var(--primary);
+            color: var(--dark);
+            transition: all 0.2s;
         }
 
         .nav-btn:hover {
-            background: var(--light-gray);
-            transform: translateY(-1px);
+            background: var(--border);
         }
 
         .admin-badge {
@@ -96,50 +97,149 @@
             font-weight: 600;
         }
 
-        .container {
-            max-width: 1000px;
+        /* Main Layout */
+        .admin-container {
+            max-width: 1400px;
             margin: 0 auto;
             padding: 20px;
         }
 
-        .book-selector {
+        /* Category Tabs */
+        .category-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            background: white;
+            padding: 12px 20px;
+            border-radius: 60px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--gray);
+        }
+
+        .tab-btn:hover {
+            background: var(--light);
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Content Area */
+        .content-area {
+            display: flex;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+
+        /* Book List Sidebar */
+        .book-sidebar {
+            width: 280px;
             background: white;
             border-radius: 20px;
             padding: 20px;
-            margin-bottom: 24px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            height: fit-content;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
 
-        .selector-group {
+        .book-sidebar h3 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-size: 16px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--secondary);
+        }
+
+        .book-list {
             display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-            margin-top: 15px;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 500px;
+            overflow-y: auto;
         }
 
-        select, input {
-            flex: 1;
-            min-width: 200px;
-            padding: 12px 16px;
-            border: 2px solid var(--light-gray);
+        .book-item {
+            padding: 12px 15px;
+            background: var(--light);
             border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .book-item:hover {
+            background: var(--border);
+            transform: translateX(5px);
+        }
+
+        .book-item.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .book-title-small {
+            font-weight: 600;
             font-size: 14px;
         }
 
-        select:focus, input:focus {
-            border-color: var(--primary);
-            outline: none;
+        .book-type {
+            font-size: 10px;
+            background: rgba(0,0,0,0.1);
+            padding: 2px 8px;
+            border-radius: 20px;
         }
 
-        .summary-form {
+        /* Editor Panel */
+        .editor-panel {
+            flex: 1;
+            min-width: 300px;
             background: white;
             border-radius: 24px;
             padding: 24px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
         }
 
+        /* Section Tabs */
+        .section-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 10px;
+        }
+
+        .section-tab {
+            background: none;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .section-tab.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Form Elements */
         .form-group {
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
 
         .form-group label {
@@ -147,124 +247,155 @@
             font-weight: 600;
             color: var(--primary);
             margin-bottom: 8px;
+            font-size: 13px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
             font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--primary);
+            outline: none;
         }
 
         .editor-container {
-            border-radius: 16px;
+            border-radius: 12px;
             overflow: hidden;
-            border: 2px solid var(--light-gray);
+            border: 2px solid var(--border);
         }
 
         #editor {
-            height: 450px;
+            height: 350px;
             background: white;
-            font-size: 16px;
-            line-height: 1.6;
-            overflow-y: auto;
         }
 
-        .keypoints-container {
+        /* Analysis Grid */
+        .analysis-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .analysis-card {
             background: var(--light);
             border-radius: 16px;
             padding: 16px;
         }
 
-        .keypoint-item {
-            display: flex;
-            gap: 10px;
+        .analysis-card h4 {
+            color: var(--primary);
             margin-bottom: 12px;
-        }
-
-        .keypoint-item input {
-            flex: 1;
-            padding: 10px 14px;
-        }
-
-        .remove-keypoint {
-            background: var(--danger);
-            color: white;
-            border: none;
-            width: 36px;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-
-        .add-keypoint {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 30px;
-            cursor: pointer;
-            font-size: 13px;
-            margin-top: 10px;
-        }
-
-        .characters-container {
-            background: var(--light);
-            border-radius: 16px;
-            padding: 16px;
-        }
-
-        .character-tags {
+            font-size: 15px;
             display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-
-        .character-tag {
-            background: var(--primary);
-            color: white;
-            padding: 6px 14px;
-            border-radius: 30px;
-            font-size: 13px;
-            display: inline-flex;
             align-items: center;
             gap: 8px;
         }
 
-        .character-tag i {
-            cursor: pointer;
-            opacity: 0.8;
-        }
-
-        .add-character {
+        .tag-container {
             display: flex;
-            gap: 10px;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
         }
 
-        .add-character input {
+        .tag {
+            background: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .tag i {
+            cursor: pointer;
+            color: var(--danger);
+            font-size: 10px;
+        }
+
+        .add-input {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .add-input input {
             flex: 1;
+            padding: 8px 12px;
         }
 
-        .add-character button {
+        .add-input button {
             background: var(--primary);
             color: white;
             border: none;
-            padding: 10px 20px;
+            padding: 8px 16px;
             border-radius: 30px;
             cursor: pointer;
         }
 
-        .action-buttons {
-            display: flex;
-            gap: 15px;
-            margin-top: 30px;
-            flex-wrap: wrap;
+        /* Question Editor */
+        .question-item {
+            background: var(--light);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
         }
 
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .question-text {
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .options-grid {
+            display: grid;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .option-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .option-row input {
+            flex: 1;
+        }
+
+        .correct-badge {
+            background: var(--success);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+
+        /* Buttons */
         .btn {
-            padding: 12px 28px;
+            padding: 12px 24px;
             border-radius: 40px;
-            font-size: 14px;
             font-weight: 600;
             cursor: pointer;
             border: none;
             display: inline-flex;
             align-items: center;
             gap: 8px;
+            transition: all 0.2s;
         }
 
         .btn-primary {
@@ -278,69 +409,28 @@
         }
 
         .btn-secondary {
-            background: var(--light-gray);
+            background: var(--border);
             color: var(--dark);
         }
 
-        .documents-list {
-            background: white;
-            border-radius: 24px;
-            padding: 20px;
-            margin-top: 24px;
+        .btn-danger {
+            background: var(--danger);
+            color: white;
         }
 
-        .documents-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-
-        .search-box {
-            padding: 8px 16px;
-            border: 2px solid var(--light-gray);
-            border-radius: 30px;
-            width: 250px;
-        }
-
-        .document-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px;
-            border-bottom: 1px solid var(--light-gray);
-            cursor: pointer;
-        }
-
-        .document-item:hover {
-            background: var(--light);
-        }
-
-        .document-info h4 {
-            color: var(--primary);
-            margin-bottom: 5px;
-        }
-
-        .document-info p {
+        .btn-sm {
+            padding: 6px 12px;
             font-size: 12px;
-            color: var(--gray);
         }
 
-        .icon-btn {
-            background: none;
-            border: none;
-            padding: 8px;
-            cursor: pointer;
-            color: var(--gray);
-            border-radius: 8px;
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 25px;
+            flex-wrap: wrap;
         }
 
-        .icon-btn:hover {
-            background: var(--light-gray);
-        }
-
+        /* Toast */
         .toast {
             position: fixed;
             bottom: 30px;
@@ -353,30 +443,20 @@
             display: none;
         }
 
-        .loading {
-            display: inline-block;
-            width: 16px;
-            height: 16px;
-            border: 2px solid rgba(255,255,255,0.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 0.6s linear infinite;
-            margin-right: 8px;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
         @media (max-width: 768px) {
-            .container {
-                padding: 16px;
+            .content-area {
+                flex-direction: column;
             }
-            #editor {
-                height: 350px;
+            .book-sidebar {
+                width: 100%;
             }
-            .action-buttons {
-                justify-content: center;
+            .category-tabs {
+                border-radius: 20px;
+                padding: 12px;
+            }
+            .tab-btn {
+                padding: 6px 16px;
+                font-size: 12px;
             }
         }
     </style>
@@ -388,90 +468,139 @@
                 <h1>Mr. Timi <span>Scholar</span></h1>
             </a>
         </div>
-        <div class="nav-buttons">
+        <div class="header-actions">
             <a href="dashboard.html" class="nav-btn">
                 <i class="fas fa-home"></i> Dashboard
             </a>
-            <a href="admin-summaries.html" class="nav-btn">
-                <i class="fas fa-list"></i> All Summaries
-            </a>
             <span class="admin-badge">
-                <i class="fas fa-crown"></i> Writer Mode
+                <i class="fas fa-crown"></i> Admin Panel
             </span>
         </div>
     </header>
 
-    <div class="container">
-        <div class="book-selector">
-            <h3 style="color: var(--primary);"><i class="fas fa-book"></i> Select Book & Section</h3>
-            <div class="selector-group">
-                <select id="bookSelect">
-                    <option value="">-- Select Book --</option>
-                    <option value="to-kill-a-mockingbird">To Kill a Mockingbird (Harper Lee) - Prose</option>
-                    <option value="path-of-lucas">Path of Lucas (Susanne Bellefeuille) - Prose</option>
-                    <option value="so-the-path-does-not-die">So the Path Does Not Die (Pede Hollist) - Prose</option>
-                    <option value="redemption-road">Redemption Road (Elma Shaw) - Prose</option>
-                    <option value="antony-and-cleopatra">Antony and Cleopatra (Shakespeare) - Drama</option>
-                    <option value="once-upon-an-elephant">Once Upon an Elephant (Bosede Ademilua-Afolayan) - Drama</option>
-                    <option value="marriage-of-anansewa">The Marriage of Anansewa (Efua Sutherland) - Drama</option>
-                    <option value="inspector-calls">An Inspector Calls (J. B. Priestley) - Drama</option>
-                    <option value="man-for-all-seasons">A Man for all Seasons (Robert Bolt) - Drama</option>
-                </select>
-                <input type="text" id="sectionName" placeholder="Section name (e.g., Chapter 1, Act 1, Introduction...)">
-                <button id="loadSummaryBtn" class="btn btn-primary" style="padding: 12px 24px;">
-                    <i class="fas fa-folder-open"></i> Load
-                </button>
-            </div>
+    <div class="admin-container">
+        <!-- Category Tabs -->
+        <div class="category-tabs">
+            <button class="tab-btn active" data-category="prose">📖 Prose</button>
+            <button class="tab-btn" data-category="drama">🎭 Drama</button>
+            <button class="tab-btn" data-category="poetry">📜 Poetry</button>
         </div>
 
-        <div class="summary-form" id="summaryForm" style="display: none;">
-            <div class="form-group">
-                <label><i class="fas fa-align-left"></i> Summary Content</label>
-                <div class="editor-container">
-                    <div id="editor"></div>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label><i class="fas fa-lightbulb"></i> Key Points</label>
-                <div class="keypoints-container">
-                    <div id="keypointsList"></div>
-                    <button type="button" class="add-keypoint" id="addKeypoint">
-                        <i class="fas fa-plus"></i> Add Key Point
-                    </button>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label><i class="fas fa-users"></i> Characters in this Section</label>
-                <div class="characters-container">
-                    <div id="charactersList" class="character-tags"></div>
-                    <div class="add-character">
-                        <input type="text" id="newCharacterInput" placeholder="Enter character name">
-                        <button id="addCharacterBtn"><i class="fas fa-plus"></i> Add</button>
+        <div class="content-area">
+            <!-- Book Sidebar -->
+            <div class="book-sidebar">
+                <h3><i class="fas fa-book"></i> Books</h3>
+                <div class="book-list" id="bookList">
+                    <div style="text-align: center; padding: 20px; color: var(--gray);">
+                        <i class="fas fa-spinner fa-spin"></i> Loading...
                     </div>
                 </div>
             </div>
 
-            <div class="action-buttons">
-                <button id="saveDraftBtn" class="btn btn-secondary">
-                    <i class="fas fa-save"></i> Save as Draft
-                </button>
-                <button id="publishBtn" class="btn btn-success">
-                    <i class="fas fa-globe"></i> Publish
-                </button>
-            </div>
-        </div>
+            <!-- Editor Panel -->
+            <div class="editor-panel" id="editorPanel">
+                <div class="section-tabs">
+                    <button class="section-tab active" data-section="summary">📝 Summary</button>
+                    <button class="section-tab" data-section="analysis">🔍 Analysis</button>
+                    <button class="section-tab" data-section="questions">❓ Questions</button>
+                </div>
 
-        <div class="documents-list">
-            <div class="documents-header">
-                <h3><i class="fas fa-history"></i> Your Saved Summaries</h3>
-                <input type="text" id="searchDocs" placeholder="Search summaries..." class="search-box">
-            </div>
-            <div id="documentsContainer">
-                <p style="text-align: center; padding: 40px; color: var(--gray);">
-                    <i class="fas fa-spinner fa-spin"></i> Loading...
-                </p>
+                <!-- Summary Section -->
+                <div id="summarySection">
+                    <div class="form-group">
+                        <label><i class="fas fa-tag"></i> Section/Chapter/Act Name</label>
+                        <input type="text" id="sectionName" placeholder="e.g., Chapter 1, Act 1 Scene 1, Introduction...">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-align-left"></i> Summary Content</label>
+                        <div class="editor-container">
+                            <div id="editor"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Analysis Section -->
+                <div id="analysisSection" style="display: none;">
+                    <div class="analysis-grid">
+                        <!-- Key Points -->
+                        <div class="analysis-card">
+                            <h4><i class="fas fa-lightbulb"></i> Key Points</h4>
+                            <div id="keyPointsList" class="tag-container"></div>
+                            <div class="add-input">
+                                <input type="text" id="newKeyPoint" placeholder="Add key point...">
+                                <button id="addKeyPointBtn"><i class="fas fa-plus"></i></button>
+                            </div>
+                        </div>
+
+                        <!-- Characters -->
+                        <div class="analysis-card">
+                            <h4><i class="fas fa-users"></i> Characters</h4>
+                            <div id="charactersList" class="tag-container"></div>
+                            <div class="add-input">
+                                <input type="text" id="newCharacter" placeholder="Add character...">
+                                <button id="addCharacterBtn"><i class="fas fa-plus"></i></button>
+                            </div>
+                        </div>
+
+                        <!-- Themes (For all) -->
+                        <div class="analysis-card">
+                            <h4><i class="fas fa-palette"></i> Themes</h4>
+                            <div id="themesList" class="tag-container"></div>
+                            <div class="add-input">
+                                <input type="text" id="newTheme" placeholder="Add theme...">
+                                <button id="addThemeBtn"><i class="fas fa-plus"></i></button>
+                            </div>
+                        </div>
+
+                        <!-- Literary Devices / Figures of Speech -->
+                        <div class="analysis-card">
+                            <h4><i class="fas fa-feather-alt"></i> Literary Devices</h4>
+                            <div id="devicesList" class="tag-container"></div>
+                            <div class="add-input">
+                                <input type="text" id="newDevice" placeholder="e.g., Metaphor, Simile...">
+                                <button id="addDeviceBtn"><i class="fas fa-plus"></i></button>
+                            </div>
+                        </div>
+
+                        <!-- Tone & Mood (For Poetry) -->
+                        <div class="analysis-card" id="toneMoodCard">
+                            <h4><i class="fas fa-smile"></i> Tone & Mood</h4>
+                            <div class="form-group" style="margin-bottom: 10px;">
+                                <input type="text" id="tone" placeholder="Tone (e.g., Somber, Joyful, Ironic)...">
+                            </div>
+                            <div class="form-group">
+                                <input type="text" id="mood" placeholder="Mood (e.g., Melancholic, Hopeful, Tense)...">
+                            </div>
+                        </div>
+
+                        <!-- Dramatic Devices (For Drama) -->
+                        <div class="analysis-card" id="dramaticDevicesCard" style="display: none;">
+                            <h4><i class="fas fa-mask"></i> Dramatic Devices</h4>
+                            <div id="dramaticDevicesList" class="tag-container"></div>
+                            <div class="add-input">
+                                <input type="text" id="newDramaticDevice" placeholder="e.g., Soliloquy, Aside...">
+                                <button id="addDramaticDeviceBtn"><i class="fas fa-plus"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Questions Section -->
+                <div id="questionsSection" style="display: none;">
+                    <div id="questionsList"></div>
+                    <button id="addQuestionBtn" class="btn btn-secondary" style="width: 100%;">
+                        <i class="fas fa-plus"></i> Add Question
+                    </button>
+                </div>
+
+                <div class="action-buttons">
+                    <button id="saveDraftBtn" class="btn btn-secondary">
+                        <i class="fas fa-save"></i> Save Draft
+                    </button>
+                    <button id="publishBtn" class="btn btn-success">
+                        <i class="fas fa-globe"></i> Publish
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -481,7 +610,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-        import { getFirestore, collection, doc, getDoc, getDocs, setDoc, deleteDoc, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+        import { getFirestore, collection, doc, getDoc, getDocs, setDoc, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCictHNxtslYs9VR0hoicxlwPn_QghkgIA",
@@ -499,28 +628,313 @@
 
         const adminEmails = ["okewunmitimileyin23@gmail.com", "triangleofscholars@gmail.com"];
 
+        // Books Data
+        const booksData = {
+            prose: [
+                { id: "to-kill-a-mockingbird", title: "To Kill a Mockingbird", author: "Harper Lee" },
+                { id: "path-of-lucas", title: "Path of Lucas", author: "Susanne Bellefeuille" },
+                { id: "so-the-path-does-not-die", title: "So the Path Does Not Die", author: "Pede Hollist" },
+                { id: "redemption-road", title: "Redemption Road", author: "Elma Shaw" }
+            ],
+            drama: [
+                { id: "antony-and-cleopatra", title: "Antony and Cleopatra", author: "William Shakespeare" },
+                { id: "once-upon-an-elephant", title: "Once Upon an Elephant", author: "Bosede Ademilua-Afolayan" },
+                { id: "marriage-of-anansewa", title: "The Marriage of Anansewa", author: "Efua Sutherland" },
+                { id: "inspector-calls", title: "An Inspector Calls", author: "J. B. Priestley" },
+                { id: "man-for-all-seasons", title: "A Man for All Seasons", author: "Robert Bolt" }
+            ],
+            poetry: [
+                { id: "jamb-poetry-2026", title: "JAMB Recommended Poems", author: "Various Poets" }
+            ]
+        };
+
+        let currentCategory = "prose";
+        let currentBook = null;
+        let currentSection = null;
         let quill;
-        let currentDocId = null;
-        let keypoints = [];
-        let characters = [];
+        
+        let summaryData = {
+            sectionName: "",
+            content: "",
+            keyPoints: [],
+            characters: [],
+            themes: [],
+            literaryDevices: [],
+            tone: "",
+            mood: "",
+            dramaticDevices: [],
+            questions: []
+        };
 
         function initEditor() {
             quill = new Quill('#editor', {
                 theme: 'snow',
-                placeholder: 'Write your summary here... Format text, add images, create lists!',
+                placeholder: 'Write your summary here...',
                 modules: {
                     toolbar: [
                         [{ 'header': [1, 2, 3, false] }],
                         ['bold', 'italic', 'underline', 'strike'],
                         [{ 'color': [] }, { 'background': [] }],
                         [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                        [{ 'align': [] }],
                         ['blockquote', 'code-block'],
-                        ['link', 'image', 'video'],
+                        ['link', 'image'],
                         ['clean']
                     ]
                 }
             });
+            quill.on('text-change', () => {
+                summaryData.content = quill.root.innerHTML;
+            });
+        }
+
+        function renderBookList() {
+            const books = booksData[currentCategory];
+            const container = document.getElementById('bookList');
+            
+            container.innerHTML = books.map(book => `
+                <div class="book-item" data-id="${book.id}">
+                    <span class="book-title-small">${book.title}</span>
+                    <span class="book-type">${book.author.split(' ').pop()}</span>
+                </div>
+            `).join('');
+            
+            document.querySelectorAll('.book-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    document.querySelectorAll('.book-item').forEach(b => b.classList.remove('active'));
+                    item.classList.add('active');
+                    currentBook = item.getAttribute('data-id');
+                    loadSectionList();
+                });
+            });
+        }
+
+        async function loadSectionList() {
+            if (!currentBook) return;
+            
+            const sectionsRef = collection(db, "summaries");
+            const q = query(sectionsRef, where("bookId", "==", currentBook));
+            const snapshot = await getDocs(q);
+            
+            const sections = [];
+            snapshot.forEach(doc => {
+                sections.push({ id: doc.id, ...doc.data() });
+            });
+            
+            // Add section selector to sidebar
+            const bookList = document.getElementById('bookList');
+            const existingSectionSelect = document.getElementById('sectionSelect');
+            if (existingSectionSelect) existingSectionSelect.remove();
+            
+            const sectionSelect = document.createElement('div');
+            sectionSelect.id = 'sectionSelect';
+            sectionSelect.style.marginTop = '20px';
+            sectionSelect.style.borderTop = '1px solid var(--border)';
+            sectionSelect.style.paddingTop = '15px';
+            sectionSelect.innerHTML = `
+                <h3 style="font-size: 14px; margin-bottom: 10px;"><i class="fas fa-list"></i> Sections</h3>
+                <div style="display: flex; gap: 8px; margin-bottom: 10px;">
+                    <input type="text" id="newSectionInput" placeholder="New section name..." style="flex: 1;">
+                    <button id="createSectionBtn" class="btn-sm" style="background: var(--success); color: white; border: none; padding: 8px 12px; border-radius: 30px;">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+                <div id="sectionsList" style="max-height: 200px; overflow-y: auto;">
+                    ${sections.map(s => `
+                        <div class="book-item" style="padding: 8px 12px; margin-bottom: 5px;" data-section="${s.sectionName}">
+                            <span style="font-size: 12px;">${s.sectionName}</span>
+                            <span style="font-size: 10px; color: ${s.published ? 'green' : 'orange'}">${s.published ? '✓' : '📝'}</span>
+                        </div>
+                    `).join('') || '<p style="color: var(--gray); font-size: 12px; text-align: center;">No sections yet</p>'}
+                </div>
+            `;
+            
+            bookList.appendChild(sectionSelect);
+            
+            document.querySelectorAll('[data-section]').forEach(el => {
+                el.addEventListener('click', () => {
+                    const sectionName = el.getAttribute('data-section');
+                    loadSummary(currentBook, sectionName);
+                });
+            });
+            
+            document.getElementById('createSectionBtn')?.addEventListener('click', () => {
+                const input = document.getElementById('newSectionInput');
+                const newSection = input.value.trim();
+                if (newSection) {
+                    createNewSection(newSection);
+                    input.value = '';
+                }
+            });
+        }
+
+        async function createNewSection(sectionName) {
+            const docId = `${currentBook}_${sectionName.toLowerCase().replace(/[^a-z0-9]/g, '_')}`;
+            const summaryRef = doc(db, "summaries", docId);
+            
+            await setDoc(summaryRef, {
+                bookId: currentBook,
+                sectionName: sectionName,
+                content: "",
+                keyPoints: [],
+                characters: [],
+                themes: [],
+                literaryDevices: [],
+                tone: "",
+                mood: "",
+                dramaticDevices: [],
+                questions: [],
+                published: false,
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
+            });
+            
+            showToast(`Created "${sectionName}"`);
+            loadSectionList();
+            loadSummary(currentBook, sectionName);
+        }
+
+        async function loadSummary(bookId, sectionName) {
+            const docId = `${bookId}_${sectionName.toLowerCase().replace(/[^a-z0-9]/g, '_')}`;
+            const summaryRef = doc(db, "summaries", docId);
+            const summaryDoc = await getDoc(summaryRef);
+            
+            if (summaryDoc.exists()) {
+                const data = summaryDoc.data();
+                summaryData = {
+                    sectionName: data.sectionName || "",
+                    content: data.content || "",
+                    keyPoints: data.keyPoints || [],
+                    characters: data.characters || [],
+                    themes: data.themes || [],
+                    literaryDevices: data.literaryDevices || [],
+                    tone: data.tone || "",
+                    mood: data.mood || "",
+                    dramaticDevices: data.dramaticDevices || [],
+                    questions: data.questions || []
+                };
+                
+                document.getElementById('sectionName').value = summaryData.sectionName;
+                quill.root.innerHTML = summaryData.content;
+                renderTags();
+                renderQuestions();
+            }
+        }
+
+        function renderTags() {
+            // Key Points
+            document.getElementById('keyPointsList').innerHTML = summaryData.keyPoints.map((kp, i) => `
+                <span class="tag">${escapeHtml(kp)} <i class="fas fa-times" data-type="keyPoint" data-index="${i}"></i></span>
+            `).join('');
+            
+            // Characters
+            document.getElementById('charactersList').innerHTML = summaryData.characters.map((c, i) => `
+                <span class="tag">${escapeHtml(c)} <i class="fas fa-times" data-type="character" data-index="${i}"></i></span>
+            `).join('');
+            
+            // Themes
+            document.getElementById('themesList').innerHTML = summaryData.themes.map((t, i) => `
+                <span class="tag">${escapeHtml(t)} <i class="fas fa-times" data-type="theme" data-index="${i}"></i></span>
+            `).join('');
+            
+            // Literary Devices
+            document.getElementById('devicesList').innerHTML = summaryData.literaryDevices.map((d, i) => `
+                <span class="tag">${escapeHtml(d)} <i class="fas fa-times" data-type="device" data-index="${i}"></i></span>
+            `).join('');
+            
+            // Tone & Mood
+            document.getElementById('tone').value = summaryData.tone;
+            document.getElementById('mood').value = summaryData.mood;
+            
+            // Dramatic Devices
+            if (document.getElementById('dramaticDevicesList')) {
+                document.getElementById('dramaticDevicesList').innerHTML = summaryData.dramaticDevices.map((dd, i) => `
+                    <span class="tag">${escapeHtml(dd)} <i class="fas fa-times" data-type="dramaticDevice" data-index="${i}"></i></span>
+                `).join('');
+            }
+            
+            // Add delete handlers
+            document.querySelectorAll('.tag i').forEach(icon => {
+                icon.addEventListener('click', (e) => {
+                    const type = icon.getAttribute('data-type');
+                    const index = parseInt(icon.getAttribute('data-index'));
+                    if (type === 'keyPoint') summaryData.keyPoints.splice(index, 1);
+                    if (type === 'character') summaryData.characters.splice(index, 1);
+                    if (type === 'theme') summaryData.themes.splice(index, 1);
+                    if (type === 'device') summaryData.literaryDevices.splice(index, 1);
+                    if (type === 'dramaticDevice') summaryData.dramaticDevices.splice(index, 1);
+                    renderTags();
+                });
+            });
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questionsList');
+            container.innerHTML = summaryData.questions.map((q, idx) => `
+                <div class="question-item">
+                    <div class="question-header">
+                        <span class="correct-badge">Question ${idx + 1}</span>
+                        <button class="btn-danger btn-sm" onclick="removeQuestion(${idx})"><i class="fas fa-trash"></i></button>
+                    </div>
+                    <div class="question-text">
+                        <input type="text" value="${escapeHtml(q.text)}" placeholder="Question text" style="width: 100%;" data-qidx="${idx}" data-field="text">
+                    </div>
+                    <div class="options-grid">
+                        ${['A', 'B', 'C', 'D'].map(opt => `
+                            <div class="option-row">
+                                <span style="width: 30px; font-weight: 600;">${opt}.</span>
+                                <input type="text" value="${escapeHtml(q.options[opt] || '')}" placeholder="Option ${opt}" data-qidx="${idx}" data-opt="${opt}">
+                                <input type="radio" name="correct_${idx}" value="${opt}" ${q.correct === opt ? 'checked' : ''} data-qidx="${idx}">
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+            
+            // Add event listeners for question editing
+            document.querySelectorAll('[data-qidx]').forEach(el => {
+                el.addEventListener('change', (e) => {
+                    const qidx = parseInt(el.getAttribute('data-qidx'));
+                    if (el.hasAttribute('data-field')) {
+                        summaryData.questions[qidx][el.getAttribute('data-field')] = el.value;
+                    } else if (el.hasAttribute('data-opt')) {
+                        const opt = el.getAttribute('data-opt');
+                        summaryData.questions[qidx].options[opt] = el.value;
+                    } else if (el.type === 'radio') {
+                        if (el.checked) {
+                            summaryData.questions[qidx].correct = el.value;
+                        }
+                    }
+                });
+            });
+        }
+
+        window.removeQuestion = (idx) => {
+            summaryData.questions.splice(idx, 1);
+            renderQuestions();
+        };
+
+        async function saveSummary(published) {
+            if (!currentBook || !summaryData.sectionName) {
+                showToast('Select a book and enter section name', true);
+                return;
+            }
+            
+            summaryData.tone = document.getElementById('tone').value;
+            summaryData.mood = document.getElementById('mood').value;
+            
+            const docId = `${currentBook}_${summaryData.sectionName.toLowerCase().replace(/[^a-z0-9]/g, '_')}`;
+            const summaryRef = doc(db, "summaries", docId);
+            
+            await setDoc(summaryRef, {
+                ...summaryData,
+                bookId: currentBook,
+                published: published,
+                updatedAt: new Date().toISOString(),
+                updatedBy: auth.currentUser?.email
+            });
+            
+            showToast(published ? 'Published successfully!' : 'Saved as draft');
+            loadSectionList();
         }
 
         function showToast(message, isError = false) {
@@ -528,166 +942,7 @@
             toast.textContent = message;
             toast.style.backgroundColor = isError ? '#f44336' : '#4caf50';
             toast.style.display = 'block';
-            setTimeout(() => { toast.style.display = 'none'; }, 3000);
-        }
-
-        async function saveSummary(published = false) {
-            const book = document.getElementById('bookSelect').value;
-            const sectionName = document.getElementById('sectionName').value.trim();
-            const content = quill.root.innerHTML;
-            const plainText = quill.getText();
-
-            if (!book || !sectionName) {
-                showToast('Please select a book and enter section name', true);
-                return;
-            }
-
-            if (!content || content === '<p><br></p>') {
-                showToast('Please write some content', true);
-                return;
-            }
-
-            const docId = `${book}_${sectionName.toLowerCase().replace(/[^a-z0-9]/g, '_')}`;
-            const summaryRef = doc(db, "summaries", docId);
-
-            try {
-                await setDoc(summaryRef, {
-                    bookId: book,
-                    sectionName: sectionName,
-                    content: content,
-                    plainText: plainText,
-                    keyPoints: keypoints.filter(k => k.trim()),
-                    characters: characters.filter(c => c.trim()),
-                    published: published,
-                    updatedAt: new Date().toISOString(),
-                    updatedBy: auth.currentUser?.email
-                });
-                showToast(published ? 'Published successfully!' : 'Saved as draft');
-                loadDocuments();
-            } catch (error) {
-                showToast('Error saving: ' + error.message, true);
-            }
-        }
-
-        async function loadSummary(docId) {
-            const summaryRef = doc(db, "summaries", docId);
-            const summaryDoc = await getDoc(summaryRef);
-            
-            if (summaryDoc.exists()) {
-                const data = summaryDoc.data();
-                document.getElementById('bookSelect').value = data.bookId || '';
-                document.getElementById('sectionName').value = data.sectionName || '';
-                quill.root.innerHTML = data.content || '<p><br></p>';
-                keypoints = data.keyPoints || [];
-                characters = data.characters || [];
-                renderKeypoints();
-                renderCharacters();
-                currentDocId = docId;
-                showToast('Loaded successfully');
-                document.getElementById('summaryForm').style.display = 'block';
-            }
-        }
-
-        async function deleteSummary(docId) {
-            if (confirm('Delete this summary permanently?')) {
-                await deleteDoc(doc(db, "summaries", docId));
-                showToast('Deleted successfully');
-                loadDocuments();
-            }
-        }
-
-        async function loadDocuments(searchTerm = '') {
-            const container = document.getElementById('documentsContainer');
-            container.innerHTML = '<p style="text-align: center; padding: 40px;"><i class="fas fa-spinner fa-spin"></i> Loading...</p>';
-            
-            try {
-                const q = query(collection(db, "summaries"), orderBy("updatedAt", "desc"), limit(50));
-                const snapshot = await getDocs(q);
-                
-                let docs = [];
-                snapshot.forEach(doc => docs.push({ id: doc.id, ...doc.data() }));
-                
-                if (searchTerm) {
-                    const term = searchTerm.toLowerCase();
-                    docs = docs.filter(d => 
-                        d.sectionName?.toLowerCase().includes(term) ||
-                        d.bookId?.toLowerCase().includes(term)
-                    );
-                }
-                
-                if (docs.length === 0) {
-                    container.innerHTML = '<p style="text-align: center; padding: 40px; color: var(--gray);"><i class="fas fa-folder-open"></i> No summaries yet</p>';
-                    return;
-                }
-                
-                container.innerHTML = docs.map(doc => `
-                    <div class="document-item">
-                        <div class="document-info">
-                            <h4>${escapeHtml(doc.sectionName || 'Untitled')}</h4>
-                            <p><i class="fas fa-book"></i> ${doc.bookId} | ${new Date(doc.updatedAt).toLocaleDateString()} | ${doc.published ? '✅ Published' : '📝 Draft'}</p>
-                        </div>
-                        <div>
-                            <button class="icon-btn load-doc" data-id="${doc.id}"><i class="fas fa-edit"></i></button>
-                            <button class="icon-btn delete-doc" data-id="${doc.id}"><i class="fas fa-trash"></i></button>
-                        </div>
-                    </div>
-                `).join('');
-                
-                document.querySelectorAll('.load-doc').forEach(btn => {
-                    btn.addEventListener('click', () => loadSummary(btn.getAttribute('data-id')));
-                });
-                document.querySelectorAll('.delete-doc').forEach(btn => {
-                    btn.addEventListener('click', () => deleteSummary(btn.getAttribute('data-id')));
-                });
-            } catch (error) {
-                container.innerHTML = '<p style="text-align: center; padding: 40px; color: var(--danger);">Error loading</p>';
-            }
-        }
-
-        function renderKeypoints() {
-            const container = document.getElementById('keypointsList');
-            if (keypoints.length === 0) {
-                container.innerHTML = '<p style="color: var(--gray); padding: 10px;">No key points yet</p>';
-            } else {
-                container.innerHTML = keypoints.map((kp, i) => `
-                    <div class="keypoint-item">
-                        <input type="text" value="${escapeHtml(kp)}" data-index="${i}" class="keypoint-input">
-                        <button class="remove-keypoint" data-index="${i}"><i class="fas fa-trash"></i></button>
-                    </div>
-                `).join('');
-            }
-            
-            document.querySelectorAll('.keypoint-input').forEach(inp => {
-                inp.addEventListener('change', (e) => {
-                    keypoints[parseInt(inp.getAttribute('data-index'))] = inp.value;
-                });
-            });
-            document.querySelectorAll('.remove-keypoint').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    keypoints.splice(parseInt(btn.getAttribute('data-index')), 1);
-                    renderKeypoints();
-                });
-            });
-        }
-
-        function renderCharacters() {
-            const container = document.getElementById('charactersList');
-            if (characters.length === 0) {
-                container.innerHTML = '<p style="color: var(--gray);">No characters yet</p>';
-            } else {
-                container.innerHTML = characters.map((c, i) => `
-                    <span class="character-tag">
-                        ${escapeHtml(c)} <i class="fas fa-times" data-index="${i}"></i>
-                    </span>
-                `).join('');
-            }
-            
-            document.querySelectorAll('.character-tag i').forEach(icon => {
-                icon.addEventListener('click', (e) => {
-                    characters.splice(parseInt(icon.getAttribute('data-index')), 1);
-                    renderCharacters();
-                });
-            });
+            setTimeout(() => toast.style.display = 'none', 3000);
         }
 
         function escapeHtml(text) {
@@ -696,6 +951,106 @@
             return div.innerHTML;
         }
 
+        // Event Listeners
+        document.querySelectorAll('.tab-btn[data-category]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn[data-category]').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentCategory = btn.getAttribute('data-category');
+                currentBook = null;
+                renderBookList();
+                document.getElementById('editorPanel').style.display = 'block';
+                
+                // Show/hide category-specific fields
+                const toneMoodCard = document.getElementById('toneMoodCard');
+                const dramaticDevicesCard = document.getElementById('dramaticDevicesCard');
+                
+                if (currentCategory === 'poetry') {
+                    toneMoodCard.style.display = 'block';
+                    dramaticDevicesCard.style.display = 'none';
+                } else if (currentCategory === 'drama') {
+                    toneMoodCard.style.display = 'block';
+                    dramaticDevicesCard.style.display = 'block';
+                } else {
+                    toneMoodCard.style.display = 'block';
+                    dramaticDevicesCard.style.display = 'none';
+                }
+            });
+        });
+
+        document.querySelectorAll('.section-tab').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.section-tab').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const section = btn.getAttribute('data-section');
+                document.getElementById('summarySection').style.display = section === 'summary' ? 'block' : 'none';
+                document.getElementById('analysisSection').style.display = section === 'analysis' ? 'block' : 'none';
+                document.getElementById('questionsSection').style.display = section === 'questions' ? 'block' : 'none';
+            });
+        });
+
+        document.getElementById('addKeyPointBtn').addEventListener('click', () => {
+            const input = document.getElementById('newKeyPoint');
+            if (input.value.trim()) {
+                summaryData.keyPoints.push(input.value.trim());
+                renderTags();
+                input.value = '';
+            }
+        });
+
+        document.getElementById('addCharacterBtn').addEventListener('click', () => {
+            const input = document.getElementById('newCharacter');
+            if (input.value.trim()) {
+                summaryData.characters.push(input.value.trim());
+                renderTags();
+                input.value = '';
+            }
+        });
+
+        document.getElementById('addThemeBtn').addEventListener('click', () => {
+            const input = document.getElementById('newTheme');
+            if (input.value.trim()) {
+                summaryData.themes.push(input.value.trim());
+                renderTags();
+                input.value = '';
+            }
+        });
+
+        document.getElementById('addDeviceBtn').addEventListener('click', () => {
+            const input = document.getElementById('newDevice');
+            if (input.value.trim()) {
+                summaryData.literaryDevices.push(input.value.trim());
+                renderTags();
+                input.value = '';
+            }
+        });
+
+        document.getElementById('addDramaticDeviceBtn')?.addEventListener('click', () => {
+            const input = document.getElementById('newDramaticDevice');
+            if (input.value.trim()) {
+                summaryData.dramaticDevices.push(input.value.trim());
+                renderTags();
+                input.value = '';
+            }
+        });
+
+        document.getElementById('addQuestionBtn').addEventListener('click', () => {
+            summaryData.questions.push({
+                text: "",
+                options: { A: "", B: "", C: "", D: "" },
+                correct: "A"
+            });
+            renderQuestions();
+        });
+
+        document.getElementById('sectionName').addEventListener('change', (e) => {
+            summaryData.sectionName = e.target.value;
+        });
+
+        document.getElementById('saveDraftBtn').addEventListener('click', () => saveSummary(false));
+        document.getElementById('publishBtn').addEventListener('click', () => saveSummary(true));
+
+        // Auth
         onAuthStateChanged(auth, (user) => {
             if (!user) {
                 window.location.href = "index.html";
@@ -706,36 +1061,7 @@
                 return;
             }
             initEditor();
-            loadDocuments();
-        });
-
-        document.getElementById('loadSummaryBtn').addEventListener('click', () => {
-            const book = document.getElementById('bookSelect').value;
-            const section = document.getElementById('sectionName').value.trim();
-            if (book && section) {
-                const docId = `${book}_${section.toLowerCase().replace(/[^a-z0-9]/g, '_')}`;
-                loadSummary(docId);
-            } else {
-                showToast('Select book and enter section name', true);
-            }
-        });
-
-        document.getElementById('saveDraftBtn').addEventListener('click', () => saveSummary(false));
-        document.getElementById('publishBtn').addEventListener('click', () => saveSummary(true));
-        document.getElementById('addKeypoint').addEventListener('click', () => { keypoints.push(''); renderKeypoints(); });
-        document.getElementById('addCharacterBtn').addEventListener('click', () => {
-            const input = document.getElementById('newCharacterInput');
-            if (input.value.trim()) {
-                characters.push(input.value.trim());
-                renderCharacters();
-                input.value = '';
-            }
-        });
-
-        let searchTimeout;
-        document.getElementById('searchDocs').addEventListener('input', (e) => {
-            clearTimeout(searchTimeout);
-            searchTimeout = setTimeout(() => loadDocuments(e.target.value), 300);
+            renderBookList();
         });
     </script>
 </body>
