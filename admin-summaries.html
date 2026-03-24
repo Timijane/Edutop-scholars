@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Admin - Write Summaries | Mr. Timi Scholar</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #311b92;
+            --primary-light: #4527a0;
+            --secondary: #ff5722;
+            --success: #4caf50;
+            --warning: #ff9800;
+            --danger: #f44336;
+            --light: #f5f5f7;
+            --dark: #333;
+            --gray: #777;
+            --light-gray: #eee;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            min-height: 100vh;
+        }
+
+        .header {
+            background: white;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo h1 {
+            color: var(--primary);
+            font-size: 22px;
+        }
+
+        .logo span {
+            color: var(--secondary);
+        }
+
+        .logo a {
+            text-decoration: none;
+        }
+
+        .admin-badge {
+            background: var(--secondary);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Book Selector */
+        .book-selector {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .selector-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        select, input {
+            flex: 1;
+            min-width: 200px;
+            padding: 12px 16px;
+            border: 2px solid var(--light-gray);
+            border-radius: 12px;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        select:focus, input:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+
+        /* Summary Form */
+        .summary-form {
+            background: white;
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .form-group label i {
+            margin-right: 6px;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid var(--light-gray);
+            border-radius: 16px;
+            font-size: 15px;
+            line-height: 1.6;
+            font-family: inherit;
+            resize: vertical;
+            transition: all 0.2s;
+        }
+
+        textarea:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+
+        .summary-textarea {
+            min-height: 300px;
+        }
+
+        .keypoints-container {
+            background: var(--light);
+            border-radius: 16px;
+            padding: 16px;
+        }
+
+        .keypoint-item {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+            align-items: center;
+        }
+
+        .keypoint-item input {
+            flex: 1;
+            padding: 10px 14px;
+        }
+
+        .remove-keypoint {
+            background: var(--danger);
+            color: white;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .add-keypoint {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 13px;
+            margin-top: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .characters-container {
+            background: var(--light);
+            border-radius: 16px;
+            padding: 16px;
+        }
+
+        .character-tag-input {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .character-badge {
+            background: var(--primary);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 13px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .character-badge i {
+            cursor: pointer;
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .character-badge i:hover {
+            opacity: 1;
+        }
+
+        .add-character {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .add-character input {
+            flex: 1;
+            padding: 10px 14px;
+        }
+
+        .add-character button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--light-gray);
+        }
+
+        .save-btn {
+            background: var(--success);
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            border-radius: 40px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .save-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(76,175,80,0.3);
+        }
+
+        .preview-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            border-radius: 40px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-message {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            border-radius: 30px;
+            background: var(--success);
+            color: white;
+            display: none;
+            z-index: 1000;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.6s linear infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .chapter-info {
+            background: var(--light);
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: var(--gray);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 16px;
+            }
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">
+            <a href="dashboard.html">
+                <h1>Mr. Timi <span>Scholar</span></h1>
+            </a>
+        </div>
+        <div class="admin-badge">
+            <i class="fas fa-crown"></i> Admin Panel
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="book-selector">
+            <h3 style="color: var(--primary); margin-bottom: 10px;">
+                <i class="fas fa-book"></i> Select Book & Chapter
+            </h3>
+            <div class="selector-group">
+                <select id="bookSelect">
+                    <option value="">-- Select Book --</option>
+                    <option value="to-kill-a-mockingbird">To Kill a Mockingbird (Harper Lee)</option>
+                    <option value="path-of-lucas">Path of Lucas (Susanne Bellefeuille)</option>
+                    <option value="so-the-path-does-not-die">So the Path Does Not Die (Pede Hollist)</option>
+                    <option value="redemption-road">Redemption Road (Elma Shaw)</option>
+                </select>
+                <input type="number" id="chapterSelect" placeholder="Chapter Number" min="1" max="50">
+                <button id="loadSummaryBtn" class="preview-btn" style="background: var(--primary); padding: 12px 24px;">
+                    <i class="fas fa-folder-open"></i> Load Summary
+                </button>
+            </div>
+        </div>
+
+        <div class="summary-form" id="summaryForm" style="display: none;">
+            <div class="chapter-info" id="chapterInfo"></div>
+
+            <div class="form-group">
+                <label><i class="fas fa-align-left"></i> Summary Content</label>
+                <textarea id="summaryText" class="summary-textarea" placeholder="Write your detailed chapter summary here..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-lightbulb"></i> Key Points</label>
+                <div class="keypoints-container" id="keypointsContainer">
+                    <div id="keypointsList"></div>
+                    <button type="button" class="add-keypoint" id="addKeypoint">
+                        <i class="fas fa-plus"></i> Add Key Point
+                    </button>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-users"></i> Characters in this Chapter</label>
+                <div class="characters-container">
+                    <div id="charactersList" class="character-tag-input"></div>
+                    <div class="add-character">
+                        <input type="text" id="newCharacterInput" placeholder="Enter character name">
+                        <button id="addCharacterBtn"><i class="fas fa-plus"></i> Add</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button id="saveSummaryBtn" class="save-btn">
+                    <i class="fas fa-save"></i> Save Summary
+                </button>
+                <button id="previewBtn" class="preview-btn">
+                    <i class="fas fa-eye"></i> Preview
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="statusMessage" class="status-message"></div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCictHNxtslYs9VR0hoicxlwPn_QghkgIA",
+            authDomain: "edutop-7ff51.firebaseapp.com",
+            projectId: "edutop-7ff51",
+            storageBucket: "edutop-7ff51.firebasestorage.app",
+            messagingSenderId: "79307850494",
+            appId: "1:79307850494:web:b51ce51204140ec5429baf",
+            measurementId: "G-GGGH590BYS"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Admin emails (add your email here)
+        const adminEmails = ["timiolaoti2005@gmail.com", "admin@edutop.com"];
+
+        let currentBook = null;
+        let currentChapter = null;
+        let keypoints = [];
+        let characters = [];
+
+        // Check if user is admin
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                window.location.href = "index.html";
+                return;
+            }
+            
+            if (!adminEmails.includes(user.email)) {
+                alert("Access Denied. This page is for administrators only.");
+                window.location.href = "dashboard.html";
+                return;
+            }
+        });
+
+        // Load summary when selected
+        document.getElementById('loadSummaryBtn').addEventListener('click', async () => {
+            const book = document.getElementById('bookSelect').value;
+            const chapter = parseInt(document.getElementById('chapterSelect').value);
+            
+            if (!book || !chapter || chapter < 1) {
+                alert('Please select a book and valid chapter number');
+                return;
+            }
+            
+            currentBook = book;
+            currentChapter = chapter;
+            
+            const bookNames = {
+                'to-kill-a-mockingbird': 'To Kill a Mockingbird',
+                'path-of-lucas': 'Path of Lucas',
+                'so-the-path-does-not-die': 'So the Path Does Not Die',
+                'redemption-road': 'Redemption Road'
+            };
+            
+            document.getElementById('chapterInfo').innerHTML = `
+                <i class="fas fa-info-circle"></i> 
+                Writing summary for: <strong>${bookNames[book]}</strong> - Chapter ${chapter}
+            `;
+            
+            // Load existing summary if any
+            const summaryRef = doc(db, "summaries", `${book}_chapter_${chapter}`);
+            const summaryDoc = await getDoc(summaryRef);
+            
+            if (summaryDoc.exists()) {
+                const data = summaryDoc.data();
+                document.getElementById('summaryText').value = data.summary || '';
+                keypoints = data.keyPoints || [];
+                characters = data.characters || [];
+            } else {
+                // Start fresh
+                document.getElementById('summaryText').value = '';
+                keypoints = [];
+                characters = [];
+            }
+            
+            renderKeypoints();
+            renderCharacters();
+            
+            document.getElementById('summaryForm').style.display = 'block';
+        });
+        
+        function renderKeypoints() {
+            const container = document.getElementById('keypointsList');
+            if (keypoints.length === 0) {
+                container.innerHTML = '<p style="color: var(--gray); padding: 10px;">No key points added yet. Click "Add Key Point" to start.</p>';
+            } else {
+                container.innerHTML = keypoints.map((kp, index) => `
+                    <div class="keypoint-item">
+                        <input type="text" value="${escapeHtml(kp)}" data-index="${index}" class="keypoint-input">
+                        <button class="remove-keypoint" data-index="${index}"><i class="fas fa-trash"></i></button>
+                    </div>
+                `).join('');
+            }
+            
+            // Add event listeners to inputs
+            document.querySelectorAll('.keypoint-input').forEach(input => {
+                input.addEventListener('change', (e) => {
+                    const index = parseInt(input.getAttribute('data-index'));
+                    keypoints[index] = input.value;
+                });
+            });
+            
+            document.querySelectorAll('.remove-keypoint').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const index = parseInt(btn.getAttribute('data-index'));
+                    keypoints.splice(index, 1);
+                    renderKeypoints();
+                });
+            });
+        }
+        
+        function renderCharacters() {
+            const container = document.getElementById('charactersList');
+            if (characters.length === 0) {
+                container.innerHTML = '<p style="color: var(--gray); padding: 10px;">No characters added yet.</p>';
+            } else {
+                container.innerHTML = characters.map((char, index) => `
+                    <span class="character-badge">
+                        ${escapeHtml(char)}
+                        <i class="fas fa-times" data-index="${index}"></i>
+                    </span>
+                `).join('');
+            }
+            
+            document.querySelectorAll('.character-badge i').forEach(icon => {
+                icon.addEventListener('click', (e) => {
+                    const index = parseInt(icon.getAttribute('data-index'));
+                    characters.splice(index, 1);
+                    renderCharacters();
+                });
+            });
+        }
+        
+        document.getElementById('addKeypoint').addEventListener('click', () => {
+            keypoints.push('');
+            renderKeypoints();
+            // Focus on the new input
+            setTimeout(() => {
+                const inputs = document.querySelectorAll('.keypoint-input');
+                if (inputs.length) {
+                    inputs[inputs.length - 1].focus();
+                }
+            }, 100);
+        });
+        
+        document.getElementById('addCharacterBtn').addEventListener('click', () => {
+            const input = document.getElementById('newCharacterInput');
+            const newChar = input.value.trim();
+            if (newChar) {
+                characters.push(newChar);
+                renderCharacters();
+                input.value = '';
+                input.focus();
+            }
+        });
+        
+        document.getElementById('newCharacterInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                document.getElementById('addCharacterBtn').click();
+            }
+        });
+        
+        // Save Summary
+        document.getElementById('saveSummaryBtn').addEventListener('click', async () => {
+            if (!currentBook || !currentChapter) {
+                alert('Please select a book and chapter first');
+                return;
+            }
+            
+            const summaryText = document.getElementById('summaryText').value;
+            
+            if (!summaryText.trim()) {
+                alert('Please write a summary before saving');
+                return;
+            }
+            
+            const btn = document.getElementById('saveSummaryBtn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<span class="loading"></span> Saving...';
+            btn.disabled = true;
+            
+            try {
+                const summaryRef = doc(db, "summaries", `${currentBook}_chapter_${currentChapter}`);
+                await setDoc(summaryRef, {
+                    summary: summaryText,
+                    keyPoints: keypoints.filter(kp => kp.trim()),
+                    characters: characters.filter(c => c.trim()),
+                    bookId: currentBook,
+                    chapter: currentChapter,
+                    updatedAt: new Date().toISOString()
+                });
+                
+                showStatus('Summary saved successfully!', 'success');
+            } catch (error) {
+                console.error('Error saving:', error);
+                showStatus('Error saving summary: ' + error.message, 'error');
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        });
+        
+        // Preview in new window
+        document.getElementById('previewBtn').addEventListener('click', () => {
+            if (!currentBook || !currentChapter) return;
+            
+            const summaryText = document.getElementById('summaryText').value;
+            const keypointsList = keypoints.filter(kp => kp.trim());
+            const charactersList = characters.filter(c => c.trim());
+            
+            // Save to localStorage for preview
+            localStorage.setItem('previewSummary', JSON.stringify({
+                summary: summaryText,
+                keyPoints: keypointsList,
+                characters: charactersList,
+                bookId: currentBook,
+                chapter: currentChapter
+            }));
+            
+            window.open('preview-summary.html', '_blank');
+        });
+        
+        function showStatus(message, type) {
+            const statusDiv = document.getElementById('statusMessage');
+            statusDiv.textContent = message;
+            statusDiv.style.backgroundColor = type === 'success' ? '#4caf50' : '#f44336';
+            statusDiv.style.display = 'block';
+            setTimeout(() => {
+                statusDiv.style.display = 'none';
+            }, 3000);
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>
