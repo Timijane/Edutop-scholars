@@ -65,10 +65,51 @@
             font-weight: 600;
         }
 
+        .user-email {
+            font-size: 12px;
+            color: var(--gray);
+            margin-left: 10px;
+        }
+
         .container {
             max-width: 1000px;
             margin: 0 auto;
             padding: 20px;
+        }
+
+        /* Access Denied */
+        .access-denied {
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border-radius: 24px;
+            margin: 40px auto;
+            max-width: 500px;
+        }
+
+        .access-denied i {
+            font-size: 64px;
+            color: var(--danger);
+            margin-bottom: 20px;
+        }
+
+        .access-denied h2 {
+            color: var(--danger);
+            margin-bottom: 10px;
+        }
+
+        .access-denied p {
+            color: var(--gray);
+            margin-bottom: 20px;
+        }
+
+        .access-denied .btn {
+            background: var(--primary);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 30px;
+            text-decoration: none;
+            display: inline-block;
         }
 
         /* Book Selector */
@@ -341,67 +382,80 @@
                 <h1>Mr. Timi <span>Scholar</span></h1>
             </a>
         </div>
-        <div class="admin-badge">
-            <i class="fas fa-crown"></i> Admin Panel
+        <div>
+            <span class="admin-badge">
+                <i class="fas fa-crown"></i> Admin Panel
+            </span>
+            <span class="user-email" id="userEmailDisplay"></span>
         </div>
     </header>
 
-    <div class="container">
-        <div class="book-selector">
-            <h3 style="color: var(--primary); margin-bottom: 10px;">
-                <i class="fas fa-book"></i> Select Book & Chapter
-            </h3>
-            <div class="selector-group">
-                <select id="bookSelect">
-                    <option value="">-- Select Book --</option>
-                    <option value="to-kill-a-mockingbird">To Kill a Mockingbird (Harper Lee)</option>
-                    <option value="path-of-lucas">Path of Lucas (Susanne Bellefeuille)</option>
-                    <option value="so-the-path-does-not-die">So the Path Does Not Die (Pede Hollist)</option>
-                    <option value="redemption-road">Redemption Road (Elma Shaw)</option>
-                </select>
-                <input type="number" id="chapterSelect" placeholder="Chapter Number" min="1" max="50">
-                <button id="loadSummaryBtn" class="preview-btn" style="background: var(--primary); padding: 12px 24px;">
-                    <i class="fas fa-folder-open"></i> Load Summary
-                </button>
-            </div>
+    <div class="container" id="mainContainer">
+        <div id="accessDenied" style="display: none;" class="access-denied">
+            <i class="fas fa-lock"></i>
+            <h2>Access Denied</h2>
+            <p>You don't have permission to access this page.</p>
+            <p>This area is restricted to administrators only.</p>
+            <a href="dashboard.html" class="btn">Return to Dashboard</a>
         </div>
 
-        <div class="summary-form" id="summaryForm" style="display: none;">
-            <div class="chapter-info" id="chapterInfo"></div>
-
-            <div class="form-group">
-                <label><i class="fas fa-align-left"></i> Summary Content</label>
-                <textarea id="summaryText" class="summary-textarea" placeholder="Write your detailed chapter summary here..."></textarea>
-            </div>
-
-            <div class="form-group">
-                <label><i class="fas fa-lightbulb"></i> Key Points</label>
-                <div class="keypoints-container" id="keypointsContainer">
-                    <div id="keypointsList"></div>
-                    <button type="button" class="add-keypoint" id="addKeypoint">
-                        <i class="fas fa-plus"></i> Add Key Point
+        <div id="adminContent" style="display: none;">
+            <div class="book-selector">
+                <h3 style="color: var(--primary); margin-bottom: 10px;">
+                    <i class="fas fa-book"></i> Select Book & Chapter
+                </h3>
+                <div class="selector-group">
+                    <select id="bookSelect">
+                        <option value="">-- Select Book --</option>
+                        <option value="to-kill-a-mockingbird">To Kill a Mockingbird (Harper Lee)</option>
+                        <option value="path-of-lucas">Path of Lucas (Susanne Bellefeuille)</option>
+                        <option value="so-the-path-does-not-die">So the Path Does Not Die (Pede Hollist)</option>
+                        <option value="redemption-road">Redemption Road (Elma Shaw)</option>
+                    </select>
+                    <input type="number" id="chapterSelect" placeholder="Chapter Number" min="1" max="50">
+                    <button id="loadSummaryBtn" class="preview-btn" style="background: var(--primary); padding: 12px 24px;">
+                        <i class="fas fa-folder-open"></i> Load Summary
                     </button>
                 </div>
             </div>
 
-            <div class="form-group">
-                <label><i class="fas fa-users"></i> Characters in this Chapter</label>
-                <div class="characters-container">
-                    <div id="charactersList" class="character-tag-input"></div>
-                    <div class="add-character">
-                        <input type="text" id="newCharacterInput" placeholder="Enter character name">
-                        <button id="addCharacterBtn"><i class="fas fa-plus"></i> Add</button>
+            <div class="summary-form" id="summaryForm" style="display: none;">
+                <div class="chapter-info" id="chapterInfo"></div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-align-left"></i> Summary Content</label>
+                    <textarea id="summaryText" class="summary-textarea" placeholder="Write your detailed chapter summary here..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-lightbulb"></i> Key Points</label>
+                    <div class="keypoints-container" id="keypointsContainer">
+                        <div id="keypointsList"></div>
+                        <button type="button" class="add-keypoint" id="addKeypoint">
+                            <i class="fas fa-plus"></i> Add Key Point
+                        </button>
                     </div>
                 </div>
-            </div>
 
-            <div class="action-buttons">
-                <button id="saveSummaryBtn" class="save-btn">
-                    <i class="fas fa-save"></i> Save Summary
-                </button>
-                <button id="previewBtn" class="preview-btn">
-                    <i class="fas fa-eye"></i> Preview
-                </button>
+                <div class="form-group">
+                    <label><i class="fas fa-users"></i> Characters in this Chapter</label>
+                    <div class="characters-container">
+                        <div id="charactersList" class="character-tag-input"></div>
+                        <div class="add-character">
+                            <input type="text" id="newCharacterInput" placeholder="Enter character name">
+                            <button id="addCharacterBtn"><i class="fas fa-plus"></i> Add</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button id="saveSummaryBtn" class="save-btn">
+                        <i class="fas fa-save"></i> Save Summary
+                    </button>
+                    <button id="previewBtn" class="preview-btn">
+                        <i class="fas fa-eye"></i> Preview
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -427,8 +481,11 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Admin emails (add your email here)
-        const adminEmails = ["timiolaoti2005@gmail.com", "admin@edutop.com"];
+        // ADMIN EMAILS - UPDATE THIS LIST WITH YOUR ADMIN EMAILS
+        const adminEmails = [
+            "okewunmitimileyin23@gmail.com",
+            "triangleofscholars@gmail.com"
+        ];
 
         let currentBook = null;
         let currentChapter = null;
@@ -442,10 +499,18 @@
                 return;
             }
             
-            if (!adminEmails.includes(user.email)) {
-                alert("Access Denied. This page is for administrators only.");
-                window.location.href = "dashboard.html";
-                return;
+            // Display user email
+            document.getElementById('userEmailDisplay').innerHTML = `<i class="fas fa-user-check"></i> ${user.email}`;
+            
+            // Check if email is in admin list
+            if (adminEmails.includes(user.email)) {
+                // Show admin content
+                document.getElementById('adminContent').style.display = 'block';
+                document.getElementById('accessDenied').style.display = 'none';
+            } else {
+                // Show access denied
+                document.getElementById('adminContent').style.display = 'none';
+                document.getElementById('accessDenied').style.display = 'block';
             }
         });
 
@@ -604,7 +669,8 @@
                     characters: characters.filter(c => c.trim()),
                     bookId: currentBook,
                     chapter: currentChapter,
-                    updatedAt: new Date().toISOString()
+                    updatedAt: new Date().toISOString(),
+                    updatedBy: auth.currentUser?.email || 'admin'
                 });
                 
                 showStatus('Summary saved successfully!', 'success');
