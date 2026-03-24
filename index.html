@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Mr. Timi Edutop Scholars - Literature Learning Platform</title>
+    <title>Mr. Timi Edutop Scholar - Literature Learning Platform</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { 
@@ -14,30 +14,50 @@
         }
         
         body { 
-            background: linear-gradient(135deg, #1a237e 0%, #311b92 100%); 
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
             min-height: 100vh; 
             display: flex; 
             align-items: center; 
             justify-content: center; 
-            padding: 15px;
+            padding: 20px;
+            position: relative;
+        }
+        
+        /* Animated background effect */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 50%, rgba(255,87,34,0.1) 0%, transparent 50%);
+            pointer-events: none;
         }
         
         .container { 
             display: flex; 
             width: 100%; 
-            max-width: 1100px; 
+            max-width: 1200px; 
             min-height: auto;
-            background: rgba(255, 255, 255, 0.95); 
-            border-radius: 20px; 
+            background: rgba(255, 255, 255, 0.98); 
+            border-radius: 32px; 
             overflow: hidden; 
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3); 
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease;
+        }
+        
+        .container:hover {
+            transform: translateY(-5px);
         }
         
         .slider-section { 
             flex: 1; 
             position: relative; 
             overflow: hidden; 
-            min-height: 500px;
+            min-height: 600px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
         
         .slider { 
@@ -53,10 +73,20 @@
             width: 100%; 
             height: 100%; 
             opacity: 0; 
-            transition: opacity 1.5s ease-in-out; 
+            transition: opacity 1s ease-in-out; 
             background-size: cover; 
             background-position: center; 
             background-repeat: no-repeat; 
+        }
+        
+        .slide::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(102,126,234,0.7) 0%, rgba(118,75,162,0.7) 100%);
         }
         
         .slide.active { 
@@ -68,31 +98,33 @@
             bottom: 0; 
             left: 0; 
             right: 0; 
-            padding: 30px; 
-            background: linear-gradient(transparent, rgba(0, 0, 0, 0.85)); 
+            padding: 40px; 
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.9)); 
             color: white; 
+            z-index: 2;
         }
         
         .slide-content h3 { 
-            font-size: 24px; 
-            margin-bottom: 8px; 
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); 
+            font-size: 28px; 
+            margin-bottom: 12px; 
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            font-weight: 700;
         }
         
         .slide-content p { 
-            font-size: 14px; 
+            font-size: 16px; 
             opacity: 0.95; 
-            line-height: 1.4;
+            line-height: 1.5;
         }
         
         .slider-indicators { 
             position: absolute; 
-            bottom: 15px; 
+            bottom: 25px; 
             left: 0; 
             right: 0; 
             display: flex; 
             justify-content: center; 
-            gap: 8px; 
+            gap: 12px; 
             z-index: 10; 
         }
         
@@ -106,13 +138,14 @@
         }
         
         .indicator.active { 
-            background: white; 
-            transform: scale(1.2); 
+            background: #ff5722; 
+            transform: scale(1.3);
+            box-shadow: 0 0 10px rgba(255,87,34,0.5);
         }
         
         .form-section { 
             flex: 1; 
-            padding: 40px 35px; 
+            padding: 50px 45px; 
             display: flex; 
             flex-direction: column; 
             justify-content: center; 
@@ -121,23 +154,31 @@
         
         .logo { 
             text-align: center; 
-            margin-bottom: 25px; 
+            margin-bottom: 35px; 
         }
         
         .logo h1 { 
-            color: #311b92; 
-            font-size: 32px; 
-            margin-bottom: 5px; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 36px; 
+            margin-bottom: 8px; 
+            font-weight: 800;
         }
         
         .logo span { 
-            color: #ff5722; 
+            background: linear-gradient(135deg, #ff5722 0%, #ff7849 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
         
         .logo p { 
-            color: #666; 
-            font-size: 13px; 
-            letter-spacing: 0.5px; 
+            color: #888; 
+            font-size: 14px; 
+            letter-spacing: 1px; 
+            font-weight: 500;
         }
         
         .form-container { 
@@ -146,29 +187,32 @@
         
         .form-toggle { 
             display: flex; 
-            margin-bottom: 25px; 
-            background: #f0f0f0; 
-            border-radius: 50px; 
-            padding: 4px; 
+            margin-bottom: 35px; 
+            background: #f5f5f5; 
+            border-radius: 60px; 
+            padding: 5px; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
         
         .toggle-btn { 
             flex: 1; 
-            padding: 10px; 
+            padding: 12px; 
             text-align: center; 
             cursor: pointer; 
-            border-radius: 50px; 
-            font-weight: 600; 
-            transition: all 0.3s; 
+            border-radius: 60px; 
+            font-weight: 700; 
+            transition: all 0.3s ease; 
             border: none; 
             background: transparent; 
             font-size: 15px; 
+            letter-spacing: 0.5px;
         }
         
         .toggle-btn.active { 
-            background: #311b92; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white; 
-            box-shadow: 0 2px 8px rgba(49, 27, 146, 0.3); 
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            transform: scale(1.02);
         }
         
         .form { 
@@ -177,73 +221,89 @@
         
         .form.active { 
             display: block; 
-            animation: fadeIn 0.4s; 
+            animation: fadeInUp 0.5s ease; 
         }
         
-        @keyframes fadeIn { 
-            from { opacity: 0; transform: translateY(8px); } 
-            to { opacity: 1; transform: translateY(0); } 
+        @keyframes fadeInUp { 
+            from { 
+                opacity: 0; 
+                transform: translateY(20px); 
+            } 
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            } 
         }
         
         .form h2 { 
-            margin-bottom: 20px; 
-            color: #311b92; 
+            margin-bottom: 30px; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             text-align: center; 
-            font-size: 24px;
+            font-size: 28px;
+            font-weight: 700;
         }
         
         .form-group { 
-            margin-bottom: 18px; 
+            margin-bottom: 22px; 
             position: relative; 
         }
         
         .form-group .input-icon { 
             position: absolute; 
-            left: 15px; 
+            left: 18px; 
             top: 50%; 
             transform: translateY(-50%); 
-            color: #777; 
+            color: #aaa; 
             z-index: 2; 
-            font-size: 14px;
+            font-size: 16px;
+            transition: color 0.3s;
+        }
+        
+        .form-group:focus-within .input-icon {
+            color: #667eea;
         }
         
         .form-control { 
             width: 100%; 
-            padding: 12px 45px 12px 45px; 
-            border: 2px solid #e0e0e0; 
-            border-radius: 10px; 
-            font-size: 14px; 
+            padding: 14px 50px 14px 48px; 
+            border: 2px solid #e8e8e8; 
+            border-radius: 16px; 
+            font-size: 15px; 
             transition: all 0.3s; 
-            background: white;
+            background: #fafafa;
         }
         
         .form-control:focus { 
-            border-color: #311b92; 
+            border-color: #667eea; 
             outline: none; 
-            box-shadow: 0 0 0 3px rgba(49, 27, 146, 0.1);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
         }
         
         .password-toggle { 
             position: absolute; 
-            right: 15px; 
+            right: 18px; 
             top: 50%; 
             transform: translateY(-50%); 
-            color: #777; 
+            color: #aaa; 
             cursor: pointer; 
             z-index: 2; 
-            transition: color 0.3s; 
+            transition: all 0.3s; 
         }
         
         .password-toggle:hover { 
-            color: #311b92; 
+            color: #667eea; 
         }
         
         .remember-forgot { 
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
-            margin-bottom: 20px; 
-            font-size: 13px; 
+            margin-bottom: 28px; 
+            font-size: 14px; 
         }
         
         .remember-me { 
@@ -253,51 +313,60 @@
         }
         
         .remember-me input { 
-            margin-right: 8px; 
-            accent-color: #311b92; 
-            cursor: pointer; 
+            margin-right: 10px; 
+            accent-color: #667eea; 
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
         }
         
         .remember-me label { 
             cursor: pointer; 
-            color: #555;
+            color: #666;
+            font-weight: 500;
         }
         
         .forgot-password { 
-            color: #311b92; 
+            color: #667eea; 
             text-decoration: none; 
             font-weight: 600; 
-            font-size: 13px;
+            font-size: 14px;
+            transition: color 0.3s;
         }
         
         .forgot-password:hover { 
+            color: #764ba2;
             text-decoration: underline; 
         }
         
         .btn { 
             display: block; 
             width: 100%; 
-            padding: 12px; 
-            background: #311b92; 
+            padding: 14px; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white; 
             border: none; 
-            border-radius: 10px; 
-            font-size: 15px; 
-            font-weight: 600; 
+            border-radius: 16px; 
+            font-size: 16px; 
+            font-weight: 700; 
             cursor: pointer; 
             transition: all 0.3s; 
             margin-top: 10px; 
-            box-shadow: 0 2px 6px rgba(49, 27, 146, 0.2); 
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            letter-spacing: 0.5px;
         }
         
         .btn:hover { 
-            background: #1a237e; 
-            transform: translateY(-1px); 
-            box-shadow: 0 4px 12px rgba(49, 27, 146, 0.3); 
+            transform: translateY(-2px); 
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
         }
         
         .btn:disabled { 
-            background: #9da0bc; 
+            background: linear-gradient(135deg, #b8b8b8 0%, #a0a0a0 100%);
             cursor: not-allowed; 
             transform: none; 
             box-shadow: none; 
@@ -305,68 +374,83 @@
         
         .form-footer { 
             text-align: center; 
-            margin-top: 20px; 
-            font-size: 13px; 
-            color: #666; 
+            margin-top: 25px; 
+            font-size: 14px; 
+            color: #888; 
         }
         
         .form-footer a { 
-            color: #311b92; 
+            color: #667eea; 
             text-decoration: none; 
-            font-weight: 600; 
+            font-weight: 700; 
         }
         
         .form-footer a:hover { 
             text-decoration: underline; 
+            color: #764ba2;
         }
         
         .features-preview { 
-            margin-top: 25px; 
-            padding: 18px; 
-            background: linear-gradient(135deg, #fff5e6 0%, #fff0e0 100%);
-            border-radius: 12px; 
-            border-left: 4px solid #ff5722; 
+            margin-top: 35px; 
+            padding: 22px; 
+            background: linear-gradient(135deg, #fff5f0 0%, #fff0e8 100%);
+            border-radius: 20px; 
+            border-left: 5px solid #ff5722;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
         }
         
         .features-preview h4 { 
-            color: #311b92; 
-            margin-bottom: 8px; 
-            font-size: 16px; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 12px; 
+            font-size: 18px; 
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+            font-weight: 700;
         }
         
         .features-preview h4 i {
-            color: #ff5722;
-            font-size: 14px;
+            background: linear-gradient(135deg, #ff5722 0%, #ff7849 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 20px;
         }
         
         .features-preview p { 
-            color: #444; 
-            font-size: 13px; 
-            line-height: 1.5;
-            margin-bottom: 12px;
+            color: #555; 
+            font-size: 14px; 
+            line-height: 1.6;
+            margin-bottom: 15px;
+            font-weight: 500;
         }
         
         .features-preview ul { 
-            padding-left: 20px; 
-            color: #555; 
+            padding-left: 22px; 
+            color: #666; 
         }
         
         .features-preview li { 
-            margin-bottom: 6px; 
-            font-size: 12px; 
-            line-height: 1.4;
+            margin-bottom: 8px; 
+            font-size: 13px; 
+            line-height: 1.5;
+            font-weight: 500;
+        }
+        
+        .features-preview li::marker {
+            color: #ff5722;
         }
         
         .copyright {
             text-align: center;
-            margin-top: 20px;
-            padding-top: 15px;
-            border-top: 1px solid #e0e0e0;
-            font-size: 11px;
-            color: #999;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #f0f0f0;
+            font-size: 12px;
+            color: #aaa;
         }
         
         @media (max-width: 992px) { 
@@ -375,78 +459,84 @@
                 max-width: 550px; 
             } 
             .slider-section { 
-                height: 280px; 
+                height: 300px; 
                 min-height: auto;
             } 
             .form-section { 
-                padding: 30px 25px; 
+                padding: 35px 30px; 
+            } 
+            .slide-content { 
+                padding: 25px; 
+            } 
+            .slide-content h3 { 
+                font-size: 22px; 
+            }
+            .logo h1 {
+                font-size: 32px;
+            }
+        }
+        
+        @media (max-width: 576px) { 
+            body { 
+                padding: 12px; 
+            } 
+            .container { 
+                border-radius: 24px; 
+            } 
+            .form-section { 
+                padding: 28px 22px; 
             } 
             .slide-content { 
                 padding: 20px; 
             } 
             .slide-content h3 { 
                 font-size: 20px; 
-            }
-        }
-        
-        @media (max-width: 576px) { 
-            body { 
-                padding: 10px; 
-            } 
-            .container { 
-                border-radius: 15px; 
-            } 
-            .form-section { 
-                padding: 25px 20px; 
-            } 
-            .slide-content { 
-                padding: 15px; 
-            } 
-            .slide-content h3 { 
-                font-size: 18px; 
             } 
             .slide-content p { 
-                font-size: 12px; 
+                font-size: 13px; 
             }
             .logo h1 {
                 font-size: 28px;
             }
             .form h2 {
-                font-size: 22px;
+                font-size: 24px;
+            }
+            .features-preview {
+                padding: 18px;
             }
         }
         
         @media (max-width: 380px) {
             .form-section {
-                padding: 20px 15px;
+                padding: 22px 18px;
             }
             .form-control {
-                padding: 10px 40px 10px 40px;
-                font-size: 13px;
+                padding: 12px 45px 12px 42px;
+                font-size: 14px;
             }
             .btn {
-                padding: 10px;
-                font-size: 14px;
+                padding: 12px;
+                font-size: 15px;
             }
         }
         
         /* Loading spinner */
         .loading-spinner {
             display: inline-block;
-            width: 16px;
-            height: 16px;
+            width: 18px;
+            height: 18px;
             border: 2px solid rgba(255,255,255,0.3);
             border-radius: 50%;
             border-top-color: white;
             animation: spin 0.6s linear infinite;
-            margin-right: 8px;
+            margin-right: 10px;
         }
         
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
         
-        /* Modal styles for forgot password */
+        /* Modal styles */
         .modal {
             display: none;
             position: fixed;
@@ -454,7 +544,8 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(5px);
             z-index: 1000;
             align-items: center;
             justify-content: center;
@@ -462,88 +553,123 @@
         
         .modal.active {
             display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
         
         .modal-content {
             background: white;
-            padding: 25px;
-            border-radius: 15px;
-            max-width: 400px;
+            padding: 30px;
+            border-radius: 28px;
+            max-width: 420px;
             width: 90%;
             position: relative;
-            animation: modalSlideIn 0.3s ease;
+            animation: modalSlideIn 0.4s ease;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
         }
         
         @keyframes modalSlideIn {
             from {
                 opacity: 0;
-                transform: translateY(-30px);
+                transform: scale(0.95) translateY(-20px);
             }
             to {
                 opacity: 1;
-                transform: translateY(0);
+                transform: scale(1) translateY(0);
             }
         }
         
         .modal-content h3 {
-            color: #311b92;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             margin-bottom: 15px;
-            font-size: 20px;
+            font-size: 24px;
+            font-weight: 700;
+        }
+        
+        .modal-content p {
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 14px;
+            line-height: 1.5;
         }
         
         .modal-content .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
         
         .modal-close {
             position: absolute;
-            top: 15px;
-            right: 20px;
-            font-size: 24px;
+            top: 18px;
+            right: 22px;
+            font-size: 28px;
             cursor: pointer;
-            color: #999;
-            transition: color 0.3s;
+            color: #aaa;
+            transition: all 0.3s;
+            font-weight: 300;
         }
         
         .modal-close:hover {
-            color: #311b92;
+            color: #667eea;
+            transform: rotate(90deg);
         }
         
         .modal-btn {
-            background: #311b92;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-            padding: 12px;
-            border-radius: 8px;
+            padding: 14px;
+            border-radius: 16px;
             width: 100%;
-            font-size: 14px;
-            font-weight: 600;
+            font-size: 15px;
+            font-weight: 700;
             cursor: pointer;
-            transition: background 0.3s;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(102,126,234,0.3);
         }
         
         .modal-btn:hover {
-            background: #1a237e;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102,126,234,0.4);
         }
         
         .modal-message {
-            margin-top: 15px;
-            padding: 10px;
-            border-radius: 8px;
+            margin-top: 20px;
+            padding: 12px;
+            border-radius: 12px;
             font-size: 13px;
             display: none;
+            font-weight: 500;
         }
         
         .modal-message.success {
-            background: #d4edda;
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
             color: #155724;
             display: block;
+            border-left: 4px solid #28a745;
         }
         
         .modal-message.error {
-            background: #f8d7da;
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
             color: #721c24;
             display: block;
+            border-left: 4px solid #dc3545;
+        }
+        
+        /* Floating animation for features */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        
+        .features-preview {
+            animation: float 3s ease-in-out infinite;
         }
     </style>
 </head>
@@ -551,28 +677,28 @@
     <div class="container">
         <div class="slider-section">
             <div class="slider">
-                <div class="slide active" style="background-image: url('https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80');">
+                <div class="slide active" style="background-image: url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80');">
                     <div class="slide-content">
-                        <h3>JAMB Recommended Texts</h3>
-                        <p>Complete summaries of all JAMB literature texts for 2026-2030</p>
+                        <h3>Master Literature with Mr. Timi</h3>
+                        <p>Expert summaries and analysis for all JAMB recommended texts 2026-2030</p>
                     </div>
                 </div>
-                <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1512820790803-83ca734da794?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80');">
+                <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80');">
                     <div class="slide-content">
-                        <h3>Prose & Drama Analysis</h3>
+                        <h3>Prose & Drama Excellence</h3>
                         <p>In-depth chapter summaries, character analysis, and thematic exploration</p>
                     </div>
                 </div>
                 <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1474932430478-367dbb6832c0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80');">
                     <div class="slide-content">
-                        <h3>Poetry Made Easy</h3>
-                        <p>Simplified poetry analysis for all JAMB recommended poems</p>
+                        <h3>Poetry Made Simple</h3>
+                        <p>Simplified poetry analysis with literary device explanations</p>
                     </div>
                 </div>
                 <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1434030216411-0b793f4b4173?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80');">
                     <div class="slide-content">
                         <h3>CBT Literature Exams</h3>
-                        <p>Practice with JAMB-standard CBT questions on literature</p>
+                        <p>Practice with JAMB-standard CBT questions on literature topics</p>
                     </div>
                 </div>
             </div>
@@ -588,7 +714,7 @@
         <div class="form-section">
             <div class="logo">
                 <h1>Mr. Timi <span>Edutop Scholar</span></h1>
-                <p>Master Literature with Expert Guidance</p>
+                <p>Your Path to Literature Excellence</p>
             </div>
             
             <div class="form-container">
@@ -598,7 +724,7 @@
                 </div>
                 
                 <form class="form active" id="login-form">
-                    <h2>Welcome Back</h2>
+                    <h2>Welcome Back ✨</h2>
                     
                     <div class="form-group">
                         <i class="fas fa-envelope input-icon"></i>
@@ -627,7 +753,7 @@
                 </form>
                 
                 <form class="form" id="signup-form">
-                    <h2>Create Account</h2>
+                    <h2>Create Account 🎓</h2>
                     
                     <div class="form-group">
                         <i class="fas fa-user input-icon"></i>
@@ -656,17 +782,7 @@
                         <i class="fas fa-eye password-toggle" onclick="togglePassword('signup-confirm-password', this)"></i>
                     </div>
                     
-                    <div class="form-group">
-                        <select id="signup-plan" class="form-control" style="padding-left: 45px;" required>
-                            <option value="" disabled selected>Select Subscription Plan</option>
-                            <option value="basic">Basic (₦2,500/month)</option>
-                            <option value="standard">Standard (₦5,000/month)</option>
-                            <option value="premium">Premium (₦8,000/month)</option>
-                        </select>
-                        <i class="fas fa-graduation-cap input-icon" style="top: 20px;"></i>
-                    </div>
-                    
-                    <button type="submit" class="btn" id="signup-btn">Create Account</button>
+                    <button type="submit" class="btn" id="signup-btn">Create Free Account</button>
                     
                     <div class="form-footer">
                         <p>Already have an account? <a href="#" id="go-to-login">Login</a></p>
@@ -674,7 +790,7 @@
                 </form>
                 
                 <div class="features-preview">
-                    <h4><i class="fas fa-book-open"></i> Read More of JAMB Recommended Texts (2026-2030)</h4>
+                    <h4><i class="fas fa-book-open"></i> JAMB Recommended Texts (2026-2030)</h4>
                     <p>Comprehensive summaries and analysis by <strong>Master Timi</strong></p>
                     <ul>
                         <li>✓ Detailed prose summaries for all JAMB novels</li>
@@ -686,7 +802,7 @@
                 </div>
                 
                 <div class="copyright">
-                    © 2026 Mr. Timi Edutop Scholar | Powered by Triangle Tech
+                    <i class="fas fa-copyright"></i> 2026 Mr. Timi Edutop Scholar | Powered by Triangle Tech
                 </div>
             </div>
         </div>
@@ -696,8 +812,8 @@
     <div id="forgot-password-modal" class="modal">
         <div class="modal-content">
             <span class="modal-close" id="modal-close">&times;</span>
-            <h3>Reset Password</h3>
-            <p style="color: #666; margin-bottom: 15px; font-size: 13px;">Enter your email address and we'll send you a link to reset your password.</p>
+            <h3>Reset Password 🔐</h3>
+            <p>Enter your email address and we'll send you a link to reset your password.</p>
             <div class="form-group">
                 <i class="fas fa-envelope input-icon"></i>
                 <input type="email" id="reset-email" class="form-control" placeholder="Email Address" style="padding-left: 45px;">
@@ -865,7 +981,6 @@
                 const phone = document.getElementById('signup-phone').value;
                 const password = document.getElementById('signup-password').value;
                 const confirmPassword = document.getElementById('signup-confirm-password').value;
-                const plan = document.getElementById('signup-plan').value;
                 const btn = document.getElementById('signup-btn');
 
                 if (password !== confirmPassword) {
@@ -887,7 +1002,6 @@
                         fullName: fullName,
                         email: email,
                         phone: phone,
-                        subscriptionPlan: plan,
                         createdAt: new Date().toISOString()
                     });
 
@@ -964,11 +1078,10 @@
                 
                 try {
                     await sendPasswordResetEmail(auth, email);
-                    modalMessage.textContent = `Reset link sent to ${email}! Please check your inbox and spam folder.`;
+                    modalMessage.textContent = `✨ Reset link sent to ${email}! Please check your inbox and spam folder.`;
                     modalMessage.className = "modal-message success";
                     resetEmail.value = '';
                     
-                    // Auto close after 3 seconds
                     setTimeout(() => {
                         closeModal();
                     }, 3000);
@@ -987,7 +1100,6 @@
             });
         }
         
-        // Close modal function for module scope
         window.closeModal = function() {
             const modalEl = document.getElementById('forgot-password-modal');
             if (modalEl) modalEl.classList.remove('active');
