@@ -12,272 +12,180 @@
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
-        :root {
-            --primary: #311b92;
-            --primary-light: #4527a0;
-            --secondary: #ff5722;
-            --light: #f8f9fa;
-            --dark: #2c3e50;
-            --gray: #6c757d;
-            --border: #e9ecef;
-        }
-
         body {
             background: #f5f7fb;
             min-height: 100vh;
         }
-
         .header {
             background: white;
-            padding: 12px 24px;
+            padding: 12px 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
-
         .logo h1 {
-            color: var(--primary);
-            font-size: 24px;
+            color: #311b92;
+            font-size: 22px;
         }
-
         .logo span {
-            color: var(--secondary);
+            color: #ff5722;
         }
-
         .logo a {
             text-decoration: none;
         }
-
-        .nav-buttons {
-            display: flex;
-            gap: 12px;
-        }
-
-        .nav-btn {
-            background: var(--light);
+        .back-btn {
+            background: #f0f0f0;
             border: none;
-            padding: 8px 16px;
+            padding: 8px 14px;
             border-radius: 30px;
             cursor: pointer;
             font-weight: 600;
-            font-size: 13px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            text-decoration: none;
-            color: var(--dark);
+            font-size: 14px;
         }
-
-        .progress-container {
-            position: sticky;
-            top: 70px;
-            width: 100%;
-            height: 4px;
-            background: var(--border);
-            z-index: 99;
-        }
-
-        .progress-bar {
-            height: 100%;
-            background: var(--secondary);
-            width: 0%;
-            transition: width 0.3s;
-        }
-
         .container {
             max-width: 900px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 20px 16px;
         }
-
-        .reading-card {
-            background: white;
-            border-radius: 28px;
-            overflow: hidden;
-            box-shadow: 0 10px 35px rgba(0,0,0,0.08);
-            margin-bottom: 20px;
-        }
-
-        .book-header {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-            color: white;
-            padding: 30px;
-        }
-
-        .book-meta {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-        }
-
-        .book-category {
-            background: rgba(255,255,255,0.2);
-            padding: 5px 14px;
-            border-radius: 25px;
-            font-size: 12px;
-        }
-
-        .book-title {
-            font-size: 28px;
-            font-weight: 800;
-            margin-bottom: 10px;
-        }
-
-        .book-author {
-            font-size: 14px;
-            opacity: 0.9;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .section-header {
-            padding: 20px 30px 10px;
-            border-bottom: 2px solid var(--border);
-        }
-
-        .section-name {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 8px;
-        }
-
-        .section-meta {
-            display: flex;
-            gap: 20px;
-            font-size: 12px;
-            color: var(--gray);
-            flex-wrap: wrap;
-        }
-
-        .content-area {
-            padding: 30px;
-            max-height: 500px;
-            overflow-y: auto;
-        }
-
-        .content-area::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        .content-area::-webkit-scrollbar-track {
-            background: var(--border);
-            border-radius: 10px;
-        }
-
-        .content-area::-webkit-scrollbar-thumb {
-            background: var(--primary);
-            border-radius: 10px;
-        }
-
-        .summary-content {
-            font-size: 16px;
-            line-height: 1.8;
-            color: var(--dark);
-        }
-
-        .summary-content p {
-            margin-bottom: 1.2em;
-        }
-
-        .analysis-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            padding: 25px 30px;
-            background: var(--light);
-            border-top: 1px solid var(--border);
-        }
-
-        .analysis-card {
-            background: white;
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-
-        .analysis-card h3 {
-            color: var(--primary);
-            font-size: 18px;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid var(--secondary);
-        }
-
-        .analysis-content {
-            font-size: 15px;
-            line-height: 1.7;
-            color: var(--dark);
-        }
-
-        .quiz-section {
-            background: linear-gradient(135deg, #fff5f0 0%, #ffe8e0 100%);
-            padding: 25px;
-            text-align: center;
-        }
-
-        .quiz-btn {
-            background: var(--secondary);
-            color: white;
-            border: none;
-            padding: 14px 32px;
-            border-radius: 50px;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-        }
-
         .loading, .error {
             text-align: center;
-            padding: 60px;
+            padding: 60px 20px;
             background: white;
-            border-radius: 28px;
-            margin: 20px;
+            border-radius: 20px;
         }
-
         .loading-spinner {
-            width: 50px;
-            height: 50px;
-            border: 3px solid var(--border);
-            border-top-color: var(--primary);
+            width: 40px;
+            height: 40px;
+            border: 3px solid #e0e0e0;
+            border-top-color: #311b92;
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
-            margin: 0 auto 20px;
+            margin: 0 auto 15px;
         }
-
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
-
-        .error {
-            color: var(--secondary);
+        .reading-card {
+            background: white;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         }
-
+        .book-header {
+            background: linear-gradient(135deg, #311b92 0%, #4527a0 100%);
+            color: white;
+            padding: 25px;
+        }
+        .book-category {
+            background: rgba(255,255,255,0.2);
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            margin-bottom: 12px;
+        }
+        .book-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .book-author {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+        .section-header {
+            padding: 20px 25px 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .section-name {
+            font-size: 22px;
+            font-weight: 700;
+            color: #311b92;
+            margin-bottom: 8px;
+        }
+        .section-meta {
+            font-size: 12px;
+            color: #777;
+        }
+        .content-area {
+            padding: 25px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .summary-content {
+            font-size: 16px;
+            line-height: 1.7;
+            color: #333;
+        }
+        .summary-content p {
+            margin-bottom: 1em;
+        }
+        .analysis-card {
+            background: #f8f9fa;
+            border-radius: 16px;
+            padding: 18px;
+            margin: 15px 25px;
+        }
+        .analysis-card h3 {
+            color: #311b92;
+            font-size: 17px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #ff5722;
+        }
+        .analysis-content {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #555;
+        }
+        .quiz-section {
+            background: #fff5f0;
+            padding: 20px;
+            text-align: center;
+            margin-top: 10px;
+        }
+        .quiz-btn {
+            background: #ff5722;
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 40px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+        }
         .footer {
             text-align: center;
-            padding: 16px;
-            color: var(--gray);
+            padding: 20px;
+            color: #777;
             font-size: 11px;
-            border-top: 1px solid var(--border);
-            background: white;
-            margin-top: 20px;
+            border-top: 1px solid #eee;
+            margin-top: 30px;
         }
-
-        @media (max-width: 768px) {
-            .book-header { padding: 20px; }
-            .book-title { font-size: 22px; }
-            .section-name { font-size: 20px; }
-            .content-area { padding: 20px; max-height: 400px; }
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+            }
+            .book-header {
+                padding: 20px;
+            }
+            .book-title {
+                font-size: 20px;
+            }
+            .section-name {
+                font-size: 18px;
+            }
+            .content-area {
+                padding: 20px;
+                max-height: 450px;
+            }
         }
     </style>
 </head>
@@ -288,14 +196,9 @@
                 <h1>Mr. Timi <span>Scholar</span></h1>
             </a>
         </div>
-        <div class="nav-buttons">
-            <a href="dashboard.html" class="nav-btn"><i class="fas fa-home"></i> Dashboard</a>
-            <a href="#" id="backToBookBtn" class="nav-btn"><i class="fas fa-book"></i> Back to Book</a>
-        </div>
+        <button class="back-btn" id="backBtn"><i class="fas fa-arrow-left"></i> Back</button>
     </header>
 
-    <div class="progress-container"><div class="progress-bar" id="progressBar"></div></div>
-    
     <div class="container" id="container">
         <div class="loading">
             <div class="loading-spinner"></div>
@@ -332,165 +235,127 @@
             "redemption-road": { title: "Redemption Road", author: "Elma Shaw", category: "African Prose" }
         };
 
-        // Get URL parameters
-        function getParams() {
-            const params = new URLSearchParams(window.location.search);
-            const bookId = params.get('book');
-            const section = params.get('section');
-            console.log("URL params - bookId:", bookId, "section:", section);
-            return { bookId, section };
-        }
+        const urlParams = new URLSearchParams(window.location.search);
+        const BOOK_ID = urlParams.get('book');
+        const SECTION_NAME = urlParams.get('section');
 
-        // Load summary from Firebase
-        async function loadSummary(bookId, sectionName) {
-            if (!bookId || !sectionName) {
-                console.log("Missing bookId or sectionName");
-                return null;
+        console.log("Book:", BOOK_ID);
+        console.log("Section:", SECTION_NAME);
+
+        async function loadSummary() {
+            if (!BOOK_ID || !SECTION_NAME) {
+                document.getElementById('container').innerHTML = `
+                    <div class="error">
+                        <h3>Invalid Request</h3>
+                        <p>No book or section specified.</p>
+                        <button onclick="location.href='prose.html'" style="margin-top:15px;padding:10px 20px;background:#311b92;color:white;border:none;border-radius:30px;">Go to Books</button>
+                    </div>
+                `;
+                return;
             }
+
+            // Create document ID the SAME way admin-write does
+            const cleanSection = SECTION_NAME.toLowerCase().replace(/[^a-z0-9]/g, '_');
+            const docId = `${BOOK_ID}_${cleanSection}`;
+            console.log("Looking for document:", docId);
             
             try {
-                // Create document ID the same way admin-write does
-                const cleanSection = sectionName.toLowerCase().replace(/[^a-z0-9]/g, '_');
-                const docId = `${bookId}_${cleanSection}`;
-                console.log("Looking for document ID:", docId);
-                
                 const docRef = doc(db, "summaries", docId);
                 const docSnap = await getDoc(docRef);
                 
-                if (docSnap.exists()) {
-                    console.log("✅ Found summary:", docSnap.data());
-                    return { id: docSnap.id, ...docSnap.data() };
-                } else {
-                    console.log("❌ No summary found for ID:", docId);
-                    return null;
+                if (!docSnap.exists()) {
+                    document.getElementById('container').innerHTML = `
+                        <div class="error">
+                            <h3>Summary Not Found</h3>
+                            <p>No summary found for "${SECTION_NAME}"</p>
+                            <p>Make sure you published it in the admin panel.</p>
+                            <button onclick="location.href='prose-detail.html?book=${BOOK_ID}'" style="margin-top:15px;padding:10px 20px;background:#311b92;color:white;border:none;border-radius:30px;">Back to Book</button>
+                        </div>
+                    `;
+                    return;
                 }
-            } catch (error) {
-                console.error("Error loading summary:", error);
-                return null;
-            }
-        }
-
-        // Calculate reading time
-        function calculateReadingTime(content) {
-            if (!content) return 1;
-            const text = content.replace(/<[^>]*>/g, '');
-            const words = text.split(/\s+/).length;
-            return Math.max(1, Math.ceil(words / 200));
-        }
-
-        // Render analysis card
-        function renderAnalysisCard(title, icon, content) {
-            if (!content || content === '<p><br></p>' || content.trim() === '') return '';
-            return `
-                <div class="analysis-card">
-                    <h3><i class="fas ${icon}"></i> ${title}</h3>
-                    <div class="analysis-content">${content}</div>
-                </div>
-            `;
-        }
-
-        // Render the reading page
-        function renderReading(bookId, sectionName, summaryData) {
-            const book = booksInfo[bookId];
-            
-            if (!book) {
-                document.getElementById('container').innerHTML = `
-                    <div class="error">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <h3>Book Not Found</h3>
-                        <p>The book "${bookId}" doesn't exist.</p>
-                        <p><a href="prose.html" style="color: var(--primary);">Go to Books</a></p>
+                
+                const data = docSnap.data();
+                const book = booksInfo[BOOK_ID] || { title: "Unknown", author: "Unknown", category: "Literature" };
+                
+                const html = `
+                    <div class="reading-card">
+                        <div class="book-header">
+                            <div class="book-category">${book.category}</div>
+                            <h1 class="book-title">${escapeHtml(book.title)}</h1>
+                            <div class="book-author">by ${escapeHtml(book.author)}</div>
+                        </div>
+                        <div class="section-header">
+                            <div class="section-name">${escapeHtml(data.sectionName || SECTION_NAME)}</div>
+                            <div class="section-meta">
+                                <i class="fas fa-calendar-alt"></i> ${data.updatedAt ? new Date(data.updatedAt).toLocaleDateString() : 'Recently'}
+                            </div>
+                        </div>
+                        <div class="content-area" id="contentArea">
+                            <div class="summary-content">${data.content || '<p>No content available.</p>'}</div>
+                        </div>
+                        ${data.keyPoints ? `
+                            <div class="analysis-card">
+                                <h3><i class="fas fa-lightbulb"></i> Key Points</h3>
+                                <div class="analysis-content">${data.keyPoints}</div>
+                            </div>
+                        ` : ''}
+                        ${data.characters ? `
+                            <div class="analysis-card">
+                                <h3><i class="fas fa-users"></i> Characters</h3>
+                                <div class="analysis-content">${data.characters}</div>
+                            </div>
+                        ` : ''}
+                        ${data.themes ? `
+                            <div class="analysis-card">
+                                <h3><i class="fas fa-palette"></i> Themes</h3>
+                                <div class="analysis-content">${data.themes}</div>
+                            </div>
+                        ` : ''}
+                        ${data.literaryDevices ? `
+                            <div class="analysis-card">
+                                <h3><i class="fas fa-feather-alt"></i> Literary Devices</h3>
+                                <div class="analysis-content">${data.literaryDevices}</div>
+                            </div>
+                        ` : ''}
+                        <div class="quiz-section">
+                            <button class="quiz-btn" id="takeQuizBtn">
+                                <i class="fas fa-puzzle-piece"></i> Take Quiz
+                            </button>
+                        </div>
                     </div>
                 `;
-                return;
-            }
-
-            if (!summaryData) {
-                document.getElementById('container').innerHTML = `
-                    <div class="error">
-                        <i class="fas fa-book-open"></i>
-                        <h3>Summary Not Found</h3>
-                        <p>No summary found for "${sectionName}" in ${book.title}.</p>
-                        <p>Make sure you published it first in the admin panel.</p>
-                        <p style="margin-top: 15px;"><a href="prose-detail.html?book=${bookId}" style="color: var(--primary);">← Back to Book</a></p>
-                    </div>
-                `;
-                return;
-            }
-
-            const readingTime = calculateReadingTime(summaryData.content);
-            const isPoetry = book.category === 'Poetry';
-            const isDrama = book.category.includes('Drama');
-
-            const html = `
-                <div class="reading-card">
-                    <div class="book-header">
-                        <div class="book-meta">
-                            <span class="book-category">${book.category}</span>
-                        </div>
-                        <h1 class="book-title">${escapeHtml(book.title)}</h1>
-                        <div class="book-author">
-                            <i class="fas fa-user-pen"></i> by ${escapeHtml(book.author)}
-                        </div>
-                    </div>
-                    
-                    <div class="section-header">
-                        <div class="section-name">${escapeHtml(summaryData.sectionName)}</div>
-                        <div class="section-meta">
-                            <span><i class="fas fa-calendar-alt"></i> Updated: ${summaryData.updatedAt ? new Date(summaryData.updatedAt).toLocaleDateString() : 'Recently'}</span>
-                            <span><i class="fas fa-clock"></i> ${readingTime} min read</span>
-                        </div>
-                    </div>
-                    
-                    <div class="content-area" id="contentArea">
-                        <div class="summary-content">${summaryData.content || '<p>No content available.</p>'}</div>
-                    </div>
-                    
-                    <div class="analysis-grid">
-                        ${renderAnalysisCard('Key Points', 'fa-lightbulb', summaryData.keyPoints)}
-                        ${renderAnalysisCard('Characters', 'fa-users', summaryData.characters)}
-                        ${renderAnalysisCard('Themes', 'fa-palette', summaryData.themes)}
-                        ${renderAnalysisCard('Literary Devices', 'fa-feather-alt', summaryData.literaryDevices)}
-                        ${renderAnalysisCard('Tone & Mood', 'fa-smile', isPoetry ? summaryData.toneMood : '')}
-                        ${renderAnalysisCard('Dramatic Devices', 'fa-mask', isDrama ? summaryData.dramaticDevices : '')}
-                    </div>
-                    
-                    <div class="quiz-section">
-                        <button class="quiz-btn" id="takeQuizBtn">
-                            <i class="fas fa-puzzle-piece"></i> Take Quiz on ${escapeHtml(summaryData.sectionName)}
-                        </button>
-                        <p style="margin-top: 12px; font-size: 13px; color: var(--gray);">Test your understanding of this section</p>
-                    </div>
-                </div>
-            `;
-
-            document.getElementById('container').innerHTML = html;
-
-            // Quiz button handler
-            document.getElementById('takeQuizBtn')?.addEventListener('click', () => {
-                window.location.href = `cbt-exam.html?book=${bookId}&section=${encodeURIComponent(summaryData.sectionName)}`;
-            });
-            
-            // Back button handler
-            document.getElementById('backToBookBtn').addEventListener('click', (e) => {
-                e.preventDefault();
-                window.location.href = `prose-detail.html?book=${bookId}`;
-            });
-
-            // Scroll tracking
-            const contentArea = document.getElementById('contentArea');
-            const progressBar = document.getElementById('progressBar');
-            
-            if (contentArea) {
-                contentArea.addEventListener('scroll', () => {
-                    const scrollTop = contentArea.scrollTop;
-                    const scrollHeight = contentArea.scrollHeight - contentArea.clientHeight;
-                    const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
-                    progressBar.style.width = `${progress}%`;
+                
+                document.getElementById('container').innerHTML = html;
+                
+                document.getElementById('takeQuizBtn')?.addEventListener('click', () => {
+                    window.location.href = `cbt-exam.html?book=${BOOK_ID}&section=${encodeURIComponent(SECTION_NAME)}`;
                 });
+                
+                // Scroll tracking
+                const contentArea = document.getElementById('contentArea');
+                if (contentArea) {
+                    contentArea.addEventListener('scroll', () => {
+                        const scrollTop = contentArea.scrollTop;
+                        const scrollHeight = contentArea.scrollHeight - contentArea.clientHeight;
+                        const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+                        const progressBar = document.getElementById('progressBar');
+                        if (progressBar) progressBar.style.width = `${progress}%`;
+                    });
+                }
+                
+            } catch (error) {
+                console.error("Error:", error);
+                document.getElementById('container').innerHTML = `
+                    <div class="error">
+                        <h3>Error</h3>
+                        <p>${error.message}</p>
+                        <button onclick="location.href='prose-detail.html?book=${BOOK_ID}'" style="margin-top:15px;padding:10px 20px;background:#311b92;color:white;border:none;border-radius:30px;">Back to Book</button>
+                    </div>
+                `;
             }
         }
-
+        
         function escapeHtml(text) {
             if (!text) return '';
             const div = document.createElement('div');
@@ -498,42 +363,22 @@
             return div.innerHTML;
         }
 
-        // Auth check and load
-        onAuthStateChanged(auth, async (user) => {
+        document.getElementById('backBtn').addEventListener('click', () => {
+            if (BOOK_ID) {
+                window.location.href = `prose-detail.html?book=${BOOK_ID}`;
+            } else {
+                window.location.href = 'prose.html';
+            }
+        });
+
+        onAuthStateChanged(auth, (user) => {
             if (!user) {
                 window.location.href = "index.html";
                 return;
             }
-            
-            const { bookId, section } = getParams();
-            
-            if (!bookId || !section) {
-                document.getElementById('container').innerHTML = `
-                    <div class="error">
-                        <i class="fas fa-exclamation-circle"></i>
-                        <h3>Invalid Request</h3>
-                        <p>No book or section specified in the URL.</p>
-                        <p><a href="prose.html" style="color: var(--primary);">Go to Books</a></p>
-                    </div>
-                `;
-                return;
-            }
-            
-            try {
-                const summaryData = await loadSummary(bookId, decodeURIComponent(section));
-                renderReading(bookId, decodeURIComponent(section), summaryData);
-            } catch (error) {
-                console.error("Error:", error);
-                document.getElementById('container').innerHTML = `
-                    <div class="error">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <h3>Error Loading Content</h3>
-                        <p>${error.message}</p>
-                        <p><a href="prose-detail.html?book=${bookId}" style="color: var(--primary);">Back to Book</a></p>
-                    </div>
-                `;
-            }
+            loadSummary();
         });
     </script>
+    <div id="progressBar" style="position:fixed;top:70px;left:0;width:0%;height:4px;background:#ff5722;z-index:99;transition:width 0.3s;"></div>
 </body>
 </html>
