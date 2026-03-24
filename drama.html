@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Drama Summaries - Mr. Timi Edutop Scholar</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #311b92;
+            --primary-light: #4527a0;
+            --secondary: #ff5722;
+            --light: #f5f5f7;
+            --dark: #333;
+            --gray: #777;
+            --light-gray: #eee;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            min-height: 100vh;
+        }
+
+        .header {
+            background: white;
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo h1 {
+            color: var(--primary);
+            font-size: 22px;
+        }
+
+        .logo span {
+            color: var(--secondary);
+        }
+
+        .logo a {
+            text-decoration: none;
+        }
+
+        .back-btn {
+            background: var(--light);
+            border: none;
+            padding: 8px 14px;
+            border-radius: 30px;
+            cursor: pointer;
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px 16px;
+        }
+
+        .page-header {
+            margin-bottom: 24px;
+        }
+
+        .page-header h1 {
+            color: var(--primary);
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .page-header p {
+            color: var(--gray);
+            font-size: 14px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            color: var(--primary);
+            margin: 24px 0 16px 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--secondary);
+            display: inline-block;
+        }
+
+        .book-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .book-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .book-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        }
+
+        .book-cover {
+            height: 180px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+            justify-content: flex-start;
+            padding: 16px;
+        }
+
+        .book-cover::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(49,27,146,0.7) 0%, rgba(0,0,0,0.5) 100%);
+        }
+
+        .book-category {
+            position: relative;
+            z-index: 2;
+            background: var(--secondary);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .book-info {
+            padding: 20px;
+        }
+
+        .book-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 6px;
+        }
+
+        .book-author {
+            color: var(--gray);
+            font-size: 14px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .book-description {
+            color: #555;
+            font-size: 13px;
+            line-height: 1.5;
+            margin-bottom: 16px;
+        }
+
+        .read-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .read-btn:hover {
+            background: var(--primary-light);
+            transform: translateY(-1px);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: var(--gray);
+            font-size: 11px;
+            border-top: 1px solid var(--light-gray);
+            margin-top: 40px;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 16px;
+            }
+            .page-header h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">
+            <a href="dashboard.html">
+                <h1>Mr. Timi <span>Scholar</span></h1>
+            </a>
+        </div>
+        <button class="back-btn" onclick="window.location.href='dashboard.html'">
+            <i class="fas fa-arrow-left"></i> Back
+        </button>
+    </header>
+
+    <div class="container">
+        <div class="page-header">
+            <h1>Drama Summaries</h1>
+            <p>Comprehensive summaries, act-by-act analysis, and character breakdowns for JAMB drama texts</p>
+        </div>
+
+        <!-- Shakespearean Text Section -->
+        <h2 class="section-title">Shakespearean Text</h2>
+        <div class="book-grid" id="shakespearean-books"></div>
+
+        <!-- African Drama Section -->
+        <h2 class="section-title">African Drama</h2>
+        <div class="book-grid" id="african-drama-books"></div>
+
+        <!-- Non-African Drama Section -->
+        <h2 class="section-title">Non-African Drama</h2>
+        <div class="book-grid" id="non-african-drama-books"></div>
+    </div>
+
+    <footer class="footer">
+        <p>Mr. Timi Edutop Scholar &copy; 2026 | Powered by Triangle Tech</p>
+    </footer>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCictHNxtslYs9VR0hoicxlwPn_QghkgIA",
+            authDomain: "edutop-7ff51.firebaseapp.com",
+            projectId: "edutop-7ff51",
+            storageBucket: "edutop-7ff51.firebasestorage.app",
+            messagingSenderId: "79307850494",
+            appId: "1:79307850494:web:b51ce51204140ec5429baf",
+            measurementId: "G-GGGH590BYS"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // Drama Books
+        const dramaBooks = [
+            // Shakespearean
+            {
+                id: "antony-and-cleopatra",
+                title: "Antony and Cleopatra",
+                author: "William Shakespeare",
+                category: "shakespearean",
+                type: "Shakespearean Text",
+                description: "A tragic romance about the famous love affair between Mark Antony, a Roman general, and Cleopatra, the Queen of Egypt.",
+                year: 1606,
+                color: "#9b59b6",
+                acts: 5
+            },
+            // African Drama
+            {
+                id: "once-upon-an-elephant",
+                title: "Once Upon an Elephant",
+                author: "Bosede Ademilua-Afolayan",
+                category: "african-drama",
+                type: "African Drama",
+                description: "A powerful play exploring environmental conservation, tradition, and the relationship between humans and nature.",
+                year: 2015,
+                color: "#16a085",
+                acts: 2
+            },
+            {
+                id: "marriage-of-anansewa",
+                title: "The Marriage of Anansewa",
+                author: "Efua Sutherland",
+                category: "african-drama",
+                type: "African Drama",
+                description: "A witty and humorous play that uses Ananse stories to explore marriage traditions, greed, and social commentary in Ghanaian culture.",
+                year: 1975,
+                color: "#27ae60",
+                acts: 4
+            },
+            // Non-African Drama
+            {
+                id: "inspector-calls",
+                title: "An Inspector Calls",
+                author: "J. B. Priestley",
+                category: "non-african-drama",
+                type: "Non-African Drama",
+                description: "A classic British morality play about social responsibility, class conflict, and collective guilt set in 1912.",
+                year: 1945,
+                color: "#2980b9",
+                acts: 3
+            },
+            {
+                id: "man-for-all-seasons",
+                title: "A Man for All Seasons",
+                author: "Robert Bolt",
+                category: "non-african-drama",
+                type: "Non-African Drama",
+                description: "A historical drama about Sir Thomas More's moral dilemma and unwavering conscience against King Henry VIII's demands.",
+                year: 1960,
+                color: "#e67e22",
+                acts: 2
+            }
+        ];
+
+        function renderBooks() {
+            const shakespeareanContainer = document.getElementById('shakespearean-books');
+            const africanContainer = document.getElementById('african-drama-books');
+            const nonAfricanContainer = document.getElementById('non-african-drama-books');
+            
+            const shakespeareanBooks = dramaBooks.filter(b => b.category === 'shakespearean');
+            const africanBooks = dramaBooks.filter(b => b.category === 'african-drama');
+            const nonAfricanBooks = dramaBooks.filter(b => b.category === 'non-african-drama');
+            
+            shakespeareanContainer.innerHTML = shakespeareanBooks.map(book => createBookCard(book)).join('');
+            africanContainer.innerHTML = africanBooks.map(book => createBookCard(book)).join('');
+            nonAfricanContainer.innerHTML = nonAfricanBooks.map(book => createBookCard(book)).join('');
+            
+            document.querySelectorAll('.read-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const bookId = btn.getAttribute('data-book-id');
+                    window.location.href = `drama-detail.html?book=${bookId}`;
+                });
+            });
+        }
+        
+        function createBookCard(book) {
+            const coverUrl = `https://placehold.co/400x200/${book.color.substring(1)}/white?text=${encodeURIComponent(book.title.substring(0, 20))}`;
+            
+            return `
+                <div class="book-card">
+                    <div class="book-cover" style="background-image: url('${coverUrl}'), linear-gradient(135deg, ${book.color}, ${book.color}cc);">
+                        <span class="book-category">${book.type}</span>
+                    </div>
+                    <div class="book-info">
+                        <h3 class="book-title">${book.title}</h3>
+                        <div class="book-author">
+                            <i class="fas fa-user-pen"></i> ${book.author}
+                        </div>
+                        <p class="book-description">${book.description}</p>
+                        <button class="read-btn" data-book-id="${book.id}">
+                            <i class="fas fa-mask"></i> Read Summary
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+        
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                window.location.href = "index.html";
+                return;
+            }
+            renderBooks();
+        });
+    </script>
+</body>
+</html>
