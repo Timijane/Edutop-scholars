@@ -6,6 +6,7 @@
     <title>Prose - Mr. Timi Edutop Scholar</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* Copy your existing prose-detail.css here - same as before */
         * {
             margin: 0;
             padding: 0;
@@ -29,7 +30,6 @@
             min-height: 100vh;
         }
 
-        /* Header */
         .header {
             background: white;
             padding: 12px 16px;
@@ -40,8 +40,6 @@
             position: sticky;
             top: 0;
             z-index: 100;
-            flex-wrap: wrap;
-            gap: 10px;
         }
 
         .logo h1 {
@@ -71,14 +69,12 @@
             gap: 6px;
         }
 
-        /* Main Container */
         .container {
             max-width: 900px;
             margin: 0 auto;
             padding: 20px 16px;
         }
 
-        /* Book Hero */
         .book-hero {
             background: white;
             border-radius: 24px;
@@ -153,11 +149,6 @@
             color: var(--dark);
         }
 
-        .book-stat i {
-            color: var(--primary);
-        }
-
-        /* Summaries Section */
         .summaries-section {
             background: white;
             border-radius: 24px;
@@ -170,191 +161,52 @@
             justify-content: space-between;
             align-items: baseline;
             margin-bottom: 20px;
-            flex-wrap: wrap;
-            gap: 10px;
         }
 
         .section-header h2 {
             color: var(--primary);
             font-size: 20px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
 
-        .quiz-all-btn {
-            background: var(--secondary);
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 30px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        /* Summary Cards */
         .summaries-list {
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 12px;
         }
 
         .summary-card {
             background: var(--light);
-            border-radius: 20px;
-            overflow: hidden;
+            border-radius: 16px;
+            padding: 16px;
+            cursor: pointer;
             transition: all 0.2s;
             border: 1px solid transparent;
         }
 
         .summary-card:hover {
-            transform: translateY(-2px);
             border-color: var(--primary);
-            box-shadow: 0 4px 12px rgba(49, 27, 146, 0.1);
-        }
-
-        .summary-header {
-            padding: 16px 20px;
-            background: white;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
-            border-bottom: 1px solid var(--light-gray);
+            transform: translateX(5px);
         }
 
         .summary-title {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex: 1;
-        }
-
-        .summary-number {
-            width: 36px;
-            height: 36px;
-            background: var(--primary);
-            color: white;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 14px;
-        }
-
-        .summary-title h3 {
-            font-size: 18px;
-            color: var(--primary);
-            margin: 0;
-        }
-
-        .summary-actions {
-            display: flex;
-            gap: 12px;
-        }
-
-        .summary-actions button {
-            background: none;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 30px;
-            cursor: pointer;
-            font-size: 13px;
             font-weight: 600;
-            transition: all 0.2s;
-        }
-
-        .read-btn {
-            background: var(--primary);
-            color: white;
-        }
-
-        .quiz-btn {
-            background: var(--secondary);
-            color: white;
-        }
-
-        .summary-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.4s ease-out;
-            background: white;
-        }
-
-        .summary-content.expanded {
-            max-height: 1000px;
-            transition: max-height 0.4s ease-in;
-        }
-
-        .summary-text {
-            padding: 20px;
-            font-size: 15px;
-            line-height: 1.7;
-            color: var(--dark);
-            border-top: 1px solid var(--light-gray);
-        }
-
-        .summary-text img {
-            max-width: 100%;
-            border-radius: 12px;
-        }
-
-        .summary-text p {
-            margin-bottom: 12px;
-        }
-
-        .summary-text h1, .summary-text h2, .summary-text h3 {
             color: var(--primary);
-            margin: 16px 0 8px 0;
+            font-size: 16px;
+            margin-bottom: 8px;
         }
 
-        .summary-text ul, .summary-text ol {
-            padding-left: 24px;
-            margin: 12px 0;
+        .summary-preview {
+            font-size: 13px;
+            color: var(--gray);
+            line-height: 1.5;
         }
 
-        .summary-text li {
-            margin-bottom: 6px;
-        }
-
-        .summary-footer {
-            padding: 12px 20px;
-            background: var(--light);
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-            border-top: 1px solid var(--light-gray);
-            font-size: 12px;
+        .empty-state {
+            text-align: center;
+            padding: 40px;
             color: var(--gray);
         }
 
-        .key-points-section, .characters-section {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .key-points-section i, .characters-section i {
-            color: var(--primary);
-        }
-
-        .character-tag {
-            background: white;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            color: var(--primary);
-        }
-
-        /* Loading & Empty States */
         .loading {
             text-align: center;
             padding: 60px;
@@ -371,23 +223,10 @@
             margin: 0 auto 16px;
         }
 
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: var(--gray);
-        }
-
-        .empty-state i {
-            font-size: 64px;
-            margin-bottom: 16px;
-            opacity: 0.5;
-        }
-
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
 
-        /* Footer */
         .footer {
             text-align: center;
             padding: 20px;
@@ -400,16 +239,6 @@
         @media (max-width: 768px) {
             .book-title {
                 font-size: 22px;
-            }
-            .summary-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            .summary-actions {
-                align-self: flex-end;
-            }
-            .summary-title h3 {
-                font-size: 16px;
             }
         }
     </style>
@@ -449,14 +278,12 @@
             storageBucket: "edutop-7ff51.firebasestorage.app",
             messagingSenderId: "79307850494",
             appId: "1:79307850494:web:b51ce51204140ec5429baf",
-            measurementId: "G-GGGH590BYS"
         };
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Book information
         const booksInfo = {
             "to-kill-a-mockingbird": {
                 title: "To Kill a Mockingbird",
@@ -497,25 +324,18 @@
             return params.get('book');
         }
 
-        async function loadSummaries(bookId) {
-            const summariesRef = collection(db, "summaries");
+        async function loadPublishedSummaries(bookId) {
             const q = query(
-                summariesRef, 
+                collection(db, "summaries"),
                 where("bookId", "==", bookId),
+                where("published", "==", true),
                 orderBy("sectionName")
             );
-            
-            const querySnapshot = await getDocs(q);
+            const snapshot = await getDocs(q);
             const summaries = [];
-            
-            querySnapshot.forEach((doc) => {
-                const data = doc.data();
-                summaries.push({
-                    id: doc.id,
-                    ...data
-                });
+            snapshot.forEach((doc) => {
+                summaries.push({ id: doc.id, ...doc.data() });
             });
-            
             return summaries;
         }
 
@@ -548,11 +368,6 @@
                 <div class="summaries-section">
                     <div class="section-header">
                         <h2><i class="fas fa-list"></i> Summaries & Analysis</h2>
-                        ${summaries.length > 0 ? `
-                            <button class="quiz-all-btn" id="quizAllBtn">
-                                <i class="fas fa-puzzle-piece"></i> Take Full Book Quiz
-                            </button>
-                        ` : ''}
                     </div>
                     
                     <div class="summaries-list" id="summariesList">
@@ -563,114 +378,48 @@
 
             document.getElementById('container').innerHTML = html;
             
-            // Add click handlers for expand/collapse
-            document.querySelectorAll('.summary-header').forEach(header => {
-                header.addEventListener('click', (e) => {
-                    // Don't toggle if clicking on buttons
-                    if (e.target.closest('.summary-actions')) return;
-                    
-                    const card = header.closest('.summary-card');
-                    const content = card.querySelector('.summary-content');
-                    content.classList.toggle('expanded');
-                });
-            });
-            
-            // Add quiz button handlers
-            document.querySelectorAll('.quiz-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    const sectionName = btn.getAttribute('data-section');
-                    window.location.href = `cbt-exam.html?book=${bookId}&section=${encodeURIComponent(sectionName)}`;
-                });
-            });
-            
-            document.querySelectorAll('.read-full-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    const sectionName = btn.getAttribute('data-section');
+            document.querySelectorAll('.summary-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    const sectionName = card.getAttribute('data-section');
                     window.location.href = `prose-read.html?book=${bookId}&section=${encodeURIComponent(sectionName)}`;
                 });
             });
-            
-            if (document.getElementById('quizAllBtn')) {
-                document.getElementById('quizAllBtn').addEventListener('click', () => {
-                    window.location.href = `cbt-exam.html?book=${bookId}&full=true`;
-                });
-            }
         }
 
         function renderSummaries(summaries) {
             if (summaries.length === 0) {
                 return `
                     <div class="empty-state">
-                        <i class="fas fa-book-open"></i>
+                        <i class="fas fa-book-open" style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;"></i>
                         <h3>No Summaries Yet</h3>
                         <p>Summaries for this book are being prepared. Check back soon!</p>
                     </div>
                 `;
             }
             
-            return summaries.map((summary, index) => {
-                // Extract plain text preview (first 200 characters)
+            return summaries.map((summary) => {
+                // Get plain text preview
                 const tempDiv = document.createElement('div');
                 tempDiv.innerHTML = summary.content || '';
                 const plainText = tempDiv.textContent || tempDiv.innerText || '';
-                const preview = plainText.substring(0, 200) + (plainText.length > 200 ? '...' : '');
-                
-                // Get key points
-                const keyPoints = summary.keyPoints || [];
-                const characters = summary.characters || [];
+                const preview = plainText.substring(0, 150) + (plainText.length > 150 ? '...' : '');
                 
                 return `
-                    <div class="summary-card">
-                        <div class="summary-header">
-                            <div class="summary-title">
-                                <div class="summary-number">${index + 1}</div>
-                                <h3>${escapeHtml(summary.sectionName || 'Untitled Section')}</h3>
-                            </div>
-                            <div class="summary-actions">
-                                <button class="read-btn read-full-btn" data-section="${escapeHtml(summary.sectionName)}">
-                                    <i class="fas fa-book-open"></i> Read Full
-                                </button>
-                                <button class="quiz-btn" data-section="${escapeHtml(summary.sectionName)}">
-                                    <i class="fas fa-puzzle-piece"></i> Quiz
-                                </button>
-                            </div>
-                        </div>
-                        <div class="summary-content">
-                            <div class="summary-text">
-                                ${summary.content || '<p>No content available.</p>'}
-                            </div>
-                            ${keyPoints.length > 0 || characters.length > 0 ? `
-                                <div class="summary-footer">
-                                    ${keyPoints.length > 0 ? `
-                                        <div class="key-points-section">
-                                            <i class="fas fa-lightbulb"></i>
-                                            <span><strong>Key Points:</strong> ${keyPoints.slice(0, 3).join(' • ')}${keyPoints.length > 3 ? ' • more...' : ''}</span>
-                                        </div>
-                                    ` : ''}
-                                    ${characters.length > 0 ? `
-                                        <div class="characters-section">
-                                            <i class="fas fa-users"></i>
-                                            <span><strong>Characters:</strong></span>
-                                            ${characters.map(c => `<span class="character-tag">${escapeHtml(c)}</span>`).join('')}
-                                        </div>
-                                    ` : ''}
-                                </div>
-                            ` : ''}
-                        </div>
+                    <div class="summary-card" data-section="${escapeHtml(summary.sectionName)}">
+                        <div class="summary-title">${escapeHtml(summary.sectionName)}</div>
+                        <div class="summary-preview">${escapeHtml(preview)}</div>
                     </div>
                 `;
             }).join('');
         }
 
         function escapeHtml(text) {
+            if (!text) return '';
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
         }
 
-        // Auth check and load
         onAuthStateChanged(auth, async (user) => {
             if (!user) {
                 window.location.href = "index.html";
@@ -684,16 +433,11 @@
             }
             
             try {
-                const summaries = await loadSummaries(bookId);
+                const summaries = await loadPublishedSummaries(bookId);
                 renderBook(bookId, summaries);
             } catch (error) {
                 console.error('Error loading summaries:', error);
-                document.getElementById('container').innerHTML = `
-                    <div class="loading">
-                        <p>Error loading content. Please try again later.</p>
-                        <small style="color: var(--danger);">${error.message}</small>
-                    </div>
-                `;
+                document.getElementById('container').innerHTML = `<div class="loading"><p>Error loading content. Please try again later.</p></div>`;
             }
         });
     </script>
