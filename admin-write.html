@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Write Summary - Google Docs Style | Mr. Timi Scholar</title>
+    <title>Admin - Write Summary | Mr. Timi Scholar</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Include Quill Rich Text Editor -->
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
     <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
     <style>
@@ -25,23 +24,22 @@
             --danger: #f44336;
             --light: #f5f5f7;
             --dark: #333;
-            --gray: #666;
-            --light-gray: #e8e8e8;
+            --gray: #777;
+            --light-gray: #eee;
         }
 
         body {
-            background: #f8f9fa;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
             min-height: 100vh;
         }
 
-        /* Header */
         .header {
             background: white;
-            padding: 12px 24px;
+            padding: 12px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
             position: sticky;
             top: 0;
             z-index: 100;
@@ -62,6 +60,33 @@
             text-decoration: none;
         }
 
+        .nav-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            background: var(--light);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+            text-decoration: none;
+            color: var(--primary);
+        }
+
+        .nav-btn:hover {
+            background: var(--light-gray);
+            transform: translateY(-1px);
+        }
+
         .admin-badge {
             background: var(--secondary);
             color: white;
@@ -71,72 +96,34 @@
             font-weight: 600;
         }
 
-        .user-email {
-            font-size: 12px;
-            color: var(--gray);
-            margin-left: 10px;
-        }
-
-        .save-status {
-            font-size: 13px;
-            padding: 6px 12px;
-            border-radius: 20px;
-            background: var(--light);
-        }
-
-        .save-status.saved {
-            background: #e8f5e9;
-            color: var(--success);
-        }
-
-        .save-status.saving {
-            background: #fff3e0;
-            color: var(--warning);
-        }
-
-        /* Main Container */
         .container {
-            max-width: 1200px;
+            max-width: 1000px;
             margin: 0 auto;
-            padding: 24px;
+            padding: 20px;
         }
 
-        /* Book Info Section */
-        .book-info-section {
+        .book-selector {
             background: white;
-            border-radius: 16px;
+            border-radius: 20px;
             padding: 20px;
             margin-bottom: 24px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
         }
 
-        .form-row {
+        .selector-group {
             display: flex;
-            gap: 20px;
+            gap: 15px;
             flex-wrap: wrap;
-            margin-bottom: 20px;
+            margin-top: 15px;
         }
 
-        .form-group {
+        select, input {
             flex: 1;
             min-width: 200px;
-        }
-
-        .form-group label {
-            display: block;
-            font-weight: 600;
-            color: var(--primary);
-            margin-bottom: 8px;
-            font-size: 13px;
-        }
-
-        select, input, .section-input {
-            width: 100%;
             padding: 12px 16px;
             border: 2px solid var(--light-gray);
             border-radius: 12px;
             font-size: 14px;
-            transition: all 0.2s;
         }
 
         select:focus, input:focus {
@@ -144,44 +131,127 @@
             outline: none;
         }
 
-        .section-input {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .section-input input {
-            flex: 1;
-            padding: 12px 16px;
-        }
-
-        /* Rich Text Editor */
-        .editor-container {
+        .summary-form {
             background: white;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .form-group {
             margin-bottom: 24px;
         }
 
-        .editor-toolbar {
-            border-bottom: 1px solid var(--light-gray);
-            padding: 8px 12px;
-            background: #fafafa;
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .editor-container {
+            border-radius: 16px;
+            overflow: hidden;
+            border: 2px solid var(--light-gray);
         }
 
         #editor {
-            height: 500px;
+            height: 450px;
             background: white;
             font-size: 16px;
             line-height: 1.6;
+            overflow-y: auto;
         }
 
-        /* Action Buttons */
+        .keypoints-container {
+            background: var(--light);
+            border-radius: 16px;
+            padding: 16px;
+        }
+
+        .keypoint-item {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .keypoint-item input {
+            flex: 1;
+            padding: 10px 14px;
+        }
+
+        .remove-keypoint {
+            background: var(--danger);
+            color: white;
+            border: none;
+            width: 36px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .add-keypoint {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 13px;
+            margin-top: 10px;
+        }
+
+        .characters-container {
+            background: var(--light);
+            border-radius: 16px;
+            padding: 16px;
+        }
+
+        .character-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .character-tag {
+            background: var(--primary);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 13px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .character-tag i {
+            cursor: pointer;
+            opacity: 0.8;
+        }
+
+        .add-character {
+            display: flex;
+            gap: 10px;
+        }
+
+        .add-character input {
+            flex: 1;
+        }
+
+        .add-character button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+        }
+
         .action-buttons {
             display: flex;
             gap: 15px;
-            justify-content: flex-end;
+            margin-top: 30px;
             flex-wrap: wrap;
         }
 
@@ -192,7 +262,6 @@
             font-weight: 600;
             cursor: pointer;
             border: none;
-            transition: all 0.2s;
             display: inline-flex;
             align-items: center;
             gap: 8px;
@@ -203,19 +272,9 @@
             color: white;
         }
 
-        .btn-primary:hover {
-            background: var(--primary-light);
-            transform: translateY(-1px);
-        }
-
         .btn-success {
             background: var(--success);
             color: white;
-        }
-
-        .btn-success:hover {
-            background: #43a047;
-            transform: translateY(-1px);
         }
 
         .btn-secondary {
@@ -223,23 +282,11 @@
             color: var(--dark);
         }
 
-        .btn-secondary:hover {
-            background: #ddd;
-        }
-
-        .btn-outline {
-            background: transparent;
-            border: 2px solid var(--primary);
-            color: var(--primary);
-        }
-
-        /* Documents List */
         .documents-list {
             background: white;
-            border-radius: 16px;
+            border-radius: 24px;
             padding: 20px;
             margin-top: 24px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
 
         .documents-header {
@@ -249,11 +296,6 @@
             margin-bottom: 20px;
             flex-wrap: wrap;
             gap: 15px;
-        }
-
-        .documents-header h3 {
-            color: var(--primary);
-            font-size: 18px;
         }
 
         .search-box {
@@ -270,7 +312,6 @@
             padding: 15px;
             border-bottom: 1px solid var(--light-gray);
             cursor: pointer;
-            transition: background 0.2s;
         }
 
         .document-item:hover {
@@ -287,11 +328,6 @@
             color: var(--gray);
         }
 
-        .document-actions {
-            display: flex;
-            gap: 10px;
-        }
-
         .icon-btn {
             background: none;
             border: none;
@@ -299,54 +335,22 @@
             cursor: pointer;
             color: var(--gray);
             border-radius: 8px;
-            transition: all 0.2s;
         }
 
         .icon-btn:hover {
             background: var(--light-gray);
-            color: var(--primary);
         }
 
-        .delete-btn:hover {
-            color: var(--danger);
-        }
-
-        /* Modal */
-        .modal {
-            display: none;
+        .toast {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
+            bottom: 30px;
+            right: 30px;
+            padding: 12px 24px;
+            border-radius: 30px;
+            background: var(--success);
+            color: white;
             z-index: 1000;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background: white;
-            border-radius: 24px;
-            padding: 24px;
-            max-width: 400px;
-            width: 90%;
-        }
-
-        .modal-content h3 {
-            color: var(--primary);
-            margin-bottom: 15px;
-        }
-
-        .modal-buttons {
-            display: flex;
-            gap: 12px;
-            margin-top: 20px;
-            justify-content: flex-end;
+            display: none;
         }
 
         .loading {
@@ -364,43 +368,15 @@
             to { transform: rotate(360deg); }
         }
 
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            padding: 12px 24px;
-            border-radius: 30px;
-            background: var(--success);
-            color: white;
-            z-index: 1000;
-            display: none;
-            animation: slideIn 0.3s ease;
-        }
-
-        @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-
         @media (max-width: 768px) {
             .container {
                 padding: 16px;
             }
+            #editor {
+                height: 350px;
+            }
             .action-buttons {
                 justify-content: center;
-            }
-            .btn {
-                padding: 10px 20px;
-                font-size: 13px;
-            }
-            #editor {
-                height: 400px;
             }
         }
     </style>
@@ -412,90 +388,90 @@
                 <h1>Mr. Timi <span>Scholar</span></h1>
             </a>
         </div>
-        <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
-            <span id="saveStatus" class="save-status">📄 Ready</span>
+        <div class="nav-buttons">
+            <a href="dashboard.html" class="nav-btn">
+                <i class="fas fa-home"></i> Dashboard
+            </a>
+            <a href="admin-summaries.html" class="nav-btn">
+                <i class="fas fa-list"></i> All Summaries
+            </a>
             <span class="admin-badge">
-                <i class="fas fa-crown"></i> Content Writer
+                <i class="fas fa-crown"></i> Writer Mode
             </span>
-            <span class="user-email" id="userEmailDisplay"></span>
         </div>
     </header>
 
     <div class="container">
-        <!-- Book Information -->
-        <div class="book-info-section">
-            <div class="form-row">
-                <div class="form-group">
-                    <label><i class="fas fa-book"></i> Select Book</label>
-                    <select id="bookSelect">
-                        <option value="">-- Select a Book --</option>
-                        <option value="to-kill-a-mockingbird">To Kill a Mockingbird (Harper Lee)</option>
-                        <option value="path-of-lucas">Path of Lucas (Susanne Bellefeuille)</option>
-                        <option value="so-the-path-does-not-die">So the Path Does Not Die (Pede Hollist)</option>
-                        <option value="redemption-road">Redemption Road (Elma Shaw)</option>
-                    </select>
+        <div class="book-selector">
+            <h3 style="color: var(--primary);"><i class="fas fa-book"></i> Select Book & Section</h3>
+            <div class="selector-group">
+                <select id="bookSelect">
+                    <option value="">-- Select Book --</option>
+                    <option value="to-kill-a-mockingbird">To Kill a Mockingbird (Harper Lee) - Prose</option>
+                    <option value="path-of-lucas">Path of Lucas (Susanne Bellefeuille) - Prose</option>
+                    <option value="so-the-path-does-not-die">So the Path Does Not Die (Pede Hollist) - Prose</option>
+                    <option value="redemption-road">Redemption Road (Elma Shaw) - Prose</option>
+                    <option value="antony-and-cleopatra">Antony and Cleopatra (Shakespeare) - Drama</option>
+                    <option value="once-upon-an-elephant">Once Upon an Elephant (Bosede Ademilua-Afolayan) - Drama</option>
+                    <option value="marriage-of-anansewa">The Marriage of Anansewa (Efua Sutherland) - Drama</option>
+                    <option value="inspector-calls">An Inspector Calls (J. B. Priestley) - Drama</option>
+                    <option value="man-for-all-seasons">A Man for all Seasons (Robert Bolt) - Drama</option>
+                </select>
+                <input type="text" id="sectionName" placeholder="Section name (e.g., Chapter 1, Act 1, Introduction...)">
+                <button id="loadSummaryBtn" class="btn btn-primary" style="padding: 12px 24px;">
+                    <i class="fas fa-folder-open"></i> Load
+                </button>
+            </div>
+        </div>
+
+        <div class="summary-form" id="summaryForm" style="display: none;">
+            <div class="form-group">
+                <label><i class="fas fa-align-left"></i> Summary Content</label>
+                <div class="editor-container">
+                    <div id="editor"></div>
                 </div>
-                <div class="form-group">
-                    <label><i class="fas fa-tag"></i> Section/Chapter Name</label>
-                    <div class="section-input">
-                        <input type="text" id="sectionName" placeholder="e.g., Chapter 1: The Finch Family, Act 1 Scene 1, Introduction...">
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-lightbulb"></i> Key Points</label>
+                <div class="keypoints-container">
+                    <div id="keypointsList"></div>
+                    <button type="button" class="add-keypoint" id="addKeypoint">
+                        <i class="fas fa-plus"></i> Add Key Point
+                    </button>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-users"></i> Characters in this Section</label>
+                <div class="characters-container">
+                    <div id="charactersList" class="character-tags"></div>
+                    <div class="add-character">
+                        <input type="text" id="newCharacterInput" placeholder="Enter character name">
+                        <button id="addCharacterBtn"><i class="fas fa-plus"></i> Add</button>
                     </div>
                 </div>
             </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label><i class="fas fa-hashtag"></i> Document ID (optional - leave blank for auto)</label>
-                    <input type="text" id="docId" placeholder="Auto-generated if left blank">
-                </div>
+
+            <div class="action-buttons">
+                <button id="saveDraftBtn" class="btn btn-secondary">
+                    <i class="fas fa-save"></i> Save as Draft
+                </button>
+                <button id="publishBtn" class="btn btn-success">
+                    <i class="fas fa-globe"></i> Publish
+                </button>
             </div>
         </div>
 
-        <!-- Rich Text Editor -->
-        <div class="editor-container">
-            <div class="editor-toolbar">
-                <small style="color: var(--gray);"><i class="fas fa-info-circle"></i> Write your summary here. You can format text, add images, create lists, and more.</small>
-            </div>
-            <div id="editor"></div>
-        </div>
-
-        <!-- Action Buttons -->
-        <div class="action-buttons">
-            <button class="btn btn-secondary" id="clearBtn">
-                <i class="fas fa-eraser"></i> Clear
-            </button>
-            <button class="btn btn-outline" id="loadDocBtn">
-                <i class="fas fa-folder-open"></i> Load Existing
-            </button>
-            <button class="btn btn-primary" id="saveBtn">
-                <i class="fas fa-save"></i> Save Summary
-            </button>
-            <button class="btn btn-success" id="publishBtn">
-                <i class="fas fa-globe"></i> Save & Publish
-            </button>
-        </div>
-
-        <!-- Existing Documents List -->
-        <div class="documents-list" id="documentsList">
+        <div class="documents-list">
             <div class="documents-header">
                 <h3><i class="fas fa-history"></i> Your Saved Summaries</h3>
                 <input type="text" id="searchDocs" placeholder="Search summaries..." class="search-box">
             </div>
             <div id="documentsContainer">
-                <p style="text-align: center; color: var(--gray); padding: 40px;">
-                    <i class="fas fa-spinner fa-spin"></i> Loading your summaries...
+                <p style="text-align: center; padding: 40px; color: var(--gray);">
+                    <i class="fas fa-spinner fa-spin"></i> Loading...
                 </p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Delete Confirmation Modal -->
-    <div id="deleteModal" class="modal">
-        <div class="modal-content">
-            <h3><i class="fas fa-trash-alt" style="color: var(--danger);"></i> Delete Summary</h3>
-            <p>Are you sure you want to delete this summary? This action cannot be undone.</p>
-            <div class="modal-buttons">
-                <button class="btn btn-secondary" id="cancelDeleteBtn">Cancel</button>
-                <button class="btn" id="confirmDeleteBtn" style="background: var(--danger); color: white;">Delete</button>
             </div>
         </div>
     </div>
@@ -505,7 +481,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-        import { getFirestore, collection, doc, getDoc, getDocs, setDoc, deleteDoc, query, orderBy, limit, where } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+        import { getFirestore, collection, doc, getDoc, getDocs, setDoc, deleteDoc, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCictHNxtslYs9VR0hoicxlwPn_QghkgIA",
@@ -521,329 +497,245 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Admin emails
-        const adminEmails = [
-            "okewunmitimileyin23@gmail.com",
-            "triangleofscholars@gmail.com"
-        ];
+        const adminEmails = ["okewunmitimileyin23@gmail.com", "triangleofscholars@gmail.com"];
 
-        // Initialize Quill Editor
         let quill;
-        let currentUser = null;
+        let currentDocId = null;
+        let keypoints = [];
+        let characters = [];
 
         function initEditor() {
             quill = new Quill('#editor', {
                 theme: 'snow',
-                placeholder: 'Start writing your summary here... You can format text, add images, create bullet points, and more!',
+                placeholder: 'Write your summary here... Format text, add images, create lists!',
                 modules: {
                     toolbar: [
-                        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                        [{ 'header': [1, 2, 3, false] }],
                         ['bold', 'italic', 'underline', 'strike'],
                         [{ 'color': [] }, { 'background': [] }],
                         [{ 'list': 'ordered'}, { 'list': 'bullet' }],
                         [{ 'align': [] }],
                         ['blockquote', 'code-block'],
-                        ['link', 'image'],
+                        ['link', 'image', 'video'],
                         ['clean']
                     ]
                 }
             });
         }
 
-        // Save status indicator
-        function setSaveStatus(status, message) {
-            const statusEl = document.getElementById('saveStatus');
-            statusEl.textContent = message;
-            if (status === 'saved') {
-                statusEl.className = 'save-status saved';
-            } else if (status === 'saving') {
-                statusEl.className = 'save-status saving';
-            } else {
-                statusEl.className = 'save-status';
-            }
-        }
-
-        // Show toast message
         function showToast(message, isError = false) {
             const toast = document.getElementById('toast');
             toast.textContent = message;
             toast.style.backgroundColor = isError ? '#f44336' : '#4caf50';
             toast.style.display = 'block';
-            setTimeout(() => {
-                toast.style.display = 'none';
-            }, 3000);
+            setTimeout(() => { toast.style.display = 'none'; }, 3000);
         }
 
-        // Save summary to Firebase
-        async function saveSummary(publish = true) {
+        async function saveSummary(published = false) {
             const book = document.getElementById('bookSelect').value;
             const sectionName = document.getElementById('sectionName').value.trim();
-            let docId = document.getElementById('docId').value.trim();
             const content = quill.root.innerHTML;
             const plainText = quill.getText();
 
-            if (!book) {
-                showToast('Please select a book', true);
+            if (!book || !sectionName) {
+                showToast('Please select a book and enter section name', true);
                 return;
             }
 
-            if (!sectionName) {
-                showToast('Please enter a section/chapter name', true);
+            if (!content || content === '<p><br></p>') {
+                showToast('Please write some content', true);
                 return;
             }
 
-            if (!content || content === '<p><br></p>' || content.trim() === '') {
-                showToast('Please write some content before saving', true);
-                return;
-            }
+            const docId = `${book}_${sectionName.toLowerCase().replace(/[^a-z0-9]/g, '_')}`;
+            const summaryRef = doc(db, "summaries", docId);
 
-            // Generate docId if not provided
-            if (!docId) {
-                docId = `${book}_${sectionName.toLowerCase().replace(/[^a-z0-9]/g, '_')}`;
-                document.getElementById('docId').value = docId;
-            }
-
-            setSaveStatus('saving', 'Saving...');
-            
             try {
-                const summaryRef = doc(db, "summaries", docId);
                 await setDoc(summaryRef, {
                     bookId: book,
                     sectionName: sectionName,
                     content: content,
                     plainText: plainText,
-                    published: publish,
+                    keyPoints: keypoints.filter(k => k.trim()),
+                    characters: characters.filter(c => c.trim()),
+                    published: published,
                     updatedAt: new Date().toISOString(),
-                    updatedBy: currentUser?.email || 'admin'
+                    updatedBy: auth.currentUser?.email
                 });
-                
-                setSaveStatus('saved', publish ? 'Saved & Published!' : 'Saved as Draft');
-                showToast(publish ? 'Summary published successfully!' : 'Summary saved as draft');
-                
-                // Refresh the documents list
+                showToast(published ? 'Published successfully!' : 'Saved as draft');
                 loadDocuments();
-                
             } catch (error) {
-                console.error('Error saving:', error);
                 showToast('Error saving: ' + error.message, true);
-                setSaveStatus('error', 'Save failed');
             }
         }
 
-        // Load a summary into the editor
         async function loadSummary(docId) {
-            setSaveStatus('saving', 'Loading...');
-            try {
-                const summaryRef = doc(db, "summaries", docId);
-                const summaryDoc = await getDoc(summaryRef);
-                
-                if (summaryDoc.exists()) {
-                    const data = summaryDoc.data();
-                    document.getElementById('bookSelect').value = data.bookId || '';
-                    document.getElementById('sectionName').value = data.sectionName || '';
-                    document.getElementById('docId').value = docId;
-                    quill.root.innerHTML = data.content || '<p><br></p>';
-                    showToast('Summary loaded successfully');
-                    setSaveStatus('saved', 'Loaded');
-                } else {
-                    showToast('Summary not found', true);
-                }
-            } catch (error) {
-                console.error('Error loading:', error);
-                showToast('Error loading summary', true);
+            const summaryRef = doc(db, "summaries", docId);
+            const summaryDoc = await getDoc(summaryRef);
+            
+            if (summaryDoc.exists()) {
+                const data = summaryDoc.data();
+                document.getElementById('bookSelect').value = data.bookId || '';
+                document.getElementById('sectionName').value = data.sectionName || '';
+                quill.root.innerHTML = data.content || '<p><br></p>';
+                keypoints = data.keyPoints || [];
+                characters = data.characters || [];
+                renderKeypoints();
+                renderCharacters();
+                currentDocId = docId;
+                showToast('Loaded successfully');
+                document.getElementById('summaryForm').style.display = 'block';
             }
         }
 
-        // Delete a summary
         async function deleteSummary(docId) {
-            try {
+            if (confirm('Delete this summary permanently?')) {
                 await deleteDoc(doc(db, "summaries", docId));
-                showToast('Summary deleted successfully');
+                showToast('Deleted successfully');
                 loadDocuments();
-                
-                // Clear form if the deleted doc was loaded
-                if (document.getElementById('docId').value === docId) {
-                    clearForm();
-                }
-            } catch (error) {
-                console.error('Error deleting:', error);
-                showToast('Error deleting summary', true);
             }
         }
 
-        // Clear form
-        function clearForm() {
-            document.getElementById('bookSelect').value = '';
-            document.getElementById('sectionName').value = '';
-            document.getElementById('docId').value = '';
-            quill.root.innerHTML = '<p><br></p>';
-            setSaveStatus('ready', 'Ready');
-        }
-
-        // Load all documents
         async function loadDocuments(searchTerm = '') {
             const container = document.getElementById('documentsContainer');
-            container.innerHTML = '<p style="text-align: center; color: var(--gray); padding: 40px;"><i class="fas fa-spinner fa-spin"></i> Loading...</p>';
+            container.innerHTML = '<p style="text-align: center; padding: 40px;"><i class="fas fa-spinner fa-spin"></i> Loading...</p>';
             
             try {
-                const summariesRef = collection(db, "summaries");
-                const q = query(summariesRef, orderBy("updatedAt", "desc"), limit(50));
-                const querySnapshot = await getDocs(q);
+                const q = query(collection(db, "summaries"), orderBy("updatedAt", "desc"), limit(50));
+                const snapshot = await getDocs(q);
                 
                 let docs = [];
-                querySnapshot.forEach((doc) => {
-                    const data = doc.data();
-                    docs.push({
-                        id: doc.id,
-                        ...data
-                    });
-                });
+                snapshot.forEach(doc => docs.push({ id: doc.id, ...doc.data() }));
                 
-                // Filter by search term
                 if (searchTerm) {
                     const term = searchTerm.toLowerCase();
-                    docs = docs.filter(doc => 
-                        doc.sectionName?.toLowerCase().includes(term) ||
-                        doc.bookId?.toLowerCase().includes(term) ||
-                        doc.plainText?.toLowerCase().includes(term)
+                    docs = docs.filter(d => 
+                        d.sectionName?.toLowerCase().includes(term) ||
+                        d.bookId?.toLowerCase().includes(term)
                     );
                 }
                 
                 if (docs.length === 0) {
-                    container.innerHTML = '<p style="text-align: center; color: var(--gray); padding: 40px;"><i class="fas fa-folder-open"></i> No summaries found. Create your first summary above!</p>';
+                    container.innerHTML = '<p style="text-align: center; padding: 40px; color: var(--gray);"><i class="fas fa-folder-open"></i> No summaries yet</p>';
                     return;
                 }
                 
-                const bookNames = {
-                    'to-kill-a-mockingbird': 'To Kill a Mockingbird',
-                    'path-of-lucas': 'Path of Lucas',
-                    'so-the-path-does-not-die': 'So the Path Does Not Die',
-                    'redemption-road': 'Redemption Road'
-                };
-                
                 container.innerHTML = docs.map(doc => `
-                    <div class="document-item" data-id="${doc.id}">
+                    <div class="document-item">
                         <div class="document-info">
                             <h4>${escapeHtml(doc.sectionName || 'Untitled')}</h4>
-                            <p>
-                                <i class="fas fa-book"></i> ${bookNames[doc.bookId] || doc.bookId} &nbsp;|&nbsp;
-                                <i class="fas fa-clock"></i> ${new Date(doc.updatedAt).toLocaleDateString()} &nbsp;|&nbsp;
-                                <span class="${doc.published ? 'published' : 'draft'}" style="color: ${doc.published ? '#4caf50' : '#ff9800'}">
-                                    <i class="fas fa-${doc.published ? 'globe' : 'edit'}"></i> ${doc.published ? 'Published' : 'Draft'}
-                                </span>
-                            </p>
+                            <p><i class="fas fa-book"></i> ${doc.bookId} | ${new Date(doc.updatedAt).toLocaleDateString()} | ${doc.published ? '✅ Published' : '📝 Draft'}</p>
                         </div>
-                        <div class="document-actions">
-                            <button class="icon-btn load-doc" data-id="${doc.id}" title="Load">
-                                <i class="fas fa-folder-open"></i>
-                            </button>
-                            <button class="icon-btn delete-doc" data-id="${doc.id}" title="Delete">
-                                <i class="fas fa-trash"></i>
-                            </button>
+                        <div>
+                            <button class="icon-btn load-doc" data-id="${doc.id}"><i class="fas fa-edit"></i></button>
+                            <button class="icon-btn delete-doc" data-id="${doc.id}"><i class="fas fa-trash"></i></button>
                         </div>
                     </div>
                 `).join('');
                 
-                // Add event listeners
                 document.querySelectorAll('.load-doc').forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        const id = btn.getAttribute('data-id');
-                        loadSummary(id);
-                    });
+                    btn.addEventListener('click', () => loadSummary(btn.getAttribute('data-id')));
                 });
-                
                 document.querySelectorAll('.delete-doc').forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        const id = btn.getAttribute('data-id');
-                        const modal = document.getElementById('deleteModal');
-                        modal.classList.add('active');
-                        
-                        document.getElementById('confirmDeleteBtn').onclick = () => {
-                            deleteSummary(id);
-                            modal.classList.remove('active');
-                        };
-                    });
+                    btn.addEventListener('click', () => deleteSummary(btn.getAttribute('data-id')));
                 });
-                
-                // Click on document item to load
-                document.querySelectorAll('.document-item').forEach(item => {
-                    item.addEventListener('click', (e) => {
-                        if (!e.target.closest('.document-actions')) {
-                            const id = item.getAttribute('data-id');
-                            loadSummary(id);
-                        }
-                    });
-                });
-                
             } catch (error) {
-                console.error('Error loading documents:', error);
-                container.innerHTML = '<p style="text-align: center; color: var(--danger); padding: 40px;">Error loading summaries</p>';
+                container.innerHTML = '<p style="text-align: center; padding: 40px; color: var(--danger);">Error loading</p>';
             }
         }
-        
+
+        function renderKeypoints() {
+            const container = document.getElementById('keypointsList');
+            if (keypoints.length === 0) {
+                container.innerHTML = '<p style="color: var(--gray); padding: 10px;">No key points yet</p>';
+            } else {
+                container.innerHTML = keypoints.map((kp, i) => `
+                    <div class="keypoint-item">
+                        <input type="text" value="${escapeHtml(kp)}" data-index="${i}" class="keypoint-input">
+                        <button class="remove-keypoint" data-index="${i}"><i class="fas fa-trash"></i></button>
+                    </div>
+                `).join('');
+            }
+            
+            document.querySelectorAll('.keypoint-input').forEach(inp => {
+                inp.addEventListener('change', (e) => {
+                    keypoints[parseInt(inp.getAttribute('data-index'))] = inp.value;
+                });
+            });
+            document.querySelectorAll('.remove-keypoint').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    keypoints.splice(parseInt(btn.getAttribute('data-index')), 1);
+                    renderKeypoints();
+                });
+            });
+        }
+
+        function renderCharacters() {
+            const container = document.getElementById('charactersList');
+            if (characters.length === 0) {
+                container.innerHTML = '<p style="color: var(--gray);">No characters yet</p>';
+            } else {
+                container.innerHTML = characters.map((c, i) => `
+                    <span class="character-tag">
+                        ${escapeHtml(c)} <i class="fas fa-times" data-index="${i}"></i>
+                    </span>
+                `).join('');
+            }
+            
+            document.querySelectorAll('.character-tag i').forEach(icon => {
+                icon.addEventListener('click', (e) => {
+                    characters.splice(parseInt(icon.getAttribute('data-index')), 1);
+                    renderCharacters();
+                });
+            });
+        }
+
         function escapeHtml(text) {
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
         }
 
-        // Search functionality
-        let searchTimeout;
-        document.getElementById('searchDocs').addEventListener('input', (e) => {
-            clearTimeout(searchTimeout);
-            searchTimeout = setTimeout(() => {
-                loadDocuments(e.target.value);
-            }, 300);
-        });
-
-        // Auth check
         onAuthStateChanged(auth, (user) => {
             if (!user) {
                 window.location.href = "index.html";
                 return;
             }
-            
-            currentUser = user;
-            document.getElementById('userEmailDisplay').innerHTML = `<i class="fas fa-user-check"></i> ${user.email}`;
-            
             if (!adminEmails.includes(user.email)) {
-                document.body.innerHTML = `
-                    <div style="text-align: center; padding: 80px 20px;">
-                        <i class="fas fa-lock" style="font-size: 64px; color: var(--danger);"></i>
-                        <h2 style="color: var(--danger); margin-top: 20px;">Access Denied</h2>
-                        <p>You don't have permission to access this page.</p>
-                        <a href="dashboard.html" style="display: inline-block; margin-top: 20px; padding: 12px 24px; background: var(--primary); color: white; text-decoration: none; border-radius: 30px;">Return to Dashboard</a>
-                    </div>
-                `;
+                document.body.innerHTML = '<div style="text-align:center;padding:80px"><i class="fas fa-lock" style="font-size:64px;color:var(--danger)"></i><h2>Access Denied</h2><a href="dashboard.html">Back to Dashboard</a></div>';
                 return;
             }
-            
             initEditor();
             loadDocuments();
         });
-        
-        // Button event listeners
-        document.getElementById('saveBtn').addEventListener('click', () => saveSummary(false));
-        document.getElementById('publishBtn').addEventListener('click', () => saveSummary(true));
-        document.getElementById('clearBtn').addEventListener('click', clearForm);
-        
-        document.getElementById('loadDocBtn').addEventListener('click', () => {
-            const docId = prompt('Enter the Document ID to load:');
-            if (docId) loadSummary(docId);
-        });
-        
-        document.getElementById('cancelDeleteBtn').addEventListener('click', () => {
-            document.getElementById('deleteModal').classList.remove('active');
-        });
-        
-        // Close modal on outside click
-        window.addEventListener('click', (e) => {
-            const modal = document.getElementById('deleteModal');
-            if (e.target === modal) {
-                modal.classList.remove('active');
+
+        document.getElementById('loadSummaryBtn').addEventListener('click', () => {
+            const book = document.getElementById('bookSelect').value;
+            const section = document.getElementById('sectionName').value.trim();
+            if (book && section) {
+                const docId = `${book}_${section.toLowerCase().replace(/[^a-z0-9]/g, '_')}`;
+                loadSummary(docId);
+            } else {
+                showToast('Select book and enter section name', true);
             }
+        });
+
+        document.getElementById('saveDraftBtn').addEventListener('click', () => saveSummary(false));
+        document.getElementById('publishBtn').addEventListener('click', () => saveSummary(true));
+        document.getElementById('addKeypoint').addEventListener('click', () => { keypoints.push(''); renderKeypoints(); });
+        document.getElementById('addCharacterBtn').addEventListener('click', () => {
+            const input = document.getElementById('newCharacterInput');
+            if (input.value.trim()) {
+                characters.push(input.value.trim());
+                renderCharacters();
+                input.value = '';
+            }
+        });
+
+        let searchTimeout;
+        document.getElementById('searchDocs').addEventListener('input', (e) => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => loadDocuments(e.target.value), 300);
         });
     </script>
 </body>
