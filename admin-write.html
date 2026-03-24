@@ -271,6 +271,11 @@
             color: #155724;
         }
 
+        .status-draft {
+            background: #fff3cd;
+            color: #856404;
+        }
+
         .icon-btn {
             background: none;
             border: none;
@@ -329,17 +334,24 @@
             <div class="selector-group">
                 <select id="bookSelect">
                     <option value="">-- Select Book --</option>
-                    <option value="to-kill-a-mockingbird">To Kill a Mockingbird (Harper Lee) - Prose</option>
-                    <option value="path-of-lucas">Path of Lucas (Susanne Bellefeuille) - Prose</option>
-                    <option value="so-the-path-does-not-die">So the Path Does Not Die (Pede Hollist) - Prose</option>
-                    <option value="redemption-road">Redemption Road (Elma Shaw) - Prose</option>
-                    <option value="antony-and-cleopatra">Antony and Cleopatra (Shakespeare) - Drama</option>
-                    <option value="once-upon-an-elephant">Once Upon an Elephant (Bosede Ademilua-Afolayan) - Drama</option>
-                    <option value="marriage-of-anansewa">The Marriage of Anansewa (Efua Sutherland) - Drama</option>
-                    <option value="inspector-calls">An Inspector Calls (J. B. Priestley) - Drama</option>
-                    <option value="man-for-all-seasons">A Man for All Seasons (Robert Bolt) - Drama</option>
+                    <optgroup label="📖 Prose">
+                        <option value="to-kill-a-mockingbird">To Kill a Mockingbird (Harper Lee)</option>
+                        <option value="path-of-lucas">Path of Lucas (Susanne Bellefeuille)</option>
+                        <option value="so-the-path-does-not-die">So the Path Does Not Die (Pede Hollist)</option>
+                        <option value="redemption-road">Redemption Road (Elma Shaw)</option>
+                    </optgroup>
+                    <optgroup label="🎭 Drama">
+                        <option value="antony-and-cleopatra">Antony and Cleopatra (William Shakespeare)</option>
+                        <option value="once-upon-an-elephant">Once Upon an Elephant (Bosede Ademilua-Afolayan)</option>
+                        <option value="marriage-of-anansewa">The Marriage of Anansewa (Efua Sutherland)</option>
+                        <option value="inspector-calls">An Inspector Calls (J. B. Priestley)</option>
+                        <option value="man-for-all-seasons">A Man for All Seasons (Robert Bolt)</option>
+                    </optgroup>
                 </select>
-                <input type="text" id="sectionName" placeholder="Section name (e.g., Chapter 1, Act 1)">
+                <input type="text" id="sectionName" placeholder="Section name (e.g., Chapter 1, Act 1, Scene 1)">
+                <button id="newSectionBtn" class="btn btn-secondary" style="padding: 12px 24px;">
+                    <i class="fas fa-plus"></i> New
+                </button>
                 <button id="loadSummaryBtn" class="btn btn-secondary" style="padding: 12px 24px;">
                     <i class="fas fa-folder-open"></i> Load
                 </button>
@@ -514,33 +526,11 @@
             };
             
             console.log("Saving to:", docId);
-            console.log("Summary data:", summaryData);
             
             try {
                 await setDoc(doc(db, "summaries", docId), summaryData);
                 showToast(published ? '✅ Published successfully!' : '📝 Saved as draft');
                 loadDocuments();
-                // Clear form after successful save
-                if (published) {
-                    document.getElementById('sectionName').value = '';
-                    quill.root.innerHTML = '';
-                    keyPointsEditor.root.innerHTML = '';
-                    charactersEditor.root.innerHTML = '';
-                    themesEditor.root.innerHTML = '';
-                    devicesEditor.root.innerHTML = '';
-                    toneMoodEditor.root.innerHTML = '';
-                    dramaticDevicesEditor.root.innerHTML = '';
-                    currentData = {
-                        sectionName: "",
-                        content: "",
-                        keyPoints: "",
-                        characters: "",
-                        themes: "",
-                        literaryDevices: "",
-                        toneMood: "",
-                        dramaticDevices: ""
-                    };
-                }
             } catch (error) {
                 console.error('Save error:', error);
                 showToast('Error saving: ' + error.message, true);
@@ -575,9 +565,100 @@
                 
                 document.getElementById('bookSelect').value = data.bookId || '';
                 document.getElementById('summaryForm').style.display = 'block';
+                
+                // Update category-specific fields
+                updateCategoryFields(data.bookId);
+                
                 showToast('✅ Loaded successfully');
             } else {
                 showToast('Summary not found', true);
+            }
+        }
+
+        function updateCategoryFields(bookId) {
+            const toneMoodCard = document.getElementById('toneMoodCard');
+            const dramaticDevicesCard = document.getElementById('dramaticDevicesCard');
+            
+            // List of drama books
+            const dramaBooks = ['antony-and-cleopatra', 'once-upon-an-elephant', 'marriage-of-anansewa', 'inspector-calls', 'man-for-all-seasons'];
+            const isDrama = dramaBooks.includes(bookId);
+            
+            if (isDrama) {
+                toneMoodCard.style.display = 'block';
+                dramaticDevicesCard.style.display = 'block';
+            } else {
+                toneMoodCard.style.display = 'block';
+                dramaticDevicesCard.style.display = 'none';
+            }
+        }
+
+        async function createNewSection() {
+            const book = document.getElementById('bookSelect').value;
+            const sectionName = document.getElementById('sectionName').value.trim();
+            
+            if (!book) {
+                showToast('Please select a book first', true);
+                return;
+            }
+            if (!sectionName) {
+                showToast('Please enter a section name', true);
+                return;
+            }
+            
+            // Check if already exists
+            const cleanSectionName = sectionName.toLowerCase().replace(/[^a-z0-9]/g, '_');
+            const docId = `${book}_${cleanSectionName}`;
+            const existingDoc = await getDoc(doc(db, "summaries", docId));
+            
+            if (existingDoc.exists()) {
+                showToast('Section already exists! Use Load to edit it.', true);
+                return;
+            }
+            
+            // Create empty summary
+            const emptyData = {
+                bookId: book,
+                sectionName: sectionName,
+                content: "",
+                keyPoints: "",
+                characters: "",
+                themes: "",
+                literaryDevices: "",
+                toneMood: "",
+                dramaticDevices: "",
+                published: false,
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+                updatedBy: auth.currentUser?.email
+            };
+            
+            try {
+                await setDoc(doc(db, "summaries", docId), emptyData);
+                showToast('✅ New section created! Now write your content.');
+                document.getElementById('summaryForm').style.display = 'block';
+                updateCategoryFields(book);
+                // Clear and set up for writing
+                quill.root.innerHTML = '';
+                keyPointsEditor.root.innerHTML = '';
+                charactersEditor.root.innerHTML = '';
+                themesEditor.root.innerHTML = '';
+                devicesEditor.root.innerHTML = '';
+                toneMoodEditor.root.innerHTML = '';
+                dramaticDevicesEditor.root.innerHTML = '';
+                currentData = {
+                    sectionName: sectionName,
+                    content: "",
+                    keyPoints: "",
+                    characters: "",
+                    themes: "",
+                    literaryDevices: "",
+                    toneMood: "",
+                    dramaticDevices: ""
+                };
+                loadDocuments();
+            } catch (error) {
+                console.error('Error creating section:', error);
+                showToast('Error creating section: ' + error.message, true);
             }
         }
 
@@ -586,6 +667,7 @@
                 await deleteDoc(doc(db, "summaries", docId));
                 showToast('🗑️ Deleted successfully');
                 loadDocuments();
+                document.getElementById('summaryForm').style.display = 'none';
             }
         }
 
@@ -667,26 +749,20 @@
             }
         });
 
+        document.getElementById('newSectionBtn').addEventListener('click', () => {
+            createNewSection();
+        });
+
         document.getElementById('saveDraftBtn').addEventListener('click', () => saveSummary(false));
         document.getElementById('publishBtn').addEventListener('click', () => saveSummary(true));
 
-        // Handle category changes
+        // Handle category changes when book is selected
         document.getElementById('bookSelect').addEventListener('change', (e) => {
             const bookId = e.target.value;
-            const toneMoodCard = document.getElementById('toneMoodCard');
-            const dramaticDevicesCard = document.getElementById('dramaticDevicesCard');
-            
-            if (bookId === 'jamb-poetry') {
-                toneMoodCard.style.display = 'block';
-                dramaticDevicesCard.style.display = 'none';
-            } else if (bookId === 'antony-and-cleopatra' || bookId === 'once-upon-an-elephant' || 
-                       bookId === 'marriage-of-anansewa' || bookId === 'inspector-calls' || 
-                       bookId === 'man-for-all-seasons') {
-                toneMoodCard.style.display = 'none';
-                dramaticDevicesCard.style.display = 'block';
-            } else {
-                toneMoodCard.style.display = 'block';
-                dramaticDevicesCard.style.display = 'none';
+            if (bookId) {
+                updateCategoryFields(bookId);
+                // Show the form for new section
+                document.getElementById('summaryForm').style.display = 'block';
             }
         });
 
