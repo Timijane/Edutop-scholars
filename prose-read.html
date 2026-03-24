@@ -51,11 +51,37 @@
             margin: 0 auto;
             padding: 20px 16px;
         }
-        .loading, .error {
+        .loading, .error, .debug {
             text-align: center;
-            padding: 60px 20px;
+            padding: 40px 20px;
             background: white;
             border-radius: 20px;
+            margin-bottom: 20px;
+        }
+        .debug {
+            background: #f8f9fa;
+            text-align: left;
+            font-family: monospace;
+            font-size: 12px;
+            overflow-x: auto;
+        }
+        .debug h3 {
+            color: #311b92;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .debug-line {
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+            font-family: monospace;
+        }
+        .debug-line.error {
+            color: #dc3545;
+            background: #fff0f0;
+        }
+        .debug-line.success {
+            color: #28a745;
+            background: #f0fff0;
         }
         .loading-spinner {
             width: 40px;
@@ -107,10 +133,6 @@
             color: #311b92;
             margin-bottom: 8px;
         }
-        .section-meta {
-            font-size: 12px;
-            color: #777;
-        }
         .content-area {
             padding: 25px;
             max-height: 500px;
@@ -120,9 +142,6 @@
             font-size: 16px;
             line-height: 1.7;
             color: #333;
-        }
-        .summary-content p {
-            margin-bottom: 1em;
         }
         .analysis-card {
             background: #f8f9fa;
@@ -134,22 +153,13 @@
             color: #311b92;
             font-size: 17px;
             margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding-bottom: 8px;
             border-bottom: 2px solid #ff5722;
-        }
-        .analysis-content {
-            font-size: 14px;
-            line-height: 1.6;
-            color: #555;
+            padding-bottom: 8px;
         }
         .quiz-section {
             background: #fff5f0;
             padding: 20px;
             text-align: center;
-            margin-top: 10px;
         }
         .quiz-btn {
             background: #ff5722;
@@ -169,23 +179,14 @@
             border-top: 1px solid #eee;
             margin-top: 30px;
         }
-        @media (max-width: 600px) {
-            .container {
-                padding: 15px;
-            }
-            .book-header {
-                padding: 20px;
-            }
-            .book-title {
-                font-size: 20px;
-            }
-            .section-name {
-                font-size: 18px;
-            }
-            .content-area {
-                padding: 20px;
-                max-height: 450px;
-            }
+        button {
+            margin-top: 10px;
+            padding: 8px 16px;
+            background: #311b92;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -213,7 +214,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCictHNxtslYs9VR0hoicxlwPn_QghkgIA",
@@ -235,122 +236,227 @@
             "redemption-road": { title: "Redemption Road", author: "Elma Shaw", category: "African Prose" }
         };
 
+        // Debug log function
+        let debugLogs = [];
+        function addDebugLog(message, type = "info") {
+            const timestamp = new Date().toLocaleTimeString();
+            debugLogs.push({ timestamp, message, type });
+            console.log(`[${timestamp}] ${message}`);
+            updateDebugDisplay();
+        }
+
+        function updateDebugDisplay() {
+            const debugDiv = document.getElementById('debugPanel');
+            if (debugDiv) {
+                debugDiv.innerHTML = debugLogs.map(log => 
+                    `<div class="debug-line ${log.type}">[${log.timestamp}] ${escapeHtml(log.message)}</div>`
+                ).join('');
+            }
+        }
+
+        function showDebugPanel() {
+            const container = document.getElementById('container');
+            const debugHtml = `
+                <div class="debug" id="debugPanel">
+                    <h3><i class="fas fa-bug"></i> Debug Information</h3>
+                    <div id="debugLogs" style="max-height: 300px; overflow-y: auto;">
+                        ${debugLogs.map(log => 
+                            `<div class="debug-line ${log.type}">[${log.timestamp}] ${escapeHtml(log.message)}</div>`
+                        ).join('')}
+                    </div>
+                    <button id="clearDebugBtn" style="margin-top: 15px;">Clear Debug</button>
+                    <button id="retryBtn" style="margin-left: 10px;">Retry</button>
+                </div>
+            `;
+            if (container.innerHTML.includes('debug') === false) {
+                container.innerHTML = debugHtml + container.innerHTML;
+            }
+            document.getElementById('clearDebugBtn')?.addEventListener('click', () => {
+                debugLogs = [];
+                updateDebugDisplay();
+            });
+            document.getElementById('retryBtn')?.addEventListener('click', () => {
+                location.reload();
+            });
+        }
+
         const urlParams = new URLSearchParams(window.location.search);
         const BOOK_ID = urlParams.get('book');
         const SECTION_NAME = urlParams.get('section');
 
-        console.log("Book:", BOOK_ID);
-        console.log("Section:", SECTION_NAME);
+        addDebugLog(`=== PAGE LOADED ===`, "info");
+        addDebugLog(`URL: ${window.location.href}`, "info");
+        addDebugLog(`Book ID from URL: ${BOOK_ID}`, "info");
+        addDebugLog(`Section Name from URL: ${SECTION_NAME}`, "info");
+
+        async function loadAllDocuments() {
+            addDebugLog(`Fetching ALL summaries from Firebase...`, "info");
+            try {
+                const snapshot = await getDocs(collection(db, "summaries"));
+                addDebugLog(`Total summaries found: ${snapshot.size}`, snapshot.size > 0 ? "success" : "error");
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    addDebugLog(`Document ID: ${doc.id}, Book: ${data.bookId}, Section: ${data.sectionName}, Published: ${data.published}`, "info");
+                });
+                return snapshot;
+            } catch (error) {
+                addDebugLog(`ERROR fetching summaries: ${error.message}`, "error");
+                return null;
+            }
+        }
 
         async function loadSummary() {
-            if (!BOOK_ID || !SECTION_NAME) {
+            addDebugLog(`=== STARTING SUMMARY LOAD ===`, "info");
+            
+            if (!BOOK_ID) {
+                addDebugLog(`ERROR: No book ID in URL`, "error");
+                showDebugPanel();
                 document.getElementById('container').innerHTML = `
                     <div class="error">
-                        <h3>Invalid Request</h3>
-                        <p>No book or section specified.</p>
-                        <button onclick="location.href='prose.html'" style="margin-top:15px;padding:10px 20px;background:#311b92;color:white;border:none;border-radius:30px;">Go to Books</button>
+                        <h3>❌ Error</h3>
+                        <p>No book ID found in URL.</p>
+                        <p>URL: ${window.location.href}</p>
+                        <button onclick="location.href='prose.html'">Go to Books</button>
+                    </div>
+                `;
+                return;
+            }
+            
+            if (!SECTION_NAME) {
+                addDebugLog(`ERROR: No section name in URL`, "error");
+                showDebugPanel();
+                document.getElementById('container').innerHTML = `
+                    <div class="error">
+                        <h3>❌ Error</h3>
+                        <p>No section name found in URL.</p>
+                        <p>URL: ${window.location.href}</p>
+                        <button onclick="location.href='prose-detail.html?book=${BOOK_ID}'">Back to Book</button>
                     </div>
                 `;
                 return;
             }
 
-            // Create document ID the SAME way admin-write does
+            // Create document ID
             const cleanSection = SECTION_NAME.toLowerCase().replace(/[^a-z0-9]/g, '_');
             const docId = `${BOOK_ID}_${cleanSection}`;
-            console.log("Looking for document:", docId);
+            
+            addDebugLog(`Original section name: "${SECTION_NAME}"`, "info");
+            addDebugLog(`Cleaned section name: "${cleanSection}"`, "info");
+            addDebugLog(`Looking for document ID: "${docId}"`, "info");
             
             try {
                 const docRef = doc(db, "summaries", docId);
+                addDebugLog(`Querying Firebase for document: ${docId}`, "info");
+                
                 const docSnap = await getDoc(docRef);
                 
-                if (!docSnap.exists()) {
-                    document.getElementById('container').innerHTML = `
-                        <div class="error">
-                            <h3>Summary Not Found</h3>
-                            <p>No summary found for "${SECTION_NAME}"</p>
-                            <p>Make sure you published it in the admin panel.</p>
-                            <button onclick="location.href='prose-detail.html?book=${BOOK_ID}'" style="margin-top:15px;padding:10px 20px;background:#311b92;color:white;border:none;border-radius:30px;">Back to Book</button>
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    addDebugLog(`✅ SUMMARY FOUND!`, "success");
+                    addDebugLog(`Document data: ${JSON.stringify(data, null, 2).substring(0, 500)}`, "success");
+                    addDebugLog(`Section name in DB: "${data.sectionName}"`, "success");
+                    addDebugLog(`Published status: ${data.published}`, data.published ? "success" : "warning");
+                    
+                    if (!data.published) {
+                        addDebugLog(`⚠️ WARNING: This summary is NOT published (published: false)`, "warning");
+                    }
+                    
+                    const book = booksInfo[BOOK_ID] || { title: "Unknown", author: "Unknown", category: "Literature" };
+                    
+                    const html = `
+                        <div class="reading-card">
+                            <div class="book-header">
+                                <div class="book-category">${book.category}</div>
+                                <h1 class="book-title">${escapeHtml(book.title)}</h1>
+                                <div class="book-author">by ${escapeHtml(book.author)}</div>
+                            </div>
+                            <div class="section-header">
+                                <div class="section-name">${escapeHtml(data.sectionName || SECTION_NAME)}</div>
+                                <div class="section-meta">
+                                    <i class="fas fa-calendar-alt"></i> ${data.updatedAt ? new Date(data.updatedAt).toLocaleDateString() : 'Recently'}
+                                    ${data.published ? ' ✅ Published' : ' 📝 Draft'}
+                                </div>
+                            </div>
+                            <div class="content-area" id="contentArea">
+                                <div class="summary-content">${data.content || '<p>No content available.</p>'}</div>
+                            </div>
+                            ${data.keyPoints ? `<div class="analysis-card"><h3><i class="fas fa-lightbulb"></i> Key Points</h3><div class="analysis-content">${data.keyPoints}</div></div>` : ''}
+                            ${data.characters ? `<div class="analysis-card"><h3><i class="fas fa-users"></i> Characters</h3><div class="analysis-content">${data.characters}</div></div>` : ''}
+                            ${data.themes ? `<div class="analysis-card"><h3><i class="fas fa-palette"></i> Themes</h3><div class="analysis-content">${data.themes}</div></div>` : ''}
+                            ${data.literaryDevices ? `<div class="analysis-card"><h3><i class="fas fa-feather-alt"></i> Literary Devices</h3><div class="analysis-content">${data.literaryDevices}</div></div>` : ''}
+                            <div class="quiz-section">
+                                <button class="quiz-btn" id="takeQuizBtn"><i class="fas fa-puzzle-piece"></i> Take Quiz</button>
+                            </div>
+                        </div>
+                        <div class="debug" style="margin-top: 20px;">
+                            <h3><i class="fas fa-bug"></i> Debug Info - Load Successful</h3>
+                            <div class="debug-line success">✅ Document ID: ${docId}</div>
+                            <div class="debug-line success">✅ Section: ${SECTION_NAME}</div>
+                            <div class="debug-line success">✅ Published: ${data.published}</div>
+                            <button id="closeDebugBtn">Hide Debug</button>
                         </div>
                     `;
-                    return;
-                }
-                
-                const data = docSnap.data();
-                const book = booksInfo[BOOK_ID] || { title: "Unknown", author: "Unknown", category: "Literature" };
-                
-                const html = `
-                    <div class="reading-card">
-                        <div class="book-header">
-                            <div class="book-category">${book.category}</div>
-                            <h1 class="book-title">${escapeHtml(book.title)}</h1>
-                            <div class="book-author">by ${escapeHtml(book.author)}</div>
-                        </div>
-                        <div class="section-header">
-                            <div class="section-name">${escapeHtml(data.sectionName || SECTION_NAME)}</div>
-                            <div class="section-meta">
-                                <i class="fas fa-calendar-alt"></i> ${data.updatedAt ? new Date(data.updatedAt).toLocaleDateString() : 'Recently'}
-                            </div>
-                        </div>
-                        <div class="content-area" id="contentArea">
-                            <div class="summary-content">${data.content || '<p>No content available.</p>'}</div>
-                        </div>
-                        ${data.keyPoints ? `
-                            <div class="analysis-card">
-                                <h3><i class="fas fa-lightbulb"></i> Key Points</h3>
-                                <div class="analysis-content">${data.keyPoints}</div>
-                            </div>
-                        ` : ''}
-                        ${data.characters ? `
-                            <div class="analysis-card">
-                                <h3><i class="fas fa-users"></i> Characters</h3>
-                                <div class="analysis-content">${data.characters}</div>
-                            </div>
-                        ` : ''}
-                        ${data.themes ? `
-                            <div class="analysis-card">
-                                <h3><i class="fas fa-palette"></i> Themes</h3>
-                                <div class="analysis-content">${data.themes}</div>
-                            </div>
-                        ` : ''}
-                        ${data.literaryDevices ? `
-                            <div class="analysis-card">
-                                <h3><i class="fas fa-feather-alt"></i> Literary Devices</h3>
-                                <div class="analysis-content">${data.literaryDevices}</div>
-                            </div>
-                        ` : ''}
-                        <div class="quiz-section">
-                            <button class="quiz-btn" id="takeQuizBtn">
-                                <i class="fas fa-puzzle-piece"></i> Take Quiz
-                            </button>
-                        </div>
-                    </div>
-                `;
-                
-                document.getElementById('container').innerHTML = html;
-                
-                document.getElementById('takeQuizBtn')?.addEventListener('click', () => {
-                    window.location.href = `cbt-exam.html?book=${BOOK_ID}&section=${encodeURIComponent(SECTION_NAME)}`;
-                });
-                
-                // Scroll tracking
-                const contentArea = document.getElementById('contentArea');
-                if (contentArea) {
-                    contentArea.addEventListener('scroll', () => {
-                        const scrollTop = contentArea.scrollTop;
-                        const scrollHeight = contentArea.scrollHeight - contentArea.clientHeight;
-                        const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
-                        const progressBar = document.getElementById('progressBar');
-                        if (progressBar) progressBar.style.width = `${progress}%`;
+                    
+                    document.getElementById('container').innerHTML = html;
+                    
+                    document.getElementById('takeQuizBtn')?.addEventListener('click', () => {
+                        window.location.href = `cbt-exam.html?book=${BOOK_ID}&section=${encodeURIComponent(SECTION_NAME)}`;
                     });
+                    document.getElementById('closeDebugBtn')?.addEventListener('click', () => {
+                        const debugDiv = document.querySelector('.debug');
+                        if (debugDiv) debugDiv.style.display = 'none';
+                    });
+                    
+                    // Scroll tracking
+                    const contentArea = document.getElementById('contentArea');
+                    if (contentArea) {
+                        contentArea.addEventListener('scroll', () => {
+                            const scrollTop = contentArea.scrollTop;
+                            const scrollHeight = contentArea.scrollHeight - contentArea.clientHeight;
+                            const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+                            const progressBar = document.getElementById('progressBar');
+                            if (progressBar) progressBar.style.width = `${progress}%`;
+                        });
+                    }
+                    
+                } else {
+                    addDebugLog(`❌ SUMMARY NOT FOUND for document ID: ${docId}`, "error");
+                    addDebugLog(`Possible causes:`, "error");
+                    addDebugLog(`  1. You haven't published this summary yet`, "error");
+                    addDebugLog(`  2. The section name in URL doesn't match what you typed when publishing`, "error");
+                    addDebugLog(`  3. The summary was deleted`, "error");
+                    
+                    // Load all documents to show what's available
+                    await loadAllDocuments();
+                    
+                    showDebugPanel();
+                    document.getElementById('container').innerHTML = `
+                        <div class="error">
+                            <h3>❌ Summary Not Found</h3>
+                            <p>No summary found for: <strong>"${SECTION_NAME}"</strong></p>
+                            <p>Document ID tried: <code>${docId}</code></p>
+                            <p>Make sure you:</p>
+                            <ul style="text-align: left; margin: 15px 0 15px 25px;">
+                                <li>Published the summary in Admin Panel</li>
+                                <li>Used the exact same section name: <strong>"${SECTION_NAME}"</strong></li>
+                                <li>Selected the correct book: <strong>${BOOK_ID}</strong></li>
+                            </ul>
+                            <button onclick="location.href='admin-write.html'">Go to Admin Panel</button>
+                            <button onclick="location.href='prose-detail.html?book=${BOOK_ID}'" style="margin-left: 10px;">Back to Book</button>
+                        </div>
+                    `;
                 }
                 
             } catch (error) {
-                console.error("Error:", error);
+                addDebugLog(`❌ FIRESTORE ERROR: ${error.message}`, "error");
+                addDebugLog(`Error details: ${JSON.stringify(error)}`, "error");
+                showDebugPanel();
                 document.getElementById('container').innerHTML = `
                     <div class="error">
-                        <h3>Error</h3>
+                        <h3>❌ Firestore Error</h3>
                         <p>${error.message}</p>
-                        <button onclick="location.href='prose-detail.html?book=${BOOK_ID}'" style="margin-top:15px;padding:10px 20px;background:#311b92;color:white;border:none;border-radius:30px;">Back to Book</button>
+                        <button onclick="location.reload()">Retry</button>
+                        <button onclick="location.href='prose-detail.html?book=${BOOK_ID}'" style="margin-left: 10px;">Back to Book</button>
                     </div>
                 `;
             }
@@ -376,6 +482,7 @@
                 window.location.href = "index.html";
                 return;
             }
+            addDebugLog(`User authenticated: ${user.email}`, "success");
             loadSummary();
         });
     </script>
