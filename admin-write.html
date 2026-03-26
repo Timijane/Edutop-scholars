@@ -12,43 +12,54 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', 'Inter', system-ui, -apple-system, sans-serif;
         }
 
         :root {
             --primary: #311b92;
             --primary-light: #4527a0;
             --secondary: #ff5722;
-            --success: #4caf50;
-            --light: #f8f9fa;
-            --dark: #2c3e50;
-            --gray: #6c757d;
-            --border: #e9ecef;
-            --toolbar-bg: #f8f9fa;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --light: #f9fafb;
+            --dark: #1f2937;
+            --gray: #6b7280;
+            --border: #e5e7eb;
+            --white: #ffffff;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
         }
 
         body {
-            background: #eef2f7;
+            background: #f3f4f6;
             min-height: 100vh;
         }
 
+        /* Header */
         .header {
-            background: white;
+            background: var(--white);
             padding: 12px 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            box-shadow: var(--shadow-sm);
             position: sticky;
             top: 0;
             z-index: 100;
             flex-wrap: wrap;
-            gap: 15px;
+            gap: 12px;
+            border-bottom: 1px solid var(--border);
         }
 
         .logo h1 {
             color: var(--primary);
-            font-size: 24px;
+            font-size: 22px;
+            font-weight: 700;
         }
 
         .logo span {
@@ -61,7 +72,7 @@
 
         .header-actions {
             display: flex;
-            gap: 15px;
+            gap: 12px;
             align-items: center;
         }
 
@@ -69,9 +80,9 @@
             background: var(--light);
             border: none;
             padding: 8px 16px;
-            border-radius: 30px;
+            border-radius: 40px;
             cursor: pointer;
-            font-weight: 600;
+            font-weight: 500;
             font-size: 13px;
             display: flex;
             align-items: center;
@@ -89,64 +100,136 @@
             background: var(--secondary);
             color: white;
             padding: 6px 14px;
-            border-radius: 30px;
+            border-radius: 40px;
             font-size: 12px;
             font-weight: 600;
         }
 
+        /* Container */
         .container {
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 24px;
         }
 
+        /* Book Selector */
         .book-selector {
-            background: white;
-            border-radius: 16px;
-            padding: 20px;
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 20px 24px;
             margin-bottom: 24px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+        }
+
+        .book-selector h3 {
+            color: var(--primary);
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
         }
 
         .selector-group {
             display: flex;
-            gap: 15px;
+            gap: 12px;
             flex-wrap: wrap;
-            margin-top: 15px;
         }
 
         select, input {
             flex: 1;
-            min-width: 200px;
-            padding: 12px 16px;
-            border: 2px solid var(--border);
-            border-radius: 12px;
+            min-width: 180px;
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
             font-size: 14px;
+            background: var(--white);
+            transition: all 0.2s;
         }
 
         select:focus, input:focus {
             border-color: var(--primary);
             outline: none;
+            box-shadow: 0 0 0 3px rgba(49, 27, 146, 0.1);
         }
 
-        /* Google Docs Style Full Toolbar */
+        /* Editor Container */
+        .editor-wrapper {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+            margin-bottom: 24px;
+        }
+
+        .editor-header {
+            padding: 12px 20px;
+            background: var(--light);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .editor-header h3 {
+            color: var(--primary);
+            font-size: 15px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stats-group {
+            display: flex;
+            gap: 12px;
+        }
+
+        .stat-badge {
+            background: var(--white);
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-size: 12px;
+            color: var(--gray);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid var(--border);
+        }
+
+        .stat-badge:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* Quill Editor Customization */
+        .ql-container {
+            font-size: 15px;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
         .ql-toolbar.ql-snow {
             border: none;
             border-bottom: 1px solid var(--border);
-            background: var(--toolbar-bg);
-            padding: 8px;
+            background: var(--white);
+            padding: 8px 12px;
             position: sticky;
             top: 70px;
-            z-index: 90;
+            z-index: 80;
         }
 
         .ql-toolbar.ql-snow .ql-formats {
-            margin-right: 8px;
+            margin-right: 6px;
         }
 
         .ql-toolbar.ql-snow button {
-            width: 32px;
-            height: 32px;
+            width: 28px;
+            height: 28px;
+            padding: 0;
             border-radius: 4px;
         }
 
@@ -154,120 +237,88 @@
             background: var(--light);
         }
 
-        /* Editor Main Area */
-        .editor-main {
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            overflow: hidden;
-            margin-bottom: 24px;
+        .ql-editor {
+            min-height: 500px;
+            font-size: 15px;
+            line-height: 1.7;
         }
 
-        .editor-header {
-            background: var(--toolbar-bg);
-            padding: 12px 20px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .editor-header h3 {
-            color: var(--primary);
-            font-size: 16px;
-            font-weight: 600;
-        }
-
-        .editor-header-actions {
-            display: flex;
-            gap: 10px;
-        }
-
-        .stats-btn {
-            background: none;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 12px;
-            color: var(--gray);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .stats-btn:hover {
-            background: var(--light);
-        }
-
-        .editor-container {
-            background: white;
-        }
-
-        #editor {
-            height: 600px;
-            background: white;
-            font-size: 16px;
-            line-height: 1.6;
-        }
-
-        /* Analysis Sections */
+        /* Analysis Section */
         .analysis-section {
-            background: white;
-            border-radius: 16px;
-            padding: 20px;
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 20px 24px;
             margin-bottom: 24px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
         }
 
         .analysis-section h3 {
             color: var(--primary);
             font-size: 18px;
-            margin-bottom: 16px;
-            padding-bottom: 8px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
             border-bottom: 2px solid var(--secondary);
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            display: inline-block;
+        }
+
+        .analysis-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
         }
 
         .analysis-card {
             background: var(--light);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 20px;
+            border-radius: var(--radius-md);
+            padding: 16px;
+            border: 1px solid var(--border);
         }
 
         .analysis-card h4 {
             color: var(--primary);
             margin-bottom: 12px;
-            font-size: 16px;
+            font-size: 14px;
+            font-weight: 600;
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
         .small-editor {
-            height: 200px;
-            background: white;
-            border-radius: 12px;
+            height: 180px;
+            background: var(--white);
+            border-radius: var(--radius-sm);
             overflow: hidden;
-            border: 2px solid var(--border);
+            border: 1px solid var(--border);
+        }
+
+        .small-editor .ql-container {
+            height: calc(100% - 42px);
+        }
+
+        .small-editor .ql-toolbar {
+            padding: 4px 8px;
+        }
+
+        .small-editor .ql-toolbar button {
+            width: 24px;
+            height: 24px;
         }
 
         /* Action Buttons */
         .action-buttons {
             display: flex;
-            gap: 15px;
-            margin-top: 30px;
-            flex-wrap: wrap;
+            gap: 12px;
             justify-content: flex-end;
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
         }
 
         .btn {
-            padding: 12px 28px;
+            padding: 10px 24px;
             border-radius: 40px;
             font-size: 14px;
             font-weight: 600;
@@ -285,36 +336,28 @@
         }
 
         .btn-success:hover {
-            background: #3d8b40;
+            background: #0d9668;
             transform: translateY(-1px);
         }
 
         .btn-secondary {
-            background: var(--border);
+            background: var(--light);
             color: var(--dark);
+            border: 1px solid var(--border);
         }
 
         .btn-secondary:hover {
-            background: #ddd;
-            transform: translateY(-1px);
-        }
-
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: var(--primary-light);
-            transform: translateY(-1px);
+            background: var(--border);
         }
 
         /* Documents List */
         .documents-list {
-            background: white;
-            border-radius: 24px;
-            padding: 20px;
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 20px 24px;
             margin-top: 24px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
         }
 
         .documents-header {
@@ -323,23 +366,31 @@
             align-items: center;
             margin-bottom: 20px;
             flex-wrap: wrap;
-            gap: 15px;
+            gap: 12px;
+        }
+
+        .documents-header h3 {
+            color: var(--primary);
+            font-size: 16px;
+            font-weight: 600;
         }
 
         .search-box {
-            padding: 8px 16px;
-            border: 2px solid var(--border);
-            border-radius: 30px;
-            width: 250px;
+            padding: 8px 14px;
+            border: 1px solid var(--border);
+            border-radius: 40px;
+            width: 240px;
+            font-size: 13px;
         }
 
         .document-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px;
+            padding: 14px;
             border-bottom: 1px solid var(--border);
             cursor: pointer;
+            transition: all 0.2s;
         }
 
         .document-item:hover {
@@ -348,7 +399,9 @@
 
         .document-info h4 {
             color: var(--primary);
-            margin-bottom: 5px;
+            margin-bottom: 4px;
+            font-size: 15px;
+            font-weight: 600;
         }
 
         .document-info p {
@@ -365,83 +418,110 @@
         }
 
         .status-published {
-            background: #d4edda;
-            color: #155724;
+            background: #d1fae5;
+            color: #065f46;
         }
 
         .status-draft {
-            background: #fff3cd;
-            color: #856404;
+            background: #fed7aa;
+            color: #92400e;
         }
 
         .icon-btn {
             background: none;
             border: none;
-            padding: 8px;
+            padding: 6px;
             cursor: pointer;
             color: var(--gray);
-            border-radius: 8px;
+            border-radius: 6px;
+            transition: all 0.2s;
         }
 
         .icon-btn:hover {
-            background: var(--light);
+            background: var(--border);
+            color: var(--primary);
         }
 
         .toast {
             position: fixed;
-            bottom: 30px;
-            right: 30px;
-            padding: 12px 24px;
-            border-radius: 30px;
+            bottom: 24px;
+            right: 24px;
+            padding: 12px 20px;
+            border-radius: 40px;
             background: var(--success);
             color: white;
             z-index: 1000;
             display: none;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: var(--shadow-lg);
         }
 
-        /* Stats Modal */
-        .stats-modal {
+        /* Modal */
+        .modal {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0, 0, 0, 0.5);
             display: none;
             align-items: center;
             justify-content: center;
             z-index: 1000;
         }
 
-        .stats-modal-content {
-            background: white;
-            border-radius: 20px;
+        .modal-content {
+            background: var(--white);
+            border-radius: var(--radius-lg);
             padding: 24px;
             max-width: 400px;
             width: 90%;
         }
 
-        .stats-modal-content h3 {
+        .modal-content h3 {
             color: var(--primary);
             margin-bottom: 16px;
+            font-size: 18px;
         }
 
-        .stats-modal-content p {
-            margin-bottom: 12px;
-            padding: 8px;
+        .modal-content p {
+            margin-bottom: 10px;
+            padding: 10px;
             background: var(--light);
-            border-radius: 8px;
+            border-radius: var(--radius-sm);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .modal-content button {
+            margin-top: 16px;
+            width: 100%;
         }
 
         @media (max-width: 768px) {
             .container {
                 padding: 16px;
             }
-            #editor {
-                height: 450px;
+            .analysis-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+            .selector-group {
+                flex-direction: column;
+            }
+            select, input {
+                width: 100%;
+            }
+            .editor-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .ql-editor {
+                min-height: 350px;
             }
             .small-editor {
-                height: 150px;
+                height: 160px;
             }
         }
     </style>
@@ -458,17 +538,18 @@
                 <i class="fas fa-home"></i> Dashboard
             </a>
             <span class="admin-badge">
-                <i class="fas fa-crown"></i> Admin Panel
+                <i class="fas fa-crown"></i> Admin
             </span>
         </div>
     </header>
 
     <div class="container">
+        <!-- Book Selector -->
         <div class="book-selector">
-            <h3 style="color: var(--primary);"><i class="fas fa-book"></i> Select Book & Section</h3>
+            <h3><i class="fas fa-book"></i> Select Work</h3>
             <div class="selector-group">
                 <select id="bookSelect">
-                    <option value="">-- Select Book --</option>
+                    <option value="">-- Select Book / Play / Poem --</option>
                     <optgroup label="📖 Prose">
                         <option value="to-kill-a-mockingbird">To Kill a Mockingbird (Harper Lee)</option>
                         <option value="path-of-lucas">Path of Lucas (Susanne Bellefeuille)</option>
@@ -476,7 +557,7 @@
                         <option value="redemption-road">Redemption Road (Elma Shaw)</option>
                     </optgroup>
                     <optgroup label="🎭 Drama">
-                        <option value="antony-and-cleopatra">Antony and Cleopatra (William Shakespeare)</option>
+                        <option value="antony-and-cleopatra">Antony and Cleopatra (Shakespeare)</option>
                         <option value="once-upon-an-elephant">Once Upon an Elephant (Bosede Ademilua-Afolayan)</option>
                         <option value="marriage-of-anansewa">The Marriage of Anansewa (Efua Sutherland)</option>
                         <option value="inspector-calls">An Inspector Calls (J. B. Priestley)</option>
@@ -490,108 +571,106 @@
                         <option value="hearty-garlands">Hearty Garlands (S.O.H. Afriyie-Vidza)</option>
                         <option value="breast-of-the-sea">The Breast of the Sea (Syl Cheney-Coker)</option>
                         <option value="she-walks-in-beauty">She Walks in Beauty (Lord Byron)</option>
-                        <option value="nuns-priest-tale">The Nun's Priest's Tale (Geoffrey Chaucer)</option>
+                        <option value="nuns-priest-tale">The Nun's Priest's Tale (Chaucer)</option>
                         <option value="telephone-call">The Telephone Call (Fleur Adcock)</option>
                         <option value="the-stone">The Stone (Wilfred Wilson Gibson)</option>
                     </optgroup>
                 </select>
                 <input type="text" id="sectionName" placeholder="Section name (e.g., Chapter 1, Act 1, Full Analysis)">
-                <button id="newSectionBtn" class="btn btn-secondary" style="padding: 12px 24px;">
+                <button id="newSectionBtn" class="btn btn-secondary">
                     <i class="fas fa-plus"></i> New
                 </button>
-                <button id="loadSummaryBtn" class="btn btn-secondary" style="padding: 12px 24px;">
+                <button id="loadSummaryBtn" class="btn btn-secondary">
                     <i class="fas fa-folder-open"></i> Load
                 </button>
             </div>
         </div>
 
         <!-- Main Editor -->
-        <div class="editor-main" id="summaryForm" style="display: none;">
-            <div class="editor-header">
-                <h3><i class="fas fa-edit"></i> Summary Content</h3>
-                <div class="editor-header-actions">
-                    <button class="stats-btn" id="wordCountBtn">
-                        <i class="fas fa-chart-simple"></i> <span id="wordCount">0</span> words
+        <div id="mainEditor" style="display: none;">
+            <div class="editor-wrapper">
+                <div class="editor-header">
+                    <h3><i class="fas fa-edit"></i> Summary Content</h3>
+                    <div class="stats-group">
+                        <span class="stat-badge" id="wordCountBtn">
+                            <i class="fas fa-chart-simple"></i> <span id="wordCount">0</span> words
+                        </span>
+                        <span class="stat-badge" id="charCountBtn">
+                            <i class="fas fa-i-cursor"></i> <span id="charCount">0</span> chars
+                        </span>
+                        <span class="stat-badge" id="fullStatsBtn">
+                            <i class="fas fa-chart-line"></i> Stats
+                        </span>
+                    </div>
+                </div>
+                <div id="editor"></div>
+            </div>
+
+            <!-- Analysis Section -->
+            <div class="analysis-section">
+                <h3><i class="fas fa-chart-line"></i> Literary Analysis</h3>
+                <div class="analysis-grid">
+                    <div class="analysis-card">
+                        <h4><i class="fas fa-lightbulb"></i> Key Points</h4>
+                        <div class="small-editor" id="keyPointsEditor"></div>
+                    </div>
+                    <div class="analysis-card">
+                        <h4><i class="fas fa-users"></i> Characters</h4>
+                        <div class="small-editor" id="charactersEditor"></div>
+                    </div>
+                    <div class="analysis-card">
+                        <h4><i class="fas fa-palette"></i> Themes</h4>
+                        <div class="small-editor" id="themesEditor"></div>
+                    </div>
+                    <div class="analysis-card">
+                        <h4><i class="fas fa-feather-alt"></i> Literary Devices</h4>
+                        <div class="small-editor" id="devicesEditor"></div>
+                    </div>
+                    <div class="analysis-card" id="toneMoodCard">
+                        <h4><i class="fas fa-smile"></i> Tone & Mood</h4>
+                        <div class="small-editor" id="toneMoodEditor"></div>
+                    </div>
+                    <div class="analysis-card" id="dramaticDevicesCard" style="display: none;">
+                        <h4><i class="fas fa-mask"></i> Dramatic Devices</h4>
+                        <div class="small-editor" id="dramaticDevicesEditor"></div>
+                    </div>
+                </div>
+                <div class="action-buttons">
+                    <button id="saveDraftBtn" class="btn btn-secondary">
+                        <i class="fas fa-save"></i> Save Draft
                     </button>
-                    <button class="stats-btn" id="charCountBtn">
-                        <i class="fas fa-i-cursor"></i> <span id="charCount">0</span> chars
-                    </button>
-                    <button class="stats-btn" id="fullStatsBtn">
-                        <i class="fas fa-chart-line"></i> Stats
+                    <button id="publishBtn" class="btn btn-success">
+                        <i class="fas fa-globe"></i> Publish
                     </button>
                 </div>
             </div>
-            <div id="editor"></div>
         </div>
 
-        <!-- Analysis Sections -->
-        <div class="analysis-section" id="analysisSection" style="display: none;">
-            <h3><i class="fas fa-chart-line"></i> Literary Analysis</h3>
-            
-            <div class="analysis-card">
-                <h4><i class="fas fa-lightbulb"></i> Key Points</h4>
-                <div class="small-editor" id="keyPointsEditor"></div>
-            </div>
-
-            <div class="analysis-card">
-                <h4><i class="fas fa-users"></i> Characters</h4>
-                <div class="small-editor" id="charactersEditor"></div>
-            </div>
-
-            <div class="analysis-card">
-                <h4><i class="fas fa-palette"></i> Themes</h4>
-                <div class="small-editor" id="themesEditor"></div>
-            </div>
-
-            <div class="analysis-card">
-                <h4><i class="fas fa-feather-alt"></i> Literary Devices</h4>
-                <div class="small-editor" id="devicesEditor"></div>
-            </div>
-
-            <div class="analysis-card" id="toneMoodCard">
-                <h4><i class="fas fa-smile"></i> Tone & Mood</h4>
-                <div class="small-editor" id="toneMoodEditor"></div>
-            </div>
-
-            <div class="analysis-card" id="dramaticDevicesCard" style="display: none;">
-                <h4><i class="fas fa-mask"></i> Dramatic Devices</h4>
-                <div class="small-editor" id="dramaticDevicesEditor"></div>
-            </div>
-
-            <div class="action-buttons">
-                <button id="saveDraftBtn" class="btn btn-secondary">
-                    <i class="fas fa-save"></i> Save Draft
-                </button>
-                <button id="publishBtn" class="btn btn-success">
-                    <i class="fas fa-globe"></i> Publish
-                </button>
-            </div>
-        </div>
-
+        <!-- Documents List -->
         <div class="documents-list">
             <div class="documents-header">
-                <h3><i class="fas fa-history"></i> Your Saved Summaries</h3>
-                <input type="text" id="searchDocs" placeholder="Search summaries..." class="search-box">
+                <h3><i class="fas fa-history"></i> Your Summaries</h3>
+                <input type="text" id="searchDocs" placeholder="Search..." class="search-box">
             </div>
             <div id="documentsContainer">
-                <p style="text-align: center; padding: 40px; color: var(--gray);">
+                <div style="text-align: center; padding: 40px; color: var(--gray);">
                     <i class="fas fa-spinner fa-spin"></i> Loading...
-                </p>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Stats Modal -->
-    <div id="statsModal" class="stats-modal">
-        <div class="stats-modal-content">
-            <h3><i class="fas fa-chart-line"></i> Document Statistics</h3>
-            <p><strong>Words:</strong> <span id="modalWords">0</span></p>
-            <p><strong>Characters (no spaces):</strong> <span id="modalCharsNoSpace">0</span></p>
-            <p><strong>Characters (with spaces):</strong> <span id="modalCharsWithSpace">0</span></p>
-            <p><strong>Sentences:</strong> <span id="modalSentences">0</span></p>
-            <p><strong>Paragraphs:</strong> <span id="modalParagraphs">0</span></p>
-            <p><strong>Reading Time:</strong> <span id="modalReadingTime">0</span> min</p>
-            <button id="closeStatsModal" class="btn btn-secondary" style="margin-top: 16px; width: 100%;">Close</button>
+    <div id="statsModal" class="modal">
+        <div class="modal-content">
+            <h3><i class="fas fa-chart-line"></i> Statistics</h3>
+            <p><span>Words:</span> <strong id="modalWords">0</strong></p>
+            <p><span>Characters (no spaces):</span> <strong id="modalCharsNoSpace">0</strong></p>
+            <p><span>Characters (with spaces):</span> <strong id="modalCharsWithSpace">0</strong></p>
+            <p><span>Sentences:</span> <strong id="modalSentences">0</strong></p>
+            <p><span>Paragraphs:</span> <strong id="modalParagraphs">0</strong></p>
+            <p><span>Reading time:</span> <strong id="modalReadingTime">0</strong> min</p>
+            <button id="closeStatsModal" class="btn btn-secondary">Close</button>
         </div>
     </div>
 
@@ -617,202 +696,124 @@
 
         const adminEmails = ["okewunmitimileyin23@gmail.com", "triangleofscholars@gmail.com"];
 
-        let quill;
-        let keyPointsEditor, charactersEditor, themesEditor, devicesEditor, toneMoodEditor, dramaticDevicesEditor;
-
+        let quill, keyPointsEditor, charactersEditor, themesEditor, devicesEditor, toneMoodEditor, dramaticDevicesEditor;
+        
         let currentData = {
-            sectionName: "",
-            content: "",
-            keyPoints: "",
-            characters: "",
-            themes: "",
-            literaryDevices: "",
-            toneMood: "",
-            dramaticDevices: ""
+            sectionName: "", content: "", keyPoints: "", characters: "", themes: "",
+            literaryDevices: "", toneMood: "", dramaticDevices: ""
         };
 
-        // Full toolbar configuration with ALL features
         const toolbarOptions = [
-            [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-            [{ 'font': [] }],
-            [{ 'size': ['small', false, 'large', 'huge'] }],
-            ['bold', 'italic', 'underline', 'strike'],
-            [{ 'color': [] }, { 'background': [] }],
-            [{ 'script': 'sub'}, { 'script': 'super' }],
-            [{ 'list': 'ordered'}, { 'list': 'bullet' }, { 'list': 'check' }],
-            [{ 'indent': '-1'}, { 'indent': '+1' }],
-            [{ 'direction': 'rtl' }],
-            [{ 'align': [] }],
-            ['blockquote', 'code-block'],
-            ['link', 'image', 'video', 'formula'],
-            ['clean'],
-            [{ 'table': 'table' }],
-            ['hr'],
-            [{ 'page-break': 'page-break' }]
+            [{ 'header': [1, 2, 3, false] }], ['bold', 'italic', 'underline', 'strike'],
+            [{ 'color': [] }, { 'background': [] }], [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+            [{ 'indent': '-1'}, { 'indent': '+1' }], [{ 'align': [] }],
+            ['blockquote', 'code-block'], ['link', 'image'], ['clean']
         ];
 
-        function updateWordCount() {
-            if (quill) {
-                const text = quill.getText();
-                const words = text.trim().split(/\s+/).filter(w => w.length > 0).length;
-                const chars = text.replace(/\s/g, '').length;
-                document.getElementById('wordCount').innerText = words;
-                document.getElementById('charCount').innerText = chars;
-            }
+        function initEditors() {
+            quill = new Quill('#editor', {
+                theme: 'snow',
+                placeholder: 'Write your summary here...',
+                modules: { toolbar: toolbarOptions }
+            });
+            quill.on('text-change', () => { currentData.content = quill.root.innerHTML; updateStats(); });
+
+            const smallToolbar = [['bold', 'italic', 'underline'], [{ 'list': 'ordered'}, { 'list': 'bullet' }], ['clean']];
+            
+            keyPointsEditor = new Quill('#keyPointsEditor', { theme: 'snow', placeholder: 'Key points...', modules: { toolbar: smallToolbar } });
+            keyPointsEditor.on('text-change', () => { currentData.keyPoints = keyPointsEditor.root.innerHTML; });
+            
+            charactersEditor = new Quill('#charactersEditor', { theme: 'snow', placeholder: 'Characters...', modules: { toolbar: smallToolbar } });
+            charactersEditor.on('text-change', () => { currentData.characters = charactersEditor.root.innerHTML; });
+            
+            themesEditor = new Quill('#themesEditor', { theme: 'snow', placeholder: 'Themes...', modules: { toolbar: smallToolbar } });
+            themesEditor.on('text-change', () => { currentData.themes = themesEditor.root.innerHTML; });
+            
+            devicesEditor = new Quill('#devicesEditor', { theme: 'snow', placeholder: 'Literary devices...', modules: { toolbar: smallToolbar } });
+            devicesEditor.on('text-change', () => { currentData.literaryDevices = devicesEditor.root.innerHTML; });
+            
+            toneMoodEditor = new Quill('#toneMoodEditor', { theme: 'snow', placeholder: 'Tone & mood...', modules: { toolbar: smallToolbar } });
+            toneMoodEditor.on('text-change', () => { currentData.toneMood = toneMoodEditor.root.innerHTML; });
+            
+            dramaticDevicesEditor = new Quill('#dramaticDevicesEditor', { theme: 'snow', placeholder: 'Dramatic devices...', modules: { toolbar: smallToolbar } });
+            dramaticDevicesEditor.on('text-change', () => { currentData.dramaticDevices = dramaticDevicesEditor.root.innerHTML; });
+        }
+
+        function updateStats() {
+            if (!quill) return;
+            const text = quill.getText();
+            const words = text.trim().split(/\s+/).filter(w => w.length > 0).length;
+            const chars = text.replace(/\s/g, '').length;
+            document.getElementById('wordCount').innerText = words;
+            document.getElementById('charCount').innerText = chars;
         }
 
         function showStatsModal() {
-            if (quill) {
-                const text = quill.getText();
-                const words = text.trim().split(/\s+/).filter(w => w.length > 0).length;
-                const charsNoSpace = text.replace(/\s/g, '').length;
-                const charsWithSpace = text.length;
-                const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0).length;
-                const paragraphs = quill.root.innerHTML.split(/<\/p>/).filter(p => p.trim().length > 0).length;
-                const readingTime = Math.max(1, Math.ceil(words / 200));
-                
-                document.getElementById('modalWords').innerText = words;
-                document.getElementById('modalCharsNoSpace').innerText = charsNoSpace;
-                document.getElementById('modalCharsWithSpace').innerText = charsWithSpace;
-                document.getElementById('modalSentences').innerText = sentences;
-                document.getElementById('modalParagraphs').innerText = paragraphs;
-                document.getElementById('modalReadingTime').innerText = readingTime;
-                
-                document.getElementById('statsModal').style.display = 'flex';
-            }
-        }
-
-        function initEditors() {
-            // Full toolbar with all features
-            quill = new Quill('#editor', {
-                theme: 'snow',
-                placeholder: 'Write your detailed summary here... You can format text, add images, create tables, insert page breaks, and more!',
-                modules: {
-                    toolbar: toolbarOptions,
-                    table: true,
-                    clipboard: { matchVisual: false }
-                }
-            });
-            quill.on('text-change', () => { 
-                currentData.content = quill.root.innerHTML;
-                updateWordCount();
-            });
-
-            keyPointsEditor = new Quill('#keyPointsEditor', { 
-                theme: 'snow', 
-                placeholder: 'Write detailed key points here...',
-                modules: { toolbar: [['bold', 'italic', 'underline'], [{ 'list': 'ordered'}, { 'list': 'bullet' }], ['clean']] }
-            });
-            keyPointsEditor.on('text-change', () => { currentData.keyPoints = keyPointsEditor.root.innerHTML; });
-
-            charactersEditor = new Quill('#charactersEditor', { 
-                theme: 'snow', 
-                placeholder: 'Write detailed character analysis here...',
-                modules: { toolbar: [['bold', 'italic', 'underline'], [{ 'list': 'ordered'}, { 'list': 'bullet' }], ['clean']] }
-            });
-            charactersEditor.on('text-change', () => { currentData.characters = charactersEditor.root.innerHTML; });
-
-            themesEditor = new Quill('#themesEditor', { 
-                theme: 'snow', 
-                placeholder: 'Write detailed theme analysis here...',
-                modules: { toolbar: [['bold', 'italic', 'underline'], [{ 'list': 'ordered'}, { 'list': 'bullet' }], ['clean']] }
-            });
-            themesEditor.on('text-change', () => { currentData.themes = themesEditor.root.innerHTML; });
-
-            devicesEditor = new Quill('#devicesEditor', { 
-                theme: 'snow', 
-                placeholder: 'Write detailed literary devices analysis here...',
-                modules: { toolbar: [['bold', 'italic', 'underline'], [{ 'list': 'ordered'}, { 'list': 'bullet' }], ['clean']] }
-            });
-            devicesEditor.on('text-change', () => { currentData.literaryDevices = devicesEditor.root.innerHTML; });
-
-            toneMoodEditor = new Quill('#toneMoodEditor', { 
-                theme: 'snow', 
-                placeholder: 'Write detailed tone and mood analysis here...',
-                modules: { toolbar: [['bold', 'italic', 'underline'], [{ 'list': 'ordered'}, { 'list': 'bullet' }], ['clean']] }
-            });
-            toneMoodEditor.on('text-change', () => { currentData.toneMood = toneMoodEditor.root.innerHTML; });
-
-            dramaticDevicesEditor = new Quill('#dramaticDevicesEditor', { 
-                theme: 'snow', 
-                placeholder: 'Write detailed dramatic devices analysis here...',
-                modules: { toolbar: [['bold', 'italic', 'underline'], [{ 'list': 'ordered'}, { 'list': 'bullet' }], ['clean']] }
-            });
-            dramaticDevicesEditor.on('text-change', () => { currentData.dramaticDevices = dramaticDevicesEditor.root.innerHTML; });
+            if (!quill) return;
+            const text = quill.getText();
+            const words = text.trim().split(/\s+/).filter(w => w.length > 0).length;
+            const charsNoSpace = text.replace(/\s/g, '').length;
+            const charsWithSpace = text.length;
+            const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0).length;
+            const paragraphs = quill.root.innerHTML.split(/<\/p>/).filter(p => p.trim().length > 0).length;
+            const readingTime = Math.max(1, Math.ceil(words / 200));
             
-            updateWordCount();
+            document.getElementById('modalWords').innerText = words;
+            document.getElementById('modalCharsNoSpace').innerText = charsNoSpace;
+            document.getElementById('modalCharsWithSpace').innerText = charsWithSpace;
+            document.getElementById('modalSentences').innerText = sentences;
+            document.getElementById('modalParagraphs').innerText = paragraphs;
+            document.getElementById('modalReadingTime').innerText = readingTime;
+            document.getElementById('statsModal').style.display = 'flex';
         }
 
-        function showToast(message, isError = false) {
+        function showToast(msg, isError = false) {
             const toast = document.getElementById('toast');
-            toast.textContent = message;
-            toast.style.backgroundColor = isError ? '#f44336' : '#4caf50';
+            toast.textContent = msg;
+            toast.style.backgroundColor = isError ? '#ef4444' : '#10b981';
             toast.style.display = 'block';
-            setTimeout(() => { toast.style.display = 'none'; }, 3000);
+            setTimeout(() => toast.style.display = 'none', 3000);
         }
 
         async function saveSummary(published) {
             const book = document.getElementById('bookSelect').value;
             const sectionName = document.getElementById('sectionName').value.trim();
-            
-            if (!book) {
-                showToast('Please select a book', true);
+            if (!book || !sectionName) {
+                showToast('Select book and enter section name', true);
                 return;
             }
-            if (!sectionName) {
-                showToast('Please enter a section name', true);
-                return;
-            }
-            
             currentData.sectionName = sectionName;
-            
-            const cleanSectionName = sectionName.toLowerCase().replace(/[^a-z0-9]/g, '_');
-            const docId = `${book}_${cleanSectionName}`;
-            
-            const summaryData = {
-                bookId: book,
-                sectionName: sectionName,
-                content: currentData.content || "",
-                keyPoints: currentData.keyPoints || "",
-                characters: currentData.characters || "",
-                themes: currentData.themes || "",
-                literaryDevices: currentData.literaryDevices || "",
-                toneMood: currentData.toneMood || "",
-                dramaticDevices: currentData.dramaticDevices || "",
-                published: published,
-                createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString(),
-                updatedBy: auth.currentUser?.email
-            };
+            const cleanName = sectionName.toLowerCase().replace(/[^a-z0-9]/g, '_');
+            const docId = `${book}_${cleanName}`;
             
             try {
-                await setDoc(doc(db, "summaries", docId), summaryData);
-                showToast(published ? '✅ Published successfully!' : '📝 Saved as draft');
+                await setDoc(doc(db, "summaries", docId), {
+                    bookId: book, sectionName, published,
+                    content: currentData.content || "", keyPoints: currentData.keyPoints || "",
+                    characters: currentData.characters || "", themes: currentData.themes || "",
+                    literaryDevices: currentData.literaryDevices || "", toneMood: currentData.toneMood || "",
+                    dramaticDevices: currentData.dramaticDevices || "",
+                    updatedAt: new Date().toISOString(), updatedBy: auth.currentUser?.email
+                });
+                showToast(published ? '✅ Published!' : '📝 Saved');
                 loadDocuments();
             } catch (error) {
-                console.error('Save error:', error);
-                showToast('Error saving: ' + error.message, true);
+                showToast('Error: ' + error.message, true);
             }
         }
 
         async function loadSummary(docId) {
-            const summaryRef = doc(db, "summaries", docId);
-            const summaryDoc = await getDoc(summaryRef);
-            
-            if (summaryDoc.exists()) {
-                const data = summaryDoc.data();
-                currentData = {
-                    sectionName: data.sectionName || "",
-                    content: data.content || "",
-                    keyPoints: data.keyPoints || "",
-                    characters: data.characters || "",
-                    themes: data.themes || "",
-                    literaryDevices: data.literaryDevices || "",
-                    toneMood: data.toneMood || "",
-                    dramaticDevices: data.dramaticDevices || ""
-                };
-                
+            const docSnap = await getDoc(doc(db, "summaries", docId));
+            if (docSnap.exists()) {
+                const data = docSnap.data();
+                Object.assign(currentData, {
+                    sectionName: data.sectionName || "", content: data.content || "",
+                    keyPoints: data.keyPoints || "", characters: data.characters || "",
+                    themes: data.themes || "", literaryDevices: data.literaryDevices || "",
+                    toneMood: data.toneMood || "", dramaticDevices: data.dramaticDevices || ""
+                });
                 document.getElementById('sectionName').value = currentData.sectionName;
+                document.getElementById('bookSelect').value = data.bookId || '';
                 quill.root.innerHTML = currentData.content;
                 keyPointsEditor.root.innerHTML = currentData.keyPoints;
                 charactersEditor.root.innerHTML = currentData.characters;
@@ -820,222 +821,101 @@
                 devicesEditor.root.innerHTML = currentData.literaryDevices;
                 toneMoodEditor.root.innerHTML = currentData.toneMood;
                 dramaticDevicesEditor.root.innerHTML = currentData.dramaticDevices;
-                
-                document.getElementById('bookSelect').value = data.bookId || '';
-                document.getElementById('summaryForm').style.display = 'block';
-                document.getElementById('analysisSection').style.display = 'block';
-                
                 updateCategoryFields(data.bookId);
-                updateWordCount();
-                showToast('✅ Loaded successfully');
+                document.getElementById('mainEditor').style.display = 'block';
+                updateStats();
+                showToast('✅ Loaded');
             } else {
-                showToast('Summary not found', true);
+                showToast('Not found', true);
             }
         }
 
         function updateCategoryFields(bookId) {
-            const toneMoodCard = document.getElementById('toneMoodCard');
-            const dramaticDevicesCard = document.getElementById('dramaticDevicesCard');
-            
             const dramaBooks = ['antony-and-cleopatra', 'once-upon-an-elephant', 'marriage-of-anansewa', 'inspector-calls', 'man-for-all-seasons'];
-            const isDrama = dramaBooks.includes(bookId);
-            
-            toneMoodCard.style.display = 'block';
-            dramaticDevicesCard.style.display = isDrama ? 'block' : 'none';
+            document.getElementById('dramaticDevicesCard').style.display = dramaBooks.includes(bookId) ? 'block' : 'none';
+            document.getElementById('toneMoodCard').style.display = 'block';
         }
 
         async function createNewSection() {
             const book = document.getElementById('bookSelect').value;
             const sectionName = document.getElementById('sectionName').value.trim();
-            
-            if (!book) {
-                showToast('Please select a book first', true);
+            if (!book || !sectionName) {
+                showToast('Select book and enter section name', true);
                 return;
             }
-            if (!sectionName) {
-                showToast('Please enter a section name', true);
+            const cleanName = sectionName.toLowerCase().replace(/[^a-z0-9]/g, '_');
+            const docId = `${book}_${cleanName}`;
+            const exists = await getDoc(doc(db, "summaries", docId));
+            if (exists.exists()) {
+                showToast('Section exists! Use Load.', true);
                 return;
             }
-            
-            const cleanSectionName = sectionName.toLowerCase().replace(/[^a-z0-9]/g, '_');
-            const docId = `${book}_${cleanSectionName}`;
-            const existingDoc = await getDoc(doc(db, "summaries", docId));
-            
-            if (existingDoc.exists()) {
-                showToast('Section already exists! Use Load to edit it.', true);
-                return;
-            }
-            
-            const emptyData = {
-                bookId: book,
-                sectionName: sectionName,
-                content: "",
-                keyPoints: "",
-                characters: "",
-                themes: "",
-                literaryDevices: "",
-                toneMood: "",
-                dramaticDevices: "",
-                published: false,
-                createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString(),
-                updatedBy: auth.currentUser?.email
-            };
-            
-            try {
-                await setDoc(doc(db, "summaries", docId), emptyData);
-                showToast('✅ New section created! Now write your content.');
-                document.getElementById('summaryForm').style.display = 'block';
-                document.getElementById('analysisSection').style.display = 'block';
-                updateCategoryFields(book);
-                
-                quill.root.innerHTML = '';
-                keyPointsEditor.root.innerHTML = '';
-                charactersEditor.root.innerHTML = '';
-                themesEditor.root.innerHTML = '';
-                devicesEditor.root.innerHTML = '';
-                toneMoodEditor.root.innerHTML = '';
-                dramaticDevicesEditor.root.innerHTML = '';
-                currentData = {
-                    sectionName: sectionName,
-                    content: "",
-                    keyPoints: "",
-                    characters: "",
-                    themes: "",
-                    literaryDevices: "",
-                    toneMood: "",
-                    dramaticDevices: ""
-                };
-                updateWordCount();
-                loadDocuments();
-            } catch (error) {
-                console.error('Error creating section:', error);
-                showToast('Error creating section: ' + error.message, true);
-            }
+            await setDoc(doc(db, "summaries", docId), {
+                bookId: book, sectionName, published: false, content: "", keyPoints: "", characters: "",
+                themes: "", literaryDevices: "", toneMood: "", dramaticDevices: "",
+                createdAt: new Date().toISOString(), updatedAt: new Date().toISOString()
+            });
+            showToast('✅ Created! Now write your content.');
+            document.getElementById('mainEditor').style.display = 'block';
+            updateCategoryFields(book);
+            quill.root.innerHTML = "";
+            [keyPointsEditor, charactersEditor, themesEditor, devicesEditor, toneMoodEditor, dramaticDevicesEditor].forEach(e => e.root.innerHTML = "");
+            Object.keys(currentData).forEach(k => currentData[k] = "");
+            document.getElementById('sectionName').value = sectionName;
+            updateStats();
+            loadDocuments();
         }
 
         async function deleteSummary(docId) {
-            if (confirm('⚠️ Delete this summary permanently?')) {
+            if (confirm('Delete permanently?')) {
                 await deleteDoc(doc(db, "summaries", docId));
-                showToast('🗑️ Deleted successfully');
+                showToast('Deleted');
                 loadDocuments();
             }
         }
 
-        async function loadDocuments(searchTerm = '') {
+        async function loadDocuments(search = '') {
             const container = document.getElementById('documentsContainer');
-            container.innerHTML = '<p style="text-align: center; padding: 40px;"><i class="fas fa-spinner fa-spin"></i> Loading...</p>';
-            
+            container.innerHTML = '<div style="text-align:center;padding:40px;"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
             try {
-                const q = query(collection(db, "summaries"), orderBy("updatedAt", "desc"), limit(50));
-                const snapshot = await getDocs(q);
-                
+                const snapshot = await getDocs(query(collection(db, "summaries"), orderBy("updatedAt", "desc"), limit(50)));
                 let docs = [];
-                snapshot.forEach(doc => docs.push({ id: doc.id, ...doc.data() }));
-                
-                if (searchTerm) {
-                    const term = searchTerm.toLowerCase();
-                    docs = docs.filter(d => 
-                        d.sectionName?.toLowerCase().includes(term) ||
-                        d.bookId?.toLowerCase().includes(term)
-                    );
-                }
-                
-                if (docs.length === 0) {
-                    container.innerHTML = '<p style="text-align: center; padding: 40px; color: var(--gray);"><i class="fas fa-folder-open"></i> No summaries yet</p>';
-                    return;
-                }
-                
-                container.innerHTML = docs.map(doc => {
-                    const isPublished = doc.published === true;
-                    return `
-                        <div class="document-item">
-                            <div class="document-info">
-                                <h4>${escapeHtml(doc.sectionName || 'Untitled')}</h4>
-                                <p>
-                                    <i class="fas fa-book"></i> ${doc.bookId} | 
-                                    ${new Date(doc.updatedAt).toLocaleDateString()} | 
-                                    <span class="status-badge ${isPublished ? 'status-published' : 'status-draft'}">
-                                        ${isPublished ? '✅ Published' : '📝 Draft'}
-                                    </span>
-                                </p>
-                            </div>
-                            <div>
-                                <button class="icon-btn load-doc" data-id="${doc.id}"><i class="fas fa-edit"></i></button>
-                                <button class="icon-btn delete-doc" data-id="${doc.id}"><i class="fas fa-trash"></i></button>
-                            </div>
+                snapshot.forEach(d => docs.push({ id: d.id, ...d.data() }));
+                if (search) docs = docs.filter(d => d.sectionName?.toLowerCase().includes(search.toLowerCase()) || d.bookId?.toLowerCase().includes(search.toLowerCase()));
+                if (!docs.length) { container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--gray);"><i class="fas fa-folder-open"></i> No summaries</div>'; return; }
+                container.innerHTML = docs.map(d => `
+                    <div class="document-item">
+                        <div class="document-info">
+                            <h4>${escapeHtml(d.sectionName || 'Untitled')}</h4>
+                            <p><i class="fas fa-book"></i> ${d.bookId} | ${new Date(d.updatedAt).toLocaleDateString()} | <span class="status-badge ${d.published ? 'status-published' : 'status-draft'}">${d.published ? 'Published' : 'Draft'}</span></p>
                         </div>
-                    `;
-                }).join('');
-                
-                document.querySelectorAll('.load-doc').forEach(btn => {
-                    btn.addEventListener('click', () => loadSummary(btn.getAttribute('data-id')));
-                });
-                document.querySelectorAll('.delete-doc').forEach(btn => {
-                    btn.addEventListener('click', () => deleteSummary(btn.getAttribute('data-id')));
-                });
-            } catch (error) {
-                console.error('Error loading documents:', error);
-                container.innerHTML = '<p style="text-align: center; padding: 40px; color: var(--danger);">Error loading</p>';
-            }
+                        <div><button class="icon-btn load-doc" data-id="${d.id}"><i class="fas fa-edit"></i></button><button class="icon-btn delete-doc" data-id="${d.id}"><i class="fas fa-trash"></i></button></div>
+                    </div>`).join('');
+                document.querySelectorAll('.load-doc').forEach(b => b.addEventListener('click', () => loadSummary(b.dataset.id)));
+                document.querySelectorAll('.delete-doc').forEach(b => b.addEventListener('click', () => deleteSummary(b.dataset.id)));
+            } catch (error) { container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--danger);">Error loading</div>'; }
         }
 
-        function escapeHtml(text) {
-            if (!text) return '';
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
+        function escapeHtml(text) { if (!text) return ''; const d = document.createElement('div'); d.textContent = text; return d.innerHTML; }
 
-        // Event Listeners
-        document.getElementById('loadSummaryBtn').addEventListener('click', () => {
-            const book = document.getElementById('bookSelect').value;
-            const section = document.getElementById('sectionName').value.trim();
-            if (book && section) {
-                const cleanSection = section.toLowerCase().replace(/[^a-z0-9]/g, '_');
-                const docId = `${book}_${cleanSection}`;
-                loadSummary(docId);
-            } else {
-                showToast('Select book and enter section name', true);
-            }
-        });
+        document.getElementById('loadSummaryBtn').onclick = () => {
+            const book = document.getElementById('bookSelect').value, section = document.getElementById('sectionName').value.trim();
+            if (book && section) loadSummary(`${book}_${section.toLowerCase().replace(/[^a-z0-9]/g, '_')}`);
+            else showToast('Select book and section name', true);
+        };
+        document.getElementById('newSectionBtn').onclick = createNewSection;
+        document.getElementById('saveDraftBtn').onclick = () => saveSummary(false);
+        document.getElementById('publishBtn').onclick = () => saveSummary(true);
+        document.getElementById('wordCountBtn').onclick = showStatsModal;
+        document.getElementById('charCountBtn').onclick = showStatsModal;
+        document.getElementById('fullStatsBtn').onclick = showStatsModal;
+        document.getElementById('closeStatsModal').onclick = () => document.getElementById('statsModal').style.display = 'none';
+        document.getElementById('bookSelect').onchange = (e) => updateCategoryFields(e.target.value);
+        document.getElementById('searchDocs').oninput = (e) => { clearTimeout(window.searchTimeout); window.searchTimeout = setTimeout(() => loadDocuments(e.target.value), 300); };
 
-        document.getElementById('newSectionBtn').addEventListener('click', () => {
-            createNewSection();
-        });
-
-        document.getElementById('saveDraftBtn').addEventListener('click', () => saveSummary(false));
-        document.getElementById('publishBtn').addEventListener('click', () => saveSummary(true));
-        
-        document.getElementById('wordCountBtn').addEventListener('click', () => showStatsModal());
-        document.getElementById('charCountBtn').addEventListener('click', () => showStatsModal());
-        document.getElementById('fullStatsBtn').addEventListener('click', () => showStatsModal());
-        document.getElementById('closeStatsModal').addEventListener('click', () => {
-            document.getElementById('statsModal').style.display = 'none';
-        });
-
-        document.getElementById('bookSelect').addEventListener('change', (e) => {
-            const bookId = e.target.value;
-            if (bookId) {
-                updateCategoryFields(bookId);
-            }
-        });
-
-        let searchTimeout;
-        document.getElementById('searchDocs').addEventListener('input', (e) => {
-            clearTimeout(searchTimeout);
-            searchTimeout = setTimeout(() => loadDocuments(e.target.value), 300);
-        });
-
-        onAuthStateChanged(auth, (user) => {
-            if (!user) {
-                window.location.href = "index.html";
-                return;
-            }
-            if (!adminEmails.includes(user.email)) {
-                document.body.innerHTML = '<div style="text-align:center;padding:80px"><i class="fas fa-lock" style="font-size:64px;color:var(--danger)"></i><h2>Access Denied</h2><a href="dashboard.html">Back to Dashboard</a></div>';
-                return;
-            }
+        onAuthStateChanged(auth, user => {
+            if (!user) { window.location.href = "index.html"; return; }
+            if (!adminEmails.includes(user.email)) { document.body.innerHTML = '<div style="text-align:center;padding:80px"><i class="fas fa-lock"></i><h2>Access Denied</h2><a href="dashboard.html">Back</a></div>'; return; }
             initEditors();
             loadDocuments();
         });
