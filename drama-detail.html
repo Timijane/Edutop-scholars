@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Drama Detail - Mr. Timi Edutop Scholar</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #311b92;
+            --primary-light: #4527a0;
+            --secondary: #ff5722;
+            --light: #f5f5f7;
+            --dark: #333;
+            --gray: #777;
+            --light-gray: #eee;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            min-height: 100vh;
+        }
+
+        .header {
+            background: white;
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo h1 {
+            color: var(--primary);
+            font-size: 22px;
+        }
+
+        .logo span {
+            color: var(--secondary);
+        }
+
+        .logo a {
+            text-decoration: none;
+        }
+
+        .back-btn {
+            background: var(--light);
+            border: none;
+            padding: 8px 14px;
+            border-radius: 30px;
+            cursor: pointer;
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px 16px;
+        }
+
+        /* Book Hero */
+        .book-hero {
+            background: white;
+            border-radius: 24px;
+            overflow: hidden;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .book-cover {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+            padding: 25px;
+        }
+
+        .book-cover::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(49,27,146,0.85) 0%, rgba(0,0,0,0.6) 100%);
+        }
+
+        .book-info {
+            position: relative;
+            z-index: 2;
+            color: white;
+        }
+
+        .book-category {
+            background: var(--secondary);
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .book-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .book-author {
+            font-size: 15px;
+            opacity: 0.9;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .book-stats {
+            display: flex;
+            gap: 24px;
+            padding: 16px 25px;
+            background: var(--light);
+            border-top: 1px solid var(--light-gray);
+        }
+
+        .book-stat {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: var(--dark);
+        }
+
+        .book-stat i {
+            color: var(--primary);
+            width: 18px;
+        }
+
+        /* Sections Section */
+        .sections-section {
+            background: white;
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .sections-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .sections-header h2 {
+            color: var(--primary);
+            font-size: 22px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .quiz-all-btn {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sections-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .section-card {
+            background: var(--light);
+            border-radius: 16px;
+            padding: 18px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+
+        .section-card:hover {
+            border-color: var(--primary);
+            transform: translateX(6px);
+            background: white;
+        }
+
+        .section-title {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 18px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            color: var(--secondary);
+            font-size: 16px;
+        }
+
+        .section-preview {
+            font-size: 13px;
+            color: var(--gray);
+            line-height: 1.5;
+            margin-left: 28px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: var(--gray);
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px;
+            color: var(--gray);
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--light-gray);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: var(--gray);
+            font-size: 11px;
+            border-top: 1px solid var(--light-gray);
+            margin-top: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .book-title {
+                font-size: 24px;
+            }
+            .section-title {
+                font-size: 16px;
+            }
+            .section-preview {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">
+            <a href="dashboard.html">
+                <h1>Mr. Timi <span>Scholar</span></h1>
+            </a>
+        </div>
+        <button class="back-btn" onclick="window.location.href='drama.html'">
+            <i class="fas fa-arrow-left"></i> All Plays
+        </button>
+    </header>
+
+    <div class="container" id="container">
+        <div class="loading">
+            <div class="loading-spinner"></div>
+            <p>Loading drama...</p>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>Mr. Timi Edutop Scholar &copy; 2026 | Powered by Triangle Tech</p>
+    </footer>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+        import { getFirestore, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCictHNxtslYs9VR0hoicxlwPn_QghkgIA",
+            authDomain: "edutop-7ff51.firebaseapp.com",
+            projectId: "edutop-7ff51",
+            storageBucket: "edutop-7ff51.firebasestorage.app",
+            messagingSenderId: "79307850494",
+            appId: "1:79307850494:web:b51ce51204140ec5429baf",
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        const dramaBooksInfo = {
+            "antony-and-cleopatra": {
+                title: "Antony and Cleopatra",
+                author: "William Shakespeare",
+                category: "Shakespearean Tragedy",
+                year: 1606,
+                color: "#9b59b6",
+                description: "A tragic romance about the famous love affair between Mark Antony, a Roman general, and Cleopatra, the Queen of Egypt. Set against the backdrop of the Roman Empire, the play explores themes of power, passion, and political ambition."
+            },
+            "once-upon-an-elephant": {
+                title: "Once Upon an Elephant",
+                author: "Bosede Ademilua-Afolayan",
+                category: "African Drama",
+                year: 2015,
+                color: "#16a085",
+                description: "A powerful play exploring environmental conservation, tradition, and the relationship between humans and nature. The drama highlights the consequences of greed and the importance of preserving African heritage."
+            },
+            "marriage-of-anansewa": {
+                title: "The Marriage of Anansewa",
+                author: "Efua Sutherland",
+                category: "African Drama",
+                year: 1975,
+                color: "#27ae60",
+                description: "A witty and humorous play that uses Ananse stories to explore marriage traditions, greed, and social commentary in Ghanaian culture. The play showcases traditional Ghanaian storytelling techniques."
+            },
+            "inspector-calls": {
+                title: "An Inspector Calls",
+                author: "J. B. Priestley",
+                category: "Non-African Drama",
+                year: 1945,
+                color: "#2980b9",
+                description: "A classic British morality play about social responsibility, class conflict, and collective guilt. Set in 1912, the play uses the mysterious Inspector Goole to expose the hypocrisy of the wealthy Birling family."
+            },
+            "man-for-all-seasons": {
+                title: "A Man for All Seasons",
+                author: "Robert Bolt",
+                category: "Non-African Drama",
+                year: 1960,
+                color: "#e67e22",
+                description: "A historical drama about Sir Thomas More's moral dilemma and unwavering conscience against King Henry VIII's demands. The play explores themes of integrity, law, and political corruption."
+            }
+        };
+
+        function getBookIdFromUrl() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('book');
+        }
+
+        async function loadPublishedSections(bookId) {
+            try {
+                const q = query(
+                    collection(db, "summaries"),
+                    where("bookId", "==", bookId),
+                    where("published", "==", true)
+                );
+                const snapshot = await getDocs(q);
+                const sections = [];
+                snapshot.forEach((doc) => {
+                    sections.push({ id: doc.id, ...doc.data() });
+                });
+                return sections.sort((a, b) => (a.sectionName || '').localeCompare(b.sectionName || ''));
+            } catch (error) {
+                console.error("Error loading sections:", error);
+                return [];
+            }
+        }
+
+        function renderBook(bookId, sections) {
+            const book = dramaBooksInfo[bookId];
+            if (!book) {
+                document.getElementById('container').innerHTML = '<div class="loading"><p>Drama not found.</p></div>';
+                return;
+            }
+
+            const coverUrl = `https://placehold.co/800x200/${book.color.substring(1)}/white?text=${encodeURIComponent(book.title.substring(0, 15))}&fontsize=24`;
+
+            const html = `
+                <div class="book-hero">
+                    <div class="book-cover" style="background-image: url('${coverUrl}'), linear-gradient(135deg, ${book.color}, ${book.color}cc);">
+                        <div class="book-info">
+                            <span class="book-category">${book.category}</span>
+                            <h1 class="book-title">${book.title}</h1>
+                            <div class="book-author">
+                                <i class="fas fa-user-pen"></i> by ${book.author}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="book-stats">
+                        <div class="book-stat"><i class="fas fa-calendar"></i> ${book.year}</div>
+                        <div class="book-stat"><i class="fas fa-mask"></i> ${sections.length} Sections</div>
+                        <div class="book-stat"><i class="fas fa-clock"></i> Estimated: ${sections.length * 15} min read</div>
+                    </div>
+                </div>
+
+                <div class="sections-section">
+                    <div class="sections-header">
+                        <h2><i class="fas fa-list"></i> Acts & Scenes</h2>
+                        ${sections.length > 0 ? `
+                            <button class="quiz-all-btn" id="quizAllBtn">
+                                <i class="fas fa-puzzle-piece"></i> Full Play Quiz
+                            </button>
+                        ` : ''}
+                    </div>
+                    <div class="sections-list" id="sectionsList">
+                        ${renderSections(bookId, sections)}
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('container').innerHTML = html;
+            
+            document.querySelectorAll('.section-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    const sectionName = card.getAttribute('data-section');
+                    window.location.href = `drama-read.html?book=${bookId}&section=${encodeURIComponent(sectionName)}`;
+                });
+            });
+            
+            document.getElementById('quizAllBtn')?.addEventListener('click', () => {
+                window.location.href = `cbt-exam.html?book=${bookId}&full=true&type=drama`;
+            });
+        }
+
+        function renderSections(bookId, sections) {
+            if (sections.length === 0) {
+                return `
+                    <div class="empty-state">
+                        <i class="fas fa-mask"></i>
+                        <h3>No Analysis Yet</h3>
+                        <p>Drama analysis for this play is being prepared. Check back soon!</p>
+                    </div>
+                `;
+            }
+            
+            return sections.map((section) => {
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = section.content || '';
+                const plainText = tempDiv.textContent || '';
+                const preview = plainText.substring(0, 120) + (plainText.length > 120 ? '...' : '');
+                
+                return `
+                    <div class="section-card" data-section="${escapeHtml(section.sectionName)}">
+                        <div class="section-title">
+                            <i class="fas fa-theater-masks"></i> ${escapeHtml(section.sectionName)}
+                        </div>
+                        <div class="section-preview">${escapeHtml(preview)}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = "index.html";
+                return;
+            }
+            
+            const bookId = getBookIdFromUrl();
+            if (!bookId) {
+                document.getElementById('container').innerHTML = '<div class="loading"><p>No play selected. <a href="drama.html">Go back to plays</a></p></div>';
+                return;
+            }
+            
+            try {
+                const sections = await loadPublishedSections(bookId);
+                renderBook(bookId, sections);
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('container').innerHTML = `<div class="loading"><p>Error loading content: ${error.message}</p></div>`;
+            }
+        });
+    </script>
+</body>
+</html>
