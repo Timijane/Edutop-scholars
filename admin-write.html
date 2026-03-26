@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Write Summary | Mr. Timi Scholar - Google Docs Style</title>
+    <title>Write Summary | Mr. Timi Scholar - Professional Editor</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
     <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
@@ -32,7 +32,6 @@
             min-height: 100vh;
         }
 
-        /* Header */
         .header {
             background: white;
             padding: 12px 24px;
@@ -101,64 +100,6 @@
             padding: 20px;
         }
 
-        /* Google Docs Style Toolbar */
-        .docs-toolbar {
-            background: white;
-            border-radius: 12px;
-            padding: 12px 16px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            align-items: center;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .toolbar-group {
-            display: flex;
-            gap: 4px;
-            padding: 0 8px;
-            border-right: 1px solid var(--border);
-        }
-
-        .toolbar-group:last-child {
-            border-right: none;
-        }
-
-        .toolbar-btn {
-            background: none;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-            color: var(--dark);
-            transition: all 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .toolbar-btn:hover {
-            background: var(--light);
-        }
-
-        .toolbar-btn.active {
-            background: var(--primary);
-            color: white;
-        }
-
-        .toolbar-select {
-            padding: 6px 10px;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            font-size: 13px;
-            background: white;
-            cursor: pointer;
-        }
-
-        /* Book Selector */
         .book-selector {
             background: white;
             border-radius: 16px;
@@ -188,7 +129,32 @@
             outline: none;
         }
 
-        /* Main Editor Area - Google Docs Style */
+        /* Google Docs Style Full Toolbar */
+        .ql-toolbar.ql-snow {
+            border: none;
+            border-bottom: 1px solid var(--border);
+            background: var(--toolbar-bg);
+            padding: 8px;
+            position: sticky;
+            top: 70px;
+            z-index: 90;
+        }
+
+        .ql-toolbar.ql-snow .ql-formats {
+            margin-right: 8px;
+        }
+
+        .ql-toolbar.ql-snow button {
+            width: 32px;
+            height: 32px;
+            border-radius: 4px;
+        }
+
+        .ql-toolbar.ql-snow button:hover {
+            background: var(--light);
+        }
+
+        /* Editor Main Area */
         .editor-main {
             background: white;
             border-radius: 16px;
@@ -219,18 +185,35 @@
             gap: 10px;
         }
 
+        .stats-btn {
+            background: none;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 12px;
+            color: var(--gray);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .stats-btn:hover {
+            background: var(--light);
+        }
+
         .editor-container {
             background: white;
         }
 
         #editor {
-            height: 550px;
+            height: 600px;
             background: white;
             font-size: 16px;
             line-height: 1.6;
         }
 
-        /* Analysis Cards - Larger */
+        /* Analysis Sections */
         .analysis-section {
             background: white;
             border-radius: 16px;
@@ -416,19 +399,49 @@
             display: none;
         }
 
+        /* Stats Modal */
+        .stats-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .stats-modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 24px;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .stats-modal-content h3 {
+            color: var(--primary);
+            margin-bottom: 16px;
+        }
+
+        .stats-modal-content p {
+            margin-bottom: 12px;
+            padding: 8px;
+            background: var(--light);
+            border-radius: 8px;
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 16px;
             }
             #editor {
-                height: 400px;
+                height: 450px;
             }
             .small-editor {
                 height: 150px;
-            }
-            .toolbar-group {
-                border-right: none;
-                flex-wrap: wrap;
             }
         }
     </style>
@@ -492,22 +505,26 @@
             </div>
         </div>
 
-        <!-- Google Docs Style Main Editor -->
+        <!-- Main Editor -->
         <div class="editor-main" id="summaryForm" style="display: none;">
             <div class="editor-header">
                 <h3><i class="fas fa-edit"></i> Summary Content</h3>
                 <div class="editor-header-actions">
-                    <button class="toolbar-btn" id="wordCountBtn" title="Word Count">
+                    <button class="stats-btn" id="wordCountBtn">
                         <i class="fas fa-chart-simple"></i> <span id="wordCount">0</span> words
+                    </button>
+                    <button class="stats-btn" id="charCountBtn">
+                        <i class="fas fa-i-cursor"></i> <span id="charCount">0</span> chars
+                    </button>
+                    <button class="stats-btn" id="fullStatsBtn">
+                        <i class="fas fa-chart-line"></i> Stats
                     </button>
                 </div>
             </div>
-            <div class="editor-container">
-                <div id="editor"></div>
-            </div>
+            <div id="editor"></div>
         </div>
 
-        <!-- Analysis Sections - Larger Boxes -->
+        <!-- Analysis Sections -->
         <div class="analysis-section" id="analysisSection" style="display: none;">
             <h3><i class="fas fa-chart-line"></i> Literary Analysis</h3>
             
@@ -564,6 +581,20 @@
         </div>
     </div>
 
+    <!-- Stats Modal -->
+    <div id="statsModal" class="stats-modal">
+        <div class="stats-modal-content">
+            <h3><i class="fas fa-chart-line"></i> Document Statistics</h3>
+            <p><strong>Words:</strong> <span id="modalWords">0</span></p>
+            <p><strong>Characters (no spaces):</strong> <span id="modalCharsNoSpace">0</span></p>
+            <p><strong>Characters (with spaces):</strong> <span id="modalCharsWithSpace">0</span></p>
+            <p><strong>Sentences:</strong> <span id="modalSentences">0</span></p>
+            <p><strong>Paragraphs:</strong> <span id="modalParagraphs">0</span></p>
+            <p><strong>Reading Time:</strong> <span id="modalReadingTime">0</span> min</p>
+            <button id="closeStatsModal" class="btn btn-secondary" style="margin-top: 16px; width: 100%;">Close</button>
+        </div>
+    </div>
+
     <div id="toast" class="toast"></div>
 
     <script type="module">
@@ -600,31 +631,66 @@
             dramaticDevices: ""
         };
 
+        // Full toolbar configuration with ALL features
+        const toolbarOptions = [
+            [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+            [{ 'font': [] }],
+            [{ 'size': ['small', false, 'large', 'huge'] }],
+            ['bold', 'italic', 'underline', 'strike'],
+            [{ 'color': [] }, { 'background': [] }],
+            [{ 'script': 'sub'}, { 'script': 'super' }],
+            [{ 'list': 'ordered'}, { 'list': 'bullet' }, { 'list': 'check' }],
+            [{ 'indent': '-1'}, { 'indent': '+1' }],
+            [{ 'direction': 'rtl' }],
+            [{ 'align': [] }],
+            ['blockquote', 'code-block'],
+            ['link', 'image', 'video', 'formula'],
+            ['clean'],
+            [{ 'table': 'table' }],
+            ['hr'],
+            [{ 'page-break': 'page-break' }]
+        ];
+
         function updateWordCount() {
             if (quill) {
                 const text = quill.getText();
                 const words = text.trim().split(/\s+/).filter(w => w.length > 0).length;
+                const chars = text.replace(/\s/g, '').length;
                 document.getElementById('wordCount').innerText = words;
+                document.getElementById('charCount').innerText = chars;
+            }
+        }
+
+        function showStatsModal() {
+            if (quill) {
+                const text = quill.getText();
+                const words = text.trim().split(/\s+/).filter(w => w.length > 0).length;
+                const charsNoSpace = text.replace(/\s/g, '').length;
+                const charsWithSpace = text.length;
+                const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0).length;
+                const paragraphs = quill.root.innerHTML.split(/<\/p>/).filter(p => p.trim().length > 0).length;
+                const readingTime = Math.max(1, Math.ceil(words / 200));
+                
+                document.getElementById('modalWords').innerText = words;
+                document.getElementById('modalCharsNoSpace').innerText = charsNoSpace;
+                document.getElementById('modalCharsWithSpace').innerText = charsWithSpace;
+                document.getElementById('modalSentences').innerText = sentences;
+                document.getElementById('modalParagraphs').innerText = paragraphs;
+                document.getElementById('modalReadingTime').innerText = readingTime;
+                
+                document.getElementById('statsModal').style.display = 'flex';
             }
         }
 
         function initEditors() {
-            // Full toolbar with all Google Docs features
+            // Full toolbar with all features
             quill = new Quill('#editor', {
                 theme: 'snow',
-                placeholder: 'Write your detailed summary here... You can format text, add images, create lists, and more!',
+                placeholder: 'Write your detailed summary here... You can format text, add images, create tables, insert page breaks, and more!',
                 modules: {
-                    toolbar: [
-                        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-                        ['bold', 'italic', 'underline', 'strike'],
-                        [{ 'color': [] }, { 'background': [] }],
-                        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                        [{ 'indent': '-1'}, { 'indent': '+1' }],
-                        [{ 'align': [] }],
-                        ['blockquote', 'code-block'],
-                        ['link', 'image', 'video'],
-                        ['clean']
-                    ]
+                    toolbar: toolbarOptions,
+                    table: true,
+                    clipboard: { matchVisual: false }
                 }
             });
             quill.on('text-change', () => { 
@@ -940,6 +1006,13 @@
 
         document.getElementById('saveDraftBtn').addEventListener('click', () => saveSummary(false));
         document.getElementById('publishBtn').addEventListener('click', () => saveSummary(true));
+        
+        document.getElementById('wordCountBtn').addEventListener('click', () => showStatsModal());
+        document.getElementById('charCountBtn').addEventListener('click', () => showStatsModal());
+        document.getElementById('fullStatsBtn').addEventListener('click', () => showStatsModal());
+        document.getElementById('closeStatsModal').addEventListener('click', () => {
+            document.getElementById('statsModal').style.display = 'none';
+        });
 
         document.getElementById('bookSelect').addEventListener('change', (e) => {
             const bookId = e.target.value;
