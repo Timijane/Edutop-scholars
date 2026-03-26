@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Write Summary | Mr. Timi Scholar</title>
+    <title>Write Summary | Mr. Timi Scholar - Google Docs Style</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
     <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
@@ -24,20 +24,22 @@
             --dark: #2c3e50;
             --gray: #6c757d;
             --border: #e9ecef;
+            --toolbar-bg: #f8f9fa;
         }
 
         body {
-            background: #f5f7fb;
+            background: #eef2f7;
             min-height: 100vh;
         }
 
+        /* Header */
         .header {
             background: white;
             padding: 12px 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
             position: sticky;
             top: 0;
             z-index: 100;
@@ -94,14 +96,72 @@
         }
 
         .container {
-            max-width: 1000px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 20px;
         }
 
+        /* Google Docs Style Toolbar */
+        .docs-toolbar {
+            background: white;
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .toolbar-group {
+            display: flex;
+            gap: 4px;
+            padding: 0 8px;
+            border-right: 1px solid var(--border);
+        }
+
+        .toolbar-group:last-child {
+            border-right: none;
+        }
+
+        .toolbar-btn {
+            background: none;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            color: var(--dark);
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .toolbar-btn:hover {
+            background: var(--light);
+        }
+
+        .toolbar-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .toolbar-select {
+            padding: 6px 10px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 13px;
+            background: white;
+            cursor: pointer;
+        }
+
+        /* Book Selector */
         .book-selector {
             background: white;
-            border-radius: 20px;
+            border-radius: 16px;
             padding: 20px;
             margin-bottom: 24px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
@@ -128,34 +188,66 @@
             outline: none;
         }
 
-        .summary-form {
+        /* Main Editor Area - Google Docs Style */
+        .editor-main {
             background: white;
-            border-radius: 24px;
-            padding: 24px;
+            border-radius: 16px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-        }
-
-        .form-group {
+            overflow: hidden;
             margin-bottom: 24px;
         }
 
-        .form-group label {
-            display: block;
-            font-weight: 600;
+        .editor-header {
+            background: var(--toolbar-bg);
+            padding: 12px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .editor-header h3 {
             color: var(--primary);
-            margin-bottom: 8px;
-            font-size: 14px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .editor-header-actions {
+            display: flex;
+            gap: 10px;
         }
 
         .editor-container {
-            border-radius: 12px;
-            overflow: hidden;
-            border: 2px solid var(--border);
+            background: white;
         }
 
         #editor {
-            height: 400px;
+            height: 550px;
             background: white;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        /* Analysis Cards - Larger */
+        .analysis-section {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .analysis-section h3 {
+            color: var(--primary);
+            font-size: 18px;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--secondary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .analysis-card {
@@ -175,13 +267,14 @@
         }
 
         .small-editor {
-            height: 150px;
+            height: 200px;
             background: white;
             border-radius: 12px;
             overflow: hidden;
             border: 2px solid var(--border);
         }
 
+        /* Action Buttons */
         .action-buttons {
             display: flex;
             gap: 15px;
@@ -200,6 +293,7 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
+            transition: all 0.2s;
         }
 
         .btn-success {
@@ -207,11 +301,32 @@
             color: white;
         }
 
+        .btn-success:hover {
+            background: #3d8b40;
+            transform: translateY(-1px);
+        }
+
         .btn-secondary {
             background: var(--border);
             color: var(--dark);
         }
 
+        .btn-secondary:hover {
+            background: #ddd;
+            transform: translateY(-1px);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-light);
+            transform: translateY(-1px);
+        }
+
+        /* Documents List */
         .documents-list {
             background: white;
             border-radius: 24px;
@@ -306,7 +421,14 @@
                 padding: 16px;
             }
             #editor {
-                height: 300px;
+                height: 400px;
+            }
+            .small-editor {
+                height: 150px;
+            }
+            .toolbar-group {
+                border-right: none;
+                flex-wrap: wrap;
             }
         }
     </style>
@@ -347,8 +469,20 @@
                         <option value="inspector-calls">An Inspector Calls (J. B. Priestley)</option>
                         <option value="man-for-all-seasons">A Man for All Seasons (Robert Bolt)</option>
                     </optgroup>
+                    <optgroup label="📜 Poetry">
+                        <option value="once-upon-a-time">Once Upon a Time (Gabriel Okara)</option>
+                        <option value="new-tongue">New Tongue (Elizabeth L.A. Kamara)</option>
+                        <option value="night">Night (Wole Soyinka)</option>
+                        <option value="not-my-business">Not My Business (Niyi Osundare)</option>
+                        <option value="hearty-garlands">Hearty Garlands (S.O.H. Afriyie-Vidza)</option>
+                        <option value="breast-of-the-sea">The Breast of the Sea (Syl Cheney-Coker)</option>
+                        <option value="she-walks-in-beauty">She Walks in Beauty (Lord Byron)</option>
+                        <option value="nuns-priest-tale">The Nun's Priest's Tale (Geoffrey Chaucer)</option>
+                        <option value="telephone-call">The Telephone Call (Fleur Adcock)</option>
+                        <option value="the-stone">The Stone (Wilfred Wilson Gibson)</option>
+                    </optgroup>
                 </select>
-                <input type="text" id="sectionName" placeholder="Section name (e.g., Chapter 1, Act 1, Scene 1)">
+                <input type="text" id="sectionName" placeholder="Section name (e.g., Chapter 1, Act 1, Full Analysis)">
                 <button id="newSectionBtn" class="btn btn-secondary" style="padding: 12px 24px;">
                     <i class="fas fa-plus"></i> New
                 </button>
@@ -358,14 +492,25 @@
             </div>
         </div>
 
-        <div class="summary-form" id="summaryForm" style="display: none;">
-            <div class="form-group">
-                <label><i class="fas fa-align-left"></i> Summary Content</label>
-                <div class="editor-container">
-                    <div id="editor"></div>
+        <!-- Google Docs Style Main Editor -->
+        <div class="editor-main" id="summaryForm" style="display: none;">
+            <div class="editor-header">
+                <h3><i class="fas fa-edit"></i> Summary Content</h3>
+                <div class="editor-header-actions">
+                    <button class="toolbar-btn" id="wordCountBtn" title="Word Count">
+                        <i class="fas fa-chart-simple"></i> <span id="wordCount">0</span> words
+                    </button>
                 </div>
             </div>
+            <div class="editor-container">
+                <div id="editor"></div>
+            </div>
+        </div>
 
+        <!-- Analysis Sections - Larger Boxes -->
+        <div class="analysis-section" id="analysisSection" style="display: none;">
+            <h3><i class="fas fa-chart-line"></i> Literary Analysis</h3>
+            
             <div class="analysis-card">
                 <h4><i class="fas fa-lightbulb"></i> Key Points</h4>
                 <div class="small-editor" id="keyPointsEditor"></div>
@@ -455,31 +600,81 @@
             dramaticDevices: ""
         };
 
+        function updateWordCount() {
+            if (quill) {
+                const text = quill.getText();
+                const words = text.trim().split(/\s+/).filter(w => w.length > 0).length;
+                document.getElementById('wordCount').innerText = words;
+            }
+        }
+
         function initEditors() {
+            // Full toolbar with all Google Docs features
             quill = new Quill('#editor', {
                 theme: 'snow',
-                placeholder: 'Write your detailed summary here...',
+                placeholder: 'Write your detailed summary here... You can format text, add images, create lists, and more!',
+                modules: {
+                    toolbar: [
+                        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                        ['bold', 'italic', 'underline', 'strike'],
+                        [{ 'color': [] }, { 'background': [] }],
+                        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                        [{ 'indent': '-1'}, { 'indent': '+1' }],
+                        [{ 'align': [] }],
+                        ['blockquote', 'code-block'],
+                        ['link', 'image', 'video'],
+                        ['clean']
+                    ]
+                }
+            });
+            quill.on('text-change', () => { 
+                currentData.content = quill.root.innerHTML;
+                updateWordCount();
+            });
+
+            keyPointsEditor = new Quill('#keyPointsEditor', { 
+                theme: 'snow', 
+                placeholder: 'Write detailed key points here...',
                 modules: { toolbar: [['bold', 'italic', 'underline'], [{ 'list': 'ordered'}, { 'list': 'bullet' }], ['clean']] }
             });
-            quill.on('text-change', () => { currentData.content = quill.root.innerHTML; });
-
-            keyPointsEditor = new Quill('#keyPointsEditor', { theme: 'snow', placeholder: 'Write detailed key points here...' });
             keyPointsEditor.on('text-change', () => { currentData.keyPoints = keyPointsEditor.root.innerHTML; });
 
-            charactersEditor = new Quill('#charactersEditor', { theme: 'snow', placeholder: 'Write detailed character analysis here...' });
+            charactersEditor = new Quill('#charactersEditor', { 
+                theme: 'snow', 
+                placeholder: 'Write detailed character analysis here...',
+                modules: { toolbar: [['bold', 'italic', 'underline'], [{ 'list': 'ordered'}, { 'list': 'bullet' }], ['clean']] }
+            });
             charactersEditor.on('text-change', () => { currentData.characters = charactersEditor.root.innerHTML; });
 
-            themesEditor = new Quill('#themesEditor', { theme: 'snow', placeholder: 'Write detailed theme analysis here...' });
+            themesEditor = new Quill('#themesEditor', { 
+                theme: 'snow', 
+                placeholder: 'Write detailed theme analysis here...',
+                modules: { toolbar: [['bold', 'italic', 'underline'], [{ 'list': 'ordered'}, { 'list': 'bullet' }], ['clean']] }
+            });
             themesEditor.on('text-change', () => { currentData.themes = themesEditor.root.innerHTML; });
 
-            devicesEditor = new Quill('#devicesEditor', { theme: 'snow', placeholder: 'Write detailed literary devices analysis here...' });
+            devicesEditor = new Quill('#devicesEditor', { 
+                theme: 'snow', 
+                placeholder: 'Write detailed literary devices analysis here...',
+                modules: { toolbar: [['bold', 'italic', 'underline'], [{ 'list': 'ordered'}, { 'list': 'bullet' }], ['clean']] }
+            });
             devicesEditor.on('text-change', () => { currentData.literaryDevices = devicesEditor.root.innerHTML; });
 
-            toneMoodEditor = new Quill('#toneMoodEditor', { theme: 'snow', placeholder: 'Write detailed tone and mood analysis here...' });
+            toneMoodEditor = new Quill('#toneMoodEditor', { 
+                theme: 'snow', 
+                placeholder: 'Write detailed tone and mood analysis here...',
+                modules: { toolbar: [['bold', 'italic', 'underline'], [{ 'list': 'ordered'}, { 'list': 'bullet' }], ['clean']] }
+            });
             toneMoodEditor.on('text-change', () => { currentData.toneMood = toneMoodEditor.root.innerHTML; });
 
-            dramaticDevicesEditor = new Quill('#dramaticDevicesEditor', { theme: 'snow', placeholder: 'Write detailed dramatic devices analysis here...' });
+            dramaticDevicesEditor = new Quill('#dramaticDevicesEditor', { 
+                theme: 'snow', 
+                placeholder: 'Write detailed dramatic devices analysis here...',
+                modules: { toolbar: [['bold', 'italic', 'underline'], [{ 'list': 'ordered'}, { 'list': 'bullet' }], ['clean']] }
+            });
             dramaticDevicesEditor.on('text-change', () => { currentData.dramaticDevices = dramaticDevicesEditor.root.innerHTML; });
+            
+            updateWordCount();
         }
 
         function showToast(message, isError = false) {
@@ -505,7 +700,6 @@
             
             currentData.sectionName = sectionName;
             
-            // Create a clean document ID (no special characters)
             const cleanSectionName = sectionName.toLowerCase().replace(/[^a-z0-9]/g, '_');
             const docId = `${book}_${cleanSectionName}`;
             
@@ -524,8 +718,6 @@
                 updatedAt: new Date().toISOString(),
                 updatedBy: auth.currentUser?.email
             };
-            
-            console.log("Saving to:", docId);
             
             try {
                 await setDoc(doc(db, "summaries", docId), summaryData);
@@ -565,10 +757,10 @@
                 
                 document.getElementById('bookSelect').value = data.bookId || '';
                 document.getElementById('summaryForm').style.display = 'block';
+                document.getElementById('analysisSection').style.display = 'block';
                 
-                // Update category-specific fields
                 updateCategoryFields(data.bookId);
-                
+                updateWordCount();
                 showToast('✅ Loaded successfully');
             } else {
                 showToast('Summary not found', true);
@@ -579,17 +771,11 @@
             const toneMoodCard = document.getElementById('toneMoodCard');
             const dramaticDevicesCard = document.getElementById('dramaticDevicesCard');
             
-            // List of drama books
             const dramaBooks = ['antony-and-cleopatra', 'once-upon-an-elephant', 'marriage-of-anansewa', 'inspector-calls', 'man-for-all-seasons'];
             const isDrama = dramaBooks.includes(bookId);
             
-            if (isDrama) {
-                toneMoodCard.style.display = 'block';
-                dramaticDevicesCard.style.display = 'block';
-            } else {
-                toneMoodCard.style.display = 'block';
-                dramaticDevicesCard.style.display = 'none';
-            }
+            toneMoodCard.style.display = 'block';
+            dramaticDevicesCard.style.display = isDrama ? 'block' : 'none';
         }
 
         async function createNewSection() {
@@ -605,7 +791,6 @@
                 return;
             }
             
-            // Check if already exists
             const cleanSectionName = sectionName.toLowerCase().replace(/[^a-z0-9]/g, '_');
             const docId = `${book}_${cleanSectionName}`;
             const existingDoc = await getDoc(doc(db, "summaries", docId));
@@ -615,7 +800,6 @@
                 return;
             }
             
-            // Create empty summary
             const emptyData = {
                 bookId: book,
                 sectionName: sectionName,
@@ -636,8 +820,9 @@
                 await setDoc(doc(db, "summaries", docId), emptyData);
                 showToast('✅ New section created! Now write your content.');
                 document.getElementById('summaryForm').style.display = 'block';
+                document.getElementById('analysisSection').style.display = 'block';
                 updateCategoryFields(book);
-                // Clear and set up for writing
+                
                 quill.root.innerHTML = '';
                 keyPointsEditor.root.innerHTML = '';
                 charactersEditor.root.innerHTML = '';
@@ -655,6 +840,7 @@
                     toneMood: "",
                     dramaticDevices: ""
                 };
+                updateWordCount();
                 loadDocuments();
             } catch (error) {
                 console.error('Error creating section:', error);
@@ -667,7 +853,6 @@
                 await deleteDoc(doc(db, "summaries", docId));
                 showToast('🗑️ Deleted successfully');
                 loadDocuments();
-                document.getElementById('summaryForm').style.display = 'none';
             }
         }
 
@@ -756,13 +941,10 @@
         document.getElementById('saveDraftBtn').addEventListener('click', () => saveSummary(false));
         document.getElementById('publishBtn').addEventListener('click', () => saveSummary(true));
 
-        // Handle category changes when book is selected
         document.getElementById('bookSelect').addEventListener('change', (e) => {
             const bookId = e.target.value;
             if (bookId) {
                 updateCategoryFields(bookId);
-                // Show the form for new section
-                document.getElementById('summaryForm').style.display = 'block';
             }
         });
 
@@ -772,7 +954,6 @@
             searchTimeout = setTimeout(() => loadDocuments(e.target.value), 300);
         });
 
-        // Auth check
         onAuthStateChanged(auth, (user) => {
             if (!user) {
                 window.location.href = "index.html";
