@@ -946,11 +946,38 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // --- AUTH STATE OBSERVER ---
-        onAuthStateChanged(auth, (user) => {
+        // Admin emails list (no PIN required)
+        const adminEmails = [
+            "okewunmitimileyin23@gmail.com",
+            "triangleofscholars@gmail.com"
+        ];
+
+        // --- AUTH STATE OBSERVER - Check if already logged in ---
+        onAuthStateChanged(auth, async (user) => {
             if (user) {
                 console.log("User already logged in:", user.email);
-                window.location.href = "dashboard.html"; 
+                
+                // Check if user is admin - go directly to dashboard
+                if (adminEmails.includes(user.email)) {
+                    window.location.href = "dashboard.html";
+                    return;
+                }
+                
+                // For regular users, check if they already verified PIN
+                try {
+                    const userRef = doc(db, "users", user.uid);
+                    const userDoc = await getDoc(userRef);
+                    if (userDoc.exists() && userDoc.data().pinVerified === true) {
+                        // Already verified, go to dashboard
+                        window.location.href = "dashboard.html";
+                    } else {
+                        // Need PIN verification
+                        window.location.href = "pin-verification.html";
+                    }
+                } catch (error) {
+                    console.error("Error checking PIN status:", error);
+                    window.location.href = "pin-verification.html";
+                }
             }
         });
 
@@ -986,11 +1013,14 @@
                         fullName: fullName,
                         email: email,
                         phone: phone,
+                        pinVerified: false,  // New user hasn't verified PIN
                         createdAt: new Date().toISOString()
                     });
 
                     alert(`Account created successfully! Welcome to Mr. Timi Edutop Scholar.`);
-                    window.location.href = 'dashboard.html';
+                    
+                    // Redirect to PIN verification page for new users
+                    window.location.href = 'pin-verification.html';
                     
                 } catch (error) {
                     console.error("Signup Error:", error);
@@ -1022,9 +1052,28 @@
                     const mode = rememberMe ? browserLocalPersistence : browserSessionPersistence;
                     await setPersistence(auth, mode);
 
-                    await signInWithEmailAndPassword(auth, email, password);
+                    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                    const user = userCredential.user;
                     
-                    window.location.href = 'dashboard.html';
+                    // Check if user is admin
+                    if (adminEmails.includes(user.email)) {
+                        window.location.href = 'dashboard.html';
+                        return;
+                    }
+                    
+                    // Check if user already verified PIN
+                    try {
+                        const userRef = doc(db, "users", user.uid);
+                        const userDoc = await getDoc(userRef);
+                        if (userDoc.exists() && userDoc.data().pinVerified === true) {
+                            window.location.href = 'dashboard.html';
+                        } else {
+                            window.location.href = 'pin-verification.html';
+                        }
+                    } catch (error) {
+                        console.error("Error checking PIN:", error);
+                        window.location.href = 'pin-verification.html';
+                    }
 
                 } catch (error) {
                     console.error("Login Error:", error);
@@ -1088,6 +1137,12 @@
             const modalEl = document.getElementById('forgot-password-modal');
             if (modalEl) modalEl.classList.remove('active');
         };
+        
+        // Helper function to get document
+        async function getDoc(ref) {
+            const snapshot = await ref.get();
+            return snapshot;
+        }
     </script>
 </body>
 </html>
