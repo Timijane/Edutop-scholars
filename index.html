@@ -6,6 +6,7 @@
     <title>Mr. Timi Edutop Scholar - Literature Learning Platform</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* Keep all your existing styles - they remain the same */
         * { 
             margin: 0; 
             padding: 0; 
@@ -23,7 +24,6 @@
             position: relative;
         }
         
-        /* Animated background effect */
         body::before {
             content: '';
             position: fixed;
@@ -506,7 +506,6 @@
             }
         }
         
-        /* Loading spinner */
         .loading-spinner {
             display: inline-block;
             width: 18px;
@@ -522,7 +521,6 @@
             to { transform: rotate(360deg); }
         }
         
-        /* Modal styles */
         .modal {
             display: none;
             position: fixed;
@@ -646,14 +644,13 @@
             border-left: 4px solid #dc3545;
         }
         
-        /* Floating animation for features */
+        .features-preview {
+            animation: float 3s ease-in-out infinite;
+        }
+        
         @keyframes float {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-5px); }
-        }
-        
-        .features-preview {
-            animation: float 3s ease-in-out infinite;
         }
     </style>
 </head>
@@ -792,7 +789,6 @@
         </div>
     </div>
     
-    <!-- Forgot Password Modal -->
     <div id="forgot-password-modal" class="modal">
         <div class="modal-content">
             <span class="modal-close" id="modal-close">&times;</span>
@@ -808,7 +804,7 @@
     </div>
 
     <script>
-        // --- Slider & UI Logic ---
+        // Slider & UI Logic
         let currentSlide = 0;
         const slides = document.querySelectorAll('.slide');
         const indicators = document.querySelectorAll('.indicator');
@@ -833,7 +829,7 @@
             }, 5000);
         }
         
-        // --- Form Toggling ---
+        // Form Toggling
         const loginToggle = document.getElementById('login-toggle');
         const signupToggle = document.getElementById('signup-toggle');
         const loginForm = document.getElementById('login-form');
@@ -862,7 +858,7 @@
         if (goToSignup) goToSignup.addEventListener('click', (e) => { e.preventDefault(); toggleForms(false); });
         if (goToLogin) goToLogin.addEventListener('click', (e) => { e.preventDefault(); toggleForms(true); });
 
-        // --- Password Visibility Toggle ---
+        // Password Visibility Toggle
         window.togglePassword = function(inputId, icon) {
             const input = document.getElementById(inputId);
             if (input) {
@@ -878,7 +874,7 @@
             }
         }
         
-        // --- Modal Functions ---
+        // Modal Functions
         const modal = document.getElementById('forgot-password-modal');
         const modalClose = document.getElementById('modal-close');
         const forgotLink = document.getElementById('forgot-password-link');
@@ -915,7 +911,6 @@
     </script>
 
     <script type="module">
-        // Import Firebase Functions (Modular SDK)
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
         import { 
             getAuth, 
@@ -928,9 +923,8 @@
             browserLocalPersistence,
             browserSessionPersistence
         } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-        import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyCictHNxtslYs9VR0hoicxlwPn_QghkgIA",
             authDomain: "edutop-7ff51.firebaseapp.com",
@@ -938,40 +932,45 @@
             storageBucket: "edutop-7ff51.firebasestorage.app",
             messagingSenderId: "79307850494",
             appId: "1:79307850494:web:b51ce51204140ec5429baf",
-            measurementId: "G-GGGH590BYS"
         };
 
-        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Admin emails list (no PIN required)
         const adminEmails = [
             "okewunmitimileyin23@gmail.com",
             "triangleofscholars@gmail.com"
         ];
 
-        // --- AUTH STATE OBSERVER - Check if already logged in ---
+        // Helper function to wait for user data to be saved
+        async function waitForUserData(userId, maxAttempts = 10) {
+            for (let i = 0; i < maxAttempts; i++) {
+                const userRef = doc(db, "users", userId);
+                const userDoc = await getDoc(userRef);
+                if (userDoc.exists()) {
+                    return userDoc.data();
+                }
+                await new Promise(resolve => setTimeout(resolve, 500));
+            }
+            return null;
+        }
+
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 console.log("User already logged in:", user.email);
                 
-                // Check if user is admin - go directly to dashboard
                 if (adminEmails.includes(user.email)) {
                     window.location.href = "dashboard.html";
                     return;
                 }
                 
-                // For regular users, check if they already verified PIN
                 try {
                     const userRef = doc(db, "users", user.uid);
                     const userDoc = await getDoc(userRef);
                     if (userDoc.exists() && userDoc.data().pinVerified === true) {
-                        // Already verified, go to dashboard
                         window.location.href = "dashboard.html";
                     } else {
-                        // Need PIN verification
                         window.location.href = "pin-verification.html";
                     }
                 } catch (error) {
@@ -981,7 +980,7 @@
             }
         });
 
-        // --- SIGN UP LOGIC ---
+        // SIGN UP LOGIC - Wait for data to be saved
         const signupFormElement = document.getElementById('signup-form');
         if (signupFormElement) {
             signupFormElement.addEventListener('submit', async (e) => {
@@ -1009,18 +1008,24 @@
 
                     await updateProfile(user, { displayName: fullName });
 
+                    // Save user data
                     await setDoc(doc(db, "users", user.uid), {
                         fullName: fullName,
                         email: email,
                         phone: phone,
-                        pinVerified: false,  // New user hasn't verified PIN
+                        pinVerified: false,
                         createdAt: new Date().toISOString()
                     });
 
-                    alert(`Account created successfully! Welcome to Mr. Timi Edutop Scholar.`);
-                    
-                    // Redirect to PIN verification page for new users
-                    window.location.href = 'pin-verification.html';
+                    // Wait for data to be fully saved
+                    const userData = await waitForUserData(user.uid);
+                    if (userData) {
+                        console.log("User data saved successfully:", userData);
+                        alert(`Account created successfully! Welcome to Mr. Timi Edutop Scholar.`);
+                        window.location.href = 'pin-verification.html';
+                    } else {
+                        throw new Error("User data not saved after multiple attempts");
+                    }
                     
                 } catch (error) {
                     console.error("Signup Error:", error);
@@ -1034,7 +1039,7 @@
             });
         }
 
-        // --- LOGIN LOGIC ---
+        // LOGIN LOGIC
         const loginFormElement = document.getElementById('login-form');
         if (loginFormElement) {
             loginFormElement.addEventListener('submit', async (e) => {
@@ -1055,23 +1060,17 @@
                     const userCredential = await signInWithEmailAndPassword(auth, email, password);
                     const user = userCredential.user;
                     
-                    // Check if user is admin
                     if (adminEmails.includes(user.email)) {
                         window.location.href = 'dashboard.html';
                         return;
                     }
                     
-                    // Check if user already verified PIN
-                    try {
-                        const userRef = doc(db, "users", user.uid);
-                        const userDoc = await getDoc(userRef);
-                        if (userDoc.exists() && userDoc.data().pinVerified === true) {
-                            window.location.href = 'dashboard.html';
-                        } else {
-                            window.location.href = 'pin-verification.html';
-                        }
-                    } catch (error) {
-                        console.error("Error checking PIN:", error);
+                    // Wait for user data to be available
+                    const userData = await waitForUserData(user.uid);
+                    
+                    if (userData && userData.pinVerified === true) {
+                        window.location.href = 'dashboard.html';
+                    } else {
                         window.location.href = 'pin-verification.html';
                     }
 
@@ -1090,7 +1089,7 @@
             });
         }
 
-        // --- FORGOT PASSWORD LOGIC (Modal Version) ---
+        // FORGOT PASSWORD LOGIC
         const sendResetBtn = document.getElementById('send-reset-btn');
         const resetEmail = document.getElementById('reset-email');
         const modalMessage = document.getElementById('modal-message');
@@ -1137,12 +1136,6 @@
             const modalEl = document.getElementById('forgot-password-modal');
             if (modalEl) modalEl.classList.remove('active');
         };
-        
-        // Helper function to get document
-        async function getDoc(ref) {
-            const snapshot = await ref.get();
-            return snapshot;
-        }
     </script>
 </body>
 </html>
