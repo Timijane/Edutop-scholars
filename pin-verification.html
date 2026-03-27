@@ -6,6 +6,7 @@
     <title>PIN Verification | Mr. Timi Scholar</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* Keep all existing styles - same as before */
         * {
             margin: 0;
             padding: 0;
@@ -24,7 +25,6 @@
             overflow-x: hidden;
         }
 
-        /* Animated Background Orbs */
         .orb-container {
             position: fixed;
             top: 0;
@@ -73,29 +73,16 @@
         }
 
         @keyframes pulse {
-            0%, 100% {
-                transform: scale(1);
-                opacity: 0.3;
-            }
-            50% {
-                transform: scale(1.2);
-                opacity: 0.5;
-            }
+            0%, 100% { transform: scale(1); opacity: 0.3; }
+            50% { transform: scale(1.2); opacity: 0.5; }
         }
 
         @keyframes float {
-            0%, 100% {
-                transform: translateY(0) translateX(0);
-            }
-            33% {
-                transform: translateY(-30px) translateX(20px);
-            }
-            66% {
-                transform: translateY(20px) translateX(-20px);
-            }
+            0%, 100% { transform: translateY(0) translateX(0); }
+            33% { transform: translateY(-30px) translateX(20px); }
+            66% { transform: translateY(20px) translateX(-20px); }
         }
 
-        /* Main Card */
         .pin-card {
             position: relative;
             z-index: 10;
@@ -111,17 +98,10 @@
         }
 
         @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Logo */
         .logo {
             text-align: center;
             margin-bottom: 24px;
@@ -142,7 +122,6 @@
             margin-top: 8px;
         }
 
-        /* Welcome Message */
         .welcome {
             text-align: center;
             margin-bottom: 32px;
@@ -160,7 +139,6 @@
             line-height: 1.6;
         }
 
-        /* PIN Input */
         .pin-input-container {
             margin-bottom: 24px;
         }
@@ -171,10 +149,6 @@
             color: #311b92;
             margin-bottom: 10px;
             font-size: 14px;
-        }
-
-        .pin-input-wrapper {
-            margin-bottom: 12px;
         }
 
         .pin-input-field {
@@ -205,7 +179,6 @@
             gap: 6px;
         }
 
-        /* Buttons */
         .verify-btn {
             width: 100%;
             padding: 14px;
@@ -229,16 +202,11 @@
             box-shadow: 0 10px 25px rgba(49, 27, 146, 0.3);
         }
 
-        .verify-btn:active {
-            transform: translateY(0);
-        }
-
         .verify-btn:disabled {
             opacity: 0.6;
             cursor: not-allowed;
         }
 
-        /* WhatsApp Section */
         .whatsapp-section {
             text-align: center;
             padding-top: 20px;
@@ -270,7 +238,6 @@
             box-shadow: 0 5px 15px rgba(37, 211, 102, 0.3);
         }
 
-        /* Error Message */
         .error-message {
             background: #fee2e2;
             color: #dc2626;
@@ -287,7 +254,6 @@
             display: flex;
         }
 
-        /* Success Animation */
         .success-check {
             display: none;
             text-align: center;
@@ -318,7 +284,6 @@
             to { transform: rotate(360deg); }
         }
 
-        /* Admin Note */
         .admin-note {
             text-align: center;
             margin-top: 16px;
@@ -355,8 +320,8 @@
 
         <div class="welcome">
             <h2>Welcome! 🎓</h2>
-            <p>Access JAMB Recommended Texts (2026-2030)<br>Enter your PIN to activate your account</p>
-            <p style="font-size: 13px; margin-top: 8px; color: #888;">⚠️ PIN is required only once per account</p>
+            <p>Enter your PIN to activate your account</p>
+            <p style="font-size: 13px; margin-top: 8px; color: #888;">⚠️ Each PIN can only be used once</p>
         </div>
 
         <div class="success-check" id="successCheck">
@@ -365,17 +330,14 @@
 
         <div class="error-message" id="errorMessage">
             <i class="fas fa-exclamation-circle"></i>
-            <span id="errorText">Invalid PIN. Please try again.</span>
+            <span id="errorText">Invalid PIN or already used.</span>
         </div>
 
-        <!-- PIN Input -->
         <div class="pin-input-container">
             <label><i class="fas fa-key"></i> Enter Your PIN</label>
-            <div class="pin-input-wrapper">
-                <input type="text" id="pinInput" class="pin-input-field" 
-                       placeholder="Enter your PIN (e.g., scholartimi001)" 
-                       autocomplete="off" autofocus>
-            </div>
+            <input type="text" id="pinInput" class="pin-input-field" 
+                   placeholder="Enter your PIN (e.g., scholartimi001)" 
+                   autocomplete="off" autofocus>
             <div class="pin-hint">
                 <i class="fas fa-info-circle"></i> 
                 Enter the PIN you received from the admin
@@ -383,7 +345,7 @@
         </div>
 
         <button class="verify-btn" id="verifyBtn">
-            <i class="fas fa-unlock-alt"></i> Activate & Continue
+            <i class="fas fa-unlock-alt"></i> Activate Account
         </button>
 
         <div class="whatsapp-section">
@@ -395,14 +357,14 @@
         </div>
 
         <div class="admin-note">
-            <i class="fas fa-shield-alt"></i> PIN is required once per account for security
+            <i class="fas fa-shield-alt"></i> PIN is required once per account
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, updateDoc, runTransaction } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCictHNxtslYs9VR0hoicxlwPn_QghkgIA",
@@ -417,13 +379,12 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Admin emails (no PIN required)
         const adminEmails = [
             "okewunmitimileyin23@gmail.com",
             "triangleofscholars@gmail.com"
         ];
 
-        // All valid PINs (alphanumeric)
+        // All valid PINs
         const validPins = [
             "scholartimi001", "scholartimi247", "scholartimi360", "scholartimi101", 
             "scholartimi999", "scholartimi007", "scholartimi2026", "scholartimi_pro", 
@@ -447,9 +408,6 @@
             "scholartimi_bn11", "scholartimi_df23", "scholartimi_gh78", "scholartimi_xy66"
         ];
 
-        // Convert to lowercase for case-insensitive comparison
-        const validPinsLower = validPins.map(pin => pin.toLowerCase());
-
         let currentUser = null;
 
         function showError(message) {
@@ -462,67 +420,71 @@
             }, 3000);
         }
 
-        // Save PIN verification to Firebase (permanent)
-        async function savePinVerification(userId, pin) {
-            const userRef = doc(db, "users", userId);
-            await updateDoc(userRef, {
-                pinVerified: true,
-                pinUsed: pin,
-                verifiedAt: new Date().toISOString()
-            });
-        }
-
-        // Check if user already verified PIN in Firebase
-        async function checkUserPinVerified(userId) {
+        // Check if user already verified
+        async function checkUserVerified(userId) {
             const userRef = doc(db, "users", userId);
             const userDoc = await getDoc(userRef);
-            if (userDoc.exists() && userDoc.data().pinVerified === true) {
-                return true;
-            }
-            return false;
+            return userDoc.exists() && userDoc.data().pinVerified === true;
         }
 
-        // Verify PIN and save permanently
-        async function verifyAndSavePin(pin) {
+        // Mark PIN as used in a separate collection (one-time use)
+        async function markPinAsUsed(pin) {
+            const pinRef = doc(db, "usedPins", pin);
+            const pinDoc = await getDoc(pinRef);
+            if (pinDoc.exists()) {
+                return false; // PIN already used
+            }
+            await setDoc(pinRef, {
+                pin: pin,
+                usedAt: new Date().toISOString(),
+                usedBy: currentUser.uid
+            });
+            return true;
+        }
+
+        // Verify PIN using transaction to ensure one-time use
+        async function verifyAndActivate(pin) {
             const pinLower = pin.toLowerCase().trim();
             
-            if (validPinsLower.includes(pinLower)) {
-                try {
-                    // Save verification to Firebase (permanent)
-                    await savePinVerification(currentUser.uid, pin);
-                    
-                    // Store in session for immediate use
-                    sessionStorage.setItem('pin_verified', 'true');
-                    
-                    // Show success animation
-                    const successCheck = document.getElementById('successCheck');
-                    successCheck.classList.add('show');
-                    
-                    // Disable button and show loading
-                    const verifyBtn = document.getElementById('verifyBtn');
-                    verifyBtn.disabled = true;
-                    verifyBtn.innerHTML = '<span class="loading-spinner"></span> Activating...';
-                    
-                    // Redirect to dashboard after short delay
-                    setTimeout(() => {
-                        window.location.href = 'dashboard.html';
-                    }, 1500);
-                    
-                    return true;
-                } catch (error) {
-                    console.error('Error saving PIN:', error);
-                    showError('Error saving verification. Please try again.');
+            if (!validPinsLower.includes(pinLower)) {
+                showError('Invalid PIN. Please check and try again.');
+                return false;
+            }
+            
+            try {
+                // Use transaction to ensure one-time use
+                const pinRef = doc(db, "usedPins", pinLower);
+                const pinDoc = await getDoc(pinRef);
+                
+                if (pinDoc.exists()) {
+                    showError('This PIN has already been used. Please contact admin for a new one.');
                     return false;
                 }
-            } else {
-                showError('Invalid PIN. Please check and try again.');
-                document.getElementById('pinInput').value = '';
-                document.getElementById('pinInput').focus();
+                
+                // Mark PIN as used
+                await setDoc(pinRef, {
+                    pin: pinLower,
+                    usedAt: new Date().toISOString(),
+                    usedBy: currentUser.uid
+                });
+                
+                // Update user as verified
+                const userRef = doc(db, "users", currentUser.uid);
+                await updateDoc(userRef, {
+                    pinVerified: true,
+                    pinUsed: pinLower,
+                    verifiedAt: new Date().toISOString()
+                });
+                
+                return true;
+                
+            } catch (error) {
+                console.error("Error verifying PIN:", error);
+                showError('Error verifying PIN. Please try again.');
                 return false;
             }
         }
 
-        // Main verification handler
         async function handleVerification() {
             const pin = document.getElementById('pinInput').value.trim();
             
@@ -531,20 +493,33 @@
                 return;
             }
             
-            await verifyAndSavePin(pin);
+            const verifyBtn = document.getElementById('verifyBtn');
+            verifyBtn.disabled = true;
+            verifyBtn.innerHTML = '<span class="loading-spinner"></span> Verifying...';
+            
+            const success = await verifyAndActivate(pin);
+            
+            if (success) {
+                const successCheck = document.getElementById('successCheck');
+                successCheck.classList.add('show');
+                verifyBtn.innerHTML = '<span class="loading-spinner"></span> Activating...';
+                
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1500);
+            } else {
+                verifyBtn.disabled = false;
+                verifyBtn.innerHTML = '<i class="fas fa-unlock-alt"></i> Activate Account';
+                document.getElementById('pinInput').value = '';
+                document.getElementById('pinInput').focus();
+            }
         }
 
-        // Enter key support
+        document.getElementById('verifyBtn').addEventListener('click', handleVerification);
         document.getElementById('pinInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                handleVerification();
-            }
+            if (e.key === 'Enter') handleVerification();
         });
 
-        // Event listener
-        document.getElementById('verifyBtn').addEventListener('click', handleVerification);
-
-        // Auth check and redirect logic
         onAuthStateChanged(auth, async (user) => {
             if (!user) {
                 window.location.href = "index.html";
@@ -553,23 +528,17 @@
             
             currentUser = user;
             
-            // Check if user is admin - bypass PIN completely
             if (adminEmails.includes(user.email)) {
                 window.location.href = 'dashboard.html';
                 return;
             }
             
-            // Check if user already verified PIN in Firebase (permanent)
-            const isVerified = await checkUserPinVerified(user.uid);
-            
+            const isVerified = await checkUserVerified(user.uid);
             if (isVerified) {
-                // User already verified, go to dashboard
-                sessionStorage.setItem('pin_verified', 'true');
                 window.location.href = 'dashboard.html';
                 return;
             }
             
-            // New user - show PIN interface
             document.querySelector('.pin-card').style.display = 'block';
         });
     </script>
