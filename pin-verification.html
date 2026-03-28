@@ -363,7 +363,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc, updateDoc, runTransaction } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCictHNxtslYs9VR0hoicxlwPn_QghkgIA",
@@ -418,38 +418,46 @@
             errorDiv.classList.add('show');
             setTimeout(() => {
                 errorDiv.classList.remove('show');
-            }, 4000);
+            }, 5000);
         }
 
         // Check if user already verified
         async function checkUserVerified(userId) {
-            const userRef = doc(db, "users", userId);
-            const userDoc = await getDoc(userRef);
-            return userDoc.exists() && userDoc.data().pinVerified === true;
+            try {
+                const userRef = doc(db, "users", userId);
+                const userDoc = await getDoc(userRef);
+                if (userDoc.exists() && userDoc.data().pinVerified === true) {
+                    return true;
+                }
+                return false;
+            } catch (error) {
+                console.error("Error checking user verification:", error);
+                return false;
+            }
         }
 
         // Verify PIN - ensures one PIN = one account only
         async function verifyAndActivate(pin) {
             const pinLower = pin.toLowerCase().trim();
             
-            // Check if PIN is valid
+            // Step 1: Check if PIN is in valid list
             if (!validPinsLower.includes(pinLower)) {
                 showError('Invalid PIN. Please check and try again.');
                 return false;
             }
             
             try {
-                // Check if PIN is already used by another account
+                // Step 2: Check if PIN is already used by another account
                 const pinRef = doc(db, "usedPins", pinLower);
                 const pinDoc = await getDoc(pinRef);
                 
                 if (pinDoc.exists()) {
                     const usedBy = pinDoc.data().usedBy;
                     if (usedBy !== currentUser.uid) {
-                        showError('This PIN has already been used by another account. Please contact admin for a new PIN.');
+                        showError('❌ This PIN has already been used by another account. Please contact admin for a new PIN.');
                     } else {
                         // PIN already used by this user - they already verified
-                        showError('Your account is already verified! Redirecting to dashboard...');
+                        showError('✅ Your account is already verified! Redirecting to dashboard...');
                         setTimeout(() => {
                             window.location.href = 'dashboard.html';
                         }, 2000);
@@ -457,7 +465,7 @@
                     return false;
                 }
                 
-                // Mark PIN as used (one-time use)
+                // Step 3: Mark PIN as used (one-time use)
                 await setDoc(pinRef, {
                     pin: pinLower,
                     usedAt: new Date().toISOString(),
@@ -465,7 +473,7 @@
                     usedByEmail: currentUser.email
                 });
                 
-                // Update user as verified
+                // Step 4: Update user as verified
                 const userRef = doc(db, "users", currentUser.uid);
                 await updateDoc(userRef, {
                     pinVerified: true,
@@ -477,7 +485,7 @@
                 
             } catch (error) {
                 console.error("Error verifying PIN:", error);
-                showError('Error verifying PIN. Please try again.');
+                showError('Error verifying PIN: ' + error.message);
                 return false;
             }
         }
@@ -494,21 +502,28 @@
             verifyBtn.disabled = true;
             verifyBtn.innerHTML = '<span class="loading-spinner"></span> Verifying...';
             
-            const success = await verifyAndActivate(pin);
-            
-            if (success) {
-                const successCheck = document.getElementById('successCheck');
-                successCheck.classList.add('show');
-                verifyBtn.innerHTML = '<span class="loading-spinner"></span> Activating...';
+            try {
+                const success = await verifyAndActivate(pin);
                 
-                setTimeout(() => {
-                    window.location.href = 'dashboard.html';
-                }, 1500);
-            } else {
+                if (success) {
+                    const successCheck = document.getElementById('successCheck');
+                    successCheck.classList.add('show');
+                    verifyBtn.innerHTML = '<span class="loading-spinner"></span> Activating...';
+                    
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 1500);
+                } else {
+                    verifyBtn.disabled = false;
+                    verifyBtn.innerHTML = '<i class="fas fa-unlock-alt"></i> Activate Account';
+                    document.getElementById('pinInput').value = '';
+                    document.getElementById('pinInput').focus();
+                }
+            } catch (error) {
+                console.error("Handle verification error:", error);
                 verifyBtn.disabled = false;
                 verifyBtn.innerHTML = '<i class="fas fa-unlock-alt"></i> Activate Account';
-                document.getElementById('pinInput').value = '';
-                document.getElementById('pinInput').focus();
+                showError('An error occurred. Please try again.');
             }
         }
 
@@ -524,18 +539,25 @@
             }
             
             currentUser = user;
+            console.log("Current user:", currentUser.email);
             
             if (adminEmails.includes(user.email)) {
                 window.location.href = 'dashboard.html';
                 return;
             }
             
-            const isVerified = await checkUserVerified(user.uid);
-            if (isVerified) {
-                window.location.href = 'dashboard.html';
-                return;
+            try {
+                const isVerified = await checkUserVerified(user.uid);
+                if (isVerified) {
+                    console.log("User already verified, redirecting to dashboard");
+                    window.location.href = 'dashboard.html';
+                    return;
+                }
+            } catch (error) {
+                console.error("Error checking verification:", error);
             }
             
+            // Show PIN interface for new users
             document.querySelector('.pin-card').style.display = 'block';
         });
     </script>
