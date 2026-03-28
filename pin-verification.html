@@ -6,7 +6,6 @@
     <title>PIN Verification | Mr. Timi Scholar</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Keep all existing styles - same as before */
         * {
             margin: 0;
             padding: 0;
@@ -321,7 +320,7 @@
         <div class="welcome">
             <h2>Welcome! 🎓</h2>
             <p>Enter your PIN to activate your account</p>
-            <p style="font-size: 13px; margin-top: 8px; color: #888;">⚠️ Each PIN can only be used once</p>
+            <p style="font-size: 13px; margin-top: 8px; color: #888;">⚠️ Each PIN can only be used by ONE account</p>
         </div>
 
         <div class="success-check" id="successCheck">
@@ -330,7 +329,7 @@
 
         <div class="error-message" id="errorMessage">
             <i class="fas fa-exclamation-circle"></i>
-            <span id="errorText">Invalid PIN or already used.</span>
+            <span id="errorText">Invalid PIN or already used by another account.</span>
         </div>
 
         <div class="pin-input-container">
@@ -364,7 +363,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc, updateDoc, runTransaction } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, setDoc, updateDoc, runTransaction } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCictHNxtslYs9VR0hoicxlwPn_QghkgIA",
@@ -408,6 +407,8 @@
             "scholartimi_bn11", "scholartimi_df23", "scholartimi_gh78", "scholartimi_xy66"
         ];
 
+        const validPinsLower = validPins.map(pin => pin.toLowerCase());
+
         let currentUser = null;
 
         function showError(message) {
@@ -417,7 +418,7 @@
             errorDiv.classList.add('show');
             setTimeout(() => {
                 errorDiv.classList.remove('show');
-            }, 3000);
+            }, 4000);
         }
 
         // Check if user already verified
@@ -427,45 +428,41 @@
             return userDoc.exists() && userDoc.data().pinVerified === true;
         }
 
-        // Mark PIN as used in a separate collection (one-time use)
-        async function markPinAsUsed(pin) {
-            const pinRef = doc(db, "usedPins", pin);
-            const pinDoc = await getDoc(pinRef);
-            if (pinDoc.exists()) {
-                return false; // PIN already used
-            }
-            await setDoc(pinRef, {
-                pin: pin,
-                usedAt: new Date().toISOString(),
-                usedBy: currentUser.uid
-            });
-            return true;
-        }
-
-        // Verify PIN using transaction to ensure one-time use
+        // Verify PIN - ensures one PIN = one account only
         async function verifyAndActivate(pin) {
             const pinLower = pin.toLowerCase().trim();
             
+            // Check if PIN is valid
             if (!validPinsLower.includes(pinLower)) {
                 showError('Invalid PIN. Please check and try again.');
                 return false;
             }
             
             try {
-                // Use transaction to ensure one-time use
+                // Check if PIN is already used by another account
                 const pinRef = doc(db, "usedPins", pinLower);
                 const pinDoc = await getDoc(pinRef);
                 
                 if (pinDoc.exists()) {
-                    showError('This PIN has already been used. Please contact admin for a new one.');
+                    const usedBy = pinDoc.data().usedBy;
+                    if (usedBy !== currentUser.uid) {
+                        showError('This PIN has already been used by another account. Please contact admin for a new PIN.');
+                    } else {
+                        // PIN already used by this user - they already verified
+                        showError('Your account is already verified! Redirecting to dashboard...');
+                        setTimeout(() => {
+                            window.location.href = 'dashboard.html';
+                        }, 2000);
+                    }
                     return false;
                 }
                 
-                // Mark PIN as used
+                // Mark PIN as used (one-time use)
                 await setDoc(pinRef, {
                     pin: pinLower,
                     usedAt: new Date().toISOString(),
-                    usedBy: currentUser.uid
+                    usedBy: currentUser.uid,
+                    usedByEmail: currentUser.email
                 });
                 
                 // Update user as verified
