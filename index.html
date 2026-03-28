@@ -943,15 +943,20 @@
             "triangleofscholars@gmail.com"
         ];
 
-        // Helper function to wait for user data to be saved
-        async function waitForUserData(userId, maxAttempts = 10) {
+        // Function to wait for user data to be fully saved
+        async function waitForUserData(userId, maxAttempts = 15) {
             for (let i = 0; i < maxAttempts; i++) {
-                const userRef = doc(db, "users", userId);
-                const userDoc = await getDoc(userRef);
-                if (userDoc.exists()) {
-                    return userDoc.data();
+                try {
+                    const userRef = doc(db, "users", userId);
+                    const userDoc = await getDoc(userRef);
+                    if (userDoc.exists()) {
+                        console.log(`User data found on attempt ${i + 1}`);
+                        return userDoc.data();
+                    }
+                } catch (error) {
+                    console.log(`Attempt ${i + 1} failed:`, error.message);
                 }
-                await new Promise(resolve => setTimeout(resolve, 500));
+                await new Promise(resolve => setTimeout(resolve, 800));
             }
             return null;
         }
@@ -980,7 +985,7 @@
             }
         });
 
-        // SIGN UP LOGIC - Wait for data to be saved
+        // SIGN UP LOGIC - Wait for data to be saved before redirecting
         const signupFormElement = document.getElementById('signup-form');
         if (signupFormElement) {
             signupFormElement.addEventListener('submit', async (e) => {
@@ -1003,12 +1008,16 @@
                 btn.disabled = true;
 
                 try {
+                    // Create user
                     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
                     const user = userCredential.user;
+                    console.log("User created:", user.uid);
 
+                    // Update profile
                     await updateProfile(user, { displayName: fullName });
+                    console.log("Profile updated");
 
-                    // Save user data
+                    // Save user data to Firestore
                     await setDoc(doc(db, "users", user.uid), {
                         fullName: fullName,
                         email: email,
@@ -1016,20 +1025,22 @@
                         pinVerified: false,
                         createdAt: new Date().toISOString()
                     });
+                    console.log("User data saved to Firestore");
 
-                    // Wait for data to be fully saved
-                    const userData = await waitForUserData(user.uid);
-                    if (userData) {
-                        console.log("User data saved successfully:", userData);
+                    // Wait for data to be confirmed saved
+                    const savedData = await waitForUserData(user.uid);
+                    
+                    if (savedData) {
+                        console.log("User data confirmed saved:", savedData);
                         alert(`Account created successfully! Welcome to Mr. Timi Edutop Scholar.`);
                         window.location.href = 'pin-verification.html';
                     } else {
-                        throw new Error("User data not saved after multiple attempts");
+                        throw new Error("User data not found after multiple attempts");
                     }
                     
                 } catch (error) {
                     console.error("Signup Error:", error);
-                    let message = "An error occurred.";
+                    let message = "An error occurred during signup.";
                     if(error.code === 'auth/email-already-in-use') message = "This email is already registered.";
                     if(error.code === 'auth/weak-password') message = "Password should be at least 6 characters.";
                     alert(message);
