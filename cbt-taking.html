@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>CBT Exam | Mr. Timi Scholar</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #311b92;
+            --primary-light: #4527a0;
+            --secondary: #ff5722;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --light: #f9fafb;
+            --dark: #1f2937;
+            --gray: #6b7280;
+            --border: #e5e7eb;
+            --white: #ffffff;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: var(--white);
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .logo h1 {
+            color: var(--primary);
+            font-size: 22px;
+        }
+
+        .logo span {
+            color: var(--secondary);
+        }
+
+        .logo a {
+            text-decoration: none;
+        }
+
+        .timer-box {
+            background: var(--danger);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 700;
+            font-size: 18px;
+            font-family: monospace;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Exam Info */
+        .exam-info {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .exam-title {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 16px;
+        }
+
+        .question-counter {
+            background: var(--light);
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        /* Question Card */
+        .question-card {
+            background: var(--white);
+            border-radius: 24px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .question-text {
+            font-size: 18px;
+            line-height: 1.5;
+            margin-bottom: 24px;
+            color: var(--dark);
+            font-weight: 500;
+        }
+
+        /* Options */
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 14px 18px;
+            background: var(--light);
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+
+        .option-item:hover {
+            background: var(--border);
+        }
+
+        .option-item.selected {
+            background: #e8eaf6;
+            border-color: var(--primary);
+        }
+
+        .option-letter {
+            width: 36px;
+            height: 36px;
+            background: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--primary);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .option-item.selected .option-letter {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        .option-text {
+            flex: 1;
+            font-size: 15px;
+            line-height: 1.4;
+        }
+
+        /* Navigation */
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .nav-btn {
+            padding: 12px 24px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-btn.prev {
+            background: var(--light);
+            color: var(--dark);
+        }
+
+        .nav-btn.next {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        .nav-btn.submit {
+            background: var(--success);
+            color: var(--white);
+        }
+
+        /* Question Palette */
+        .palette {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 16px;
+            margin-top: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .palette h4 {
+            margin-bottom: 12px;
+            color: var(--primary);
+            font-size: 14px;
+        }
+
+        .palette-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .palette-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: var(--light);
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .palette-btn.answered {
+            background: var(--success);
+            color: white;
+        }
+
+        .palette-btn.current {
+            background: var(--primary);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .palette-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 16px;
+            }
+            .question-text {
+                font-size: 16px;
+            }
+            .option-text {
+                font-size: 14px;
+            }
+            .palette-btn {
+                width: 35px;
+                height: 35px;
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">
+            <a href="dashboard.html">
+                <h1>Mr. Timi <span>Scholar</span></h1>
+            </a>
+        </div>
+        <div class="timer-box" id="timer">00:00</div>
+    </header>
+
+    <div class="container" id="container">
+        <div class="loading">
+            <div class="loading-spinner"></div>
+            <p>Loading exam...</p>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCictHNxtslYs9VR0hoicxlwPn_QghkgIA",
+            authDomain: "edutop-7ff51.firebaseapp.com",
+            projectId: "edutop-7ff51",
+            storageBucket: "edutop-7ff51.firebasestorage.app",
+            messagingSenderId: "79307850494",
+            appId: "1:79307850494:web:b51ce51204140ec5429baf",
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentExam = null;
+        let questions = [];
+        let userAnswers = {};
+        let currentIndex = 0;
+        let timer = null;
+        let timeLeft = 0;
+
+        // Sample questions for demo
+        const sampleQuestions = [
+            {
+                id: "q1",
+                text: "Who is the narrator of 'To Kill a Mockingbird'?",
+                options: {
+                    A: "Jem Finch",
+                    B: "Scout Finch",
+                    C: "Atticus Finch",
+                    D: "Boo Radley"
+                },
+                correctAnswer: "B",
+                explanation: "Scout Finch (Jean Louise Finch) is the first-person narrator of the novel."
+            },
+            {
+                id: "q2",
+                text: "What is the name of the Finch family's housekeeper?",
+                options: {
+                    A: "Miss Maudie",
+                    B: "Aunt Alexandra",
+                    C: "Calpurnia",
+                    D: "Mrs. Dubose"
+                },
+                correctAnswer: "C",
+                explanation: "Calpurnia is the Finch family's housekeeper who helps raise Scout and Jem."
+            },
+            {
+                id: "q3",
+                text: "What item does Scout find in the knothole of the Radley tree?",
+                options: {
+                    A: "A watch",
+                    B: "A medal",
+                    C: "A doll",
+                    D: "Gum and pennies"
+                },
+                correctAnswer: "D",
+                explanation: "Scout finds chewing gum and later pennies in the knothole of the Radley tree."
+            }
+        ];
+
+        function startTimer() {
+            const timerElement = document.getElementById('timer');
+            timer = setInterval(() => {
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    submitExam();
+                } else {
+                    timeLeft--;
+                    const minutes = Math.floor(timeLeft / 60);
+                    const seconds = timeLeft % 60;
+                    timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                    
+                    if (timeLeft <= 60) {
+                        timerElement.style.background = '#ef4444';
+                    }
+                }
+            }, 1000);
+        }
+
+        function renderCurrentQuestion() {
+            const question = questions[currentIndex];
+            const selected = userAnswers[question.id] || '';
+            
+            const html = `
+                <div class="exam-info">
+                    <div class="exam-title">${escapeHtml(currentExam.title || 'Literature Exam')}</div>
+                    <div class="question-counter">Question ${currentIndex + 1} of ${questions.length}</div>
+                </div>
+
+                <div class="question-card">
+                    <div class="question-text">${escapeHtml(question.text)}</div>
+                    <div class="options-list">
+                        ${['A', 'B', 'C', 'D'].map(opt => `
+                            <div class="option-item ${selected === opt ? 'selected' : ''}" data-option="${opt}">
+                                <div class="option-letter">${opt}</div>
+                                <div class="option-text">${escapeHtml(question.options[opt] || '')}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="nav-btn prev" id="prevBtn" ${currentIndex === 0 ? 'disabled' : ''}>
+                        <i class="fas fa-chevron-left"></i> Previous
+                    </button>
+                    <button class="nav-btn next" id="nextBtn">
+                        Next <i class="fas fa-chevron-right"></i>
+                    </button>
+                    ${currentIndex === questions.length - 1 ? '<button class="nav-btn submit" id="submitBtn">Submit Exam <i class="fas fa-check"></i></button>' : ''}
+                </div>
+
+                <div class="palette">
+                    <h4><i class="fas fa-th"></i> Question Palette</h4>
+                    <div class="palette-grid" id="paletteGrid">
+                        ${questions.map((q, idx) => `
+                            <button class="palette-btn ${userAnswers[q.id] ? 'answered' : ''} ${idx === currentIndex ? 'current' : ''}" data-index="${idx}">
+                                ${idx + 1}
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('container').innerHTML = html;
+            
+            // Add event listeners
+            document.querySelectorAll('.option-item').forEach(opt => {
+                opt.addEventListener('click', () => {
+                    const selectedOpt = opt.getAttribute('data-option');
+                    userAnswers[questions[currentIndex].id] = selectedOpt;
+                    renderCurrentQuestion();
+                });
+            });
+            
+            document.getElementById('prevBtn')?.addEventListener('click', () => {
+                if (currentIndex > 0) {
+                    currentIndex--;
+                    renderCurrentQuestion();
+                }
+            });
+            
+            document.getElementById('nextBtn')?.addEventListener('click', () => {
+                if (currentIndex < questions.length - 1) {
+                    currentIndex++;
+                    renderCurrentQuestion();
+                }
+            });
+            
+            document.getElementById('submitBtn')?.addEventListener('click', () => {
+                if (confirm('Are you sure you want to submit your exam?')) {
+                    submitExam();
+                }
+            });
+            
+            document.querySelectorAll('.palette-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const idx = parseInt(btn.getAttribute('data-index'));
+                    currentIndex = idx;
+                    renderCurrentQuestion();
+                });
+            });
+        }
+
+        function calculateScore() {
+            let correct = 0;
+            questions.forEach(q => {
+                if (userAnswers[q.id] === q.correctAnswer) {
+                    correct++;
+                }
+            });
+            return { correct, total: questions.length, percentage: Math.round((correct / questions.length) * 100) };
+        }
+
+        function submitExam() {
+            clearInterval(timer);
+            const score = calculateScore();
+            const results = {
+                examId: currentExam.id,
+                examTitle: currentExam.title,
+                totalQuestions: questions.length,
+                score: score.correct,
+                percentage: score.percentage,
+                answers: userAnswers,
+                completedAt: new Date().toISOString()
+            };
+            
+            localStorage.setItem('examResults', JSON.stringify(results));
+            window.location.href = 'cbt-results.html';
+        }
+
+        async function loadExam() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const examId = urlParams.get('exam');
+            
+            if (!examId) {
+                window.location.href = 'cbt-exam.html';
+                return;
+            }
+            
+            // Get exam from localStorage (passed from selection page)
+            const storedExam = localStorage.getItem('currentExam');
+            if (storedExam) {
+                currentExam = JSON.parse(storedExam);
+            } else {
+                currentExam = { id: examId, title: "Literature Exam", duration: 10 };
+            }
+            
+            // Load questions (using sample for now)
+            questions = sampleQuestions;
+            timeLeft = (currentExam.duration || 10) * 60;
+            
+            startTimer();
+            renderCurrentQuestion();
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                window.location.href = "index.html";
+                return;
+            }
+            loadExam();
+        });
+    </script>
+</body>
+</html>
