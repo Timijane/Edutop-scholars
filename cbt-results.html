@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Exam Results | Mr. Timi Scholar</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #311b92;
+            --primary-light: #4527a0;
+            --secondary: #ff5722;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --light: #f9fafb;
+            --dark: #1f2937;
+            --gray: #6b7280;
+            --border: #e5e7eb;
+            --white: #ffffff;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            min-height: 100vh;
+        }
+
+        .header {
+            background: var(--white);
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .logo h1 {
+            color: var(--primary);
+            font-size: 22px;
+        }
+
+        .logo span {
+            color: var(--secondary);
+        }
+
+        .logo a {
+            text-decoration: none;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 24px 20px;
+        }
+
+        /* Score Card */
+        .score-card {
+            background: var(--white);
+            border-radius: 28px;
+            padding: 32px;
+            text-align: center;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 35px rgba(0,0,0,0.08);
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            font-weight: 800;
+            color: var(--white);
+        }
+
+        .score-percentage {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .score-text {
+            font-size: 18px;
+            margin-bottom: 16px;
+        }
+
+        .score-details {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .detail-item {
+            text-align: center;
+        }
+
+        .detail-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .detail-label {
+            font-size: 13px;
+            color: var(--gray);
+        }
+
+        /* Performance Message */
+        .performance-message {
+            background: var(--light);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+        }
+
+        .btn {
+            padding: 12px 28px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        .btn-secondary {
+            background: var(--light);
+            color: var(--dark);
+            border: 1px solid var(--border);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: var(--white);
+        }
+
+        /* Results List */
+        .results-list {
+            background: var(--white);
+            border-radius: 24px;
+            padding: 20px;
+            margin-top: 24px;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .result-item {
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+        }
+
+        .result-item.correct {
+            background: #ecfdf5;
+            border-left: 4px solid var(--success);
+        }
+
+        .result-item.wrong {
+            background: #fef2f2;
+            border-left: 4px solid var(--danger);
+        }
+
+        .result-question {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .result-answer {
+            font-size: 13px;
+            color: var(--gray);
+        }
+
+        .result-answer strong {
+            color: var(--dark);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: var(--gray);
+            font-size: 11px;
+            border-top: 1px solid var(--border);
+            margin-top: 40px;
+            background: var(--white);
+        }
+
+        @media (max-width: 600px) {
+            .score-circle {
+                width: 120px;
+                height: 120px;
+                font-size: 36px;
+            }
+            .score-percentage {
+                font-size: 36px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">
+            <a href="dashboard.html">
+                <h1>Mr. Timi <span>Scholar</span></h1>
+            </a>
+        </div>
+    </header>
+
+    <div class="container" id="container">
+        <div class="loading">
+            <div class="loading-spinner"></div>
+            <p>Loading results...</p>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>Mr. Timi Edutop Scholar &copy; 2026 | Powered by Triangle Tech</p>
+    </footer>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+        import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCictHNxtslYs9VR0hoicxlwPn_QghkgIA",
+            authDomain: "edutop-7ff51.firebaseapp.com",
+            projectId: "edutop-7ff51",
+            storageBucket: "edutop-7ff51.firebasestorage.app",
+            messagingSenderId: "79307850494",
+            appId: "1:79307850494:web:b51ce51204140ec5429baf",
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let results = null;
+        let showDetails = false;
+
+        function getPerformanceMessage(percentage) {
+            if (percentage >= 80) return { text: "Excellent! 🎉 You've mastered this topic!", color: "#10b981" };
+            if (percentage >= 60) return { text: "Good job! 👍 Keep practicing to improve.", color: "#f59e0b" };
+            if (percentage >= 40) return { text: "Fair attempt. 📚 Review the material and try again.", color: "#f59e0b" };
+            return { text: "Need more practice. 💪 Study the summaries and retake the exam.", color: "#ef4444" };
+        }
+
+        function getScoreColor(percentage) {
+            if (percentage >= 80) return "linear-gradient(135deg, #10b981, #059669)";
+            if (percentage >= 60) return "linear-gradient(135deg, #f59e0b, #d97706)";
+            return "linear-gradient(135deg, #ef4444, #dc2626)";
+        }
+
+        async function saveResultsToFirebase(userId, resultsData) {
+            try {
+                const resultId = `${userId}_${resultsData.examId}_${Date.now()}`;
+                await setDoc(doc(db, "userResults", resultId), {
+                    userId: userId,
+                    examId: resultsData.examId,
+                    examTitle: resultsData.examTitle,
+                    score: resultsData.score,
+                    totalQuestions: resultsData.totalQuestions,
+                    percentage: resultsData.percentage,
+                    answers: resultsData.answers,
+                    completedAt: new Date().toISOString()
+                });
+                console.log("Results saved to Firebase");
+            } catch (error) {
+                console.error("Error saving results:", error);
+            }
+        }
+
+        function renderResults() {
+            if (!results) {
+                document.getElementById('container').innerHTML = `
+                    <div class="loading">
+                        <p>No exam results found.</p>
+                        <a href="cbt-exam.html" class="btn btn-primary" style="margin-top: 20px;">Take an Exam</a>
+                    </div>
+                `;
+                return;
+            }
+
+            const percentage = results.percentage;
+            const performance = getPerformanceMessage(percentage);
+            const scoreColor = getScoreColor(percentage);
+
+            const html = `
+                <div class="score-card">
+                    <div class="score-circle" style="background: ${scoreColor}">
+                        ${percentage}%
+                    </div>
+                    <div class="score-percentage">${results.score}/${results.totalQuestions}</div>
+                    <div class="score-text">Correct Answers</div>
+                    <div class="score-details">
+                        <div class="detail-item">
+                            <div class="detail-value">${results.score}</div>
+                            <div class="detail-label">Correct</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-value">${results.totalQuestions - results.score}</div>
+                            <div class="detail-label">Wrong</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-value">${results.totalQuestions}</div>
+                            <div class="detail-label">Total</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="performance-message" style="border-left: 4px solid ${performance.color}">
+                    <i class="fas fa-chart-line" style="color: ${performance.color}; font-size: 24px; margin-bottom: 8px; display: block;"></i>
+                    <p style="color: ${performance.color}; font-weight: 600;">${performance.text}</p>
+                </div>
+
+                <div class="action-buttons">
+                    <a href="cbt-exam.html" class="btn btn-primary">
+                        <i class="fas fa-list"></i> More Exams
+                    </a>
+                    <button class="btn btn-secondary" id="toggleDetailsBtn">
+                        <i class="fas fa-list-ul"></i> ${showDetails ? 'Hide' : 'Show'} Details
+                    </button>
+                    <a href="dashboard.html" class="btn btn-success">
+                        <i class="fas fa-home"></i> Dashboard
+                    </a>
+                </div>
+
+                ${showDetails ? `
+                    <div class="results-list">
+                        <div class="results-header">
+                            <h3><i class="fas fa-clipboard-list"></i> Question Review</h3>
+                        </div>
+                        <div id="questionsList"></div>
+                    </div>
+                ` : ''}
+            `;
+
+            document.getElementById('container').innerHTML = html;
+
+            if (showDetails && results.questions) {
+                const questionsList = document.getElementById('questionsList');
+                questionsList.innerHTML = results.questions.map((q, idx) => {
+                    const isCorrect = results.answers[q.id] === q.correctAnswer;
+                    return `
+                        <div class="result-item ${isCorrect ? 'correct' : 'wrong'}">
+                            <div class="result-question">
+                                ${idx + 1}. ${escapeHtml(q.text)}
+                            </div>
+                            <div class="result-answer">
+                                <strong>Your answer:</strong> ${results.answers[q.id] || 'Not answered'} - ${escapeHtml(q.options[results.answers[q.id]] || '')}
+                            </div>
+                            <div class="result-answer">
+                                <strong>Correct answer:</strong> ${q.correctAnswer} - ${escapeHtml(q.options[q.correctAnswer])}
+                            </div>
+                            ${q.explanation ? `<div class="result-answer" style="margin-top: 8px;"><strong>Explanation:</strong> ${escapeHtml(q.explanation)}</div>` : ''}
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            document.getElementById('toggleDetailsBtn')?.addEventListener('click', () => {
+                showDetails = !showDetails;
+                renderResults();
+            });
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = "index.html";
+                return;
+            }
+
+            const storedResults = localStorage.getItem('examResults');
+            if (storedResults) {
+                results = JSON.parse(storedResults);
+                localStorage.removeItem('examResults');
+                
+                // Save to Firebase
+                await saveResultsToFirebase(user.uid, results);
+            }
+            
+            renderResults();
+        });
+    </script>
+</body>
+</html>
