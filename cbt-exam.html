@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>CBT Exam | Mr. Timi Scholar</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #311b92;
+            --primary-light: #4527a0;
+            --secondary: #ff5722;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --light: #f9fafb;
+            --dark: #1f2937;
+            --gray: #6b7280;
+            --border: #e5e7eb;
+            --white: #ffffff;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            min-height: 100vh;
+        }
+
+        .header {
+            background: var(--white);
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo h1 {
+            color: var(--primary);
+            font-size: 22px;
+        }
+
+        .logo span {
+            color: var(--secondary);
+        }
+
+        .logo a {
+            text-decoration: none;
+        }
+
+        .back-btn {
+            background: var(--light);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            color: var(--dark);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 24px 20px;
+        }
+
+        .page-header {
+            margin-bottom: 24px;
+        }
+
+        .page-header h1 {
+            color: var(--primary);
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .page-header p {
+            color: var(--gray);
+            font-size: 14px;
+        }
+
+        /* Filter Section */
+        .filter-section {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 8px 20px;
+            border: 2px solid var(--border);
+            border-radius: 40px;
+            background: var(--white);
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .filter-btn.active {
+            background: var(--primary);
+            color: var(--white);
+            border-color: var(--primary);
+        }
+
+        /* Exam Cards */
+        .exam-card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .exam-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+        .exam-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .exam-meta {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+            font-size: 13px;
+            color: var(--gray);
+        }
+
+        .exam-meta span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .exam-description {
+            font-size: 14px;
+            color: var(--gray);
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+
+        .exam-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .exam-badge {
+            background: var(--light);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: var(--dark);
+        }
+
+        .start-btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: var(--white);
+            border: none;
+            padding: 8px 24px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(49,27,146,0.3);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px;
+            color: var(--gray);
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px;
+            background: var(--white);
+            border-radius: 20px;
+            color: var(--gray);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: var(--gray);
+            font-size: 11px;
+            border-top: 1px solid var(--border);
+            margin-top: 40px;
+            background: var(--white);
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 16px;
+            }
+            .exam-title {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">
+            <a href="dashboard.html">
+                <h1>Mr. Timi <span>Scholar</span></h1>
+            </a>
+        </div>
+        <a href="dashboard.html" class="back-btn">
+            <i class="fas fa-arrow-left"></i> Dashboard
+        </a>
+    </header>
+
+    <div class="container">
+        <div class="page-header">
+            <h1><i class="fas fa-laptop"></i> CBT Literature Exams</h1>
+            <p>Practice with JAMB-standard CBT questions and track your progress</p>
+        </div>
+
+        <div class="filter-section">
+            <div class="filter-group" id="filterGroup">
+                <button class="filter-btn active" data-filter="all">All Exams</button>
+                <button class="filter-btn" data-filter="prose">Prose</button>
+                <button class="filter-btn" data-filter="drama">Drama</button>
+                <button class="filter-btn" data-filter="poetry">Poetry</button>
+            </div>
+        </div>
+
+        <div id="examsContainer">
+            <div class="loading">
+                <div class="loading-spinner"></div>
+                <p>Loading exams...</p>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>Mr. Timi Edutop Scholar &copy; 2026 | Powered by Triangle Tech</p>
+    </footer>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+        import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCictHNxtslYs9VR0hoicxlwPn_QghkgIA",
+            authDomain: "edutop-7ff51.firebaseapp.com",
+            projectId: "edutop-7ff51",
+            storageBucket: "edutop-7ff51.firebasestorage.app",
+            messagingSenderId: "79307850494",
+            appId: "1:79307850494:web:b51ce51204140ec5429baf",
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentFilter = 'all';
+        let exams = [];
+
+        // Pre-defined exams (since no questions yet)
+        const defaultExams = [
+            {
+                id: "prose_all",
+                title: "To Kill a Mockingbird - Full Book",
+                bookId: "to-kill-a-mockingbird",
+                category: "prose",
+                description: "Test your knowledge on the complete novel including characters, themes, and plot.",
+                totalQuestions: 40,
+                duration: 45,
+                difficulty: "Medium"
+            },
+            {
+                id: "prose_ch1",
+                title: "To Kill a Mockingbird - Chapter 1",
+                bookId: "to-kill-a-mockingbird",
+                category: "prose",
+                description: "Quiz on Chapter 1: Introduction to Maycomb, the Finch family, and Boo Radley.",
+                totalQuestions: 10,
+                duration: 10,
+                difficulty: "Easy"
+            },
+            {
+                id: "drama_shakespeare",
+                title: "Antony and Cleopatra - Full Play",
+                bookId: "antony-and-cleopatra",
+                category: "drama",
+                description: "Test your knowledge on Shakespeare's tragic romance.",
+                totalQuestions: 30,
+                duration: 35,
+                difficulty: "Hard"
+            },
+            {
+                id: "poetry_african",
+                title: "African Poetry Collection",
+                bookId: "once-upon-a-time",
+                category: "poetry",
+                description: "Questions on Once Upon a Time, Night, and other African poems.",
+                totalQuestions: 20,
+                duration: 25,
+                difficulty: "Medium"
+            }
+        ];
+
+        async function loadExams() {
+            try {
+                // Try to fetch from Firebase
+                const examsRef = collection(db, "exams");
+                const q = query(examsRef, orderBy("createdAt", "desc"));
+                const snapshot = await getDocs(q);
+                
+                if (!snapshot.empty) {
+                    exams = [];
+                    snapshot.forEach(doc => {
+                        exams.push({ id: doc.id, ...doc.data() });
+                    });
+                } else {
+                    // Use default exams
+                    exams = defaultExams;
+                }
+                
+                renderExams();
+            } catch (error) {
+                console.error("Error loading exams:", error);
+                exams = defaultExams;
+                renderExams();
+            }
+        }
+
+        function renderExams() {
+            const container = document.getElementById('examsContainer');
+            
+            let filteredExams = exams;
+            if (currentFilter !== 'all') {
+                filteredExams = exams.filter(exam => exam.category === currentFilter);
+            }
+            
+            if (filteredExams.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-folder-open" style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;"></i>
+                        <h3>No Exams Available</h3>
+                        <p>Check back later for new literature exams.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = filteredExams.map(exam => `
+                <div class="exam-card" data-id="${exam.id}">
+                    <div class="exam-title">${escapeHtml(exam.title)}</div>
+                    <div class="exam-meta">
+                        <span><i class="fas fa-question-circle"></i> ${exam.totalQuestions} Questions</span>
+                        <span><i class="fas fa-clock"></i> ${exam.duration} minutes</span>
+                        <span><i class="fas fa-chart-line"></i> ${exam.difficulty || 'Medium'}</span>
+                    </div>
+                    <div class="exam-description">${escapeHtml(exam.description || 'Test your knowledge on this topic.')}</div>
+                    <div class="exam-footer">
+                        <span class="exam-badge"><i class="fas fa-tag"></i> ${exam.category ? exam.category.toUpperCase() : 'LITERATURE'}</span>
+                        <button class="start-btn" data-id="${exam.id}">
+                            <i class="fas fa-play"></i> Start Exam
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+            
+            document.querySelectorAll('.start-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const examId = btn.getAttribute('data-id');
+                    const exam = exams.find(e => e.id === examId);
+                    if (exam) {
+                        localStorage.setItem('currentExam', JSON.stringify(exam));
+                        window.location.href = `cbt-taking.html?exam=${examId}`;
+                    }
+                });
+            });
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Filter buttons
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentFilter = btn.getAttribute('data-filter');
+                renderExams();
+            });
+        });
+
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                window.location.href = "index.html";
+                return;
+            }
+            loadExams();
+        });
+    </script>
+</body>
+</html>
