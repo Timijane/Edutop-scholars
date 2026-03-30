@@ -6,56 +6,315 @@
     <title>CBT Exam | Mr. Timi Scholar</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        :root { --primary: #311b92; --primary-light: #4527a0; --secondary: #ff5722; --success: #10b981; --danger: #ef4444; --light: #f9fafb; --dark: #1f2937; --gray: #6b7280; --border: #e5e7eb; --white: #ffffff; }
-        body { background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%); min-height: 100vh; display: flex; flex-direction: column; }
-        .header { background: var(--white); padding: 12px 24px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; flex-wrap: wrap; gap: 10px; }
-        .logo h1 { color: var(--primary); font-size: 22px; }
-        .logo span { color: var(--secondary); }
-        .logo a { text-decoration: none; }
-        .timer-box { background: var(--danger); color: white; padding: 8px 20px; border-radius: 40px; font-weight: 700; font-size: 20px; font-family: monospace; }
-        .question-counter { background: var(--light); padding: 8px 16px; border-radius: 40px; font-weight: 600; }
-        .main-content { flex: 1; display: flex; gap: 20px; padding: 20px; max-width: 1400px; margin: 0 auto; width: 100%; }
-        .question-area { flex: 2; background: var(--white); border-radius: 24px; padding: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
-        .question-text { font-size: 18px; line-height: 1.6; margin-bottom: 24px; font-weight: 500; }
-        .options-list { display: flex; flex-direction: column; gap: 12px; }
-        .option-item { display: flex; align-items: center; gap: 15px; padding: 14px 18px; background: var(--light); border-radius: 16px; cursor: pointer; transition: all 0.2s; border: 2px solid transparent; }
-        .option-item:hover { background: var(--border); }
-        .option-item.selected { background: #e8eaf6; border-color: var(--primary); }
-        .option-letter { width: 40px; height: 40px; background: var(--white); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--primary); }
-        .option-item.selected .option-letter { background: var(--primary); color: white; }
-        .option-text { flex: 1; font-size: 15px; }
-        .nav-buttons { display: flex; gap: 12px; margin-top: 24px; flex-wrap: wrap; }
-        .nav-btn { padding: 12px 24px; border-radius: 40px; font-weight: 600; cursor: pointer; border: none; display: inline-flex; align-items: center; gap: 8px; }
-        .nav-btn.prev { background: var(--light); color: var(--dark); }
-        .nav-btn.next { background: var(--primary); color: white; }
-        .nav-btn.submit { background: var(--success); color: white; }
-        .palette-sidebar { flex: 1; background: var(--white); border-radius: 24px; padding: 20px; height: fit-content; position: sticky; top: 80px; }
-        .palette-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 20px; }
-        .palette-btn { aspect-ratio: 1; border-radius: 12px; background: var(--light); border: none; font-weight: 600; cursor: pointer; font-size: 14px; }
-        .palette-btn.answered { background: var(--success); color: white; }
-        .palette-btn.current { background: var(--primary); color: white; transform: scale(1.05); }
-        .palette-legend { display: flex; gap: 15px; flex-wrap: wrap; font-size: 12px; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); }
-        .legend-color { width: 16px; height: 16px; border-radius: 4px; }
-        .loading { text-align: center; padding: 60px; }
-        .loading-spinner { width: 50px; height: 50px; border: 3px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 20px; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        @media (max-width: 900px) { .main-content { flex-direction: column; } .palette-sidebar { position: static; } }
-        @media (max-width: 600px) { .palette-grid { grid-template-columns: repeat(8, 1fr); } }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #311b92;
+            --primary-light: #4527a0;
+            --secondary: #ff5722;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --light: #f9fafb;
+            --dark: #1f2937;
+            --gray: #6b7280;
+            --border: #e5e7eb;
+            --white: #ffffff;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: var(--white);
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .logo h1 {
+            color: var(--primary);
+            font-size: 22px;
+        }
+
+        .logo span {
+            color: var(--secondary);
+        }
+
+        .logo a {
+            text-decoration: none;
+        }
+
+        .exam-header {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .timer-box {
+            background: var(--danger);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 700;
+            font-size: 20px;
+            font-family: monospace;
+        }
+
+        .question-counter {
+            background: var(--light);
+            padding: 8px 16px;
+            border-radius: 40px;
+            font-weight: 600;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            gap: 20px;
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .question-area {
+            flex: 2;
+            background: var(--white);
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .question-text {
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 24px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 14px 18px;
+            background: var(--light);
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+
+        .option-item:hover {
+            background: var(--border);
+        }
+
+        .option-item.selected {
+            background: #e8eaf6;
+            border-color: var(--primary);
+        }
+
+        .option-letter {
+            width: 40px;
+            height: 40px;
+            background: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--primary);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .option-item.selected .option-letter {
+            background: var(--primary);
+            color: white;
+        }
+
+        .option-text {
+            flex: 1;
+            font-size: 15px;
+            line-height: 1.4;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            padding: 12px 24px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-btn.prev {
+            background: var(--light);
+            color: var(--dark);
+        }
+
+        .nav-btn.next {
+            background: var(--primary);
+            color: white;
+        }
+
+        .nav-btn.submit {
+            background: var(--success);
+            color: white;
+        }
+
+        .palette-sidebar {
+            flex: 1;
+            background: var(--white);
+            border-radius: 24px;
+            padding: 20px;
+            height: fit-content;
+            position: sticky;
+            top: 80px;
+        }
+
+        .palette-sidebar h3 {
+            color: var(--primary);
+            margin-bottom: 16px;
+            font-size: 16px;
+        }
+
+        .palette-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .palette-btn {
+            aspect-ratio: 1;
+            border-radius: 12px;
+            background: var(--light);
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .palette-btn.answered {
+            background: var(--success);
+            color: white;
+        }
+
+        .palette-btn.current {
+            background: var(--primary);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .palette-legend {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            font-size: 12px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 900px) {
+            .main-content {
+                flex-direction: column;
+            }
+            .palette-sidebar {
+                position: static;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .palette-grid {
+                grid-template-columns: repeat(8, 1fr);
+            }
+        }
     </style>
 </head>
 <body>
     <header class="header">
-        <div class="logo"><a href="dashboard.html"><h1>Mr. Timi <span>Scholar</span></h1></a></div>
-        <div><div class="timer-box" id="timer">00:00</div><div class="question-counter" id="questionCounter" style="margin-top:8px;">Question 1 of 0</div></div>
+        <div class="logo">
+            <a href="dashboard.html">
+                <h1>Mr. Timi <span>Scholar</span></h1>
+            </a>
+        </div>
+        <div class="exam-header">
+            <div class="timer-box" id="timer">00:00</div>
+            <div class="question-counter" id="questionCounter">Question 1 of 0</div>
+        </div>
     </header>
 
-    <div class="main-content" id="mainContent"><div class="loading"><div class="loading-spinner"></div><p>Loading exam...</p></div></div>
+    <div class="main-content" id="mainContent">
+        <div class="loading">
+            <div class="loading-spinner"></div>
+            <p>Loading exam questions...</p>
+        </div>
+    </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCictHNxtslYs9VR0hoicxlwPn_QghkgIA",
@@ -65,29 +324,169 @@
             messagingSenderId: "79307850494",
             appId: "1:79307850494:web:b51ce51204140ec5429baf",
         };
+
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        let questions = [], userAnswers = {}, currentIndex = 0, timer = null, timeLeft = 0, currentExam = null;
+        let allQuestions = [];
+        let selectedQuestions = [];
+        let userAnswers = {};
+        let currentIndex = 0;
+        let timer = null;
+        let timeLeft = 0;
+        let currentExam = null;
+        let answeredQuestionIds = [];
+
+        // Categories for balanced selection
+        const categories = {
+            general: { name: "General Literature", count: 15, selected: [] },
+            poetry: { name: "Poetry Analysis", count: 15, selected: [] },
+            prose: { name: "Prose (Novels)", count: 15, selected: [] },
+            drama: { name: "Drama (Plays)", count: 15, selected: [] },
+            unseen: { name: "Unseen Passages", count: 10, selected: [] }
+        };
+
+        // Book IDs for each category
+        const poetryBooks = ["once-upon-a-time", "new-tongue", "night", "not-my-business", "hearty-garlands", "breast-of-the-sea", "she-walks-in-beauty", "the-stone", "telephone-call", "nuns-priest-tale"];
+        const proseBooks = ["to-kill-a-mockingbird", "path-of-lucas", "so-the-path-does-not-die", "redemption-road"];
+        const dramaBooks = ["antony-and-cleopatra", "once-upon-an-elephant", "marriage-of-anansewa", "inspector-calls", "man-for-all-seasons"];
+
+        // Load answered questions from Firebase
+        async function loadAnsweredQuestions(userId) {
+            try {
+                const userProgressRef = doc(db, "userProgress", userId);
+                const docSnap = await getDoc(userProgressRef);
+                if (docSnap.exists()) {
+                    answeredQuestionIds = docSnap.data().answeredQuestions || [];
+                } else {
+                    answeredQuestionIds = [];
+                }
+                console.log(`Loaded ${answeredQuestionIds.length} answered questions`);
+            } catch (error) {
+                console.error("Error loading answered questions:", error);
+                answeredQuestionIds = [];
+            }
+        }
+
+        // Save answered questions to Firebase
+        async function saveAnsweredQuestions(userId, newQuestionIds) {
+            try {
+                const userProgressRef = doc(db, "userProgress", userId);
+                const allAnswered = [...new Set([...answeredQuestionIds, ...newQuestionIds])];
+                await setDoc(userProgressRef, {
+                    answeredQuestions: allAnswered,
+                    lastUpdated: new Date().toISOString()
+                }, { merge: true });
+                console.log(`Saved ${newQuestionIds.length} new answered questions`);
+            } catch (error) {
+                console.error("Error saving answered questions:", error);
+            }
+        }
+
+        // Select balanced questions from all categories
+        function selectBalancedQuestions() {
+            const availableQuestions = allQuestions.filter(q => !answeredQuestionIds.includes(q.id));
+            
+            // Reset category selections
+            Object.keys(categories).forEach(cat => {
+                categories[cat].selected = [];
+            });
+            
+            // Categorize available questions
+            availableQuestions.forEach(q => {
+                if (q.bookId === "general" || q.bookId === "unseen") {
+                    if (q.bookId === "unseen") {
+                        categories.unseen.selected.push(q);
+                    } else {
+                        categories.general.selected.push(q);
+                    }
+                } else if (poetryBooks.includes(q.bookId)) {
+                    categories.poetry.selected.push(q);
+                } else if (proseBooks.includes(q.bookId)) {
+                    categories.prose.selected.push(q);
+                } else if (dramaBooks.includes(q.bookId)) {
+                    categories.drama.selected.push(q);
+                }
+            });
+            
+            // Shuffle each category
+            Object.keys(categories).forEach(cat => {
+                categories[cat].selected = shuffleArray(categories[cat].selected);
+            });
+            
+            // Select required number from each category
+            const selected = [];
+            
+            selected.push(...categories.general.selected.slice(0, categories.general.count));
+            selected.push(...categories.poetry.selected.slice(0, categories.poetry.count));
+            selected.push(...categories.prose.selected.slice(0, categories.prose.count));
+            selected.push(...categories.drama.selected.slice(0, categories.drama.count));
+            selected.push(...categories.unseen.selected.slice(0, categories.unseen.count));
+            
+            // If we don't have enough from a category, get from others
+            if (selected.length < 70) {
+                const remaining = availableQuestions.filter(q => !selected.includes(q));
+                selected.push(...shuffleArray(remaining).slice(0, 70 - selected.length));
+            }
+            
+            // Shuffle final selection
+            return shuffleArray(selected.slice(0, 70));
+        }
+
+        // Fisher-Yates shuffle
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
 
         async function loadQuestions() {
             const storedExam = localStorage.getItem('currentExam');
-            if (!storedExam) { window.location.href = 'cbt-exam.html'; return; }
+            if (!storedExam) {
+                window.location.href = 'cbt-exam.html';
+                return;
+            }
             currentExam = JSON.parse(storedExam);
             
+            // Load all questions from Firebase
             const snapshot = await getDocs(collection(db, "questions"));
-            const allQuestions = [];
-            snapshot.forEach(doc => allQuestions.push({ id: doc.id, ...doc.data() }));
+            allQuestions = [];
+            snapshot.forEach(doc => {
+                allQuestions.push({ id: doc.id, ...doc.data() });
+            });
             
-            if (currentExam.id === "all") questions = allQuestions;
-            else if (currentExam.id === "poetry") questions = allQuestions.filter(q => q.bookId?.includes('poem') || q.bookId === 'once-upon-a-time' || q.bookId === 'night' || q.bookId === 'new-tongue');
-            else questions = allQuestions.filter(q => q.bookId === currentExam.id);
+            console.log(`Total questions in database: ${allQuestions.length}`);
+            console.log(`Answered questions: ${answeredQuestionIds.length}`);
             
-            questions = questions.slice(0, currentExam.totalQuestions);
-            if (questions.length === 0) { document.getElementById('mainContent').innerHTML = '<div style="text-align:center;padding:60px;"><h3>No Questions Available</h3><a href="cbt-exam.html">Back to Exams</a></div>'; return; }
+            // Select balanced questions
+            selectedQuestions = selectBalancedQuestions();
             
-            timeLeft = currentExam.duration * 60;
+            console.log(`Selected ${selectedQuestions.length} questions`);
+            console.log(`Category breakdown:`);
+            console.log(`General: ${selectedQuestions.filter(q => q.bookId === "general" || q.bookId === "unseen").length}`);
+            console.log(`Poetry: ${selectedQuestions.filter(q => poetryBooks.includes(q.bookId)).length}`);
+            console.log(`Prose: ${selectedQuestions.filter(q => proseBooks.includes(q.bookId)).length}`);
+            console.log(`Drama: ${selectedQuestions.filter(q => dramaBooks.includes(q.bookId)).length}`);
+            
+            if (selectedQuestions.length === 0) {
+                document.getElementById('mainContent').innerHTML = `
+                    <div style="text-align:center;padding:60px;background:white;border-radius:24px;">
+                        <i class="fas fa-database" style="font-size:48px;color:var(--gray);margin-bottom:16px;"></i>
+                        <h3>No New Questions Available</h3>
+                        <p>You have answered all available questions!</p>
+                        <p>Total questions answered: ${answeredQuestionIds.length}</p>
+                        <button onclick="location.href='dashboard.html'" style="margin-top:20px;padding:12px 24px;background:var(--primary);color:white;border:none;border-radius:30px;">Return to Dashboard</button>
+                    </div>
+                `;
+                return;
+            }
+            
+            userAnswers = {};
+            currentIndex = 0;
+            timeLeft = 60 * 60; // 60 minutes for 70 questions
             startTimer();
             renderExam();
         }
@@ -95,19 +494,32 @@
         function startTimer() {
             const timerElement = document.getElementById('timer');
             timer = setInterval(() => {
-                if (timeLeft <= 0) { clearInterval(timer); submitExam(); }
-                else { timeLeft--; const m = Math.floor(timeLeft / 60), s = timeLeft % 60; timerElement.textContent = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`; }
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    submitExam();
+                } else {
+                    timeLeft--;
+                    const minutes = Math.floor(timeLeft / 60);
+                    const seconds = timeLeft % 60;
+                    timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                    
+                    if (timeLeft <= 300) {
+                        timerElement.style.background = '#ef4444';
+                        timerElement.style.animation = 'pulse 1s infinite';
+                    }
+                }
             }, 1000);
         }
         
         function renderExam() {
-            const q = questions[currentIndex];
+            const q = selectedQuestions[currentIndex];
             const selected = userAnswers[q.id] || '';
+            
             const html = `
                 <div class="question-area">
-                    <div class="question-text">${currentIndex+1}. ${escapeHtml(q.questionText)}</div>
+                    <div class="question-text">${currentIndex + 1}. ${escapeHtml(q.questionText)}</div>
                     <div class="options-list">
-                        ${['A','B','C','D'].map(opt => `
+                        ${['A', 'B', 'C', 'D'].map(opt => `
                             <div class="option-item ${selected === opt ? 'selected' : ''}" data-option="${opt}">
                                 <div class="option-letter">${opt}</div>
                                 <div class="option-text">${escapeHtml(q.options?.[opt] || '')}</div>
@@ -115,50 +527,147 @@
                         `).join('')}
                     </div>
                     <div class="nav-buttons">
-                        <button class="nav-btn prev" id="prevBtn" ${currentIndex === 0 ? 'disabled style="opacity:0.5"' : ''}><i class="fas fa-chevron-left"></i> Previous</button>
-                        <button class="nav-btn next" id="nextBtn">Next <i class="fas fa-chevron-right"></i></button>
-                        ${currentIndex === questions.length-1 ? '<button class="nav-btn submit" id="submitBtn">Submit Exam <i class="fas fa-check"></i></button>' : ''}
+                        <button class="nav-btn prev" id="prevBtn" ${currentIndex === 0 ? 'disabled style="opacity:0.5"' : ''}>
+                            <i class="fas fa-chevron-left"></i> Previous
+                        </button>
+                        <button class="nav-btn next" id="nextBtn">
+                            Next <i class="fas fa-chevron-right"></i>
+                        </button>
+                        ${currentIndex === selectedQuestions.length - 1 ? '<button class="nav-btn submit" id="submitBtn">Submit Exam <i class="fas fa-check"></i></button>' : ''}
                     </div>
                 </div>
                 <div class="palette-sidebar">
                     <h3><i class="fas fa-th"></i> Question Palette</h3>
                     <div class="palette-grid" id="paletteGrid">
-                        ${questions.map((_, idx) => `<button class="palette-btn ${userAnswers[questions[idx].id] ? 'answered' : ''} ${idx === currentIndex ? 'current' : ''}" data-index="${idx}">${idx+1}</button>`).join('')}
+                        ${selectedQuestions.map((_, idx) => `
+                            <button class="palette-btn ${userAnswers[selectedQuestions[idx].id] ? 'answered' : ''} ${idx === currentIndex ? 'current' : ''}" data-index="${idx}">
+                                ${idx + 1}
+                            </button>
+                        `).join('')}
                     </div>
                     <div class="palette-legend">
                         <div class="legend-item"><div class="legend-color" style="background:var(--success);"></div> Answered</div>
                         <div class="legend-item"><div class="legend-color" style="background:var(--primary);"></div> Current</div>
                         <div class="legend-item"><div class="legend-color" style="background:var(--light);"></div> Unanswered</div>
                     </div>
+                    <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); font-size: 12px; color: var(--gray);">
+                        <i class="fas fa-chart-pie"></i> Questions by Category:<br>
+                        📚 General: ${selectedQuestions.filter(q => q.bookId === "general" || q.bookId === "unseen").length}<br>
+                        📜 Poetry: ${selectedQuestions.filter(q => poetryBooks.includes(q.bookId)).length}<br>
+                        📖 Prose: ${selectedQuestions.filter(q => proseBooks.includes(q.bookId)).length}<br>
+                        🎭 Drama: ${selectedQuestions.filter(q => dramaBooks.includes(q.bookId)).length}
+                    </div>
                 </div>
             `;
-            document.getElementById('mainContent').innerHTML = html;
-            document.getElementById('questionCounter').innerHTML = `Question ${currentIndex+1} of ${questions.length}`;
             
-            document.querySelectorAll('.option-item').forEach(opt => opt.addEventListener('click', () => { userAnswers[questions[currentIndex].id] = opt.dataset.option; renderExam(); }));
-            document.getElementById('prevBtn')?.addEventListener('click', () => { if (currentIndex > 0) { currentIndex--; renderExam(); } });
-            document.getElementById('nextBtn')?.addEventListener('click', () => { if (currentIndex < questions.length-1) { currentIndex++; renderExam(); } });
-            document.getElementById('submitBtn')?.addEventListener('click', () => { if (confirm(`You answered ${Object.keys(userAnswers).length} out of ${questions.length} questions. Submit?`)) submitExam(); });
-            document.querySelectorAll('.palette-btn').forEach(btn => btn.addEventListener('click', () => { currentIndex = parseInt(btn.dataset.index); renderExam(); }));
+            document.getElementById('mainContent').innerHTML = html;
+            document.getElementById('questionCounter').innerHTML = `Question ${currentIndex + 1} of ${selectedQuestions.length}`;
+            
+            // Add event listeners
+            document.querySelectorAll('.option-item').forEach(opt => {
+                opt.addEventListener('click', () => {
+                    const selectedOpt = opt.getAttribute('data-option');
+                    userAnswers[selectedQuestions[currentIndex].id] = selectedOpt;
+                    renderExam();
+                });
+            });
+            
+            document.getElementById('prevBtn')?.addEventListener('click', () => {
+                if (currentIndex > 0) {
+                    currentIndex--;
+                    renderExam();
+                }
+            });
+            
+            document.getElementById('nextBtn')?.addEventListener('click', () => {
+                if (currentIndex < selectedQuestions.length - 1) {
+                    currentIndex++;
+                    renderExam();
+                }
+            });
+            
+            document.getElementById('submitBtn')?.addEventListener('click', () => {
+                const answered = Object.keys(userAnswers).length;
+                if (confirm(`You have answered ${answered} out of ${selectedQuestions.length} questions.\n\nSubmit your exam?`)) {
+                    submitExam();
+                }
+            });
+            
+            document.querySelectorAll('.palette-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const idx = parseInt(btn.getAttribute('data-index'));
+                    currentIndex = idx;
+                    renderExam();
+                });
+            });
         }
         
-        function submitExam() {
-            clearInterval(timer);
+        function calculateScore() {
             let correct = 0;
-            const details = questions.map(q => {
+            const details = selectedQuestions.map(q => {
                 const userAnswer = userAnswers[q.id];
                 const isCorrect = userAnswer === q.correctAnswer;
                 if (isCorrect) correct++;
-                return { id: q.id, text: q.questionText, options: q.options, userAnswer, correctAnswer: q.correctAnswer, isCorrect, explanation: q.explanation || '' };
+                return {
+                    id: q.id,
+                    text: q.questionText,
+                    options: q.options,
+                    userAnswer: userAnswer,
+                    correctAnswer: q.correctAnswer,
+                    isCorrect: isCorrect,
+                    explanation: q.explanation || ''
+                };
             });
-            const results = { examId: currentExam.id, examTitle: currentExam.title, totalQuestions: questions.length, score: correct, percentage: Math.round((correct/questions.length)*100), answers: userAnswers, questions: details, completedAt: new Date().toISOString() };
+            return { correct, total: selectedQuestions.length, percentage: Math.round((correct / selectedQuestions.length) * 100), details };
+        }
+        
+        async function submitExam() {
+            clearInterval(timer);
+            const score = calculateScore();
+            
+            // Get IDs of questions answered in this exam
+            const newAnsweredIds = Object.keys(userAnswers);
+            
+            // Save to Firebase
+            const user = auth.currentUser;
+            if (user) {
+                await saveAnsweredQuestions(user.uid, newAnsweredIds);
+            }
+            
+            const results = {
+                examId: currentExam.id,
+                examTitle: currentExam.title,
+                totalQuestions: selectedQuestions.length,
+                score: score.correct,
+                percentage: score.percentage,
+                answers: userAnswers,
+                questions: score.details,
+                completedAt: new Date().toISOString()
+            };
+            
             localStorage.setItem('examResults', JSON.stringify(results));
             window.location.href = 'cbt-results.html';
         }
         
-        function escapeHtml(text) { if (!text) return ''; const d = document.createElement('div'); d.textContent = text; return d.innerHTML; }
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
         
-        onAuthStateChanged(auth, (user) => { if (!user) { window.location.href = "index.html"; return; } loadQuestions(); });
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = "index.html";
+                return;
+            }
+            
+            // Load previously answered questions
+            await loadAnsweredQuestions(user.uid);
+            
+            // Load and select questions
+            await loadQuestions();
+        });
     </script>
 </body>
 </html>
