@@ -182,7 +182,6 @@
             font-size: 11px;
         }
 
-        /* Exam Stats Section */
         .exam-stats-section {
             background: white;
             border-radius: 20px;
@@ -220,11 +219,6 @@
             transition: all 0.2s;
         }
 
-        .refresh-stats:hover {
-            background: var(--border);
-            color: var(--primary);
-        }
-
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -255,26 +249,11 @@
             color: var(--success);
         }
 
-        .latest-score {
-            color: var(--accent);
-        }
-
         .performance-trend {
             margin-top: 16px;
             padding-top: 16px;
             border-top: 1px solid var(--light-gray);
-        }
-
-        .trend-up {
-            color: var(--success);
-        }
-
-        .trend-down {
-            color: var(--danger);
-        }
-
-        .trend-stable {
-            color: var(--warning);
+            font-size: 13px;
         }
 
         .recent-exams-list {
@@ -303,19 +282,6 @@
         .recent-exam-date {
             font-size: 10px;
             color: var(--gray);
-        }
-
-        .view-all-btn {
-            width: 100%;
-            margin-top: 12px;
-            padding: 8px;
-            background: var(--light);
-            border: none;
-            border-radius: 30px;
-            font-size: 12px;
-            cursor: pointer;
-            color: var(--primary);
-            font-weight: 500;
         }
 
         .section-header {
@@ -400,10 +366,6 @@
             background: linear-gradient(135deg, var(--secondary), #ff7849);
         }
 
-        .admin-card h3 {
-            color: var(--secondary);
-        }
-
         .recent-activity {
             background: white;
             border-radius: 16px;
@@ -449,11 +411,6 @@
             font-size: 14px;
         }
 
-        .activity-info p {
-            color: var(--gray);
-            font-size: 11px;
-        }
-
         .footer {
             text-align: center;
             padding: 16px;
@@ -486,20 +443,11 @@
             text-align: center;
         }
 
-        .modal h3 {
-            color: var(--primary);
-            margin-bottom: 16px;
-        }
-
-        .modal p {
-            color: var(--gray);
-            margin-bottom: 24px;
-        }
-
         .modal-buttons {
             display: flex;
             gap: 12px;
             justify-content: center;
+            margin-top: 20px;
         }
 
         .modal-btn {
@@ -524,27 +472,8 @@
             .stats-cards {
                 gap: 8px;
             }
-            .stat-card {
-                padding: 10px 5px;
-            }
-            .stat-icon {
-                width: 30px;
-                height: 30px;
-                font-size: 14px;
-            }
-            .stat-info h3 {
-                font-size: 16px;
-            }
             .stats-grid {
                 grid-template-columns: repeat(2, 1fr);
-            }
-            .action-card {
-                padding: 12px;
-            }
-            .action-icon {
-                width: 42px;
-                height: 42px;
-                font-size: 18px;
             }
         }
     </style>
@@ -578,14 +507,13 @@
             <p id="welcome-subtext">Your literature learning journey begins here.</p>
         </section>
 
-        <!-- Quick Stats -->
         <div class="stats-cards">
             <div class="stat-card">
                 <div class="stat-icon" style="background: var(--primary);">
                     <i class="fas fa-chart-line"></i>
                 </div>
                 <div class="stat-info">
-                    <h3 id="stat-score">--%</h3>
+                    <h3 id="stat-score">0%</h3>
                     <p>Avg Score</p>
                 </div>
             </div>
@@ -612,13 +540,12 @@
                     <i class="fas fa-trophy"></i>
                 </div>
                 <div class="stat-info">
-                    <h3 id="stat-best">--%</h3>
+                    <h3 id="stat-best">0%</h3>
                     <p>Best Score</p>
                 </div>
             </div>
         </div>
 
-        <!-- Detailed Exam Statistics -->
         <div class="exam-stats-section">
             <div class="exam-stats-header">
                 <h3><i class="fas fa-chart-simple"></i> Exam Performance</h3>
@@ -638,7 +565,7 @@
                     <div class="stat-label">Best Score</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-value latest-score" id="stat-latest-score">--%</div>
+                    <div class="stat-value" id="stat-latest-score">--%</div>
                     <div class="stat-label">Latest Score</div>
                 </div>
                 <div class="stat-item">
@@ -651,12 +578,11 @@
                 </div>
             </div>
             <div class="performance-trend" id="performance-trend">
-                <i class="fas fa-chart-line"></i> <span id="trend-text">Loading performance data...</span>
+                <i class="fas fa-chart-line"></i> Take an exam to see your performance!
             </div>
             <div class="recent-exams-list" id="recent-exams-list">
-                <div style="text-align: center; color: var(--gray); padding: 10px;">Loading recent exams...</div>
+                <div style="text-align: center; color: var(--gray); padding: 10px;">No exams taken yet.</div>
             </div>
-            <button class="view-all-btn" id="viewAllExamsBtn"><i class="fas fa-history"></i> View All Exam History</button>
         </div>
 
         <div class="section-header">
@@ -708,17 +634,6 @@
                 <i class="fas fa-chevron-right action-arrow"></i>
             </div>
 
-            <div class="action-card" onclick="window.location.href='tutors.html'">
-                <div class="action-icon" style="background: linear-gradient(135deg, #f44336 0%, #c62828 100%);">
-                    <i class="fas fa-chalkboard-user"></i>
-                </div>
-                <div class="action-content">
-                    <h3>Hire Private Tutor</h3>
-                    <p>Connect with expert literature tutors</p>
-                </div>
-                <i class="fas fa-chevron-right action-arrow"></i>
-            </div>
-
             <div id="adminActionCard" class="action-card admin-card" style="display: none;" onclick="window.location.href='admin-write.html'">
                 <div class="action-icon" style="background: linear-gradient(135deg, #ff5722 0%, #ff7849 100%);">
                     <i class="fas fa-crown"></i>
@@ -754,7 +669,7 @@
     <div id="logoutModal" class="modal-overlay">
         <div class="modal">
             <h3><i class="fas fa-sign-out-alt"></i> Logout</h3>
-            <p>Are you sure you want to logout from your account?</p>
+            <p>Are you sure you want to logout?</p>
             <div class="modal-buttons">
                 <button class="modal-btn cancel" id="cancelLogoutBtn">Cancel</button>
                 <button class="modal-btn logout" id="confirmLogoutBtn">Logout</button>
@@ -765,7 +680,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-        import { getFirestore, doc, onSnapshot, setDoc, collection, getDocs, query, where, orderBy, limit } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+        import { getFirestore, doc, onSnapshot, setDoc, collection, getDocs, query, where, orderBy } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCictHNxtslYs9VR0hoicxlwPn_QghkgIA",
@@ -773,8 +688,7 @@
             projectId: "edutop-7ff51",
             storageBucket: "edutop-7ff51.firebasestorage.app",
             messagingSenderId: "79307850494",
-            appId: "1:79307850494:web:b51ce51204140ec5429baf",
-            measurementId: "G-GGGH590BYS"
+            appId: "1:79307850494:web:b51ce51204140ec5429baf"
         };
 
         const app = initializeApp(firebaseConfig);
@@ -785,10 +699,7 @@
         let isAdmin = false;
         let examResults = [];
 
-        const adminEmails = [
-            "okewunmitimileyin23@gmail.com",
-            "triangleofscholars@gmail.com"
-        ];
+        const adminEmails = ["okewunmitimileyin23@gmail.com", "triangleofscholars@gmail.com"];
 
         // Load exam results from Firebase
         async function loadExamResults(userId) {
@@ -800,27 +711,55 @@
                 snapshot.forEach(doc => {
                     examResults.push({ id: doc.id, ...doc.data() });
                 });
+                console.log(`Loaded ${examResults.length} exam results`);
                 updateExamStats();
+                updateUserStatsInFirebase(userId);
             } catch (error) {
                 console.error("Error loading exam results:", error);
+                examResults = [];
             }
         }
 
-        // Calculate and update exam statistics
+        // Update user stats in Firebase
+        async function updateUserStatsInFirebase(userId) {
+            if (examResults.length === 0) return;
+            
+            let totalPercentage = 0;
+            let bestScore = 0;
+            examResults.forEach(result => {
+                totalPercentage += result.percentage || 0;
+                if ((result.percentage || 0) > bestScore) {
+                    bestScore = result.percentage;
+                }
+            });
+            const avgScore = Math.round(totalPercentage / examResults.length);
+            
+            const userRef = doc(db, "users", userId);
+            await setDoc(userRef, {
+                stats: {
+                    overallScore: avgScore,
+                    examsTaken: examResults.length,
+                    bestScore: bestScore,
+                    lastUpdated: new Date().toISOString()
+                }
+            }, { merge: true });
+        }
+
+        // Update dashboard UI with exam statistics
         function updateExamStats() {
             const totalExams = examResults.length;
             
             if (totalExams === 0) {
-                document.getElementById('stat-avg-score').innerText = '--%';
+                document.getElementById('stat-avg-score').innerText = '0%';
                 document.getElementById('stat-total-exams').innerText = '0';
-                document.getElementById('stat-best-score').innerText = '--%';
-                document.getElementById('stat-latest-score').innerText = '--%';
+                document.getElementById('stat-best-score').innerText = '0%';
+                document.getElementById('stat-latest-score').innerText = '0%';
                 document.getElementById('stat-total-questions').innerText = '0';
                 document.getElementById('stat-correct-answers').innerText = '0';
                 document.getElementById('stat-exams').innerText = '0';
-                document.getElementById('stat-score').innerText = '--%';
-                document.getElementById('stat-best').innerText = '--%';
-                document.getElementById('performance-trend').innerHTML = '<i class="fas fa-chart-line"></i> <span>No exams taken yet. Start your first exam!</span>';
+                document.getElementById('stat-score').innerText = '0%';
+                document.getElementById('stat-best').innerText = '0%';
+                document.getElementById('performance-trend').innerHTML = '<i class="fas fa-chart-line"></i> Take an exam to see your performance!';
                 document.getElementById('recent-exams-list').innerHTML = '<div style="text-align: center; color: var(--gray); padding: 10px;">No exams taken yet.</div>';
                 return;
             }
@@ -862,14 +801,14 @@
                 const difference = lastScore - firstScore;
                 
                 if (difference > 5) {
-                    trendHtml = `<i class="fas fa-arrow-up trend-up"></i> <span class="trend-up">Improving! +${difference}% from your first exam</span>`;
+                    trendHtml = `<i class="fas fa-arrow-up" style="color: var(--success);"></i> Improving! +${difference}% from your first exam`;
                 } else if (difference < -5) {
-                    trendHtml = `<i class="fas fa-arrow-down trend-down"></i> <span class="trend-down">Declining. Keep practicing! ${difference}% from your first exam</span>`;
+                    trendHtml = `<i class="fas fa-arrow-down" style="color: var(--danger);"></i> Declining. Keep practicing! ${difference}% from your first exam`;
                 } else {
-                    trendHtml = `<i class="fas fa-minus trend-stable"></i> <span class="trend-stable">Steady performance. Keep it up!</span>`;
+                    trendHtml = `<i class="fas fa-minus" style="color: var(--warning);"></i> Steady performance. Keep it up!`;
                 }
             } else {
-                trendHtml = `<i class="fas fa-chart-line"></i> <span>Take more exams to see your progress trend!</span>`;
+                trendHtml = `<i class="fas fa-chart-line"></i> Take more exams to see your progress trend!`;
             }
             document.getElementById('performance-trend').innerHTML = trendHtml;
             
@@ -885,56 +824,33 @@
                         <div class="recent-exam-score">${exam.score}/${exam.totalQuestions} (${exam.percentage}%)</div>
                     </div>
                 `).join('');
-            } else {
-                document.getElementById('recent-exams-list').innerHTML = '<div style="text-align: center; color: var(--gray); padding: 10px;">No exams taken yet.</div>';
             }
             
-            // Update activity feed with latest exam
+            // Update activity feed
             if (examResults.length > 0 && examResults[0]) {
                 const latest = examResults[0];
                 const activityList = document.getElementById('activity-list');
-                const newActivity = document.createElement('div');
-                newActivity.className = 'activity-item';
-                newActivity.innerHTML = `
-                    <div class="activity-icon" style="background: var(--success);">
-                        <i class="fas fa-check-circle"></i>
-                    </div>
-                    <div class="activity-info">
-                        <h4>Exam Completed: ${latest.examTitle || 'Literature Exam'}</h4>
-                        <p>Score: ${latest.score}/${latest.totalQuestions} (${latest.percentage}%) - ${new Date(latest.completedAt).toLocaleDateString()}</p>
-                    </div>
-                `;
-                // Insert at top but keep welcome message
-                const firstItem = activityList.querySelector('.activity-item');
-                if (firstItem && firstItem.innerHTML.includes('Welcome')) {
-                    activityList.insertBefore(newActivity, firstItem.nextSibling);
-                } else if (activityList.children.length > 2) {
-                    activityList.insertBefore(newActivity, activityList.children[1]);
-                } else {
-                    activityList.appendChild(newActivity);
+                const existingActivity = activityList.querySelector('.exam-activity');
+                if (!existingActivity) {
+                    const newActivity = document.createElement('div');
+                    newActivity.className = 'activity-item exam-activity';
+                    newActivity.innerHTML = `
+                        <div class="activity-icon" style="background: var(--success);">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="activity-info">
+                            <h4>Latest Exam: ${latest.examTitle || 'Literature Exam'}</h4>
+                            <p>Score: ${latest.score}/${latest.totalQuestions} (${latest.percentage}%) - ${new Date(latest.completedAt).toLocaleDateString()}</p>
+                        </div>
+                    `;
+                    const welcomeItem = activityList.querySelector('.activity-item');
+                    if (welcomeItem) {
+                        activityList.insertBefore(newActivity, welcomeItem.nextSibling);
+                    } else {
+                        activityList.appendChild(newActivity);
+                    }
                 }
             }
-        }
-
-        // Update user stats in Firebase
-        async function updateUserStats(userId) {
-            if (examResults.length === 0) return;
-            
-            let totalPercentage = 0;
-            examResults.forEach(result => {
-                totalPercentage += result.percentage || 0;
-            });
-            const avgScore = Math.round(totalPercentage / examResults.length);
-            
-            const userRef = doc(db, "users", userId);
-            await setDoc(userRef, {
-                stats: {
-                    overallScore: avgScore,
-                    examsTaken: examResults.length,
-                    bestScore: Math.max(...examResults.map(r => r.percentage || 0)),
-                    lastUpdated: new Date().toISOString()
-                }
-            }, { merge: true });
         }
 
         onAuthStateChanged(auth, async (user) => {
@@ -967,12 +883,10 @@
                             stats: {
                                 overallScore: 0,
                                 examsTaken: 0,
-                                bestScore: 0,
-                                lastUpdated: new Date().toISOString()
+                                bestScore: 0
                             },
                             createdAt: new Date().toISOString()
                         };
-                        
                         try {
                             await setDoc(userRef, defaultData);
                             updateUI(defaultData);
@@ -982,6 +896,7 @@
                     }
                 });
 
+                // Get summaries count
                 try {
                     const summariesRef = collection(db, "summaries");
                     const summariesSnap = await getDocs(summariesRef);
@@ -992,7 +907,6 @@
                 
                 // Load exam results
                 await loadExamResults(currentUserUid);
-                await updateUserStats(currentUserUid);
 
             } else {
                 window.location.href = "index.html";
@@ -1019,12 +933,6 @@
         
         document.getElementById('refreshStatsBtn')?.addEventListener('click', async () => {
             await loadExamResults(currentUserUid);
-            await updateUserStats(currentUserUid);
-        });
-        
-        document.getElementById('viewAllExamsBtn')?.addEventListener('click', () => {
-            // Could open a modal with all exam history
-            alert(`📊 Your Exam History\n\nTotal Exams: ${examResults.length}\nAverage Score: ${document.getElementById('stat-avg-score').innerText}\nBest Score: ${document.getElementById('stat-best-score').innerText}\n\nCheck your dashboard for detailed stats!`);
         });
 
         const userProfileBtn = document.getElementById('userProfileBtn');
