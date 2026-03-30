@@ -93,55 +93,25 @@
             font-size: 14px;
         }
 
-        /* Filter Section */
-        .filter-section {
-            background: var(--white);
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 24px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-
-        .filter-group {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .filter-btn {
-            padding: 8px 20px;
-            border: 2px solid var(--border);
-            border-radius: 40px;
-            background: var(--white);
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.2s;
-        }
-
-        .filter-btn.active {
-            background: var(--primary);
-            color: var(--white);
-            border-color: var(--primary);
-        }
-
-        /* Exam Cards */
         .exam-card {
             background: var(--white);
-            border-radius: 20px;
-            padding: 20px;
+            border-radius: 24px;
+            padding: 24px;
             margin-bottom: 16px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
             cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
         }
 
         .exam-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            border-color: var(--primary);
         }
 
         .exam-title {
-            font-size: 18px;
+            font-size: 20px;
             font-weight: 700;
             color: var(--primary);
             margin-bottom: 8px;
@@ -154,12 +124,6 @@
             margin-bottom: 12px;
             font-size: 13px;
             color: var(--gray);
-        }
-
-        .exam-meta span {
-            display: flex;
-            align-items: center;
-            gap: 5px;
         }
 
         .exam-description {
@@ -177,28 +141,14 @@
             gap: 12px;
         }
 
-        .exam-badge {
-            background: var(--light);
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            color: var(--dark);
-        }
-
         .start-btn {
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
             color: var(--white);
             border: none;
-            padding: 8px 24px;
-            border-radius: 30px;
+            padding: 10px 28px;
+            border-radius: 40px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .start-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(49,27,146,0.3);
         }
 
         .loading {
@@ -221,14 +171,6 @@
             to { transform: rotate(360deg); }
         }
 
-        .empty-state {
-            text-align: center;
-            padding: 60px;
-            background: var(--white);
-            border-radius: 20px;
-            color: var(--gray);
-        }
-
         .footer {
             text-align: center;
             padding: 20px;
@@ -244,7 +186,7 @@
                 padding: 16px;
             }
             .exam-title {
-                font-size: 16px;
+                font-size: 18px;
             }
         }
     </style>
@@ -264,16 +206,7 @@
     <div class="container">
         <div class="page-header">
             <h1><i class="fas fa-laptop"></i> CBT Literature Exams</h1>
-            <p>Practice with JAMB-standard CBT questions and track your progress</p>
-        </div>
-
-        <div class="filter-section">
-            <div class="filter-group" id="filterGroup">
-                <button class="filter-btn active" data-filter="all">All Exams</button>
-                <button class="filter-btn" data-filter="prose">Prose</button>
-                <button class="filter-btn" data-filter="drama">Drama</button>
-                <button class="filter-btn" data-filter="poetry">Poetry</button>
-            </div>
+            <p>Practice with JAMB-standard questions | 600+ Questions Available</p>
         </div>
 
         <div id="examsContainer">
@@ -291,7 +224,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-        import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCictHNxtslYs9VR0hoicxlwPn_QghkgIA",
@@ -306,109 +239,107 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        let currentFilter = 'all';
-        let exams = [];
-
-        // Pre-defined exams (since no questions yet)
-        const defaultExams = [
+        // Predefined exams
+        const exams = [
             {
-                id: "prose_all",
-                title: "To Kill a Mockingbird - Full Book",
-                bookId: "to-kill-a-mockingbird",
+                id: "prose_mixed",
+                title: "Prose - Mixed Questions",
                 category: "prose",
-                description: "Test your knowledge on the complete novel including characters, themes, and plot.",
-                totalQuestions: 40,
+                description: "Test your knowledge on all prose texts including To Kill a Mockingbird, Path of Lucas, and more.",
+                totalQuestions: 50,
                 duration: 45,
                 difficulty: "Medium"
             },
             {
-                id: "prose_ch1",
-                title: "To Kill a Mockingbird - Chapter 1",
-                bookId: "to-kill-a-mockingbird",
+                id: "to-kill-a-mockingbird",
+                title: "To Kill a Mockingbird - Full Book",
                 category: "prose",
-                description: "Quiz on Chapter 1: Introduction to Maycomb, the Finch family, and Boo Radley.",
-                totalQuestions: 10,
-                duration: 10,
-                difficulty: "Easy"
+                description: "Complete test on Harper Lee's classic novel including characters, themes, plot analysis.",
+                totalQuestions: 40,
+                duration: 40,
+                difficulty: "Medium"
             },
             {
                 id: "drama_shakespeare",
-                title: "Antony and Cleopatra - Full Play",
-                bookId: "antony-and-cleopatra",
+                title: "Shakespearean Drama - Antony and Cleopatra",
                 category: "drama",
                 description: "Test your knowledge on Shakespeare's tragic romance.",
-                totalQuestions: 30,
+                totalQuestions: 35,
                 duration: 35,
                 difficulty: "Hard"
             },
             {
-                id: "poetry_african",
-                title: "African Poetry Collection",
-                bookId: "once-upon-a-time",
-                category: "poetry",
-                description: "Questions on Once Upon a Time, Night, and other African poems.",
-                totalQuestions: 20,
-                duration: 25,
+                id: "african_drama",
+                title: "African Drama Collection",
+                category: "drama",
+                description: "Questions on Once Upon an Elephant and The Marriage of Anansewa.",
+                totalQuestions: 30,
+                duration: 30,
                 difficulty: "Medium"
+            },
+            {
+                id: "poetry_collection",
+                title: "Poetry - African & Non-African",
+                category: "poetry",
+                description: "Questions on Once Upon a Time, Night, She Walks in Beauty, and more.",
+                totalQuestions: 35,
+                duration: 35,
+                difficulty: "Medium"
+            },
+            {
+                id: "all_literature",
+                title: "JAMB Literature Mock Exam",
+                category: "all",
+                description: "Full JAMB standard mock exam covering all recommended texts.",
+                totalQuestions: 60,
+                duration: 60,
+                difficulty: "Hard"
             }
         ];
 
-        async function loadExams() {
+        async function getQuestionCountForBook(bookId) {
             try {
-                // Try to fetch from Firebase
-                const examsRef = collection(db, "exams");
-                const q = query(examsRef, orderBy("createdAt", "desc"));
+                const q = query(collection(db, "questions"), where("bookId", "==", bookId));
                 const snapshot = await getDocs(q);
-                
-                if (!snapshot.empty) {
-                    exams = [];
-                    snapshot.forEach(doc => {
-                        exams.push({ id: doc.id, ...doc.data() });
-                    });
-                } else {
-                    // Use default exams
-                    exams = defaultExams;
-                }
-                
-                renderExams();
+                return snapshot.size;
             } catch (error) {
-                console.error("Error loading exams:", error);
-                exams = defaultExams;
-                renderExams();
+                return 0;
             }
         }
 
-        function renderExams() {
+        async function renderExams() {
             const container = document.getElementById('examsContainer');
             
-            let filteredExams = exams;
-            if (currentFilter !== 'all') {
-                filteredExams = exams.filter(exam => exam.category === currentFilter);
-            }
+            const examsWithCounts = await Promise.all(exams.map(async (exam) => {
+                let available = 0;
+                if (exam.id === "all_literature") {
+                    const snapshot = await getDocs(collection(db, "questions"));
+                    available = snapshot.size;
+                } else if (exam.id === "prose_mixed") {
+                    const proseBooks = ['to-kill-a-mockingbird', 'path-of-lucas', 'so-the-path-does-not-die', 'redemption-road'];
+                    let total = 0;
+                    for (const book of proseBooks) {
+                        total += await getQuestionCountForBook(book);
+                    }
+                    available = total;
+                } else {
+                    available = await getQuestionCountForBook(exam.id);
+                }
+                return { ...exam, available };
+            }));
             
-            if (filteredExams.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-folder-open" style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;"></i>
-                        <h3>No Exams Available</h3>
-                        <p>Check back later for new literature exams.</p>
-                    </div>
-                `;
-                return;
-            }
-            
-            container.innerHTML = filteredExams.map(exam => `
+            container.innerHTML = examsWithCounts.map(exam => `
                 <div class="exam-card" data-id="${exam.id}">
-                    <div class="exam-title">${escapeHtml(exam.title)}</div>
+                    <div class="exam-title">${exam.title}</div>
                     <div class="exam-meta">
                         <span><i class="fas fa-question-circle"></i> ${exam.totalQuestions} Questions</span>
                         <span><i class="fas fa-clock"></i> ${exam.duration} minutes</span>
-                        <span><i class="fas fa-chart-line"></i> ${exam.difficulty || 'Medium'}</span>
+                        <span><i class="fas fa-chart-line"></i> ${exam.difficulty}</span>
+                        <span><i class="fas fa-database"></i> ${exam.available} available</span>
                     </div>
-                    <div class="exam-description">${escapeHtml(exam.description || 'Test your knowledge on this topic.')}</div>
+                    <div class="exam-description">${exam.description}</div>
                     <div class="exam-footer">
-                        <span class="exam-badge"><i class="fas fa-tag"></i> ${exam.category ? exam.category.toUpperCase() : 'LITERATURE'}</span>
-                        <button class="start-btn" data-id="${exam.id}">
+                        <button class="start-btn" data-id="${exam.id}" data-title="${exam.title}" data-duration="${exam.duration}" data-total="${exam.totalQuestions}">
                             <i class="fas fa-play"></i> Start Exam
                         </button>
                     </div>
@@ -419,38 +350,27 @@
                 btn.addEventListener('click', (e) => {
                     e.stopPropagation();
                     const examId = btn.getAttribute('data-id');
-                    const exam = exams.find(e => e.id === examId);
-                    if (exam) {
-                        localStorage.setItem('currentExam', JSON.stringify(exam));
-                        window.location.href = `cbt-taking.html?exam=${examId}`;
-                    }
+                    const examTitle = btn.getAttribute('data-title');
+                    const duration = parseInt(btn.getAttribute('data-duration'));
+                    const totalQuestions = parseInt(btn.getAttribute('data-total'));
+                    
+                    localStorage.setItem('currentExam', JSON.stringify({
+                        id: examId,
+                        title: examTitle,
+                        duration: duration,
+                        totalQuestions: totalQuestions
+                    }));
+                    window.location.href = `cbt-taking.html?exam=${examId}`;
                 });
             });
         }
-
-        function escapeHtml(text) {
-            if (!text) return '';
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-
-        // Filter buttons
-        document.querySelectorAll('.filter-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                currentFilter = btn.getAttribute('data-filter');
-                renderExams();
-            });
-        });
 
         onAuthStateChanged(auth, (user) => {
             if (!user) {
                 window.location.href = "index.html";
                 return;
             }
-            loadExams();
+            renderExams();
         });
     </script>
 </body>
