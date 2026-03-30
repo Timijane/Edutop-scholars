@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Admin - Manage Questions | Mr. Timi Scholar</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #311b92;
+            --primary-light: #4527a0;
+            --secondary: #ff5722;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --light: #f9fafb;
+            --dark: #1f2937;
+            --gray: #6b7280;
+            --border: #e5e7eb;
+            --white: #ffffff;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            min-height: 100vh;
+        }
+
+        .header {
+            background: var(--white);
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .logo h1 {
+            color: var(--primary);
+            font-size: 24px;
+        }
+
+        .logo span {
+            color: var(--secondary);
+        }
+
+        .logo a {
+            text-decoration: none;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .nav-btn {
+            background: var(--light);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            color: var(--dark);
+        }
+
+        .admin-badge {
+            background: var(--secondary);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 24px;
+            background: var(--white);
+            padding: 8px;
+            border-radius: 60px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 10px 24px;
+            border-radius: 40px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Bulk Upload Section */
+        .upload-section {
+            background: var(--white);
+            border-radius: 24px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .upload-section h3 {
+            color: var(--primary);
+            margin-bottom: 16px;
+        }
+
+        .csv-template {
+            background: var(--light);
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            overflow-x: auto;
+        }
+
+        .csv-template code {
+            background: var(--border);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            font-family: monospace;
+            font-size: 13px;
+            margin-bottom: 16px;
+            resize: vertical;
+        }
+
+        textarea:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+
+        /* Question List */
+        .questions-list {
+            background: var(--white);
+            border-radius: 24px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .questions-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .search-box {
+            padding: 8px 16px;
+            border: 2px solid var(--border);
+            border-radius: 30px;
+            width: 250px;
+        }
+
+        .question-item {
+            background: var(--light);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            transition: all 0.2s;
+        }
+
+        .question-item:hover {
+            transform: translateX(5px);
+        }
+
+        .question-text {
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--dark);
+        }
+
+        .question-meta {
+            display: flex;
+            gap: 20px;
+            font-size: 12px;
+            color: var(--gray);
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+
+        .option {
+            padding: 4px 8px;
+            background: var(--white);
+            border-radius: 8px;
+        }
+
+        .correct-option {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .question-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            padding: 6px 10px;
+            cursor: pointer;
+            border-radius: 8px;
+            color: var(--gray);
+        }
+
+        .icon-btn:hover {
+            background: var(--border);
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: var(--light);
+            color: var(--dark);
+            border: 1px solid var(--border);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--gray);
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            padding: 12px 24px;
+            border-radius: 30px;
+            background: var(--success);
+            color: white;
+            z-index: 1000;
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 16px;
+            }
+            .options {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">
+            <a href="dashboard.html">
+                <h1>Mr. Timi <span>Scholar</span></h1>
+            </a>
+        </div>
+        <div class="header-actions">
+            <a href="dashboard.html" class="nav-btn">
+                <i class="fas fa-home"></i> Dashboard
+            </a>
+            <span class="admin-badge">
+                <i class="fas fa-crown"></i> Question Bank
+            </span>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="bulk">📤 Bulk Upload</button>
+            <button class="tab-btn" data-tab="single">✍️ Single Question</button>
+            <button class="tab-btn" data-tab="list">📋 Question Bank (<span id="questionCount">0</span>)</button>
+        </div>
+
+        <!-- Bulk Upload Tab -->
+        <div id="bulkTab" class="upload-section">
+            <h3><i class="fas fa-file-upload"></i> Bulk Upload Questions (CSV Format)</h3>
+            <div class="csv-template">
+                <strong>CSV Format (copy and paste):</strong><br>
+                <code>bookId,sectionName,questionText,optionA,optionB,optionC,optionD,correctAnswer,difficulty,explanation</code><br>
+                <code>to-kill-a-mockingbird,Chapter 1,Who is the narrator of To Kill a Mockingbird?,Jem Finch,Scout Finch,Atticus Finch,Boo Radley,B,Easy,Scout Finch is the first-person narrator</code>
+            </div>
+            <textarea id="csvInput" rows="10" placeholder="Paste your CSV data here..."></textarea>
+            <button id="uploadBtn" class="btn btn-primary"><i class="fas fa-upload"></i> Upload Questions</button>
+            <p style="margin-top: 12px; font-size: 12px; color: var(--gray);">
+                <i class="fas fa-info-circle"></i> You can paste multiple questions at once. Each row should be a separate question.
+            </p>
+        </div>
+
+        <!-- Single Question Tab -->
+        <div id="singleTab" class="upload-section" style="display: none;">
+            <h3><i class="fas fa-plus-circle"></i> Add Single Question</h3>
+            <div style="display: grid; gap: 16px;">
+                <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                    <select id="bookSelect" style="flex: 1; padding: 12px; border-radius: 12px; border: 2px solid var(--border);">
+                        <option value="">Select Book/Play/Poem</option>
+                        <optgroup label="📖 Prose">
+                            <option value="to-kill-a-mockingbird">To Kill a Mockingbird</option>
+                            <option value="path-of-lucas">Path of Lucas</option>
+                            <option value="so-the-path-does-not-die">So the Path Does Not Die</option>
+                            <option value="redemption-road">Redemption Road</option>
+                        </optgroup>
+                        <optgroup label="🎭 Drama">
+                            <option value="antony-and-cleopatra">Antony and Cleopatra</option>
+                            <option value="once-upon-an-elephant">Once Upon an Elephant</option>
+                            <option value="marriage-of-anansewa">The Marriage of Anansewa</option>
+                            <option value="inspector-calls">An Inspector Calls</option>
+                            <option value="man-for-all-seasons">A Man for All Seasons</option>
+                        </optgroup>
+                        <optgroup label="📜 Poetry">
+                            <option value="once-upon-a-time">Once Upon a Time</option>
+                            <option value="night">Night</option>
+                            <option value="she-walks-in-beauty">She Walks in Beauty</option>
+                        </optgroup>
+                    </select>
+                    <input type="text" id="sectionName" placeholder="Section (e.g., Chapter 1, Act 1)" style="flex: 1; padding: 12px; border-radius: 12px; border: 2px solid var(--border);">
+                </div>
+                <textarea id="questionText" rows="3" placeholder="Question text..." style="padding: 12px; border-radius: 12px; border: 2px solid var(--border);"></textarea>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;">
+                    <input type="text" id="optionA" placeholder="Option A" style="padding: 12px; border-radius: 12px; border: 2px solid var(--border);">
+                    <input type="text" id="optionB" placeholder="Option B" style="padding: 12px; border-radius: 12px; border: 2px solid var(--border);">
+                    <input type="text" id="optionC" placeholder="Option C" style="padding: 12px; border-radius: 12px; border: 2px solid var(--border);">
+                    <input type="text" id="optionD" placeholder="Option D" style="padding: 12px; border-radius: 12px; border: 2px solid var(--border);">
+                </div>
+                <div style="display: flex; gap: 12px;">
+                    <select id="correctAnswer" style="flex: 1; padding: 12px; border-radius: 12px; border: 2px solid var(--border);">
+                        <option value="">Select Correct Answer</option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="D">D</option>
+                    </select>
+                    <select id="difficulty" style="flex: 1; padding: 12px; border-radius: 12px; border: 2px solid var(--border);">
+                        <option value="Easy">Easy</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Hard">Hard</option>
+                    </select>
+                </div>
+                <textarea id="explanation" rows="2" placeholder="Explanation (optional)" style="padding: 12px; border-radius: 12px; border: 2px solid var(--border);"></textarea>
+                <button id="addSingleBtn" class="btn btn-success"><i class="fas fa-plus"></i> Add Question</button>
+            </div>
+        </div>
+
+        <!-- Question Bank List -->
+        <div id="listTab" class="questions-list" style="display: none;">
+            <div class="questions-header">
+                <h3><i class="fas fa-database"></i> Question Bank</h3>
+                <input type="text" id="searchQuestions" placeholder="Search questions..." class="search-box">
+            </div>
+            <div id="questionsContainer">
+                <div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading questions...</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+        import { getFirestore, collection, doc, addDoc, getDocs, deleteDoc, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCictHNxtslYs9VR0hoicxlwPn_QghkgIA",
+            authDomain: "edutop-7ff51.firebaseapp.com",
+            projectId: "edutop-7ff51",
+            storageBucket: "edutop-7ff51.firebasestorage.app",
+            messagingSenderId: "79307850494",
+            appId: "1:79307850494:web:b51ce51204140ec5429baf",
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        const adminEmails = ["okewunmitimileyin23@gmail.com", "triangleofscholars@gmail.com"];
+
+        let allQuestions = [];
+
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.style.backgroundColor = isError ? '#ef4444' : '#10b981';
+            toast.style.display = 'block';
+            setTimeout(() => toast.style.display = 'none', 3000);
+        }
+
+        // Parse CSV
+        function parseCSV(csvText) {
+            const lines = csvText.trim().split('\n');
+            const questions = [];
+            
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (!line) continue;
+                
+                // Handle quoted fields
+                const parts = [];
+                let current = '';
+                let inQuotes = false;
+                
+                for (let j = 0; j < line.length; j++) {
+                    const char = line[j];
+                    if (char === '"') {
+                        inQuotes = !inQuotes;
+                    } else if (char === ',' && !inQuotes) {
+                        parts.push(current.trim());
+                        current = '';
+                    } else {
+                        current += char;
+                    }
+                }
+                parts.push(current.trim());
+                
+                if (parts.length >= 9) {
+                    questions.push({
+                        bookId: parts[0].replace(/^"|"$/g, ''),
+                        sectionName: parts[1].replace(/^"|"$/g, ''),
+                        questionText: parts[2].replace(/^"|"$/g, ''),
+                        options: {
+                            A: parts[3].replace(/^"|"$/g, ''),
+                            B: parts[4].replace(/^"|"$/g, ''),
+                            C: parts[5].replace(/^"|"$/g, ''),
+                            D: parts[6].replace(/^"|"$/g, '')
+                        },
+                        correctAnswer: parts[7].replace(/^"|"$/g, '').toUpperCase(),
+                        difficulty: parts[8] || 'Medium',
+                        explanation: parts[9] ? parts[9].replace(/^"|"$/g, '') : ''
+                    });
+                }
+            }
+            return questions;
+        }
+
+        // Upload bulk questions
+        async function uploadBulk() {
+            const csvText = document.getElementById('csvInput').value;
+            if (!csvText.trim()) {
+                showToast('Please paste CSV data', true);
+                return;
+            }
+            
+            const questions = parseCSV(csvText);
+            if (questions.length === 0) {
+                showToast('No valid questions found. Check format.', true);
+                return;
+            }
+            
+            let success = 0;
+            let failed = 0;
+            
+            for (const q of questions) {
+                try {
+                    await addDoc(collection(db, "questions"), {
+                        ...q,
+                        createdAt: new Date().toISOString()
+                    });
+                    success++;
+                } catch (error) {
+                    console.error(error);
+                    failed++;
+                }
+            }
+            
+            showToast(`Uploaded ${success} questions. Failed: ${failed}`);
+            document.getElementById('csvInput').value = '';
+            loadQuestions();
+        }
+
+        // Add single question
+        async function addSingleQuestion() {
+            const bookId = document.getElementById('bookSelect').value;
+            const sectionName = document.getElementById('sectionName').value;
+            const questionText = document.getElementById('questionText').value;
+            const optionA = document.getElementById('optionA').value;
+            const optionB = document.getElementById('optionB').value;
+            const optionC = document.getElementById('optionC').value;
+            const optionD = document.getElementById('optionD').value;
+            const correctAnswer = document.getElementById('correctAnswer').value;
+            const difficulty = document.getElementById('difficulty').value;
+            const explanation = document.getElementById('explanation').value;
+            
+            if (!bookId || !questionText || !optionA || !optionB || !optionC || !optionD || !correctAnswer) {
+                showToast('Please fill all required fields', true);
+                return;
+            }
+            
+            try {
+                await addDoc(collection(db, "questions"), {
+                    bookId,
+                    sectionName: sectionName || 'General',
+                    questionText,
+                    options: { A: optionA, B: optionB, C: optionC, D: optionD },
+                    correctAnswer,
+                    difficulty,
+                    explanation,
+                    createdAt: new Date().toISOString()
+                });
+                showToast('Question added successfully!');
+                
+                // Clear form
+                document.getElementById('sectionName').value = '';
+                document.getElementById('questionText').value = '';
+                document.getElementById('optionA').value = '';
+                document.getElementById('optionB').value = '';
+                document.getElementById('optionC').value = '';
+                document.getElementById('optionD').value = '';
+                document.getElementById('correctAnswer').value = '';
+                document.getElementById('explanation').value = '';
+                
+                loadQuestions();
+            } catch (error) {
+                showToast('Error adding question', true);
+            }
+        }
+
+        // Delete question
+        async function deleteQuestion(questionId) {
+            if (confirm('Delete this question permanently?')) {
+                await deleteDoc(doc(db, "questions", questionId));
+                showToast('Question deleted');
+                loadQuestions();
+            }
+        }
+
+        // Load questions
+        async function loadQuestions(searchTerm = '') {
+            const container = document.getElementById('questionsContainer');
+            container.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading questions...</div>';
+            
+            try {
+                const q = query(collection(db, "questions"), orderBy("createdAt", "desc"), limit(100));
+                const snapshot = await getDocs(q);
+                
+                allQuestions = [];
+                snapshot.forEach(doc => {
+                    allQuestions.push({ id: doc.id, ...doc.data() });
+                });
+                
+                document.getElementById('questionCount').innerText = allQuestions.length;
+                
+                let filtered = allQuestions;
+                if (searchTerm) {
+                    const term = searchTerm.toLowerCase();
+                    filtered = allQuestions.filter(q => 
+                        q.questionText?.toLowerCase().includes(term) ||
+                        q.bookId?.toLowerCase().includes(term)
+                    );
+                }
+                
+                if (filtered.length === 0) {
+                    container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--gray);"><i class="fas fa-folder-open"></i> No questions yet. Upload some!</div>';
+                    return;
+                }
+                
+                container.innerHTML = filtered.map(q => `
+                    <div class="question-item">
+                        <div class="question-text">${escapeHtml(q.questionText?.substring(0, 150))}${q.questionText?.length > 150 ? '...' : ''}</div>
+                        <div class="question-meta">
+                            <span><i class="fas fa-book"></i> ${q.bookId}</span>
+                            <span><i class="fas fa-tag"></i> ${q.sectionName || 'General'}</span>
+                            <span><i class="fas fa-chart-line"></i> ${q.difficulty || 'Medium'}</span>
+                        </div>
+                        <div class="options">
+                            ${['A', 'B', 'C', 'D'].map(opt => `
+                                <div class="option ${q.correctAnswer === opt ? 'correct-option' : ''}">
+                                    <strong>${opt}.</strong> ${escapeHtml(q.options?.[opt] || '')}
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="question-actions">
+                            <button class="icon-btn delete-q" data-id="${q.id}"><i class="fas fa-trash"></i> Delete</button>
+                        </div>
+                    </div>
+                `).join('');
+                
+                document.querySelectorAll('.delete-q').forEach(btn => {
+                    btn.addEventListener('click', () => deleteQuestion(btn.getAttribute('data-id')));
+                });
+                
+            } catch (error) {
+                console.error(error);
+                container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--danger);">Error loading questions</div>';
+            }
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Tab switching
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const tab = btn.getAttribute('data-tab');
+                document.getElementById('bulkTab').style.display = tab === 'bulk' ? 'block' : 'none';
+                document.getElementById('singleTab').style.display = tab === 'single' ? 'block' : 'none';
+                document.getElementById('listTab').style.display = tab === 'list' ? 'block' : 'none';
+                if (tab === 'list') loadQuestions();
+            });
+        });
+
+        document.getElementById('uploadBtn').addEventListener('click', uploadBulk);
+        document.getElementById('addSingleBtn').addEventListener('click', addSingleQuestion);
+        
+        let searchTimeout;
+        document.getElementById('searchQuestions')?.addEventListener('input', (e) => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => loadQuestions(e.target.value), 300);
+        });
+
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                window.location.href = "index.html";
+                return;
+            }
+            if (!adminEmails.includes(user.email)) {
+                document.body.innerHTML = '<div style="text-align:center;padding:80px"><i class="fas fa-lock"></i><h2>Access Denied</h2><a href="dashboard.html">Back</a></div>';
+                return;
+            }
+            loadQuestions();
+        });
+    </script>
+</body>
+</html>
