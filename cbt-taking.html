@@ -256,6 +256,18 @@
             border-radius: 4px;
         }
 
+        .category-stats {
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+            font-size: 12px;
+            color: var(--gray);
+        }
+
+        .category-stats div {
+            margin-bottom: 4px;
+        }
+
         .loading {
             text-align: center;
             padding: 60px;
@@ -338,19 +350,54 @@
         let currentExam = null;
         let answeredQuestionIds = [];
 
+        // POETRY BOOKS - All poetry works
+        const poetryBooks = [
+            "once-upon-a-time", "new-tongue", "night", "not-my-business", 
+            "hearty-garlands", "breast-of-the-sea", "she-walks-in-beauty", 
+            "the-stone", "telephone-call", "nuns-priest-tale"
+        ];
+
+        // PROSE BOOKS - All novels
+        const proseBooks = [
+            "to-kill-a-mockingbird", "path-of-lucas", "so-the-path-does-not-die", "redemption-road"
+        ];
+
+        // DRAMA BOOKS - All plays
+        const dramaBooks = [
+            "antony-and-cleopatra", "once-upon-an-elephant", "marriage-of-anansewa", 
+            "inspector-calls", "man-for-all-seasons"
+        ];
+
         // Categories for balanced selection
         const categories = {
-            general: { name: "General Literature", count: 15, selected: [] },
-            poetry: { name: "Poetry Analysis", count: 15, selected: [] },
-            prose: { name: "Prose (Novels)", count: 15, selected: [] },
-            drama: { name: "Drama (Plays)", count: 15, selected: [] },
-            unseen: { name: "Unseen Passages", count: 10, selected: [] }
+            general: { name: "General Literature", targetCount: 20, selected: [] },
+            poetry: { name: "Poetry Analysis", targetCount: 20, selected: [] },
+            prose: { name: "Prose (Novels)", targetCount: 15, selected: [] },
+            drama: { name: "Drama (Plays)", targetCount: 15, selected: [] }
         };
 
-        // Book IDs for each category
-        const poetryBooks = ["once-upon-a-time", "new-tongue", "night", "not-my-business", "hearty-garlands", "breast-of-the-sea", "she-walks-in-beauty", "the-stone", "telephone-call", "nuns-priest-tale"];
-        const proseBooks = ["to-kill-a-mockingbird", "path-of-lucas", "so-the-path-does-not-die", "redemption-road"];
-        const dramaBooks = ["antony-and-cleopatra", "once-upon-an-elephant", "marriage-of-anansewa", "inspector-calls", "man-for-all-seasons"];
+        function getQuestionCategory(question) {
+            const bookId = question.bookId;
+            
+            // General literature questions
+            if (bookId === "general" || bookId === "unseen") {
+                return "general";
+            }
+            // Poetry questions
+            if (poetryBooks.includes(bookId)) {
+                return "poetry";
+            }
+            // Prose questions
+            if (proseBooks.includes(bookId)) {
+                return "prose";
+            }
+            // Drama questions
+            if (dramaBooks.includes(bookId)) {
+                return "drama";
+            }
+            // Default to general
+            return "general";
+        }
 
         // Load answered questions from Firebase
         async function loadAnsweredQuestions(userId) {
@@ -378,69 +425,77 @@
                     answeredQuestions: allAnswered,
                     lastUpdated: new Date().toISOString()
                 }, { merge: true });
-                console.log(`Saved ${newQuestionIds.length} new answered questions`);
+                console.log(`Saved ${newQuestionIds.length} new answered questions. Total: ${allAnswered.length}`);
             } catch (error) {
                 console.error("Error saving answered questions:", error);
             }
         }
 
-        // Select balanced questions from all categories
-        function selectBalancedQuestions() {
-            const availableQuestions = allQuestions.filter(q => !answeredQuestionIds.includes(q.id));
-            
-            // Reset category selections
-            Object.keys(categories).forEach(cat => {
-                categories[cat].selected = [];
-            });
-            
-            // Categorize available questions
-            availableQuestions.forEach(q => {
-                if (q.bookId === "general" || q.bookId === "unseen") {
-                    if (q.bookId === "unseen") {
-                        categories.unseen.selected.push(q);
-                    } else {
-                        categories.general.selected.push(q);
-                    }
-                } else if (poetryBooks.includes(q.bookId)) {
-                    categories.poetry.selected.push(q);
-                } else if (proseBooks.includes(q.bookId)) {
-                    categories.prose.selected.push(q);
-                } else if (dramaBooks.includes(q.bookId)) {
-                    categories.drama.selected.push(q);
-                }
-            });
-            
-            // Shuffle each category
-            Object.keys(categories).forEach(cat => {
-                categories[cat].selected = shuffleArray(categories[cat].selected);
-            });
-            
-            // Select required number from each category
-            const selected = [];
-            
-            selected.push(...categories.general.selected.slice(0, categories.general.count));
-            selected.push(...categories.poetry.selected.slice(0, categories.poetry.count));
-            selected.push(...categories.prose.selected.slice(0, categories.prose.count));
-            selected.push(...categories.drama.selected.slice(0, categories.drama.count));
-            selected.push(...categories.unseen.selected.slice(0, categories.unseen.count));
-            
-            // If we don't have enough from a category, get from others
-            if (selected.length < 70) {
-                const remaining = availableQuestions.filter(q => !selected.includes(q));
-                selected.push(...shuffleArray(remaining).slice(0, 70 - selected.length));
-            }
-            
-            // Shuffle final selection
-            return shuffleArray(selected.slice(0, 70));
-        }
-
-        // Fisher-Yates shuffle
+        // Shuffle array
         function shuffleArray(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
                 [array[i], array[j]] = [array[j], array[i]];
             }
             return array;
+        }
+
+        // Select balanced questions from all categories
+        function selectBalancedQuestions() {
+            // Filter out answered questions
+            const availableQuestions = allQuestions.filter(q => !answeredQuestionIds.includes(q.id));
+            
+            console.log(`Total questions: ${allQuestions.length}`);
+            console.log(`Answered: ${answeredQuestionIds.length}`);
+            console.log(`Available: ${availableQuestions.length}`);
+            
+            // Group available questions by category
+            const categoryQuestions = {
+                general: [],
+                poetry: [],
+                prose: [],
+                drama: []
+            };
+            
+            availableQuestions.forEach(q => {
+                const cat = getQuestionCategory(q);
+                categoryQuestions[cat].push(q);
+            });
+            
+            console.log("Available by category:");
+            console.log(`General: ${categoryQuestions.general.length}`);
+            console.log(`Poetry: ${categoryQuestions.poetry.length}`);
+            console.log(`Prose: ${categoryQuestions.prose.length}`);
+            console.log(`Drama: ${categoryQuestions.drama.length}`);
+            
+            // Shuffle each category
+            Object.keys(categoryQuestions).forEach(cat => {
+                categoryQuestions[cat] = shuffleArray(categoryQuestions[cat]);
+            });
+            
+            // Select target number from each category
+            const selected = [];
+            
+            selected.push(...categoryQuestions.general.slice(0, categories.general.targetCount));
+            selected.push(...categoryQuestions.poetry.slice(0, categories.poetry.targetCount));
+            selected.push(...categoryQuestions.prose.slice(0, categories.prose.targetCount));
+            selected.push(...categoryQuestions.drama.slice(0, categories.drama.targetCount));
+            
+            console.log(`Selected total: ${selected.length}`);
+            console.log(`Selected General: ${selected.filter(q => getQuestionCategory(q) === "general").length}`);
+            console.log(`Selected Poetry: ${selected.filter(q => getQuestionCategory(q) === "poetry").length}`);
+            console.log(`Selected Prose: ${selected.filter(q => getQuestionCategory(q) === "prose").length}`);
+            console.log(`Selected Drama: ${selected.filter(q => getQuestionCategory(q) === "drama").length}`);
+            
+            // If we don't have enough from a category, fill with others
+            if (selected.length < 70) {
+                const remaining = availableQuestions.filter(q => !selected.includes(q));
+                const needed = 70 - selected.length;
+                selected.push(...shuffleArray(remaining).slice(0, needed));
+            }
+            
+            // Final shuffle
+            return shuffleArray(selected.slice(0, 70));
         }
 
         async function loadQuestions() {
@@ -459,25 +514,18 @@
             });
             
             console.log(`Total questions in database: ${allQuestions.length}`);
-            console.log(`Answered questions: ${answeredQuestionIds.length}`);
             
             // Select balanced questions
             selectedQuestions = selectBalancedQuestions();
             
-            console.log(`Selected ${selectedQuestions.length} questions`);
-            console.log(`Category breakdown:`);
-            console.log(`General: ${selectedQuestions.filter(q => q.bookId === "general" || q.bookId === "unseen").length}`);
-            console.log(`Poetry: ${selectedQuestions.filter(q => poetryBooks.includes(q.bookId)).length}`);
-            console.log(`Prose: ${selectedQuestions.filter(q => proseBooks.includes(q.bookId)).length}`);
-            console.log(`Drama: ${selectedQuestions.filter(q => dramaBooks.includes(q.bookId)).length}`);
-            
             if (selectedQuestions.length === 0) {
                 document.getElementById('mainContent').innerHTML = `
                     <div style="text-align:center;padding:60px;background:white;border-radius:24px;">
-                        <i class="fas fa-database" style="font-size:48px;color:var(--gray);margin-bottom:16px;"></i>
-                        <h3>No New Questions Available</h3>
+                        <i class="fas fa-trophy" style="font-size:48px;color:var(--success);margin-bottom:16px;"></i>
+                        <h3>Congratulations!</h3>
                         <p>You have answered all available questions!</p>
                         <p>Total questions answered: ${answeredQuestionIds.length}</p>
+                        <p>Total questions in bank: ${allQuestions.length}</p>
                         <button onclick="location.href='dashboard.html'" style="margin-top:20px;padding:12px 24px;background:var(--primary);color:white;border:none;border-radius:30px;">Return to Dashboard</button>
                     </div>
                 `;
@@ -486,7 +534,7 @@
             
             userAnswers = {};
             currentIndex = 0;
-            timeLeft = 60 * 60; // 60 minutes for 70 questions
+            timeLeft = 60 * 60; // 60 minutes
             startTimer();
             renderExam();
         }
@@ -505,18 +553,40 @@
                     
                     if (timeLeft <= 300) {
                         timerElement.style.background = '#ef4444';
-                        timerElement.style.animation = 'pulse 1s infinite';
                     }
                 }
             }, 1000);
+        }
+        
+        function getCategoryDisplay(question) {
+            const cat = getQuestionCategory(question);
+            const icons = {
+                general: "📚",
+                poetry: "📜",
+                prose: "📖",
+                drama: "🎭"
+            };
+            const names = {
+                general: "General Literature",
+                poetry: "Poetry",
+                prose: "Prose",
+                drama: "Drama"
+            };
+            return `${icons[cat]} ${names[cat]}`;
         }
         
         function renderExam() {
             const q = selectedQuestions[currentIndex];
             const selected = userAnswers[q.id] || '';
             
+            // Count answered
+            const answeredCount = Object.keys(userAnswers).length;
+            
             const html = `
                 <div class="question-area">
+                    <div style="margin-bottom: 16px; font-size: 12px; color: var(--gray);">
+                        ${getCategoryDisplay(q)}
+                    </div>
                     <div class="question-text">${currentIndex + 1}. ${escapeHtml(q.questionText)}</div>
                     <div class="options-list">
                         ${['A', 'B', 'C', 'D'].map(opt => `
@@ -546,16 +616,16 @@
                         `).join('')}
                     </div>
                     <div class="palette-legend">
-                        <div class="legend-item"><div class="legend-color" style="background:var(--success);"></div> Answered</div>
+                        <div class="legend-item"><div class="legend-color" style="background:var(--success);"></div> Answered (${answeredCount})</div>
                         <div class="legend-item"><div class="legend-color" style="background:var(--primary);"></div> Current</div>
-                        <div class="legend-item"><div class="legend-color" style="background:var(--light);"></div> Unanswered</div>
+                        <div class="legend-item"><div class="legend-color" style="background:var(--light);"></div> Unanswered (${selectedQuestions.length - answeredCount})</div>
                     </div>
-                    <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); font-size: 12px; color: var(--gray);">
-                        <i class="fas fa-chart-pie"></i> Questions by Category:<br>
-                        📚 General: ${selectedQuestions.filter(q => q.bookId === "general" || q.bookId === "unseen").length}<br>
-                        📜 Poetry: ${selectedQuestions.filter(q => poetryBooks.includes(q.bookId)).length}<br>
-                        📖 Prose: ${selectedQuestions.filter(q => proseBooks.includes(q.bookId)).length}<br>
-                        🎭 Drama: ${selectedQuestions.filter(q => dramaBooks.includes(q.bookId)).length}
+                    <div class="category-stats">
+                        <strong><i class="fas fa-chart-pie"></i> Questions by Category:</strong><br>
+                        📚 General Literature: ${selectedQuestions.filter(q => getQuestionCategory(q) === "general").length}<br>
+                        📜 Poetry: ${selectedQuestions.filter(q => getQuestionCategory(q) === "poetry").length}<br>
+                        📖 Prose: ${selectedQuestions.filter(q => getQuestionCategory(q) === "prose").length}<br>
+                        🎭 Drama: ${selectedQuestions.filter(q => getQuestionCategory(q) === "drama").length}
                     </div>
                 </div>
             `;
