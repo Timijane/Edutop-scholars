@@ -111,6 +111,7 @@
             border-left: 4px solid var(--primary);
             font-style: italic;
             line-height: 1.6;
+            font-size: 15px;
         }
 
         .question-text {
@@ -351,7 +352,7 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // All 19 texts for balanced selection
+        // All texts for balanced selection
         const textList = [
             "once-upon-a-time", "night", "not-my-business", "new-tongue", "hearty-garlands",
             "breast-of-the-sea", "she-walks-in-beauty", "the-stone", "telephone-call", "nuns-priest-tale",
@@ -360,13 +361,12 @@
             "unseen-poetry", "unseen-prose", "unseen-drama"
         ];
 
-        // Category targets for each exam
+        // Exam structure
         const examStructure = {
-            perText: 3,           // 3 questions from each of the 16 texts (48 questions)
+            perText: 3,
             unseenPoetry: 5,
             unseenProse: 5,
             unseenDrama: 5,
-            general: 37,          // Remaining for general literature (total 100)
             totalQuestions: 100
         };
 
@@ -411,7 +411,7 @@
             }
         }
 
-        // Fisher-Yates shuffle
+        // Shuffle array
         function shuffleArray(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -436,11 +436,6 @@
                 }
             });
 
-            console.log("Available questions per text:");
-            Object.keys(questionsByText).forEach(text => {
-                console.log(`${text}: ${questionsByText[text].length}`);
-            });
-
             const selected = [];
             const usedQuestionIds = new Set(answeredQuestionIds);
 
@@ -452,7 +447,6 @@
                 if (available.length >= needed) {
                     selected.push(...shuffleArray(available).slice(0, needed));
                 } else {
-                    // If not enough unanswered, use all available and fill from answered
                     selected.push(...available);
                     const remaining = needed - available.length;
                     const answered = questionsByText[text].filter(q => usedQuestionIds.has(q.id));
@@ -473,7 +467,7 @@
             selected.push(...shuffleArray(unseenProseAvailable).slice(0, examStructure.unseenProse));
             selected.push(...shuffleArray(unseenDramaAvailable).slice(0, examStructure.unseenDrama));
 
-            // Select general literature questions
+            // Select general literature questions for remaining
             const generalAvailable = questionsByText["general"].filter(q => !usedQuestionIds.has(q.id));
             const neededGeneral = examStructure.totalQuestions - selected.length;
             if (generalAvailable.length >= neededGeneral) {
@@ -485,7 +479,6 @@
                 selected.push(...shuffleArray(generalAnswered).slice(0, remaining));
             }
 
-            // Final shuffle
             return shuffleArray(selected);
         }
 
@@ -524,7 +517,7 @@
             
             userAnswers = {};
             currentIndex = 0;
-            timeLeft = 120 * 60; // 2 hours for 100 questions (JAMB standard)
+            timeLeft = 120 * 60; // 2 hours for 100 questions
             startTimer();
             renderExam();
         }
@@ -629,7 +622,6 @@
                         📜 5 Unseen Poetry<br>
                         📖 5 Unseen Prose<br>
                         🎭 5 Unseen Drama<br>
-                        📖 ${examStructure.general} General Lit<br>
                         <strong>Total: ${selectedQuestions.length} Questions</strong>
                     </div>
                 </div>
@@ -706,7 +698,28 @@
             // Save to Firebase
             const user = auth.currentUser;
             if (user) {
+                // Save answered questions
                 await saveAnsweredQuestions(user.uid, newAnsweredIds);
+                
+                // Save exam results to userResults collection
+                const resultId = `${user.uid}_${currentExam.id}_${Date.now()}`;
+                const resultsData = {
+                    userId: user.uid,
+                    examId: currentExam.id,
+                    examTitle: currentExam.title,
+                    totalQuestions: selectedQuestions.length,
+                    score: score.correct,
+                    percentage: score.percentage,
+                    answers: userAnswers,
+                    completedAt: new Date().toISOString()
+                };
+                
+                try {
+                    await setDoc(doc(db, "userResults", resultId), resultsData);
+                    console.log("Exam results saved to Firebase");
+                } catch (error) {
+                    console.error("Error saving results:", error);
+                }
             }
             
             const results = {
