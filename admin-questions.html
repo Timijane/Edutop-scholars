@@ -63,6 +63,7 @@
             display: flex;
             gap: 15px;
             align-items: center;
+            flex-wrap: wrap;
         }
 
         .nav-btn {
@@ -87,6 +88,25 @@
             border-radius: 30px;
             font-size: 12px;
             font-weight: 600;
+        }
+
+        .delete-all-btn {
+            background: var(--danger);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            border: none;
+        }
+
+        .delete-all-btn:hover {
+            background: #dc2626;
+            transform: translateY(-1px);
         }
 
         .container {
@@ -260,6 +280,22 @@
             color: #065f46;
         }
 
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: var(--border);
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--success);
+            width: 0%;
+            transition: width 0.3s;
+        }
+
         .toast {
             position: fixed;
             bottom: 30px;
@@ -292,6 +328,7 @@
         <div class="header-actions">
             <a href="dashboard.html" class="nav-btn"><i class="fas fa-home"></i> Dashboard</a>
             <a href="admin-write.html" class="nav-btn"><i class="fas fa-edit"></i> Write Summary</a>
+            <button id="deleteAllBtn" class="delete-all-btn"><i class="fas fa-trash-alt"></i> Delete All Questions</button>
             <span class="admin-badge"><i class="fas fa-crown"></i> Question Bank</span>
         </div>
     </header>
@@ -391,7 +428,72 @@
             toast.textContent = msg;
             toast.style.backgroundColor = isError ? '#ef4444' : '#10b981';
             toast.style.display = 'block';
-            setTimeout(() => toast.style.display = 'none', 3000);
+            setTimeout(() => toast.style.display = 'none', 4000);
+        }
+
+        // Delete all questions in batches
+        async function deleteAllQuestions() {
+            const confirmDelete = confirm("⚠️ WARNING: This will delete ALL questions permanently!\n\nAre you absolutely sure?");
+            if (!confirmDelete) return;
+            
+            const secondConfirm = confirm("Type 'DELETE' to confirm you want to delete all questions:");
+            if (secondConfirm !== "DELETE") {
+                showToast("Deletion cancelled", true);
+                return;
+            }
+            
+            const deleteBtn = document.getElementById('deleteAllBtn');
+            deleteBtn.disabled = true;
+            deleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Deleting...';
+            
+            try {
+                const snapshot = await getDocs(collection(db, "questions"));
+                const allQuestions = [];
+                snapshot.forEach(doc => allQuestions.push({ id: doc.id }));
+                
+                if (allQuestions.length === 0) {
+                    showToast("No questions to delete");
+                    deleteBtn.disabled = false;
+                    deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i> Delete All Questions';
+                    return;
+                }
+                
+                showToast(`Deleting ${allQuestions.length} questions in batches...`);
+                
+                const batchSize = 15;
+                let deleted = 0;
+                
+                for (let i = 0; i < allQuestions.length; i++) {
+                    const q = allQuestions[i];
+                    await deleteDoc(doc(db, "questions", q.id));
+                    deleted++;
+                    
+                    // Update progress
+                    const progress = Math.round((deleted / allQuestions.length) * 100);
+                    deleteBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Deleting: ${deleted}/${allQuestions.length} (${progress}%)`;
+                    
+                    // Wait after every batch
+                    if (deleted % batchSize === 0) {
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+                    }
+                }
+                
+                showToast(`✅ Successfully deleted ${deleted} questions!`);
+                deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i> Delete All Questions';
+                deleteBtn.disabled = false;
+                
+                // Refresh the question list
+                if (document.querySelector('.tab-btn.active').getAttribute('data-tab') === 'list') {
+                    loadQuestions();
+                }
+                document.getElementById('questionCount').innerText = '0';
+                
+            } catch (error) {
+                console.error("Delete error:", error);
+                showToast("Error deleting questions: " + error.message, true);
+                deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i> Delete All Questions';
+                deleteBtn.disabled = false;
+            }
         }
 
         async function uploadBulk() {
@@ -518,6 +620,7 @@
 
         function escapeHtml(text) { if (!text) return ''; const d = document.createElement('div'); d.textContent = text; return d.innerHTML; }
 
+        // Tab switching
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -532,6 +635,7 @@
 
         document.getElementById('uploadBtn').addEventListener('click', uploadBulk);
         document.getElementById('addQuestionBtn').addEventListener('click', addSingle);
+        document.getElementById('deleteAllBtn').addEventListener('click', deleteAllQuestions);
 
         onAuthStateChanged(auth, (user) => {
             if (!user) { window.location.href = "index.html"; return; }
