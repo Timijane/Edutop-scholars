@@ -280,20 +280,88 @@
             color: #065f46;
         }
 
-        .progress-bar {
+        /* Modal Styles */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            height: 6px;
-            background: var(--border);
-            border-radius: 3px;
-            overflow: hidden;
-            margin: 10px 0;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
         }
 
-        .progress-fill {
-            height: 100%;
-            background: var(--success);
-            width: 0%;
-            transition: width 0.3s;
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--white);
+            border-radius: 24px;
+            padding: 28px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .modal-content h3 {
+            color: var(--danger);
+            margin-bottom: 16px;
+            font-size: 24px;
+        }
+
+        .modal-content p {
+            color: var(--gray);
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .modal-content input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 16px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-content input:focus {
+            border-color: var(--danger);
+            outline: none;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .modal-btn {
+            padding: 10px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+        }
+
+        .modal-btn.confirm {
+            background: var(--danger);
+            color: white;
+        }
+
+        .modal-btn.cancel {
+            background: var(--light);
+            color: var(--dark);
+            border: 1px solid var(--border);
+        }
+
+        .modal-btn.confirm:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
         .toast {
@@ -401,6 +469,20 @@
         </div>
     </div>
 
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <h3><i class="fas fa-exclamation-triangle"></i> Delete All Questions</h3>
+            <p>This action cannot be undone. This will permanently delete all questions from your database.</p>
+            <p style="font-weight: bold; color: var(--danger);">Type <span style="background: #fee2e2; padding: 2px 8px; border-radius: 8px;">DELETE</span> to confirm:</p>
+            <input type="text" id="confirmDeleteInput" placeholder="Type DELETE here" autocomplete="off">
+            <div class="modal-buttons">
+                <button class="modal-btn cancel" id="cancelDeleteBtn">Cancel</button>
+                <button class="modal-btn confirm" id="confirmDeleteBtn" disabled>Delete All</button>
+            </div>
+        </div>
+    </div>
+
     <div id="toast" class="toast"></div>
 
     <script type="module">
@@ -431,69 +513,109 @@
             setTimeout(() => toast.style.display = 'none', 4000);
         }
 
-        // Delete all questions in batches
+        // Delete all questions with modal confirmation
         async function deleteAllQuestions() {
-            const confirmDelete = confirm("⚠️ WARNING: This will delete ALL questions permanently!\n\nAre you absolutely sure?");
-            if (!confirmDelete) return;
+            const modal = document.getElementById('deleteModal');
+            const confirmInput = document.getElementById('confirmDeleteInput');
+            const confirmBtn = document.getElementById('confirmDeleteBtn');
             
-            const secondConfirm = confirm("Type 'DELETE' to confirm you want to delete all questions:");
-            if (secondConfirm !== "DELETE") {
-                showToast("Deletion cancelled", true);
-                return;
-            }
+            // Reset input and show modal
+            confirmInput.value = '';
+            confirmBtn.disabled = true;
+            modal.classList.add('active');
             
-            const deleteBtn = document.getElementById('deleteAllBtn');
-            deleteBtn.disabled = true;
-            deleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Deleting...';
+            // Focus on input
+            confirmInput.focus();
             
-            try {
-                const snapshot = await getDocs(collection(db, "questions"));
-                const allQuestions = [];
-                snapshot.forEach(doc => allQuestions.push({ id: doc.id }));
-                
-                if (allQuestions.length === 0) {
-                    showToast("No questions to delete");
-                    deleteBtn.disabled = false;
-                    deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i> Delete All Questions';
-                    return;
+            // Listen for input changes
+            const checkInput = () => {
+                if (confirmInput.value === 'DELETE') {
+                    confirmBtn.disabled = false;
+                } else {
+                    confirmBtn.disabled = true;
                 }
+            };
+            
+            confirmInput.addEventListener('input', checkInput);
+            
+            // Handle confirm button click
+            const handleConfirm = async () => {
+                if (confirmInput.value !== 'DELETE') return;
                 
-                showToast(`Deleting ${allQuestions.length} questions in batches...`);
+                confirmInput.removeEventListener('input', checkInput);
+                confirmBtn.removeEventListener('click', handleConfirm);
+                cancelBtn.removeEventListener('click', handleCancel);
                 
-                const batchSize = 15;
-                let deleted = 0;
+                modal.classList.remove('active');
                 
-                for (let i = 0; i < allQuestions.length; i++) {
-                    const q = allQuestions[i];
-                    await deleteDoc(doc(db, "questions", q.id));
-                    deleted++;
+                const deleteBtn = document.getElementById('deleteAllBtn');
+                deleteBtn.disabled = true;
+                deleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Deleting...';
+                
+                try {
+                    const snapshot = await getDocs(collection(db, "questions"));
+                    const allQuestions = [];
+                    snapshot.forEach(doc => allQuestions.push({ id: doc.id }));
                     
-                    // Update progress
-                    const progress = Math.round((deleted / allQuestions.length) * 100);
-                    deleteBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Deleting: ${deleted}/${allQuestions.length} (${progress}%)`;
-                    
-                    // Wait after every batch
-                    if (deleted % batchSize === 0) {
-                        await new Promise(resolve => setTimeout(resolve, 1000));
+                    if (allQuestions.length === 0) {
+                        showToast("No questions to delete");
+                        deleteBtn.disabled = false;
+                        deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i> Delete All Questions';
+                        return;
                     }
+                    
+                    showToast(`Deleting ${allQuestions.length} questions in batches...`);
+                    
+                    const batchSize = 15;
+                    let deleted = 0;
+                    
+                    for (let i = 0; i < allQuestions.length; i++) {
+                        const q = allQuestions[i];
+                        await deleteDoc(doc(db, "questions", q.id));
+                        deleted++;
+                        
+                        const progress = Math.round((deleted / allQuestions.length) * 100);
+                        deleteBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Deleting: ${deleted}/${allQuestions.length} (${progress}%)`;
+                        
+                        if (deleted % batchSize === 0) {
+                            await new Promise(resolve => setTimeout(resolve, 1000));
+                        }
+                    }
+                    
+                    showToast(`✅ Successfully deleted ${deleted} questions!`);
+                    deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i> Delete All Questions';
+                    deleteBtn.disabled = false;
+                    
+                    if (document.querySelector('.tab-btn.active').getAttribute('data-tab') === 'list') {
+                        loadQuestions();
+                    }
+                    document.getElementById('questionCount').innerText = '0';
+                    
+                } catch (error) {
+                    console.error("Delete error:", error);
+                    showToast("Error deleting questions: " + error.message, true);
+                    deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i> Delete All Questions';
+                    deleteBtn.disabled = false;
                 }
-                
-                showToast(`✅ Successfully deleted ${deleted} questions!`);
-                deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i> Delete All Questions';
-                deleteBtn.disabled = false;
-                
-                // Refresh the question list
-                if (document.querySelector('.tab-btn.active').getAttribute('data-tab') === 'list') {
-                    loadQuestions();
+            };
+            
+            const handleCancel = () => {
+                confirmInput.removeEventListener('input', checkInput);
+                confirmBtn.removeEventListener('click', handleConfirm);
+                cancelBtn.removeEventListener('click', handleCancel);
+                modal.classList.remove('active');
+            };
+            
+            const cancelBtn = document.getElementById('cancelDeleteBtn');
+            confirmBtn.addEventListener('click', handleConfirm);
+            cancelBtn.addEventListener('click', handleCancel);
+            
+            // Close modal when clicking outside
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    handleCancel();
                 }
-                document.getElementById('questionCount').innerText = '0';
-                
-            } catch (error) {
-                console.error("Delete error:", error);
-                showToast("Error deleting questions: " + error.message, true);
-                deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i> Delete All Questions';
-                deleteBtn.disabled = false;
-            }
+            });
         }
 
         async function uploadBulk() {
