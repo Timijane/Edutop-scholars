@@ -55,7 +55,7 @@
         }
 
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
             padding: 24px 20px;
         }
@@ -119,7 +119,6 @@
             color: var(--gray);
         }
 
-        /* Performance Message */
         .performance-message {
             background: var(--light);
             border-radius: 20px;
@@ -128,7 +127,6 @@
             text-align: center;
         }
 
-        /* Action Buttons */
         .action-buttons {
             display: flex;
             gap: 15px;
@@ -165,7 +163,6 @@
             color: var(--white);
         }
 
-        /* Results List */
         .results-list {
             background: var(--white);
             border-radius: 24px;
@@ -182,19 +179,42 @@
             gap: 10px;
         }
 
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .filter-btn {
+            padding: 6px 16px;
+            border-radius: 30px;
+            border: 1px solid var(--border);
+            background: var(--white);
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .filter-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
         .result-item {
             padding: 16px;
             border-bottom: 1px solid var(--border);
             cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .result-item:hover {
+            background: var(--light);
         }
 
         .result-item.correct {
-            background: #ecfdf5;
             border-left: 4px solid var(--success);
         }
 
         .result-item.wrong {
-            background: #fef2f2;
             border-left: 4px solid var(--danger);
         }
 
@@ -206,10 +226,20 @@
         .result-answer {
             font-size: 13px;
             color: var(--gray);
+            margin-top: 4px;
         }
 
-        .result-answer strong {
-            color: var(--dark);
+        .result-expand {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+        }
+
+        .result-item.expanded .result-expand {
+            max-height: 300px;
         }
 
         .footer {
@@ -273,13 +303,13 @@
         const db = getFirestore(app);
 
         let results = null;
-        let showDetails = false;
+        let currentFilter = 'all';
 
         function getPerformanceMessage(percentage) {
-            if (percentage >= 80) return { text: "Excellent! 🎉 You've mastered this topic!", color: "#10b981" };
-            if (percentage >= 60) return { text: "Good job! 👍 Keep practicing to improve.", color: "#f59e0b" };
-            if (percentage >= 40) return { text: "Fair attempt. 📚 Review the material and try again.", color: "#f59e0b" };
-            return { text: "Need more practice. 💪 Study the summaries and retake the exam.", color: "#ef4444" };
+            if (percentage >= 80) return { text: "Excellent! 🎉 You've mastered this topic!", color: "#10b981", icon: "fa-trophy" };
+            if (percentage >= 60) return { text: "Good job! 👍 Keep practicing to improve.", color: "#f59e0b", icon: "fa-smile" };
+            if (percentage >= 40) return { text: "Fair attempt. 📚 Review the material and try again.", color: "#f59e0b", icon: "fa-book" };
+            return { text: "Need more practice. 💪 Study the summaries and retake the exam.", color: "#ef4444", icon: "fa-graduation-cap" };
         }
 
         function getScoreColor(percentage) {
@@ -301,18 +331,19 @@
                     answers: resultsData.answers,
                     completedAt: new Date().toISOString()
                 });
-                console.log("Results saved to Firebase");
             } catch (error) {
                 console.error("Error saving results:", error);
             }
         }
 
         function renderResults() {
-            if (!results) {
+            if (!results || !results.questions) {
                 document.getElementById('container').innerHTML = `
-                    <div class="loading">
-                        <p>No exam results found.</p>
-                        <a href="cbt-exam.html" class="btn btn-primary" style="margin-top: 20px;">Take an Exam</a>
+                    <div style="text-align:center;padding:60px;background:white;border-radius:24px;">
+                        <i class="fas fa-chart-line" style="font-size:48px;color:var(--gray);margin-bottom:16px;"></i>
+                        <h3>No Exam Results Found</h3>
+                        <p>Take an exam to see your results here.</p>
+                        <a href="cbt-exam.html" class="btn btn-primary" style="margin-top:20px;display:inline-block;">Take an Exam</a>
                     </div>
                 `;
                 return;
@@ -321,6 +352,13 @@
             const percentage = results.percentage;
             const performance = getPerformanceMessage(percentage);
             const scoreColor = getScoreColor(percentage);
+            
+            let filteredQuestions = results.questions;
+            if (currentFilter === 'correct') {
+                filteredQuestions = results.questions.filter(q => q.isCorrect);
+            } else if (currentFilter === 'wrong') {
+                filteredQuestions = results.questions.filter(q => !q.isCorrect);
+            }
 
             const html = `
                 <div class="score-card">
@@ -346,7 +384,7 @@
                 </div>
 
                 <div class="performance-message" style="border-left: 4px solid ${performance.color}">
-                    <i class="fas fa-chart-line" style="color: ${performance.color}; font-size: 24px; margin-bottom: 8px; display: block;"></i>
+                    <i class="fas ${performance.icon}" style="color: ${performance.color}; font-size: 24px; margin-bottom: 8px; display: block;"></i>
                     <p style="color: ${performance.color}; font-weight: 600;">${performance.text}</p>
                 </div>
 
@@ -354,50 +392,56 @@
                     <a href="cbt-exam.html" class="btn btn-primary">
                         <i class="fas fa-list"></i> More Exams
                     </a>
-                    <button class="btn btn-secondary" id="toggleDetailsBtn">
-                        <i class="fas fa-list-ul"></i> ${showDetails ? 'Hide' : 'Show'} Details
-                    </button>
                     <a href="dashboard.html" class="btn btn-success">
                         <i class="fas fa-home"></i> Dashboard
                     </a>
                 </div>
 
-                ${showDetails ? `
-                    <div class="results-list">
-                        <div class="results-header">
-                            <h3><i class="fas fa-clipboard-list"></i> Question Review</h3>
+                <div class="results-list">
+                    <div class="results-header">
+                        <h3><i class="fas fa-clipboard-list"></i> Question Review</h3>
+                        <div class="filter-buttons">
+                            <button class="filter-btn ${currentFilter === 'all' ? 'active' : ''}" data-filter="all">All (${results.questions.length})</button>
+                            <button class="filter-btn ${currentFilter === 'correct' ? 'active' : ''}" data-filter="correct">Correct (${results.questions.filter(q => q.isCorrect).length})</button>
+                            <button class="filter-btn ${currentFilter === 'wrong' ? 'active' : ''}" data-filter="wrong">Wrong (${results.questions.filter(q => !q.isCorrect).length})</button>
                         </div>
-                        <div id="questionsList"></div>
                     </div>
-                ` : ''}
+                    <div id="questionsList">
+                        ${filteredQuestions.map((q, idx) => `
+                            <div class="result-item ${q.isCorrect ? 'correct' : 'wrong'}" data-idx="${idx}">
+                                <div class="result-question">
+                                    ${idx + 1}. ${escapeHtml(q.text)}
+                                </div>
+                                <div class="result-answer">
+                                    <strong>Your answer:</strong> ${q.userAnswer || 'Not answered'} - ${escapeHtml(q.options?.[q.userAnswer] || '')}
+                                </div>
+                                <div class="result-answer">
+                                    <strong>Correct answer:</strong> ${q.correctAnswer} - ${escapeHtml(q.options?.[q.correctAnswer] || '')}
+                                </div>
+                                <div class="result-expand">
+                                    ${q.explanation ? `<div class="result-answer"><strong>Explanation:</strong> ${escapeHtml(q.explanation)}</div>` : ''}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
             `;
 
             document.getElementById('container').innerHTML = html;
-
-            if (showDetails && results.questions) {
-                const questionsList = document.getElementById('questionsList');
-                questionsList.innerHTML = results.questions.map((q, idx) => {
-                    const isCorrect = results.answers[q.id] === q.correctAnswer;
-                    return `
-                        <div class="result-item ${isCorrect ? 'correct' : 'wrong'}">
-                            <div class="result-question">
-                                ${idx + 1}. ${escapeHtml(q.text)}
-                            </div>
-                            <div class="result-answer">
-                                <strong>Your answer:</strong> ${results.answers[q.id] || 'Not answered'} - ${escapeHtml(q.options[results.answers[q.id]] || '')}
-                            </div>
-                            <div class="result-answer">
-                                <strong>Correct answer:</strong> ${q.correctAnswer} - ${escapeHtml(q.options[q.correctAnswer])}
-                            </div>
-                            ${q.explanation ? `<div class="result-answer" style="margin-top: 8px;"><strong>Explanation:</strong> ${escapeHtml(q.explanation)}</div>` : ''}
-                        </div>
-                    `;
-                }).join('');
-            }
-
-            document.getElementById('toggleDetailsBtn')?.addEventListener('click', () => {
-                showDetails = !showDetails;
-                renderResults();
+            
+            // Add click handlers for expanding
+            document.querySelectorAll('.result-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    item.classList.toggle('expanded');
+                });
+            });
+            
+            // Filter buttons
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    currentFilter = btn.getAttribute('data-filter');
+                    renderResults();
+                });
             });
         }
 
@@ -418,8 +462,6 @@
             if (storedResults) {
                 results = JSON.parse(storedResults);
                 localStorage.removeItem('examResults');
-                
-                // Save to Firebase
                 await saveResultsToFirebase(user.uid, results);
             }
             
