@@ -32,7 +32,6 @@
             min-height: 100vh;
         }
 
-        /* Header */
         .header {
             background: white;
             padding: 12px 16px;
@@ -116,14 +115,12 @@
             color: var(--gray);
         }
 
-        /* Dashboard Container */
         .dashboard-container {
             padding: 16px;
             max-width: 600px;
             margin: 0 auto;
         }
 
-        /* Welcome Section */
         .welcome-section {
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
             color: white;
@@ -143,7 +140,6 @@
             font-size: 13px;
         }
 
-        /* Stats Cards */
         .stats-cards {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -186,7 +182,142 @@
             font-size: 11px;
         }
 
-        /* Section Headers */
+        /* Exam Stats Section */
+        .exam-stats-section {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+
+        .exam-stats-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .exam-stats-header h3 {
+            color: var(--primary);
+            font-size: 16px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .refresh-stats {
+            background: var(--light);
+            border: none;
+            padding: 6px 12px;
+            border-radius: 30px;
+            font-size: 11px;
+            cursor: pointer;
+            color: var(--gray);
+            transition: all 0.2s;
+        }
+
+        .refresh-stats:hover {
+            background: var(--border);
+            color: var(--primary);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .stat-item {
+            background: var(--light);
+            border-radius: 12px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: var(--gray);
+            margin-top: 4px;
+        }
+
+        .best-score {
+            color: var(--success);
+        }
+
+        .latest-score {
+            color: var(--accent);
+        }
+
+        .performance-trend {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--light-gray);
+        }
+
+        .trend-up {
+            color: var(--success);
+        }
+
+        .trend-down {
+            color: var(--danger);
+        }
+
+        .trend-stable {
+            color: var(--warning);
+        }
+
+        .recent-exams-list {
+            margin-top: 16px;
+        }
+
+        .recent-exam-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--light-gray);
+            font-size: 13px;
+        }
+
+        .recent-exam-name {
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .recent-exam-score {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .recent-exam-date {
+            font-size: 10px;
+            color: var(--gray);
+        }
+
+        .view-all-btn {
+            width: 100%;
+            margin-top: 12px;
+            padding: 8px;
+            background: var(--light);
+            border: none;
+            border-radius: 30px;
+            font-size: 12px;
+            cursor: pointer;
+            color: var(--primary);
+            font-weight: 500;
+        }
+
         .section-header {
             display: flex;
             justify-content: space-between;
@@ -200,7 +331,6 @@
             font-weight: 600;
         }
 
-        /* Action Grid */
         .action-grid {
             display: flex;
             flex-direction: column;
@@ -261,7 +391,6 @@
             opacity: 0.6;
         }
 
-        /* Admin Card */
         .admin-card {
             background: linear-gradient(135deg, #fff5f0 0%, #ffe8e0 100%);
             border: 2px solid var(--secondary);
@@ -275,7 +404,6 @@
             color: var(--secondary);
         }
 
-        /* Recent Activity */
         .recent-activity {
             background: white;
             border-radius: 16px;
@@ -326,7 +454,6 @@
             font-size: 11px;
         }
 
-        /* Footer */
         .footer {
             text-align: center;
             padding: 16px;
@@ -336,7 +463,6 @@
             margin-top: 20px;
         }
 
-        /* Modal */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -409,6 +535,9 @@
             .stat-info h3 {
                 font-size: 16px;
             }
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
             .action-card {
                 padding: 12px;
             }
@@ -449,6 +578,7 @@
             <p id="welcome-subtext">Your literature learning journey begins here.</p>
         </section>
 
+        <!-- Quick Stats -->
         <div class="stats-cards">
             <div class="stat-card">
                 <div class="stat-icon" style="background: var(--primary);">
@@ -465,7 +595,7 @@
                 </div>
                 <div class="stat-info">
                     <h3 id="stat-exams">0</h3>
-                    <p>Exams</p>
+                    <p>Exams Taken</p>
                 </div>
             </div>
             <div class="stat-card">
@@ -482,10 +612,51 @@
                     <i class="fas fa-trophy"></i>
                 </div>
                 <div class="stat-info">
-                    <h3 id="stat-ranking">--</h3>
-                    <p>Rank</p>
+                    <h3 id="stat-best">--%</h3>
+                    <p>Best Score</p>
                 </div>
             </div>
+        </div>
+
+        <!-- Detailed Exam Statistics -->
+        <div class="exam-stats-section">
+            <div class="exam-stats-header">
+                <h3><i class="fas fa-chart-simple"></i> Exam Performance</h3>
+                <button class="refresh-stats" id="refreshStatsBtn"><i class="fas fa-sync-alt"></i> Refresh</button>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value" id="stat-avg-score">--%</div>
+                    <div class="stat-label">Average Score</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="stat-total-exams">0</div>
+                    <div class="stat-label">Total Exams</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value best-score" id="stat-best-score">--%</div>
+                    <div class="stat-label">Best Score</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value latest-score" id="stat-latest-score">--%</div>
+                    <div class="stat-label">Latest Score</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="stat-total-questions">0</div>
+                    <div class="stat-label">Questions Answered</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="stat-correct-answers">0</div>
+                    <div class="stat-label">Correct Answers</div>
+                </div>
+            </div>
+            <div class="performance-trend" id="performance-trend">
+                <i class="fas fa-chart-line"></i> <span id="trend-text">Loading performance data...</span>
+            </div>
+            <div class="recent-exams-list" id="recent-exams-list">
+                <div style="text-align: center; color: var(--gray); padding: 10px;">Loading recent exams...</div>
+            </div>
+            <button class="view-all-btn" id="viewAllExamsBtn"><i class="fas fa-history"></i> View All Exam History</button>
         </div>
 
         <div class="section-header">
@@ -594,7 +765,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-        import { getFirestore, doc, onSnapshot, setDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+        import { getFirestore, doc, onSnapshot, setDoc, collection, getDocs, query, where, orderBy, limit } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCictHNxtslYs9VR0hoicxlwPn_QghkgIA",
@@ -612,11 +783,159 @@
         
         let currentUserUid = null;
         let isAdmin = false;
+        let examResults = [];
 
         const adminEmails = [
             "okewunmitimileyin23@gmail.com",
             "triangleofscholars@gmail.com"
         ];
+
+        // Load exam results from Firebase
+        async function loadExamResults(userId) {
+            try {
+                const resultsRef = collection(db, "userResults");
+                const q = query(resultsRef, where("userId", "==", userId), orderBy("completedAt", "desc"));
+                const snapshot = await getDocs(q);
+                examResults = [];
+                snapshot.forEach(doc => {
+                    examResults.push({ id: doc.id, ...doc.data() });
+                });
+                updateExamStats();
+            } catch (error) {
+                console.error("Error loading exam results:", error);
+            }
+        }
+
+        // Calculate and update exam statistics
+        function updateExamStats() {
+            const totalExams = examResults.length;
+            
+            if (totalExams === 0) {
+                document.getElementById('stat-avg-score').innerText = '--%';
+                document.getElementById('stat-total-exams').innerText = '0';
+                document.getElementById('stat-best-score').innerText = '--%';
+                document.getElementById('stat-latest-score').innerText = '--%';
+                document.getElementById('stat-total-questions').innerText = '0';
+                document.getElementById('stat-correct-answers').innerText = '0';
+                document.getElementById('stat-exams').innerText = '0';
+                document.getElementById('stat-score').innerText = '--%';
+                document.getElementById('stat-best').innerText = '--%';
+                document.getElementById('performance-trend').innerHTML = '<i class="fas fa-chart-line"></i> <span>No exams taken yet. Start your first exam!</span>';
+                document.getElementById('recent-exams-list').innerHTML = '<div style="text-align: center; color: var(--gray); padding: 10px;">No exams taken yet.</div>';
+                return;
+            }
+            
+            // Calculate statistics
+            let totalPercentage = 0;
+            let totalQuestionsAnswered = 0;
+            let totalCorrectAnswers = 0;
+            let bestScore = 0;
+            let latestScore = examResults[0]?.percentage || 0;
+            
+            examResults.forEach(result => {
+                totalPercentage += result.percentage || 0;
+                totalQuestionsAnswered += result.totalQuestions || 0;
+                totalCorrectAnswers += result.score || 0;
+                if ((result.percentage || 0) > bestScore) {
+                    bestScore = result.percentage;
+                }
+            });
+            
+            const avgScore = Math.round(totalPercentage / totalExams);
+            
+            // Update UI
+            document.getElementById('stat-avg-score').innerText = avgScore + '%';
+            document.getElementById('stat-total-exams').innerText = totalExams;
+            document.getElementById('stat-best-score').innerText = bestScore + '%';
+            document.getElementById('stat-latest-score').innerText = latestScore + '%';
+            document.getElementById('stat-total-questions').innerText = totalQuestionsAnswered;
+            document.getElementById('stat-correct-answers').innerText = totalCorrectAnswers;
+            document.getElementById('stat-exams').innerText = totalExams;
+            document.getElementById('stat-score').innerText = avgScore + '%';
+            document.getElementById('stat-best').innerText = bestScore + '%';
+            
+            // Performance trend
+            let trendHtml = '';
+            if (examResults.length >= 2) {
+                const firstScore = examResults[examResults.length - 1]?.percentage || 0;
+                const lastScore = examResults[0]?.percentage || 0;
+                const difference = lastScore - firstScore;
+                
+                if (difference > 5) {
+                    trendHtml = `<i class="fas fa-arrow-up trend-up"></i> <span class="trend-up">Improving! +${difference}% from your first exam</span>`;
+                } else if (difference < -5) {
+                    trendHtml = `<i class="fas fa-arrow-down trend-down"></i> <span class="trend-down">Declining. Keep practicing! ${difference}% from your first exam</span>`;
+                } else {
+                    trendHtml = `<i class="fas fa-minus trend-stable"></i> <span class="trend-stable">Steady performance. Keep it up!</span>`;
+                }
+            } else {
+                trendHtml = `<i class="fas fa-chart-line"></i> <span>Take more exams to see your progress trend!</span>`;
+            }
+            document.getElementById('performance-trend').innerHTML = trendHtml;
+            
+            // Recent exams list
+            const recentExams = examResults.slice(0, 5);
+            if (recentExams.length > 0) {
+                document.getElementById('recent-exams-list').innerHTML = recentExams.map(exam => `
+                    <div class="recent-exam-item">
+                        <div>
+                            <div class="recent-exam-name">${exam.examTitle || 'Literature Exam'}</div>
+                            <div class="recent-exam-date">${new Date(exam.completedAt).toLocaleDateString()}</div>
+                        </div>
+                        <div class="recent-exam-score">${exam.score}/${exam.totalQuestions} (${exam.percentage}%)</div>
+                    </div>
+                `).join('');
+            } else {
+                document.getElementById('recent-exams-list').innerHTML = '<div style="text-align: center; color: var(--gray); padding: 10px;">No exams taken yet.</div>';
+            }
+            
+            // Update activity feed with latest exam
+            if (examResults.length > 0 && examResults[0]) {
+                const latest = examResults[0];
+                const activityList = document.getElementById('activity-list');
+                const newActivity = document.createElement('div');
+                newActivity.className = 'activity-item';
+                newActivity.innerHTML = `
+                    <div class="activity-icon" style="background: var(--success);">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="activity-info">
+                        <h4>Exam Completed: ${latest.examTitle || 'Literature Exam'}</h4>
+                        <p>Score: ${latest.score}/${latest.totalQuestions} (${latest.percentage}%) - ${new Date(latest.completedAt).toLocaleDateString()}</p>
+                    </div>
+                `;
+                // Insert at top but keep welcome message
+                const firstItem = activityList.querySelector('.activity-item');
+                if (firstItem && firstItem.innerHTML.includes('Welcome')) {
+                    activityList.insertBefore(newActivity, firstItem.nextSibling);
+                } else if (activityList.children.length > 2) {
+                    activityList.insertBefore(newActivity, activityList.children[1]);
+                } else {
+                    activityList.appendChild(newActivity);
+                }
+            }
+        }
+
+        // Update user stats in Firebase
+        async function updateUserStats(userId) {
+            if (examResults.length === 0) return;
+            
+            let totalPercentage = 0;
+            examResults.forEach(result => {
+                totalPercentage += result.percentage || 0;
+            });
+            const avgScore = Math.round(totalPercentage / examResults.length);
+            
+            const userRef = doc(db, "users", userId);
+            await setDoc(userRef, {
+                stats: {
+                    overallScore: avgScore,
+                    examsTaken: examResults.length,
+                    bestScore: Math.max(...examResults.map(r => r.percentage || 0)),
+                    lastUpdated: new Date().toISOString()
+                }
+            }, { merge: true });
+        }
 
         onAuthStateChanged(auth, async (user) => {
             if (user) {
@@ -648,8 +967,8 @@
                             stats: {
                                 overallScore: 0,
                                 examsTaken: 0,
-                                summariesRead: 0,
-                                ranking: "New"
+                                bestScore: 0,
+                                lastUpdated: new Date().toISOString()
                             },
                             createdAt: new Date().toISOString()
                         };
@@ -670,6 +989,10 @@
                 } catch (e) {
                     console.error("Error:", e);
                 }
+                
+                // Load exam results
+                await loadExamResults(currentUserUid);
+                await updateUserStats(currentUserUid);
 
             } else {
                 window.location.href = "index.html";
@@ -687,11 +1010,21 @@
             const stats = userData.stats || {};
             document.getElementById('stat-score').innerText = (stats.overallScore || 0) + '%';
             document.getElementById('stat-exams').innerText = stats.examsTaken || 0;
-            document.getElementById('stat-ranking').innerText = stats.ranking || '--';
+            document.getElementById('stat-best').innerText = (stats.bestScore || 0) + '%';
         }
 
         document.getElementById('adminPanelBtn')?.addEventListener('click', () => {
             window.location.href = 'admin-write.html';
+        });
+        
+        document.getElementById('refreshStatsBtn')?.addEventListener('click', async () => {
+            await loadExamResults(currentUserUid);
+            await updateUserStats(currentUserUid);
+        });
+        
+        document.getElementById('viewAllExamsBtn')?.addEventListener('click', () => {
+            // Could open a modal with all exam history
+            alert(`📊 Your Exam History\n\nTotal Exams: ${examResults.length}\nAverage Score: ${document.getElementById('stat-avg-score').innerText}\nBest Score: ${document.getElementById('stat-best-score').innerText}\n\nCheck your dashboard for detailed stats!`);
         });
 
         const userProfileBtn = document.getElementById('userProfileBtn');
