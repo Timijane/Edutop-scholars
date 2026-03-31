@@ -96,7 +96,6 @@
             padding: 20px;
         }
 
-        /* Subject Selector */
         .subject-selector {
             background: var(--white);
             border-radius: 24px;
@@ -145,7 +144,6 @@
             border-color: var(--primary);
         }
 
-        /* Stats Bar */
         .stats-bar {
             background: var(--light);
             border-radius: 16px;
@@ -182,7 +180,6 @@
             gap: 6px;
         }
 
-        /* Tabs */
         .tabs {
             display: flex;
             gap: 10px;
@@ -209,7 +206,6 @@
             color: white;
         }
 
-        /* Upload Section */
         .upload-section {
             background: var(--white);
             border-radius: 24px;
@@ -253,7 +249,6 @@
             resize: vertical;
         }
 
-        /* Question Form */
         .question-form {
             display: flex;
             flex-direction: column;
@@ -322,7 +317,6 @@
             border: 1px solid var(--border);
         }
 
-        /* Questions List */
         .questions-list {
             background: var(--white);
             border-radius: 24px;
@@ -431,13 +425,11 @@
     </header>
 
     <div class="container">
-        <!-- Subject Selector -->
         <div class="subject-selector">
             <h3><i class="fas fa-layer-group"></i> Select Subject</h3>
             <div class="subject-grid" id="subjectGrid"></div>
         </div>
 
-        <!-- Stats Bar -->
         <div class="stats-bar" id="statsBar">
             <span><i class="fas fa-database"></i> Total Questions: <strong id="totalCount">0</strong></span>
             <span><i class="fas fa-book"></i> Current Subject: <strong id="currentSubject">None Selected</strong></span>
@@ -446,22 +438,19 @@
             </button>
         </div>
 
-        <!-- Tabs -->
         <div class="tabs">
             <button class="tab-btn active" data-tab="bulk">📤 Bulk Upload CSV</button>
             <button class="tab-btn" data-tab="single">✍️ Add Single Question</button>
             <button class="tab-btn" data-tab="list">📋 Question List</button>
         </div>
 
-        <!-- Bulk Upload Tab -->
         <div id="bulkTab" class="upload-section">
             <h3><i class="fas fa-file-upload"></i> Bulk Upload Questions (CSV Format)</h3>
             <div class="csv-template">
                 <strong>📝 CSV Format - Copy and paste:</strong><br>
                 <code>sectionName,questionText,optionA,optionB,optionC,optionD,correctAnswer,difficulty,explanation</code><br><br>
                 <strong>Example:</strong><br>
-                <code>Chapter 1,Who is the narrator of To Kill a Mockingbird?,Jem Finch,Scout Finch,Atticus Finch,Boo Radley,B,Easy,Scout Finch is the first-person narrator</code><br>
-                <code>General,What is a simile?,A comparison using like or as,A direct comparison,Exaggeration,Giving human qualities,A,Easy,Simile uses like or as for comparison</code>
+                <code>General,Which of the following is NOT a characteristic of the parliamentary system of government?,Ministers are usually members of parliament,The Prime Minister is politically responsible to the parliament,The Head of State is the powerful organ of government,The Head of Government may advise the Head of State to dissolve parliament,C,Medium,In a parliamentary system the Head of State is ceremonial while the Head of Government exercises real power.</code>
             </div>
             <textarea id="csvInput" rows="8" placeholder="Paste your CSV data here..."></textarea>
             <div style="display: flex; gap: 12px; flex-wrap: wrap;">
@@ -469,11 +458,10 @@
                 <button id="downloadTemplateBtn" class="btn btn-secondary"><i class="fas fa-download"></i> Download CSV Template</button>
             </div>
             <p style="margin-top: 12px; font-size: 12px; color: var(--gray);">
-                <i class="fas fa-info-circle"></i> The subject is automatically set to your selected subject. Section name is optional.
+                <i class="fas fa-info-circle"></i> The subject is automatically set to your selected subject. First line should be headers.
             </p>
         </div>
 
-        <!-- Single Question Tab -->
         <div id="singleTab" class="upload-section" style="display: none;">
             <h3><i class="fas fa-plus-circle"></i> Add Single Question</h3>
             <div class="question-form">
@@ -506,7 +494,6 @@
             </div>
         </div>
 
-        <!-- Question Bank List -->
         <div id="listTab" class="questions-list" style="display: none;">
             <div class="questions-header">
                 <h3><i class="fas fa-list"></i> Questions for <span id="listSubjectName">-</span></h3>
@@ -540,7 +527,6 @@
 
         const adminEmails = ["okewunmitimileyin23@gmail.com", "triangleofscholars@gmail.com"];
 
-        // All subjects
         const subjects = [
             { id: "english", name: "English Language", icon: "fas fa-language", color: "#3b82f6" },
             { id: "mathematics", name: "Mathematics", icon: "fas fa-calculator", color: "#10b981" },
@@ -697,38 +683,66 @@
                 return;
             }
             
-            const lines = csvText.trim().split('\n');
+            const lines = csvText.trim().split(/\r?\n/);
             let success = 0, failed = 0;
             
-            for (let i = 0; i < lines.length; i++) {
+            // Skip header row if it exists
+            let startIndex = 0;
+            if (lines[0].toLowerCase().includes('sectionname')) {
+                startIndex = 1;
+            }
+            
+            for (let i = startIndex; i < lines.length; i++) {
                 const line = lines[i].trim();
-                if (!line || line.startsWith('sectionName')) continue;
+                if (!line) continue;
                 
+                // Parse CSV line (handles quotes)
                 const parts = [];
-                let current = '', inQuotes = false;
+                let current = '';
+                let inQuotes = false;
+                
                 for (let j = 0; j < line.length; j++) {
                     const char = line[j];
-                    if (char === '"') inQuotes = !inQuotes;
-                    else if (char === ',' && !inQuotes) { parts.push(current.trim()); current = ''; }
-                    else current += char;
+                    if (char === '"') {
+                        inQuotes = !inQuotes;
+                    } else if (char === ',' && !inQuotes) {
+                        parts.push(current.trim());
+                        current = '';
+                    } else {
+                        current += char;
+                    }
                 }
                 parts.push(current.trim());
                 
-                if (parts.length >= 8) {
+                // Remove quotes from parts
+                const cleanParts = parts.map(p => p.replace(/^"|"$/g, ''));
+                
+                if (cleanParts.length >= 8) {
                     try {
                         await addDoc(collection(db, "questions"), {
                             bookId: currentSubject,
-                            sectionName: parts[0] || 'General',
-                            questionText: parts[1],
-                            options: { A: parts[2], B: parts[3], C: parts[4], D: parts[5] },
-                            correctAnswer: parts[6].toUpperCase(),
-                            difficulty: parts[7] || 'Medium',
-                            explanation: parts[8] || '',
+                            sectionName: cleanParts[0] || 'General',
+                            questionText: cleanParts[1],
+                            options: { 
+                                A: cleanParts[2] || '', 
+                                B: cleanParts[3] || '', 
+                                C: cleanParts[4] || '', 
+                                D: cleanParts[5] || '' 
+                            },
+                            correctAnswer: cleanParts[6].toUpperCase(),
+                            difficulty: cleanParts[7] || 'Medium',
+                            explanation: cleanParts[8] || '',
                             createdAt: new Date().toISOString()
                         });
                         success++;
-                    } catch (e) { failed++; }
-                } else { failed++; }
+                    } catch (e) { 
+                        console.error(e);
+                        failed++; 
+                    }
+                } else {
+                    console.log('Skipping line, not enough parts:', cleanParts);
+                    failed++;
+                }
             }
             
             showToast(`✅ Uploaded ${success} questions. Failed: ${failed}`);
@@ -798,9 +812,13 @@
             URL.revokeObjectURL(url);
         }
 
-        function escapeHtml(text) { if (!text) return ''; const d = document.createElement('div'); d.textContent = text; return d.innerHTML; }
+        function escapeHtml(text) { 
+            if (!text) return ''; 
+            const d = document.createElement('div'); 
+            d.textContent = text; 
+            return d.innerHTML; 
+        }
 
-        // Tab switching
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
