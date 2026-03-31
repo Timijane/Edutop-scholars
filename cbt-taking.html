@@ -6,7 +6,7 @@
     <title>CBT Exam | Mr. Timi Scholar</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* ========== STYLES (same as before) ========== */
+        /* ========== STYLES (unchanged, same as before) ========== */
         * {
             margin: 0;
             padding: 0;
@@ -103,14 +103,29 @@
             box-shadow: 0 4px 20px rgba(0,0,0,0.08);
         }
 
-        .passage-box {
+        .subject-switcher {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .subject-tab {
             background: var(--light);
-            padding: 20px;
-            border-radius: 16px;
-            margin-bottom: 24px;
-            border-left: 4px solid var(--primary);
-            font-style: italic;
-            line-height: 1.6;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--dark);
+        }
+
+        .subject-tab.active {
+            background: var(--primary);
+            color: white;
         }
 
         .question-text {
@@ -237,6 +252,7 @@
             cursor: pointer;
             font-size: 14px;
             transition: all 0.2s;
+            position: relative;
         }
 
         .palette-btn.answered {
@@ -317,7 +333,7 @@
     <div class="main-content" id="mainContent">
         <div class="loading">
             <div class="loading-spinner"></div>
-            <p>Loading exam questions...</p>
+            <p>Loading exam...</p>
         </div>
     </div>
 
@@ -338,7 +354,7 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // List of literature book IDs (used only when subject is "literature")
+        // --- Helper: filter for literature (all books) ---
         const literatureBooks = [
             "to-kill-a-mockingbird", "path-of-lucas", "so-the-path-does-not-die", "redemption-road",
             "antony-and-cleopatra", "once-upon-an-elephant", "marriage-of-anansewa", "inspector-calls", "man-for-all-seasons",
@@ -347,22 +363,34 @@
             "general", "unseen-poetry", "unseen-prose", "unseen-drama"
         ];
 
+        function filterForSubject(subject) {
+            if (subject === "literature") {
+                return (q) => literatureBooks.includes(q.bookId);
+            }
+            return (q) => q.bookId === subject;
+        }
+
+        // --- Load all questions from Firebase ---
         let allQuestions = [];
-        let selectedQuestions = [];
-        let userAnswers = {};
-        let currentIndex = 0;
+
+        // --- Exam structure for custom multi-subject ---
+        let examSections = [];    // array of { subject, questions, answers, currentIndex, total }
+        let activeSectionIdx = 0;
+        let combinedQuestions = [];  // flattened array for palette
+        let combinedAnswers = {};
+        let currentGlobalIndex = 0;
         let timer = null;
         let timeLeft = 0;
         let currentExam = null;
+
+        // --- answered question IDs for no‑repetition ---
         let answeredQuestionIds = [];
 
-        // Load answered questions from Firebase
         async function loadAnsweredQuestions(userId) {
             try {
                 const userProgressRef = doc(db, "userProgress", userId);
                 const docSnap = await getDoc(userProgressRef);
                 answeredQuestionIds = docSnap.exists() ? docSnap.data().answeredQuestions || [] : [];
-                console.log(`Loaded ${answeredQuestionIds.length} answered questions`);
             } catch (error) {
                 console.error(error);
                 answeredQuestionIds = [];
@@ -374,7 +402,6 @@
                 const userProgressRef = doc(db, "userProgress", userId);
                 const allAnswered = [...new Set([...answeredQuestionIds, ...newIds])];
                 await setDoc(userProgressRef, { answeredQuestions: allAnswered, lastUpdated: new Date().toISOString() }, { merge: true });
-                console.log(`Saved ${newIds.length} new answered questions`);
             } catch (error) {
                 console.error(error);
             }
@@ -388,30 +415,86 @@
             return arr;
         }
 
-        // Create filter function based on subject
-        function createFilter(subject) {
-            // For literature, accept any bookId from the literature list
-            if (subject === "literature") {
-                return (q) => literatureBooks.includes(q.bookId);
-            }
-            // For other subjects, exact match on bookId
-            return (q) => q.bookId === subject;
-        }
-
-        // Select questions for the exam
-        function selectQuestionsForExam(filter, targetCount) {
-            // Filter available questions by subject and not answered before
+        // Select a specific number of questions for a subject, avoiding previously answered
+        function selectQuestionsForSubject(subject, targetCount) {
+            const filter = filterForSubject(subject);
             let available = allQuestions.filter(q => filter(q) && !answeredQuestionIds.includes(q.id));
-            // If not enough new questions, include some already answered
             if (available.length < targetCount) {
                 const alreadyAnswered = allQuestions.filter(q => filter(q) && answeredQuestionIds.includes(q.id));
                 available = [...available, ...alreadyAnswered];
             }
-            const shuffled = shuffleArray([...available]);
-            return shuffled.slice(0, targetCount);
+            return shuffleArray(available).slice(0, targetCount);
         }
 
-        async function loadQuestions() {
+        // --- Load custom exam from localStorage ---
+        async function loadCustomExam() {
+            const stored = localStorage.getItem('customExamSubjects');
+            if (!stored) {
+                window.location.href = 'dashboard.html';
+                return;
+            }
+            const subjects = JSON.parse(stored);
+            if (!subjects.length) {
+                window.location.href = 'dashboard.html';
+                return;
+            }
+
+            // Load all questions once
+            const snapshot = await getDocs(collection(db, "questions"));
+            allQuestions = [];
+            snapshot.forEach(doc => allQuestions.push({ id: doc.id, ...doc.data() }));
+
+            examSections = [];
+            let totalQuestions = 0;
+            for (const subj of subjects) {
+                const questions = selectQuestionsForSubject(subj.subject, subj.qty);
+                totalQuestions += questions.length;
+                examSections.push({
+                    subject: subj.subject,
+                    questions: questions,
+                    answers: {},
+                    currentIndex: 0,
+                    total: questions.length
+                });
+            }
+
+            if (totalQuestions === 0) {
+                document.getElementById('mainContent').innerHTML = `
+                    <div style="text-align:center;padding:60px;background:white;border-radius:24px;">
+                        <i class="fas fa-database" style="font-size:48px;color:var(--gray);margin-bottom:16px;"></i>
+                        <h3>No Questions Available</h3>
+                        <p>No questions found for the selected subjects.</p>
+                        <button onclick="location.href='dashboard.html'" style="margin-top:20px;padding:12px 24px;background:var(--primary);color:white;border:none;border-radius:30px;">Back to Dashboard</button>
+                    </div>
+                `;
+                return;
+            }
+
+            // Build flattened list for palette
+            combinedQuestions = [];
+            combinedAnswers = {};
+            for (let i = 0; i < examSections.length; i++) {
+                const sec = examSections[i];
+                for (let j = 0; j < sec.questions.length; j++) {
+                    const q = sec.questions[j];
+                    combinedQuestions.push({
+                        globalIndex: combinedQuestions.length,
+                        sectionIdx: i,
+                        qIdx: j,
+                        q: q,
+                        subject: sec.subject
+                    });
+                }
+            }
+
+            // Start exam
+            timeLeft = 120 * 60; // 2 hours default, can adjust
+            startTimer();
+            renderExam();
+        }
+
+        // --- Single-subject exam (existing mode) ---
+        async function loadSingleSubjectExam() {
             const storedExam = localStorage.getItem('currentExam');
             if (!storedExam) {
                 window.location.href = 'cbt-exam.html';
@@ -420,34 +503,48 @@
             currentExam = JSON.parse(storedExam);
             const subject = currentExam.subject;
             if (!subject) {
-                alert("Exam subject not specified.");
                 window.location.href = 'cbt-exam.html';
                 return;
             }
 
-            const filter = createFilter(subject);
-            // Load all questions from Firebase
             const snapshot = await getDocs(collection(db, "questions"));
             allQuestions = [];
-            snapshot.forEach(doc => {
-                allQuestions.push({ id: doc.id, ...doc.data() });
-            });
+            snapshot.forEach(doc => allQuestions.push({ id: doc.id, ...doc.data() }));
 
-            selectedQuestions = selectQuestionsForExam(filter, currentExam.totalQuestions);
-            if (selectedQuestions.length === 0) {
+            const filter = filterForSubject(subject);
+            let available = allQuestions.filter(q => filter(q) && !answeredQuestionIds.includes(q.id));
+            if (available.length < currentExam.totalQuestions) {
+                const alreadyAnswered = allQuestions.filter(q => filter(q) && answeredQuestionIds.includes(q.id));
+                available = [...available, ...alreadyAnswered];
+            }
+            const selected = shuffleArray(available).slice(0, currentExam.totalQuestions);
+
+            if (selected.length === 0) {
                 document.getElementById('mainContent').innerHTML = `
                     <div style="text-align:center;padding:60px;background:white;border-radius:24px;">
                         <i class="fas fa-database" style="font-size:48px;color:var(--gray);margin-bottom:16px;"></i>
                         <h3>No Questions Available</h3>
-                        <p>No questions found for ${subject}. Please add questions in the admin panel.</p>
+                        <p>No questions found for ${subject}.</p>
                         <button onclick="location.href='cbt-exam.html'" style="margin-top:20px;padding:12px 24px;background:var(--primary);color:white;border:none;border-radius:30px;">Back to Exams</button>
                     </div>
                 `;
                 return;
             }
 
-            userAnswers = {};
-            currentIndex = 0;
+            examSections = [{
+                subject: subject,
+                questions: selected,
+                answers: {},
+                currentIndex: 0,
+                total: selected.length
+            }];
+            combinedQuestions = selected.map((q, idx) => ({
+                globalIndex: idx,
+                sectionIdx: 0,
+                qIdx: idx,
+                q: q,
+                subject: subject
+            }));
             timeLeft = currentExam.duration * 60;
             startTimer();
             renderExam();
@@ -469,104 +566,208 @@
             }, 1000);
         }
 
+        function getSubjectName(id) {
+            const names = {
+                english: "English", mathematics: "Mathematics", physics: "Physics", chemistry: "Chemistry",
+                biology: "Biology", literature: "Literature", crs: "CRS", government: "Government",
+                economics: "Economics", accounting: "Accounting", commerce: "Commerce"
+            };
+            return names[id] || id;
+        }
+
         function renderExam() {
-            const q = selectedQuestions[currentIndex];
-            const selected = userAnswers[q.id] || '';
-            const answeredCount = Object.keys(userAnswers).length;
+            const currentSection = examSections[activeSectionIdx];
+            const currentQ = currentSection.questions[currentSection.currentIndex];
+            const selected = currentSection.answers[currentQ.id] || '';
+
+            // Build subject tabs
+            const subjectTabs = examSections.map((sec, idx) => `
+                <button class="subject-tab ${idx === activeSectionIdx ? 'active' : ''}" data-section="${idx}">
+                    ${getSubjectName(sec.subject)} (${Object.keys(sec.answers).length}/${sec.total})
+                </button>
+            `).join('');
+
+            // Build palette buttons
+            const paletteBtns = combinedQuestions.map((item, idx) => {
+                const sec = examSections[item.sectionIdx];
+                const isAnswered = sec.answers[item.q.id] ? true : false;
+                const isCurrent = (activeSectionIdx === item.sectionIdx && sec.currentIndex === item.qIdx);
+                return `<button class="palette-btn ${isAnswered ? 'answered' : ''} ${isCurrent ? 'current' : ''}" data-global="${idx}">${idx+1}</button>`;
+            }).join('');
+
+            const answeredCount = examSections.reduce((sum, sec) => sum + Object.keys(sec.answers).length, 0);
 
             const html = `
                 <div class="question-area">
-                    <div style="margin-bottom: 12px; font-size: 12px; color: var(--gray);">
-                        <i class="fas fa-book"></i> ${q.bookId || 'Subject'} | Question ${currentIndex+1} of ${selectedQuestions.length}
+                    <div class="subject-switcher">
+                        ${subjectTabs}
                     </div>
-                    <div class="question-text">${currentIndex+1}. ${escapeHtml(q.questionText)}</div>
+                    <div style="margin-bottom: 12px; font-size: 12px; color: var(--gray);">
+                        <i class="fas fa-book"></i> ${getSubjectName(currentSection.subject)} | Question ${currentSection.currentIndex+1} of ${currentSection.total}
+                    </div>
+                    <div class="question-text">${escapeHtml(currentQ.questionText)}</div>
                     <div class="options-list">
                         ${['A', 'B', 'C', 'D'].map(opt => `
                             <div class="option-item ${selected === opt ? 'selected' : ''}" data-option="${opt}">
                                 <div class="option-letter">${opt}</div>
-                                <div class="option-text">${escapeHtml(q.options?.[opt] || '')}</div>
+                                <div class="option-text">${escapeHtml(currentQ.options?.[opt] || '')}</div>
                             </div>
                         `).join('')}
                     </div>
                     <div class="nav-buttons">
-                        <button class="nav-btn prev" id="prevBtn" ${currentIndex === 0 ? 'disabled style="opacity:0.5"' : ''}>
+                        <button class="nav-btn prev" id="prevBtn" ${currentSection.currentIndex === 0 ? 'disabled style="opacity:0.5"' : ''}>
                             <i class="fas fa-chevron-left"></i> Previous
                         </button>
                         <button class="nav-btn next" id="nextBtn">
                             Next <i class="fas fa-chevron-right"></i>
                         </button>
-                        ${currentIndex === selectedQuestions.length-1 ? '<button class="nav-btn submit" id="submitBtn">Submit Exam <i class="fas fa-check"></i></button>' : ''}
+                        ${activeSectionIdx === examSections.length-1 && currentSection.currentIndex === currentSection.total-1 ?
+                            '<button class="nav-btn submit" id="submitBtn">Submit Exam <i class="fas fa-check"></i></button>' : ''}
                     </div>
                 </div>
                 <div class="palette-sidebar">
                     <h3><i class="fas fa-th"></i> Question Palette</h3>
                     <div class="palette-grid" id="paletteGrid">
-                        ${selectedQuestions.map((_, idx) => `
-                            <button class="palette-btn ${userAnswers[selectedQuestions[idx].id] ? 'answered' : ''} ${idx === currentIndex ? 'current' : ''}" data-index="${idx}">
-                                ${idx+1}
-                            </button>
-                        `).join('')}
+                        ${paletteBtns}
                     </div>
                     <div class="palette-legend">
                         <div class="legend-item"><div class="legend-color" style="background:var(--success);"></div> Answered (${answeredCount})</div>
                         <div class="legend-item"><div class="legend-color" style="background:var(--primary);"></div> Current</div>
-                        <div class="legend-item"><div class="legend-color" style="background:var(--light);"></div> Unanswered (${selectedQuestions.length - answeredCount})</div>
+                        <div class="legend-item"><div class="legend-color" style="background:var(--light);"></div> Unanswered (${combinedQuestions.length - answeredCount})</div>
                     </div>
                 </div>
             `;
-            document.getElementById('mainContent').innerHTML = html;
-            document.getElementById('questionCounter').innerHTML = `Question ${currentIndex+1} of ${selectedQuestions.length}`;
 
+            document.getElementById('mainContent').innerHTML = html;
+            document.getElementById('questionCounter').innerHTML = `Question ${currentSection.currentIndex+1} of ${currentSection.total} (${getSubjectName(currentSection.subject)})`;
+
+            // Event listeners
             document.querySelectorAll('.option-item').forEach(opt => {
                 opt.addEventListener('click', () => {
-                    userAnswers[selectedQuestions[currentIndex].id] = opt.dataset.option;
+                    const selectedOpt = opt.getAttribute('data-option');
+                    currentSection.answers[currentQ.id] = selectedOpt;
                     renderExam();
                 });
             });
-            document.getElementById('prevBtn')?.addEventListener('click', () => { if (currentIndex > 0) { currentIndex--; renderExam(); } });
-            document.getElementById('nextBtn')?.addEventListener('click', () => { if (currentIndex < selectedQuestions.length-1) { currentIndex++; renderExam(); } });
-            document.getElementById('submitBtn')?.addEventListener('click', () => {
-                const answered = Object.keys(userAnswers).length;
-                if (confirm(`You have answered ${answered} out of ${selectedQuestions.length} questions. Submit?`)) submitExam();
+
+            document.getElementById('prevBtn')?.addEventListener('click', () => {
+                if (currentSection.currentIndex > 0) {
+                    currentSection.currentIndex--;
+                    renderExam();
+                }
             });
+
+            document.getElementById('nextBtn')?.addEventListener('click', () => {
+                if (currentSection.currentIndex < currentSection.total - 1) {
+                    currentSection.currentIndex++;
+                    renderExam();
+                } else {
+                    // Move to next section if not last section
+                    if (activeSectionIdx < examSections.length - 1) {
+                        activeSectionIdx++;
+                        renderExam();
+                    }
+                }
+            });
+
+            document.getElementById('submitBtn')?.addEventListener('click', () => {
+                const answered = examSections.reduce((sum, sec) => sum + Object.keys(sec.answers).length, 0);
+                if (confirm(`You have answered ${answered} out of ${combinedQuestions.length} questions. Submit?`)) submitExam();
+            });
+
+            document.querySelectorAll('.subject-tab').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const idx = parseInt(btn.getAttribute('data-section'));
+                    if (!isNaN(idx)) {
+                        activeSectionIdx = idx;
+                        renderExam();
+                    }
+                });
+            });
+
             document.querySelectorAll('.palette-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
-                    currentIndex = parseInt(btn.dataset.index);
-                    renderExam();
+                    const globalIdx = parseInt(btn.getAttribute('data-global'));
+                    const item = combinedQuestions[globalIdx];
+                    if (item) {
+                        activeSectionIdx = item.sectionIdx;
+                        examSections[item.sectionIdx].currentIndex = item.qIdx;
+                        renderExam();
+                    }
                 });
             });
         }
 
         function calculateScore() {
             let correct = 0;
-            const details = selectedQuestions.map(q => {
-                const userAns = userAnswers[q.id];
-                const isCorrect = userAns === q.correctAnswer;
-                if (isCorrect) correct++;
-                return { id: q.id, text: q.questionText, options: q.options, userAnswer: userAns, correctAnswer: q.correctAnswer, isCorrect, explanation: q.explanation || '' };
-            });
-            return { correct, total: selectedQuestions.length, percentage: Math.round((correct/selectedQuestions.length)*100), details };
+            const details = [];
+            for (const sec of examSections) {
+                for (const q of sec.questions) {
+                    const userAns = sec.answers[q.id];
+                    const isCorrect = userAns === q.correctAnswer;
+                    if (isCorrect) correct++;
+                    details.push({
+                        id: q.id,
+                        text: q.questionText,
+                        options: q.options,
+                        userAnswer: userAns,
+                        correctAnswer: q.correctAnswer,
+                        isCorrect,
+                        explanation: q.explanation || '',
+                        subject: sec.subject
+                    });
+                }
+            }
+            return { correct, total: combinedQuestions.length, percentage: Math.round((correct / combinedQuestions.length) * 100), details };
         }
 
         async function submitExam() {
             clearInterval(timer);
             const score = calculateScore();
-            const newAnsweredIds = Object.keys(userAnswers);
+            const newAnsweredIds = [];
+            for (const sec of examSections) {
+                for (const q of sec.questions) {
+                    newAnsweredIds.push(q.id);
+                }
+            }
             const user = auth.currentUser;
             if (user) {
                 await saveAnsweredQuestions(user.uid, newAnsweredIds);
-                const resultId = `${user.uid}_${currentExam.id}_${Date.now()}`;
+                const resultId = `${user.uid}_custom_${Date.now()}`;
                 await setDoc(doc(db, "userResults", resultId), {
-                    userId: user.uid, examId: currentExam.id, examTitle: currentExam.title,
-                    totalQuestions: selectedQuestions.length, score: score.correct, percentage: score.percentage,
-                    answers: userAnswers, completedAt: new Date().toISOString(),
-                    subject: currentExam.subject
+                    userId: user.uid,
+                    examId: "custom",
+                    examTitle: "Custom Exam",
+                    subject: "multiple",
+                    totalQuestions: combinedQuestions.length,
+                    score: score.correct,
+                    percentage: score.percentage,
+                    answers: (() => {
+                        const combined = {};
+                        for (const sec of examSections) {
+                            Object.assign(combined, sec.answers);
+                        }
+                        return combined;
+                    })(),
+                    completedAt: new Date().toISOString()
                 });
             }
             localStorage.setItem('examResults', JSON.stringify({
-                examId: currentExam.id, examTitle: currentExam.title, totalQuestions: selectedQuestions.length,
-                score: score.correct, percentage: score.percentage, answers: userAnswers, questions: score.details, completedAt: new Date().toISOString(),
-                subject: currentExam.subject
+                examId: "custom",
+                examTitle: "Custom Exam",
+                subject: "multiple",
+                totalQuestions: combinedQuestions.length,
+                score: score.correct,
+                percentage: score.percentage,
+                answers: (() => {
+                    const combined = {};
+                    for (const sec of examSections) {
+                        Object.assign(combined, sec.answers);
+                    }
+                    return combined;
+                })(),
+                questions: score.details,
+                completedAt: new Date().toISOString()
             }));
             window.location.href = 'cbt-results.html';
         }
@@ -576,7 +777,13 @@
         onAuthStateChanged(auth, async (user) => {
             if (!user) { window.location.href = "index.html"; return; }
             await loadAnsweredQuestions(user.uid);
-            await loadQuestions();
+            const urlParams = new URLSearchParams(window.location.search);
+            const isCustom = urlParams.get('custom') === 'true';
+            if (isCustom) {
+                await loadCustomExam();
+            } else {
+                await loadSingleSubjectExam();
+            }
         });
     </script>
 </body>
