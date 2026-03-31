@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>CBT Exam | Mr. Timi Scholar</title>
+    <title>CBT Exams | Mr. Timi Scholar</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -93,59 +93,170 @@
             font-size: 14px;
         }
 
-        .exam-card {
+        .subject-card {
             background: var(--white);
             border-radius: 24px;
-            padding: 24px;
-            margin-bottom: 16px;
-            transition: all 0.2s;
-            border: 2px solid transparent;
+            padding: 20px;
+            margin-bottom: 20px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border: 1px solid var(--border);
         }
 
-        .exam-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-            border-color: var(--primary);
-        }
-
-        .exam-title {
+        .subject-title {
             font-size: 20px;
             font-weight: 700;
             color: var(--primary);
-            margin-bottom: 8px;
-        }
-
-        .exam-meta {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
             margin-bottom: 12px;
-            font-size: 13px;
-            color: var(--gray);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .exam-description {
-            font-size: 14px;
-            color: var(--gray);
-            margin-bottom: 16px;
-            line-height: 1.5;
+        .exam-options {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-top: 12px;
         }
 
-        .start-btn {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-            color: white;
-            border: none;
-            padding: 10px 28px;
+        .exam-btn {
+            background: var(--light);
+            border: 1px solid var(--border);
+            padding: 10px 20px;
             border-radius: 40px;
             font-weight: 600;
             cursor: pointer;
-            margin-top: 8px;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .exam-btn.full {
+            background: var(--primary);
+            color: white;
+            border: none;
+        }
+
+        .exam-btn.quick {
+            background: var(--white);
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+
+        .exam-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .custom-exam-btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--secondary), #ff7849);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 60px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.2s;
+        }
+
+        .custom-exam-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255,87,34,0.3);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--white);
+            border-radius: 24px;
+            padding: 24px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-content h3 {
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .subject-selector {
+            margin-bottom: 20px;
+        }
+
+        .subject-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .subject-row label {
+            font-weight: 500;
+        }
+
+        .subject-row input {
+            width: 70px;
+            padding: 6px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        .modal-btn {
+            padding: 10px 20px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+        }
+
+        .modal-btn.cancel {
+            background: var(--light);
+            color: var(--dark);
+        }
+
+        .modal-btn.start {
+            background: var(--success);
+            color: white;
         }
 
         .loading {
             text-align: center;
             padding: 60px;
+            color: var(--gray);
         }
 
         .loading-spinner {
@@ -176,8 +287,11 @@
             .container {
                 padding: 16px;
             }
-            .exam-title {
+            .subject-title {
                 font-size: 18px;
+            }
+            .exam-options {
+                flex-direction: column;
             }
         }
     </style>
@@ -196,14 +310,30 @@
 
     <div class="container">
         <div class="page-header">
-            <h1><i class="fas fa-laptop"></i> CBT Literature Exams</h1>
-            <p>Select an exam category below. Each exam pulls questions from your answered question bank to avoid repetition.</p>
+            <h1><i class="fas fa-laptop"></i> CBT Exams</h1>
+            <p>Select a subject to start a standard exam, or build your own custom exam.</p>
         </div>
 
-        <div id="examsContainer">
+        <div id="subjectsContainer">
             <div class="loading">
                 <div class="loading-spinner"></div>
-                <p>Loading exams...</p>
+                <p>Loading your subjects...</p>
+            </div>
+        </div>
+
+        <button id="customExamBtn" class="custom-exam-btn">
+            <i class="fas fa-plus-circle"></i> Build Custom Exam
+        </button>
+    </div>
+
+    <!-- Custom Exam Modal -->
+    <div id="customModal" class="modal">
+        <div class="modal-content">
+            <h3>Build Custom Exam</h3>
+            <div id="customSubjectsList"></div>
+            <div class="modal-buttons">
+                <button class="modal-btn cancel" id="cancelModalBtn">Cancel</button>
+                <button class="modal-btn start" id="startCustomExamBtn">Start Exam</button>
             </div>
         </div>
     </div>
@@ -215,7 +345,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-        import { getFirestore, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCictHNxtslYs9VR0hoicxlwPn_QghkgIA",
@@ -223,98 +353,96 @@
             projectId: "edutop-7ff51",
             storageBucket: "edutop-7ff51.firebasestorage.app",
             messagingSenderId: "79307850494",
-            appId: "1:79307850494:web:b51ce51204140ec5429baf",
+            appId: "1:79307850494:web:b51ce51204140ec5429baf"
         };
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Define exam categories and their filters
-        const exams = [
-            {
-                id: "general",
-                title: "JAMB Literature Mock Exam",
-                description: "General literature knowledge, literary devices, unseen poetry, unseen prose, and unseen drama.",
-                totalQuestions: 60,
-                duration: 60,
-                difficulty: "Hard",
-                filter: (q) => q.bookId === "general" || q.bookId === "unseen-poetry" || q.bookId === "unseen-prose" || q.bookId === "unseen-drama"
-            },
-            {
-                id: "prose",
-                title: "Recommended Prose Exam",
-                description: "Questions from all JAMB recommended prose texts (To Kill a Mockingbird, Path of Lucas, So the Path Does Not Die, Redemption Road).",
-                totalQuestions: 40,
-                duration: 40,
-                difficulty: "Medium",
-                filter: (q) => ["to-kill-a-mockingbird", "path-of-lucas", "so-the-path-does-not-die", "redemption-road"].includes(q.bookId)
-            },
-            {
-                id: "drama",
-                title: "Recommended Drama Exam",
-                description: "Questions from all JAMB recommended drama texts (Antony and Cleopatra, Once Upon an Elephant, The Marriage of Anansewa, An Inspector Calls, A Man for All Seasons).",
-                totalQuestions: 30,
-                duration: 30,
-                difficulty: "Medium",
-                filter: (q) => ["antony-and-cleopatra", "once-upon-an-elephant", "marriage-of-anansewa", "inspector-calls", "man-for-all-seasons"].includes(q.bookId)
-            },
-            {
-                id: "poetry",
-                title: "Recommended Poetry Exam",
-                description: "Questions from all JAMB recommended poems (Once Upon a Time, Night, New Tongue, Not My Business, Hearty Garlands, The Breast of the Sea, She Walks in Beauty, The Stone, The Telephone Call, The Nun's Priest's Tale).",
-                totalQuestions: 30,
-                duration: 30,
-                difficulty: "Medium",
-                filter: (q) => ["once-upon-a-time", "new-tongue", "night", "not-my-business", "hearty-garlands", "breast-of-the-sea", "she-walks-in-beauty", "the-stone", "telephone-call", "nuns-priest-tale"].includes(q.bookId)
-            }
-        ];
+        // Subject display names and icons
+        const subjectInfo = {
+            english: { name: "English", icon: "fas fa-language", color: "#3b82f6" },
+            mathematics: { name: "Mathematics", icon: "fas fa-calculator", color: "#10b981" },
+            physics: { name: "Physics", icon: "fas fa-atom", color: "#ef4444" },
+            chemistry: { name: "Chemistry", icon: "fas fa-flask", color: "#f59e0b" },
+            biology: { name: "Biology", icon: "fas fa-dna", color: "#8b5cf6" },
+            literature: { name: "Literature", icon: "fas fa-book", color: "#8b5cf6" },
+            crs: { name: "CRS", icon: "fas fa-church", color: "#10b981" },
+            government: { name: "Government", icon: "fas fa-landmark", color: "#ef4444" },
+            economics: { name: "Economics", icon: "fas fa-chart-line", color: "#f59e0b" },
+            accounting: { name: "Accounting", icon: "fas fa-file-invoice-dollar", color: "#ef4444" },
+            commerce: { name: "Commerce", icon: "fas fa-shopping-cart", color: "#8b5cf6" }
+        };
 
-        async function getAvailableCount(filterFunc) {
-            try {
-                const snapshot = await getDocs(collection(db, "questions"));
-                let count = 0;
-                snapshot.forEach(doc => {
-                    const q = doc.data();
-                    if (filterFunc(q)) count++;
-                });
-                return count;
-            } catch (error) {
-                console.error("Error counting questions:", error);
-                return 0;
+        let selectedSubjects = [];
+
+        // Load user's selected subjects
+        async function loadUserSubjects() {
+            const user = auth.currentUser;
+            if (!user) return;
+            const userRef = doc(db, "users", user.uid);
+            const userDoc = await getDoc(userRef);
+            if (userDoc.exists()) {
+                selectedSubjects = userDoc.data().subjects || [];
             }
+            renderSubjects();
+            renderCustomModalSubjects();
         }
 
-        async function renderExams() {
-            const container = document.getElementById('examsContainer');
-            const examsWithCounts = await Promise.all(exams.map(async (exam) => {
-                const available = await getAvailableCount(exam.filter);
-                return { ...exam, available };
-            }));
-            
-            container.innerHTML = examsWithCounts.map(exam => `
-                <div class="exam-card">
-                    <div class="exam-title">${exam.title}</div>
-                    <div class="exam-meta">
-                        <span><i class="fas fa-question-circle"></i> ${exam.totalQuestions} Questions</span>
-                        <span><i class="fas fa-clock"></i> ${exam.duration} minutes</span>
-                        <span><i class="fas fa-chart-line"></i> ${exam.difficulty}</span>
-                        <span><i class="fas fa-database"></i> ${exam.available} available</span>
+        // Render subject cards with exam options
+        function renderSubjects() {
+            const container = document.getElementById('subjectsContainer');
+            if (!selectedSubjects.length) {
+                container.innerHTML = `
+                    <div style="text-align:center;padding:40px;background:white;border-radius:24px;">
+                        <i class="fas fa-exclamation-circle" style="font-size:48px;color:var(--gray);margin-bottom:16px;"></i>
+                        <h3>No Subjects Selected</h3>
+                        <p>Please go back to dashboard and select your subjects first.</p>
+                        <a href="dashboard.html" class="nav-btn" style="margin-top:20px;">Go to Dashboard</a>
                     </div>
-                    <div class="exam-description">${exam.description}</div>
-                    <button class="start-btn" data-id="${exam.id}" data-title="${exam.title}" data-duration="${exam.duration}" data-total="${exam.totalQuestions}">
-                        <i class="fas fa-play"></i> Start Exam
-                    </button>
-                </div>
-            `).join('');
-            
-            document.querySelectorAll('.start-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
+                `;
+                return;
+            }
+
+            container.innerHTML = selectedSubjects.map(subjId => {
+                const info = subjectInfo[subjId] || { name: subjId, icon: "fas fa-book", color: "#6b7280" };
+                return `
+                    <div class="subject-card">
+                        <div class="subject-title">
+                            <i class="${info.icon}" style="color: ${info.color};"></i>
+                            ${info.name}
+                        </div>
+                        <div class="exam-options">
+                            <button class="exam-btn full" data-subject="${subjId}" data-type="full">
+                                <i class="fas fa-clipboard-list"></i> Full Exam (60 Qs, 60 min)
+                            </button>
+                            <button class="exam-btn quick" data-subject="${subjId}" data-type="quick">
+                                <i class="fas fa-bolt"></i> Quick Test (20 Qs, 20 min)
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Attach event listeners to exam buttons
+            document.querySelectorAll('.exam-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const subject = btn.getAttribute('data-subject');
+                    const type = btn.getAttribute('data-type');
+                    let totalQuestions, duration;
+                    if (type === 'full') {
+                        totalQuestions = 60;
+                        duration = 60;
+                    } else {
+                        totalQuestions = 20;
+                        duration = 20;
+                    }
                     const examData = {
-                        id: btn.dataset.id,
-                        title: btn.dataset.title,
-                        duration: parseInt(btn.dataset.duration),
-                        totalQuestions: parseInt(btn.dataset.total),
-                        filterType: btn.dataset.id
+                        id: `${subject}_${type}`,
+                        title: `${subjectInfo[subject]?.name || subject} - ${type === 'full' ? 'Full Exam' : 'Quick Test'}`,
+                        duration: duration,
+                        totalQuestions: totalQuestions,
+                        subject: subject
                     };
                     localStorage.setItem('currentExam', JSON.stringify(examData));
                     window.location.href = 'cbt-taking.html';
@@ -322,12 +450,69 @@
             });
         }
 
+        // Build the modal content for custom exam (list subjects with quantity input)
+        function renderCustomModalSubjects() {
+            const container = document.getElementById('customSubjectsList');
+            if (!selectedSubjects.length) {
+                container.innerHTML = '<p>No subjects available. Please select subjects first.</p>';
+                return;
+            }
+            container.innerHTML = selectedSubjects.map(subjId => {
+                const info = subjectInfo[subjId] || { name: subjId };
+                return `
+                    <div class="subject-row">
+                        <label>${info.name}</label>
+                        <input type="number" min="0" max="100" value="10" step="5" data-subject="${subjId}" class="subject-qty">
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Handle custom exam start
+        function startCustomExam() {
+            const selections = [];
+            document.querySelectorAll('.subject-qty').forEach(input => {
+                const subject = input.getAttribute('data-subject');
+                const qty = parseInt(input.value);
+                if (qty > 0) {
+                    selections.push({ subject: subject, qty: qty });
+                }
+            });
+            if (selections.length === 0) {
+                alert("Please select at least one subject with at least 1 question.");
+                return;
+            }
+            localStorage.setItem('customExamSubjects', JSON.stringify(selections));
+            window.location.href = 'cbt-taking.html?custom=true';
+        }
+
         onAuthStateChanged(auth, (user) => {
             if (!user) {
                 window.location.href = "index.html";
                 return;
             }
-            renderExams();
+            loadUserSubjects();
+        });
+
+        // Modal controls
+        const modal = document.getElementById('customModal');
+        const customBtn = document.getElementById('customExamBtn');
+        const cancelBtn = document.getElementById('cancelModalBtn');
+        const startBtn = document.getElementById('startCustomExamBtn');
+
+        customBtn.addEventListener('click', () => {
+            renderCustomModalSubjects();
+            modal.classList.add('active');
+        });
+
+        cancelBtn.addEventListener('click', () => {
+            modal.classList.remove('active');
+        });
+
+        startBtn.addEventListener('click', startCustomExam);
+
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) modal.classList.remove('active');
         });
     </script>
 </body>
