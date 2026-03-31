@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Admin - Manage Questions | Mr. Timi Scholar</title>
+    <title>Admin - Question Manager | Mr. Timi Scholar</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -90,9 +90,88 @@
             font-weight: 600;
         }
 
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Subject Selector */
+        .subject-selector {
+            background: var(--white);
+            border-radius: 24px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border: 1px solid var(--border);
+        }
+
+        .subject-selector h3 {
+            color: var(--primary);
+            margin-bottom: 16px;
+            font-size: 18px;
+        }
+
+        .subject-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .subject-btn {
+            background: var(--light);
+            border: 2px solid var(--border);
+            border-radius: 60px;
+            padding: 12px 16px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 14px;
+        }
+
+        .subject-btn:hover {
+            border-color: var(--primary);
+            background: #e8eaf6;
+        }
+
+        .subject-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            background: var(--light);
+            border-radius: 16px;
+            padding: 16px 20px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .stats-bar span {
+            font-size: 14px;
+            color: var(--gray);
+        }
+
+        .stats-bar strong {
+            color: var(--primary);
+            font-size: 18px;
+        }
+
         .delete-all-btn {
             background: var(--danger);
             color: white;
+            border: none;
             padding: 8px 20px;
             border-radius: 30px;
             cursor: pointer;
@@ -101,20 +180,9 @@
             display: flex;
             align-items: center;
             gap: 6px;
-            border: none;
         }
 
-        .delete-all-btn:hover {
-            background: #dc2626;
-            transform: translateY(-1px);
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
+        /* Tabs */
         .tabs {
             display: flex;
             gap: 10px;
@@ -123,6 +191,7 @@
             padding: 8px;
             border-radius: 60px;
             flex-wrap: wrap;
+            border: 1px solid var(--border);
         }
 
         .tab-btn {
@@ -140,17 +209,20 @@
             color: white;
         }
 
+        /* Upload Section */
         .upload-section {
             background: var(--white);
             border-radius: 24px;
             padding: 24px;
             margin-bottom: 24px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border: 1px solid var(--border);
         }
 
         .upload-section h3 {
             color: var(--primary);
             margin-bottom: 16px;
+            font-size: 18px;
         }
 
         .csv-template {
@@ -160,6 +232,14 @@
             margin-bottom: 20px;
             font-size: 13px;
             overflow-x: auto;
+        }
+
+        .csv-template code {
+            background: var(--border);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
         }
 
         textarea {
@@ -173,6 +253,7 @@
             resize: vertical;
         }
 
+        /* Question Form */
         .question-form {
             display: flex;
             flex-direction: column;
@@ -235,10 +316,34 @@
             color: white;
         }
 
+        .btn-secondary {
+            background: var(--light);
+            color: var(--dark);
+            border: 1px solid var(--border);
+        }
+
+        /* Questions List */
         .questions-list {
             background: var(--white);
             border-radius: 24px;
             padding: 20px;
+            border: 1px solid var(--border);
+        }
+
+        .questions-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .search-box {
+            padding: 8px 16px;
+            border: 2px solid var(--border);
+            border-radius: 30px;
+            width: 250px;
         }
 
         .question-item {
@@ -280,90 +385,6 @@
             color: #065f46;
         }
 
-        /* Modal Styles */
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-        }
-
-        .modal.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background: var(--white);
-            border-radius: 24px;
-            padding: 28px;
-            max-width: 400px;
-            width: 90%;
-            text-align: center;
-        }
-
-        .modal-content h3 {
-            color: var(--danger);
-            margin-bottom: 16px;
-            font-size: 24px;
-        }
-
-        .modal-content p {
-            color: var(--gray);
-            margin-bottom: 20px;
-            line-height: 1.5;
-        }
-
-        .modal-content input {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid var(--border);
-            border-radius: 12px;
-            font-size: 16px;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .modal-content input:focus {
-            border-color: var(--danger);
-            outline: none;
-        }
-
-        .modal-buttons {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-        }
-
-        .modal-btn {
-            padding: 10px 20px;
-            border-radius: 40px;
-            font-weight: 600;
-            cursor: pointer;
-            border: none;
-        }
-
-        .modal-btn.confirm {
-            background: var(--danger);
-            color: white;
-        }
-
-        .modal-btn.cancel {
-            background: var(--light);
-            color: var(--dark);
-            border: 1px solid var(--border);
-        }
-
-        .modal-btn.confirm:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
         .toast {
             position: fixed;
             bottom: 30px;
@@ -376,12 +397,21 @@
             display: none;
         }
 
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--gray);
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 16px;
             }
             .options-grid {
                 grid-template-columns: 1fr;
+            }
+            .subject-grid {
+                grid-template-columns: repeat(2, 1fr);
             }
         }
     </style>
@@ -396,29 +426,51 @@
         <div class="header-actions">
             <a href="dashboard.html" class="nav-btn"><i class="fas fa-home"></i> Dashboard</a>
             <a href="admin-write.html" class="nav-btn"><i class="fas fa-edit"></i> Write Summary</a>
-            <button id="deleteAllBtn" class="delete-all-btn"><i class="fas fa-trash-alt"></i> Delete All Questions</button>
             <span class="admin-badge"><i class="fas fa-crown"></i> Question Bank</span>
         </div>
     </header>
 
     <div class="container">
+        <!-- Subject Selector -->
+        <div class="subject-selector">
+            <h3><i class="fas fa-layer-group"></i> Select Subject</h3>
+            <div class="subject-grid" id="subjectGrid"></div>
+        </div>
+
+        <!-- Stats Bar -->
+        <div class="stats-bar" id="statsBar">
+            <span><i class="fas fa-database"></i> Total Questions: <strong id="totalCount">0</strong></span>
+            <span><i class="fas fa-book"></i> Current Subject: <strong id="currentSubject">None Selected</strong></span>
+            <button id="deleteAllSubjectBtn" class="delete-all-btn" style="display: none;">
+                <i class="fas fa-trash-alt"></i> Delete All in Subject
+            </button>
+        </div>
+
+        <!-- Tabs -->
         <div class="tabs">
-            <button class="tab-btn active" data-tab="bulk">📤 Bulk Upload</button>
-            <button class="tab-btn" data-tab="single">✍️ Add Question</button>
-            <button class="tab-btn" data-tab="list">📋 Question Bank (<span id="questionCount">0</span>)</button>
+            <button class="tab-btn active" data-tab="bulk">📤 Bulk Upload CSV</button>
+            <button class="tab-btn" data-tab="single">✍️ Add Single Question</button>
+            <button class="tab-btn" data-tab="list">📋 Question List</button>
         </div>
 
         <!-- Bulk Upload Tab -->
         <div id="bulkTab" class="upload-section">
-            <h3><i class="fas fa-file-upload"></i> Bulk Upload Questions</h3>
+            <h3><i class="fas fa-file-upload"></i> Bulk Upload Questions (CSV Format)</h3>
             <div class="csv-template">
                 <strong>📝 CSV Format - Copy and paste:</strong><br>
-                <code>bookId,sectionName,questionText,optionA,optionB,optionC,optionD,correctAnswer,difficulty,explanation</code><br><br>
+                <code>sectionName,questionText,optionA,optionB,optionC,optionD,correctAnswer,difficulty,explanation</code><br><br>
                 <strong>Example:</strong><br>
-                <code>to-kill-a-mockingbird,Chapter 1,Who is the narrator of To Kill a Mockingbird?,Jem Finch,Scout Finch,Atticus Finch,Boo Radley,B,Easy,Scout Finch is the first-person narrator</code>
+                <code>Chapter 1,Who is the narrator of To Kill a Mockingbird?,Jem Finch,Scout Finch,Atticus Finch,Boo Radley,B,Easy,Scout Finch is the first-person narrator</code><br>
+                <code>General,What is a simile?,A comparison using like or as,A direct comparison,Exaggeration,Giving human qualities,A,Easy,Simile uses like or as for comparison</code>
             </div>
-            <textarea id="csvInput" rows="10" placeholder="Paste your CSV data here..."></textarea>
-            <button id="uploadBtn" class="btn btn-primary"><i class="fas fa-upload"></i> Upload Questions</button>
+            <textarea id="csvInput" rows="8" placeholder="Paste your CSV data here..."></textarea>
+            <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                <button id="uploadBtn" class="btn btn-primary"><i class="fas fa-upload"></i> Upload Questions</button>
+                <button id="downloadTemplateBtn" class="btn btn-secondary"><i class="fas fa-download"></i> Download CSV Template</button>
+            </div>
+            <p style="margin-top: 12px; font-size: 12px; color: var(--gray);">
+                <i class="fas fa-info-circle"></i> The subject is automatically set to your selected subject. Section name is optional.
+            </p>
         </div>
 
         <!-- Single Question Tab -->
@@ -426,26 +478,7 @@
             <h3><i class="fas fa-plus-circle"></i> Add Single Question</h3>
             <div class="question-form">
                 <div class="form-row">
-                    <select id="bookId">
-                        <option value="">-- Select Book --</option>
-                        <option value="to-kill-a-mockingbird">To Kill a Mockingbird</option>
-                        <option value="path-of-lucas">Path of Lucas</option>
-                        <option value="so-the-path-does-not-die">So the Path Does Not Die</option>
-                        <option value="redemption-road">Redemption Road</option>
-                        <option value="antony-and-cleopatra">Antony and Cleopatra</option>
-                        <option value="once-upon-an-elephant">Once Upon an Elephant</option>
-                        <option value="marriage-of-anansewa">The Marriage of Anansewa</option>
-                        <option value="inspector-calls">An Inspector Calls</option>
-                        <option value="man-for-all-seasons">A Man for All Seasons</option>
-                        <option value="once-upon-a-time">Once Upon a Time</option>
-                        <option value="night">Night</option>
-                        <option value="new-tongue">New Tongue</option>
-                        <option value="not-my-business">Not My Business</option>
-                        <option value="hearty-garlands">Hearty Garlands</option>
-                        <option value="breast-of-the-sea">The Breast of the Sea</option>
-                        <option value="she-walks-in-beauty">She Walks in Beauty</option>
-                    </select>
-                    <input type="text" id="sectionName" placeholder="Section (e.g., Chapter 1)">
+                    <input type="text" id="sectionName" placeholder="Section (e.g., Chapter 1, General)">
                 </div>
                 <textarea id="questionText" rows="3" placeholder="Question text..."></textarea>
                 <div class="options-grid">
@@ -455,8 +488,18 @@
                     <div class="option-input"><span>D.</span><input type="text" id="optionD" placeholder="Option D"></div>
                 </div>
                 <div class="form-row">
-                    <select id="correctAnswer"><option value="">Correct Answer</option><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option></select>
-                    <select id="difficulty"><option value="Easy">Easy</option><option value="Medium">Medium</option><option value="Hard">Hard</option></select>
+                    <select id="correctAnswer">
+                        <option value="">Correct Answer</option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="D">D</option>
+                    </select>
+                    <select id="difficulty">
+                        <option value="Easy">Easy</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Hard">Hard</option>
+                    </select>
                 </div>
                 <textarea id="explanation" rows="2" placeholder="Explanation (why this answer is correct)"></textarea>
                 <button id="addQuestionBtn" class="btn btn-success"><i class="fas fa-plus"></i> Add Question</button>
@@ -465,20 +508,12 @@
 
         <!-- Question Bank List -->
         <div id="listTab" class="questions-list" style="display: none;">
-            <div id="questionsContainer"><div class="loading" style="text-align:center;padding:40px;"><i class="fas fa-spinner fa-spin"></i> Loading...</div></div>
-        </div>
-    </div>
-
-    <!-- Delete Confirmation Modal -->
-    <div id="deleteModal" class="modal">
-        <div class="modal-content">
-            <h3><i class="fas fa-exclamation-triangle"></i> Delete All Questions</h3>
-            <p>This action cannot be undone. This will permanently delete all questions from your database.</p>
-            <p style="font-weight: bold; color: var(--danger);">Type <span style="background: #fee2e2; padding: 2px 8px; border-radius: 8px;">DELETE</span> to confirm:</p>
-            <input type="text" id="confirmDeleteInput" placeholder="Type DELETE here" autocomplete="off">
-            <div class="modal-buttons">
-                <button class="modal-btn cancel" id="cancelDeleteBtn">Cancel</button>
-                <button class="modal-btn confirm" id="confirmDeleteBtn" disabled>Delete All</button>
+            <div class="questions-header">
+                <h3><i class="fas fa-list"></i> Questions for <span id="listSubjectName">-</span></h3>
+                <input type="text" id="searchQuestions" placeholder="Search questions..." class="search-box">
+            </div>
+            <div id="questionsContainer">
+                <div class="loading"><i class="fas fa-spinner fa-spin"></i> Select a subject to view questions</div>
             </div>
         </div>
     </div>
@@ -488,7 +523,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, query, where } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCictHNxtslYs9VR0hoicxlwPn_QghkgIA",
@@ -505,129 +540,169 @@
 
         const adminEmails = ["okewunmitimileyin23@gmail.com", "triangleofscholars@gmail.com"];
 
-        function showToast(msg, isError = false) {
-            const toast = document.getElementById('toast');
-            toast.textContent = msg;
-            toast.style.backgroundColor = isError ? '#ef4444' : '#10b981';
-            toast.style.display = 'block';
-            setTimeout(() => toast.style.display = 'none', 4000);
-        }
+        // All subjects
+        const subjects = [
+            { id: "english", name: "English Language", icon: "fas fa-language", color: "#3b82f6" },
+            { id: "mathematics", name: "Mathematics", icon: "fas fa-calculator", color: "#10b981" },
+            { id: "physics", name: "Physics", icon: "fas fa-atom", color: "#ef4444" },
+            { id: "chemistry", name: "Chemistry", icon: "fas fa-flask", color: "#f59e0b" },
+            { id: "biology", name: "Biology", icon: "fas fa-dna", color: "#8b5cf6" },
+            { id: "literature", name: "Literature", icon: "fas fa-book", color: "#8b5cf6" },
+            { id: "crs", name: "CRS", icon: "fas fa-church", color: "#10b981" },
+            { id: "government", name: "Government", icon: "fas fa-landmark", color: "#ef4444" },
+            { id: "economics", name: "Economics", icon: "fas fa-chart-line", color: "#f59e0b" },
+            { id: "accounting", name: "Accounting", icon: "fas fa-file-invoice-dollar", color: "#ef4444" },
+            { id: "commerce", name: "Commerce", icon: "fas fa-shopping-cart", color: "#8b5cf6" }
+        ];
 
-        // Delete all questions with modal confirmation
-        async function deleteAllQuestions() {
-            const modal = document.getElementById('deleteModal');
-            const confirmInput = document.getElementById('confirmDeleteInput');
-            const confirmBtn = document.getElementById('confirmDeleteBtn');
-            
-            // Reset input and show modal
-            confirmInput.value = '';
-            confirmBtn.disabled = true;
-            modal.classList.add('active');
-            
-            // Focus on input
-            confirmInput.focus();
-            
-            // Listen for input changes
-            const checkInput = () => {
-                if (confirmInput.value === 'DELETE') {
-                    confirmBtn.disabled = false;
-                } else {
-                    confirmBtn.disabled = true;
-                }
-            };
-            
-            confirmInput.addEventListener('input', checkInput);
-            
-            // Handle confirm button click
-            const handleConfirm = async () => {
-                if (confirmInput.value !== 'DELETE') return;
-                
-                confirmInput.removeEventListener('input', checkInput);
-                confirmBtn.removeEventListener('click', handleConfirm);
-                cancelBtn.removeEventListener('click', handleCancel);
-                
-                modal.classList.remove('active');
-                
-                const deleteBtn = document.getElementById('deleteAllBtn');
-                deleteBtn.disabled = true;
-                deleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Deleting...';
-                
-                try {
-                    const snapshot = await getDocs(collection(db, "questions"));
-                    const allQuestions = [];
-                    snapshot.forEach(doc => allQuestions.push({ id: doc.id }));
-                    
-                    if (allQuestions.length === 0) {
-                        showToast("No questions to delete");
-                        deleteBtn.disabled = false;
-                        deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i> Delete All Questions';
-                        return;
-                    }
-                    
-                    showToast(`Deleting ${allQuestions.length} questions in batches...`);
-                    
-                    const batchSize = 15;
-                    let deleted = 0;
-                    
-                    for (let i = 0; i < allQuestions.length; i++) {
-                        const q = allQuestions[i];
-                        await deleteDoc(doc(db, "questions", q.id));
-                        deleted++;
-                        
-                        const progress = Math.round((deleted / allQuestions.length) * 100);
-                        deleteBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Deleting: ${deleted}/${allQuestions.length} (${progress}%)`;
-                        
-                        if (deleted % batchSize === 0) {
-                            await new Promise(resolve => setTimeout(resolve, 1000));
-                        }
-                    }
-                    
-                    showToast(`✅ Successfully deleted ${deleted} questions!`);
-                    deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i> Delete All Questions';
-                    deleteBtn.disabled = false;
-                    
-                    if (document.querySelector('.tab-btn.active').getAttribute('data-tab') === 'list') {
-                        loadQuestions();
-                    }
-                    document.getElementById('questionCount').innerText = '0';
-                    
-                } catch (error) {
-                    console.error("Delete error:", error);
-                    showToast("Error deleting questions: " + error.message, true);
-                    deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i> Delete All Questions';
-                    deleteBtn.disabled = false;
-                }
-            };
-            
-            const handleCancel = () => {
-                confirmInput.removeEventListener('input', checkInput);
-                confirmBtn.removeEventListener('click', handleConfirm);
-                cancelBtn.removeEventListener('click', handleCancel);
-                modal.classList.remove('active');
-            };
-            
-            const cancelBtn = document.getElementById('cancelDeleteBtn');
-            confirmBtn.addEventListener('click', handleConfirm);
-            cancelBtn.addEventListener('click', handleCancel);
-            
-            // Close modal when clicking outside
-            modal.addEventListener('click', (e) => {
-                if (e.target === modal) {
-                    handleCancel();
-                }
+        let currentSubject = null;
+        let currentQuestions = [];
+
+        function renderSubjectGrid() {
+            const container = document.getElementById('subjectGrid');
+            container.innerHTML = subjects.map(subj => `
+                <button class="subject-btn" data-subject="${subj.id}">
+                    <i class="${subj.icon}" style="color: ${subj.color};"></i>
+                    ${subj.name}
+                </button>
+            `).join('');
+
+            document.querySelectorAll('.subject-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.subject-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentSubject = btn.getAttribute('data-subject');
+                    const subjectInfo = subjects.find(s => s.id === currentSubject);
+                    document.getElementById('currentSubject').innerHTML = `<strong>${subjectInfo?.name || currentSubject}</strong>`;
+                    document.getElementById('listSubjectName').innerText = subjectInfo?.name || currentSubject;
+                    document.getElementById('deleteAllSubjectBtn').style.display = 'inline-flex';
+                    loadQuestionsForSubject();
+                });
             });
         }
 
+        async function loadQuestionsForSubject(searchTerm = '') {
+            if (!currentSubject) return;
+            const container = document.getElementById('questionsContainer');
+            container.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading questions...</div>';
+            
+            try {
+                const q = query(collection(db, "questions"), where("bookId", "==", currentSubject));
+                const snapshot = await getDocs(q);
+                currentQuestions = [];
+                snapshot.forEach(doc => {
+                    currentQuestions.push({ id: doc.id, ...doc.data() });
+                });
+                
+                document.getElementById('totalCount').innerText = currentQuestions.length;
+                
+                let filtered = currentQuestions;
+                if (searchTerm) {
+                    const term = searchTerm.toLowerCase();
+                    filtered = currentQuestions.filter(q => 
+                        q.questionText?.toLowerCase().includes(term) ||
+                        q.sectionName?.toLowerCase().includes(term)
+                    );
+                }
+                
+                if (filtered.length === 0) {
+                    container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--gray);"><i class="fas fa-folder-open"></i> No questions yet. Upload some!</div>';
+                    return;
+                }
+                
+                container.innerHTML = filtered.map(q => `
+                    <div class="question-item">
+                        <div class="question-text">${escapeHtml(q.questionText)}</div>
+                        <div class="question-meta">
+                            <span><i class="fas fa-tag"></i> ${q.sectionName || 'General'}</span>
+                            <span><i class="fas fa-chart-line"></i> ${q.difficulty || 'Medium'}</span>
+                            <span><i class="fas fa-clock"></i> ${new Date(q.createdAt).toLocaleDateString()}</span>
+                        </div>
+                        <div class="options-preview">
+                            <div class="option-preview ${q.correctAnswer === 'A' ? 'correct' : ''}"><strong>A.</strong> ${escapeHtml(q.options?.A || '')}</div>
+                            <div class="option-preview ${q.correctAnswer === 'B' ? 'correct' : ''}"><strong>B.</strong> ${escapeHtml(q.options?.B || '')}</div>
+                            <div class="option-preview ${q.correctAnswer === 'C' ? 'correct' : ''}"><strong>C.</strong> ${escapeHtml(q.options?.C || '')}</div>
+                            <div class="option-preview ${q.correctAnswer === 'D' ? 'correct' : ''}"><strong>D.</strong> ${escapeHtml(q.options?.D || '')}</div>
+                        </div>
+                        ${q.explanation ? `<div style="font-size:12px;color:var(--gray);margin-top:8px;"><i class="fas fa-info-circle"></i> ${escapeHtml(q.explanation.substring(0, 100))}${q.explanation.length > 100 ? '...' : ''}</div>` : ''}
+                        <div style="margin-top:12px;display:flex;justify-content:flex-end;">
+                            <button class="btn-danger" style="padding:6px 12px;border-radius:20px;font-size:12px;" onclick="window.deleteQuestion('${q.id}')">Delete</button>
+                        </div>
+                    </div>
+                `).join('');
+                
+                window.deleteQuestion = deleteQuestion;
+                
+            } catch (error) {
+                console.error(error);
+                container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--danger);">Error loading questions</div>';
+            }
+        }
+
+        async function deleteQuestion(questionId) {
+            if (confirm('Delete this question permanently?')) {
+                await deleteDoc(doc(db, "questions", questionId));
+                showToast('✅ Question deleted');
+                loadQuestionsForSubject();
+            }
+        }
+
+        async function deleteAllQuestionsInSubject() {
+            if (!currentSubject) {
+                showToast('No subject selected', true);
+                return;
+            }
+            if (confirm(`⚠️ Delete ALL ${currentQuestions.length} questions for ${subjects.find(s => s.id === currentSubject)?.name}? This cannot be undone!`)) {
+                const confirmText = prompt(`Type "DELETE ${currentSubject.toUpperCase()}" to confirm:`);
+                if (confirmText !== `DELETE ${currentSubject.toUpperCase()}`) {
+                    showToast('Deletion cancelled', true);
+                    return;
+                }
+                
+                const deleteBtn = document.getElementById('deleteAllSubjectBtn');
+                deleteBtn.disabled = true;
+                deleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Deleting...';
+                
+                let deleted = 0;
+                for (const q of currentQuestions) {
+                    await deleteDoc(doc(db, "questions", q.id));
+                    deleted++;
+                    deleteBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Deleting: ${deleted}/${currentQuestions.length}`;
+                }
+                
+                showToast(`✅ Deleted ${deleted} questions`);
+                loadQuestionsForSubject();
+                deleteBtn.disabled = false;
+                deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i> Delete All in Subject';
+            }
+        }
+
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.style.backgroundColor = isError ? '#ef4444' : '#10b981';
+            toast.style.display = 'block';
+            setTimeout(() => toast.style.display = 'none', 3000);
+        }
+
         async function uploadBulk() {
+            if (!currentSubject) {
+                showToast('Please select a subject first', true);
+                return;
+            }
+            
             const csvText = document.getElementById('csvInput').value;
-            if (!csvText.trim()) { showToast('Please paste CSV data', true); return; }
+            if (!csvText.trim()) {
+                showToast('Please paste CSV data', true);
+                return;
+            }
             
             const lines = csvText.trim().split('\n');
             let success = 0, failed = 0;
             
             for (let i = 0; i < lines.length; i++) {
                 const line = lines[i].trim();
-                if (!line || line.startsWith('bookId')) continue;
+                if (!line || line.startsWith('sectionName')) continue;
                 
                 const parts = [];
                 let current = '', inQuotes = false;
@@ -642,25 +717,33 @@
                 if (parts.length >= 8) {
                     try {
                         await addDoc(collection(db, "questions"), {
-                            bookId: parts[0],
-                            sectionName: parts[1] || 'General',
-                            questionText: parts[2],
-                            options: { A: parts[3], B: parts[4], C: parts[5], D: parts[6] },
-                            correctAnswer: parts[7].toUpperCase(),
-                            difficulty: parts[8] || 'Medium',
-                            explanation: parts[9] || '',
+                            bookId: currentSubject,
+                            sectionName: parts[0] || 'General',
+                            questionText: parts[1],
+                            options: { A: parts[2], B: parts[3], C: parts[4], D: parts[5] },
+                            correctAnswer: parts[6].toUpperCase(),
+                            difficulty: parts[7] || 'Medium',
+                            explanation: parts[8] || '',
                             createdAt: new Date().toISOString()
                         });
                         success++;
                     } catch (e) { failed++; }
                 } else { failed++; }
             }
+            
             showToast(`✅ Uploaded ${success} questions. Failed: ${failed}`);
-            if (success > 0) { document.getElementById('csvInput').value = ''; loadQuestions(); }
+            if (success > 0) {
+                document.getElementById('csvInput').value = '';
+                loadQuestionsForSubject();
+            }
         }
 
-        async function addSingle() {
-            const bookId = document.getElementById('bookId').value;
+        async function addSingleQuestion() {
+            if (!currentSubject) {
+                showToast('Please select a subject first', true);
+                return;
+            }
+            
             const sectionName = document.getElementById('sectionName').value;
             const questionText = document.getElementById('questionText').value;
             const optionA = document.getElementById('optionA').value;
@@ -671,16 +754,21 @@
             const difficulty = document.getElementById('difficulty').value;
             const explanation = document.getElementById('explanation').value;
             
-            if (!bookId || !questionText || !optionA || !correctAnswer) {
+            if (!questionText || !optionA || !correctAnswer) {
                 showToast('Please fill all required fields', true);
                 return;
             }
             
             try {
                 await addDoc(collection(db, "questions"), {
-                    bookId, sectionName: sectionName || 'General', questionText,
+                    bookId: currentSubject,
+                    sectionName: sectionName || 'General',
+                    questionText,
                     options: { A: optionA, B: optionB, C: optionC, D: optionD },
-                    correctAnswer, difficulty, explanation, createdAt: new Date().toISOString()
+                    correctAnswer,
+                    difficulty,
+                    explanation,
+                    createdAt: new Date().toISOString()
                 });
                 showToast('✅ Question added!');
                 document.getElementById('sectionName').value = '';
@@ -691,53 +779,23 @@
                 document.getElementById('optionD').value = '';
                 document.getElementById('correctAnswer').value = '';
                 document.getElementById('explanation').value = '';
-                loadQuestions();
-            } catch (error) { showToast('Error adding question', true); }
-        }
-
-        async function deleteQuestion(id) {
-            if (confirm('Delete this question?')) {
-                await deleteDoc(doc(db, "questions", id));
-                showToast('Deleted');
-                loadQuestions();
+                loadQuestionsForSubject();
+            } catch (error) {
+                showToast('Error adding question', true);
             }
         }
 
-        async function loadQuestions() {
-            const container = document.getElementById('questionsContainer');
-            container.innerHTML = '<div style="text-align:center;padding:40px;"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
-            
-            const snapshot = await getDocs(collection(db, "questions"));
-            const questions = [];
-            snapshot.forEach(doc => questions.push({ id: doc.id, ...doc.data() }));
-            document.getElementById('questionCount').innerText = questions.length;
-            
-            if (questions.length === 0) {
-                container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--gray);"><i class="fas fa-folder-open"></i> No questions yet</div>';
-                return;
-            }
-            
-            container.innerHTML = questions.map(q => `
-                <div class="question-item">
-                    <div class="question-text">${escapeHtml(q.questionText)}</div>
-                    <div class="question-meta">
-                        <span><i class="fas fa-book"></i> ${q.bookId}</span>
-                        <span><i class="fas fa-tag"></i> ${q.sectionName}</span>
-                        <span><i class="fas fa-chart-line"></i> ${q.difficulty}</span>
-                    </div>
-                    <div class="options-preview">
-                        <div class="option-preview ${q.correctAnswer === 'A' ? 'correct' : ''}"><strong>A.</strong> ${escapeHtml(q.options?.A || '')}</div>
-                        <div class="option-preview ${q.correctAnswer === 'B' ? 'correct' : ''}"><strong>B.</strong> ${escapeHtml(q.options?.B || '')}</div>
-                        <div class="option-preview ${q.correctAnswer === 'C' ? 'correct' : ''}"><strong>C.</strong> ${escapeHtml(q.options?.C || '')}</div>
-                        <div class="option-preview ${q.correctAnswer === 'D' ? 'correct' : ''}"><strong>D.</strong> ${escapeHtml(q.options?.D || '')}</div>
-                    </div>
-                    ${q.explanation ? `<div style="font-size:12px;color:var(--gray);margin-top:8px;"><i class="fas fa-info-circle"></i> ${escapeHtml(q.explanation.substring(0,100))}</div>` : ''}
-                    <div style="margin-top:12px;display:flex;justify-content:flex-end;">
-                        <button class="btn-danger" style="padding:6px 12px;border-radius:20px;font-size:12px;" onclick="window.deleteQuestion('${q.id}')">Delete</button>
-                    </div>
-                </div>
-            `).join('');
-            window.deleteQuestion = deleteQuestion;
+        function downloadTemplate() {
+            const template = `sectionName,questionText,optionA,optionB,optionC,optionD,correctAnswer,difficulty,explanation\nGeneral,What is the capital of Nigeria?,Lagos,Abuja,Kano,Ibadan,B,Easy,Abuja is the capital city of Nigeria`;
+            const blob = new Blob([template], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `questions_template.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
         }
 
         function escapeHtml(text) { if (!text) return ''; const d = document.createElement('div'); d.textContent = text; return d.innerHTML; }
@@ -751,18 +809,28 @@
                 document.getElementById('bulkTab').style.display = tab === 'bulk' ? 'block' : 'none';
                 document.getElementById('singleTab').style.display = tab === 'single' ? 'block' : 'none';
                 document.getElementById('listTab').style.display = tab === 'list' ? 'block' : 'none';
-                if (tab === 'list') loadQuestions();
+                if (tab === 'list') loadQuestionsForSubject();
             });
         });
 
         document.getElementById('uploadBtn').addEventListener('click', uploadBulk);
-        document.getElementById('addQuestionBtn').addEventListener('click', addSingle);
-        document.getElementById('deleteAllBtn').addEventListener('click', deleteAllQuestions);
+        document.getElementById('addQuestionBtn').addEventListener('click', addSingleQuestion);
+        document.getElementById('downloadTemplateBtn').addEventListener('click', downloadTemplate);
+        document.getElementById('deleteAllSubjectBtn').addEventListener('click', deleteAllQuestionsInSubject);
+        
+        let searchTimeout;
+        document.getElementById('searchQuestions').addEventListener('input', (e) => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => loadQuestionsForSubject(e.target.value), 300);
+        });
 
         onAuthStateChanged(auth, (user) => {
             if (!user) { window.location.href = "index.html"; return; }
-            if (!adminEmails.includes(user.email)) { document.body.innerHTML = '<div style="text-align:center;padding:80px"><i class="fas fa-lock"></i><h2>Access Denied</h2></div>'; return; }
-            loadQuestions();
+            if (!adminEmails.includes(user.email)) {
+                document.body.innerHTML = '<div style="text-align:center;padding:80px"><i class="fas fa-lock"></i><h2>Access Denied</h2></div>';
+                return;
+            }
+            renderSubjectGrid();
         });
     </script>
 </body>
