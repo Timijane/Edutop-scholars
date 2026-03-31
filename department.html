@@ -6,13 +6,8 @@
     <title>Select Department | Mr. Timi Scholar</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
+        /* Same style as previously used for department card */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body {
             background: linear-gradient(135deg, #0a0a2a 0%, #1a1a3a 100%);
             min-height: 100vh;
@@ -21,65 +16,13 @@
             align-items: center;
             padding: 20px;
         }
-
-        .orb-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            z-index: 0;
-        }
-
-        .orb {
-            position: absolute;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(0, 240, 255, 0.3), rgba(0, 0, 20, 0.1));
-            filter: blur(40px);
-            animation: float 20s infinite ease-in-out;
-        }
-
-        .orb1 {
-            width: 400px;
-            height: 400px;
-            top: -100px;
-            left: -100px;
-            background: radial-gradient(circle, #00f0ff, #001);
-            animation: pulse 8s infinite ease-in-out;
-        }
-
-        .orb2 {
-            width: 500px;
-            height: 500px;
-            bottom: -150px;
-            right: -150px;
-            background: radial-gradient(circle, #ff00f0, #10001a);
-            animation: pulse 12s infinite ease-in-out reverse;
-        }
-
-        .orb3 {
-            width: 300px;
-            height: 300px;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: radial-gradient(circle, #ff5722, #331100);
-            animation: pulse 10s infinite ease-in-out;
-            opacity: 0.3;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 0.3; }
-            50% { transform: scale(1.2); opacity: 0.5; }
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0) translateX(0); }
-            33% { transform: translateY(-30px) translateX(20px); }
-            66% { transform: translateY(20px) translateX(-20px); }
-        }
-
+        .orb-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; z-index: 0; }
+        .orb { position: absolute; border-radius: 50%; background: radial-gradient(circle, rgba(0, 240, 255, 0.3), rgba(0, 0, 20, 0.1)); filter: blur(40px); animation: float 20s infinite ease-in-out; }
+        .orb1 { width: 400px; height: 400px; top: -100px; left: -100px; background: radial-gradient(circle, #00f0ff, #001); animation: pulse 8s infinite ease-in-out; }
+        .orb2 { width: 500px; height: 500px; bottom: -150px; right: -150px; background: radial-gradient(circle, #ff00f0, #10001a); animation: pulse 12s infinite ease-in-out reverse; }
+        .orb3 { width: 300px; height: 300px; top: 50%; left: 50%; transform: translate(-50%, -50%); background: radial-gradient(circle, #ff5722, #331100); animation: pulse 10s infinite ease-in-out; opacity: 0.3; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.3; } 50% { transform: scale(1.2); opacity: 0.5; } }
+        @keyframes float { 0%, 100% { transform: translateY(0) translateX(0); } 33% { transform: translateY(-30px) translateX(20px); } 66% { transform: translateY(20px) translateX(-20px); } }
         .department-card {
             position: relative;
             z-index: 10;
@@ -93,7 +36,6 @@
             backdrop-filter: blur(10px);
             text-align: center;
         }
-
         .logo h1 {
             background: linear-gradient(135deg, #311b92 0%, #ff5722 100%);
             -webkit-background-clip: text;
@@ -103,26 +45,9 @@
             font-weight: 800;
             margin-bottom: 8px;
         }
-
-        .logo p {
-            color: #666;
-            font-size: 14px;
-            margin-bottom: 24px;
-        }
-
-        h2 {
-            color: #311b92;
-            margin-bottom: 24px;
-            font-size: 24px;
-        }
-
-        .dept-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-
+        .logo p { color: #666; font-size: 14px; margin-bottom: 24px; }
+        h2 { color: #311b92; margin-bottom: 24px; font-size: 24px; }
+        .dept-buttons { display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px; }
         .dept-btn {
             padding: 18px;
             border-radius: 60px;
@@ -136,45 +61,12 @@
             justify-content: center;
             gap: 12px;
         }
-
-        .dept-btn.science {
-            background: linear-gradient(135deg, #2196f3, #0b5e9e);
-            color: white;
-            box-shadow: 0 4px 12px rgba(33,150,243,0.3);
-        }
-
-        .dept-btn.arts {
-            background: linear-gradient(135deg, #9c27b0, #6a1b9a);
-            color: white;
-            box-shadow: 0 4px 12px rgba(156,39,176,0.3);
-        }
-
-        .dept-btn.commercial {
-            background: linear-gradient(135deg, #ff9800, #c66900);
-            color: white;
-            box-shadow: 0 4px 12px rgba(255,152,0,0.3);
-        }
-
-        .dept-btn:hover {
-            transform: translateY(-2px);
-            filter: brightness(1.05);
-        }
-
-        .note {
-            font-size: 12px;
-            color: #888;
-            margin-top: 16px;
-        }
-
-        @media (max-width: 480px) {
-            .department-card {
-                padding: 28px 20px;
-            }
-            .dept-btn {
-                padding: 14px;
-                font-size: 16px;
-            }
-        }
+        .dept-btn.science { background: linear-gradient(135deg, #2196f3, #0b5e9e); color: white; }
+        .dept-btn.arts { background: linear-gradient(135deg, #9c27b0, #6a1b9a); color: white; }
+        .dept-btn.commercial { background: linear-gradient(135deg, #ff9800, #c66900); color: white; }
+        .dept-btn:hover { transform: translateY(-2px); filter: brightness(1.05); }
+        .note { font-size: 12px; color: #888; margin-top: 16px; }
+        @media (max-width: 480px) { .department-card { padding: 28px 20px; } .dept-btn { padding: 14px; font-size: 16px; } }
     </style>
 </head>
 <body>
@@ -183,27 +75,18 @@
         <div class="orb orb2"></div>
         <div class="orb orb3"></div>
     </div>
-
     <div class="department-card">
         <div class="logo">
             <h1>Mr. Timi <span>Scholar</span></h1>
-            <p>Choose your department to access relevant subjects</p>
+            <p>Choose your department to proceed</p>
         </div>
         <h2>Select Your Department</h2>
         <div class="dept-buttons">
-            <button class="dept-btn science" data-dept="science">
-                <i class="fas fa-flask"></i> Science
-            </button>
-            <button class="dept-btn arts" data-dept="arts">
-                <i class="fas fa-palette"></i> Arts
-            </button>
-            <button class="dept-btn commercial" data-dept="commercial">
-                <i class="fas fa-chart-line"></i> Commercial
-            </button>
+            <button class="dept-btn science" data-dept="science"><i class="fas fa-flask"></i> Science</button>
+            <button class="dept-btn arts" data-dept="arts"><i class="fas fa-palette"></i> Arts</button>
+            <button class="dept-btn commercial" data-dept="commercial"><i class="fas fa-chart-line"></i> Commercial</button>
         </div>
-        <div class="note">
-            <i class="fas fa-info-circle"></i> You can change this later in your profile settings.
-        </div>
+        <div class="note"><i class="fas fa-info-circle"></i> You can change this later in your profile.</div>
     </div>
 
     <script type="module">
@@ -211,29 +94,18 @@
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
         import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyCictHNxtslYs9VR0hoicxlwPn_QghkgIA",
-            authDomain: "edutop-7ff51.firebaseapp.com",
-            projectId: "edutop-7ff51",
-            storageBucket: "edutop-7ff51.firebasestorage.app",
-            messagingSenderId: "79307850494",
-            appId: "1:79307850494:web:b51ce51204140ec5429baf",
-        };
+        const firebaseConfig = { ... }; // your config
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
 
         onAuthStateChanged(auth, async (user) => {
-            if (!user) {
-                window.location.href = "index.html";
-                return;
-            }
-            // Check if user already has a department selected
+            if (!user) { window.location.href = "index.html"; return; }
             const userRef = doc(db, "users", user.uid);
             const userDoc = await getDoc(userRef);
             if (userDoc.exists() && userDoc.data().department) {
-                // Already selected, go to dashboard
-                window.location.href = "dashboard.html";
+                // If already has department, go to subject selection or dashboard? We'll go to subject selection.
+                window.location.href = "subject-selection.html";
             }
         });
 
@@ -244,7 +116,7 @@
                 if (!user) return;
                 const userRef = doc(db, "users", user.uid);
                 await updateDoc(userRef, { department: department });
-                window.location.href = "dashboard.html";
+                window.location.href = "subject-selection.html";
             });
         });
     </script>
