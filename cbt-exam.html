@@ -23,6 +23,7 @@
             --gray: #6b7280;
             --border: #e5e7eb;
             --white: #ffffff;
+            --danger: #ef4444;
         }
 
         body {
@@ -73,7 +74,7 @@
         }
 
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
             padding: 24px 20px;
         }
@@ -114,7 +115,7 @@
 
         .exam-options {
             display: flex;
-            gap: 16px;
+            gap: 12px;
             flex-wrap: wrap;
             margin-top: 12px;
         }
@@ -122,7 +123,7 @@
         .exam-btn {
             background: var(--light);
             border: 1px solid var(--border);
-            padding: 10px 20px;
+            padding: 8px 18px;
             border-radius: 40px;
             font-weight: 600;
             cursor: pointer;
@@ -130,6 +131,7 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
+            font-size: 13px;
         }
 
         .exam-btn.full {
@@ -147,6 +149,39 @@
         .exam-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .literature-sub-options {
+            margin-top: 12px;
+            padding-left: 32px;
+            border-left: 3px solid var(--secondary);
+            display: none;
+        }
+
+        .literature-sub-options.show {
+            display: block;
+        }
+
+        .sub-option {
+            margin-bottom: 8px;
+        }
+
+        .sub-option-btn {
+            background: var(--light);
+            border: none;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 12px;
+            cursor: pointer;
+            margin-right: 8px;
+            margin-bottom: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .sub-option-btn:hover {
+            background: var(--border);
         }
 
         .custom-exam-btn {
@@ -172,6 +207,7 @@
             box-shadow: 0 8px 20px rgba(255,87,34,0.3);
         }
 
+        /* Modal */
         .modal {
             display: none;
             position: fixed;
@@ -193,15 +229,21 @@
             background: var(--white);
             border-radius: 24px;
             padding: 24px;
-            max-width: 500px;
+            max-width: 550px;
             width: 90%;
-            max-height: 80vh;
+            max-height: 85vh;
             overflow-y: auto;
         }
 
         .modal-content h3 {
             color: var(--primary);
             margin-bottom: 20px;
+        }
+
+        .modal-content h4 {
+            color: var(--dark);
+            margin: 15px 0 10px;
+            font-size: 14px;
         }
 
         .subject-selector {
@@ -228,6 +270,28 @@
             text-align: center;
         }
 
+        .literature-subsection {
+            background: var(--light);
+            padding: 12px;
+            border-radius: 12px;
+            margin-top: 8px;
+            margin-left: 20px;
+        }
+
+        .sub-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+        }
+
+        .selected-count {
+            font-size: 12px;
+            color: var(--gray);
+            margin-top: 8px;
+            text-align: right;
+        }
+
         .modal-buttons {
             display: flex;
             gap: 12px;
@@ -251,6 +315,11 @@
         .modal-btn.start {
             background: var(--success);
             color: white;
+        }
+
+        .modal-btn.start:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
         .loading {
@@ -293,6 +362,11 @@
             .exam-options {
                 flex-direction: column;
             }
+            .subject-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
         }
     </style>
 </head>
@@ -311,7 +385,7 @@
     <div class="container">
         <div class="page-header">
             <h1><i class="fas fa-laptop"></i> CBT Exams</h1>
-            <p>Select a subject to start a standard exam, or build your own custom exam.</p>
+            <p>Select a subject to start a standard exam, or create a custom combination exam (max 4 subjects).</p>
         </div>
 
         <div id="subjectsContainer">
@@ -322,18 +396,20 @@
         </div>
 
         <button id="customExamBtn" class="custom-exam-btn">
-            <i class="fas fa-plus-circle"></i> Build Custom Exam
+            <i class="fas fa-layer-group"></i> Create Subject Combination Exam
         </button>
     </div>
 
     <!-- Custom Exam Modal -->
     <div id="customModal" class="modal">
         <div class="modal-content">
-            <h3>Build Custom Exam</h3>
+            <h3>Create Subject Combination Exam</h3>
+            <p style="font-size: 13px; color: var(--gray); margin-bottom: 16px;">You can select up to 4 subjects. For Literature, you can choose specific sections.</p>
             <div id="customSubjectsList"></div>
+            <div class="selected-count" id="selectedCount">Selected: 0/4 subjects</div>
             <div class="modal-buttons">
                 <button class="modal-btn cancel" id="cancelModalBtn">Cancel</button>
-                <button class="modal-btn start" id="startCustomExamBtn">Start Exam</button>
+                <button class="modal-btn start" id="startCustomExamBtn" disabled>Start Exam</button>
             </div>
         </div>
     </div>
@@ -359,14 +435,14 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Subject display names and icons
+        // Subject display info
         const subjectInfo = {
             english: { name: "English", icon: "fas fa-language", color: "#3b82f6" },
             mathematics: { name: "Mathematics", icon: "fas fa-calculator", color: "#10b981" },
             physics: { name: "Physics", icon: "fas fa-atom", color: "#ef4444" },
             chemistry: { name: "Chemistry", icon: "fas fa-flask", color: "#f59e0b" },
             biology: { name: "Biology", icon: "fas fa-dna", color: "#8b5cf6" },
-            literature: { name: "Literature", icon: "fas fa-book", color: "#8b5cf6" },
+            literature: { name: "Literature", icon: "fas fa-book", color: "#8b5cf6", hasSubsections: true },
             crs: { name: "CRS", icon: "fas fa-church", color: "#10b981" },
             government: { name: "Government", icon: "fas fa-landmark", color: "#ef4444" },
             economics: { name: "Economics", icon: "fas fa-chart-line", color: "#f59e0b" },
@@ -374,7 +450,16 @@
             commerce: { name: "Commerce", icon: "fas fa-shopping-cart", color: "#8b5cf6" }
         };
 
+        // Literature subsections
+        const literatureSubsections = [
+            { id: "general_literature", name: "General Literature (Appreciation & Devices)", defaultQty: 15 },
+            { id: "prose", name: "Prose (Recommended Texts)", defaultQty: 15 },
+            { id: "drama", name: "Drama (Recommended Texts)", defaultQty: 15 },
+            { id: "poetry", name: "Poetry (Recommended Texts)", defaultQty: 15 }
+        ];
+
         let selectedSubjects = [];
+        let customSelections = [];
 
         // Load user's selected subjects
         async function loadUserSubjects() {
@@ -386,10 +471,34 @@
                 selectedSubjects = userDoc.data().subjects || [];
             }
             renderSubjects();
-            renderCustomModalSubjects();
         }
 
-        // Render subject cards with exam options
+        // Start standard exam
+        function startStandardExam(subject, type, subType = null) {
+            let totalQuestions, duration, examTitle;
+            if (type === 'full') {
+                totalQuestions = 60;
+                duration = 60;
+                examTitle = `${subjectInfo[subject]?.name || subject} - Full Exam`;
+            } else {
+                totalQuestions = 20;
+                duration = 20;
+                examTitle = `${subjectInfo[subject]?.name || subject} - Quick Test`;
+            }
+
+            const examData = {
+                id: `${subject}_${type}${subType ? '_' + subType : ''}`,
+                title: examTitle,
+                duration: duration,
+                totalQuestions: totalQuestions,
+                subject: subject,
+                subType: subType || null
+            };
+            localStorage.setItem('currentExam', JSON.stringify(examData));
+            window.location.href = 'cbt-taking.html';
+        }
+
+        // Render subject cards
         function renderSubjects() {
             const container = document.getElementById('subjectsContainer');
             if (!selectedSubjects.length) {
@@ -406,8 +515,10 @@
 
             container.innerHTML = selectedSubjects.map(subjId => {
                 const info = subjectInfo[subjId] || { name: subjId, icon: "fas fa-book", color: "#6b7280" };
+                const isLiterature = subjId === 'literature';
+                
                 return `
-                    <div class="subject-card">
+                    <div class="subject-card" data-subject="${subjId}">
                         <div class="subject-title">
                             <i class="${info.icon}" style="color: ${info.color};"></i>
                             ${info.name}
@@ -419,69 +530,212 @@
                             <button class="exam-btn quick" data-subject="${subjId}" data-type="quick">
                                 <i class="fas fa-bolt"></i> Quick Test (20 Qs, 20 min)
                             </button>
+                            ${isLiterature ? `<button class="exam-btn" id="toggleLit-${subjId}" style="background:var(--light);">
+                                <i class="fas fa-layer-group"></i> Recommended Texts
+                            </button>` : ''}
                         </div>
+                        ${isLiterature ? `
+                            <div class="literature-sub-options" id="litSubOptions-${subjId}">
+                                <div class="sub-option">
+                                    <button class="sub-option-btn" data-subject="${subjId}" data-type="literature-general">
+                                        <i class="fas fa-book-open"></i> General Literature
+                                    </button>
+                                    <button class="sub-option-btn" data-subject="${subjId}" data-type="literature-prose">
+                                        <i class="fas fa-book"></i> Prose
+                                    </button>
+                                    <button class="sub-option-btn" data-subject="${subjId}" data-type="literature-drama">
+                                        <i class="fas fa-mask"></i> Drama
+                                    </button>
+                                    <button class="sub-option-btn" data-subject="${subjId}" data-type="literature-poetry">
+                                        <i class="fas fa-feather-alt"></i> Poetry
+                                    </button>
+                                </div>
+                            </div>
+                        ` : ''}
                     </div>
                 `;
             }).join('');
 
-            // Attach event listeners to exam buttons
-            document.querySelectorAll('.exam-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const subject = btn.getAttribute('data-subject');
-                    const type = btn.getAttribute('data-type');
-                    let totalQuestions, duration;
-                    if (type === 'full') {
-                        totalQuestions = 60;
-                        duration = 60;
-                    } else {
-                        totalQuestions = 20;
-                        duration = 20;
+            // Attach event listeners
+            document.querySelectorAll('.exam-btn.full, .exam-btn.quick').forEach(btn => {
+                if (!btn.id) {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const subject = btn.getAttribute('data-subject');
+                        const type = btn.getAttribute('data-type');
+                        startStandardExam(subject, type);
+                    });
+                }
+            });
+
+            // Literature toggle buttons
+            selectedSubjects.forEach(subjId => {
+                if (subjId === 'literature') {
+                    const toggleBtn = document.getElementById(`toggleLit-${subjId}`);
+                    const optionsDiv = document.getElementById(`litSubOptions-${subjId}`);
+                    if (toggleBtn) {
+                        toggleBtn.addEventListener('click', () => {
+                            optionsDiv.classList.toggle('show');
+                        });
                     }
-                    const examData = {
-                        id: `${subject}_${type}`,
-                        title: `${subjectInfo[subject]?.name || subject} - ${type === 'full' ? 'Full Exam' : 'Quick Test'}`,
-                        duration: duration,
-                        totalQuestions: totalQuestions,
-                        subject: subject
-                    };
-                    localStorage.setItem('currentExam', JSON.stringify(examData));
-                    window.location.href = 'cbt-taking.html';
-                });
+                    // Sub-option buttons
+                    document.querySelectorAll(`.sub-option-btn[data-subject="${subjId}"]`).forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            const type = btn.getAttribute('data-type');
+                            let totalQuestions = 30;
+                            let duration = 30;
+                            let examTitle = '';
+                            if (type === 'literature-general') {
+                                examTitle = 'Literature - General Literature';
+                            } else if (type === 'literature-prose') {
+                                examTitle = 'Literature - Prose (Recommended Texts)';
+                            } else if (type === 'literature-drama') {
+                                examTitle = 'Literature - Drama (Recommended Texts)';
+                            } else if (type === 'literature-poetry') {
+                                examTitle = 'Literature - Poetry (Recommended Texts)';
+                            }
+                            const examData = {
+                                id: type,
+                                title: examTitle,
+                                duration: duration,
+                                totalQuestions: totalQuestions,
+                                subject: 'literature',
+                                subType: type
+                            };
+                            localStorage.setItem('currentExam', JSON.stringify(examData));
+                            window.location.href = 'cbt-taking.html';
+                        });
+                    });
+                }
             });
         }
 
-        // Build the modal content for custom exam (list subjects with quantity input)
-        function renderCustomModalSubjects() {
+        // Render custom exam modal
+        function renderCustomModal() {
             const container = document.getElementById('customSubjectsList');
             if (!selectedSubjects.length) {
                 container.innerHTML = '<p>No subjects available. Please select subjects first.</p>';
                 return;
             }
+
             container.innerHTML = selectedSubjects.map(subjId => {
                 const info = subjectInfo[subjId] || { name: subjId };
-                return `
-                    <div class="subject-row">
-                        <label>${info.name}</label>
-                        <input type="number" min="0" max="100" value="10" step="5" data-subject="${subjId}" class="subject-qty">
-                    </div>
-                `;
+                if (subjId === 'literature') {
+                    return `
+                        <div class="subject-row" data-subject="${subjId}">
+                            <label><strong>${info.name}</strong></label>
+                            <input type="checkbox" class="subject-check" data-subject="${subjId}" value="0">
+                        </div>
+                        <div class="literature-subsection" id="litSubsection-${subjId}" style="display: none;">
+                            ${literatureSubsections.map(sub => `
+                                <div class="sub-row">
+                                    <label>${sub.name}</label>
+                                    <input type="number" min="0" max="50" value="${sub.defaultQty}" step="5" data-lit-sub="${sub.id}" class="lit-qty" disabled>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                } else {
+                    return `
+                        <div class="subject-row" data-subject="${subjId}">
+                            <label>${info.name}</label>
+                            <input type="number" min="0" max="100" value="15" step="5" data-subject="${subjId}" class="subject-qty" disabled>
+                            <input type="checkbox" class="subject-check" data-subject="${subjId}" value="0">
+                        </div>
+                    `;
+                }
             }).join('');
+
+            // Add event listeners for checkboxes
+            let selectedCount = 0;
+            const maxSubjects = 4;
+
+            function updateSelectedCount() {
+                selectedCount = 0;
+                document.querySelectorAll('.subject-check').forEach(chk => {
+                    if (chk.checked) {
+                        selectedCount++;
+                        const subjectId = chk.getAttribute('data-subject');
+                        const qtyInput = document.querySelector(`.subject-qty[data-subject="${subjectId}"]`);
+                        const litSection = document.getElementById(`litSubsection-${subjectId}`);
+                        if (qtyInput) qtyInput.disabled = false;
+                        if (litSection) litSection.style.display = 'block';
+                        if (subjectId === 'literature') {
+                            document.querySelectorAll(`.lit-qty`).forEach(inp => inp.disabled = false);
+                        }
+                    } else {
+                        const subjectId = chk.getAttribute('data-subject');
+                        const qtyInput = document.querySelector(`.subject-qty[data-subject="${subjectId}"]`);
+                        const litSection = document.getElementById(`litSubsection-${subjectId}`);
+                        if (qtyInput) {
+                            qtyInput.disabled = true;
+                            qtyInput.value = '0';
+                        }
+                        if (litSection) litSection.style.display = 'none';
+                        if (subjectId === 'literature') {
+                            document.querySelectorAll(`.lit-qty`).forEach(inp => {
+                                inp.disabled = true;
+                                inp.value = '0';
+                            });
+                        }
+                    }
+                });
+                document.getElementById('selectedCount').innerHTML = `Selected: ${selectedCount}/${maxSubjects} subjects`;
+                const startBtn = document.getElementById('startCustomExamBtn');
+                startBtn.disabled = selectedCount === 0 || selectedCount > maxSubjects;
+            }
+
+            document.querySelectorAll('.subject-check').forEach(chk => {
+                chk.addEventListener('change', updateSelectedCount);
+            });
+
+            // Initialize all disabled
+            document.querySelectorAll('.subject-qty').forEach(inp => inp.disabled = true);
+            document.querySelectorAll('.lit-qty').forEach(inp => inp.disabled = true);
+            updateSelectedCount();
         }
 
-        // Handle custom exam start
+        // Start custom exam
         function startCustomExam() {
             const selections = [];
-            document.querySelectorAll('.subject-qty').forEach(input => {
-                const subject = input.getAttribute('data-subject');
-                const qty = parseInt(input.value);
-                if (qty > 0) {
-                    selections.push({ subject: subject, qty: qty });
+            document.querySelectorAll('.subject-check').forEach(chk => {
+                if (chk.checked) {
+                    const subjectId = chk.getAttribute('data-subject');
+                    if (subjectId === 'literature') {
+                        const litSelections = [];
+                        document.querySelectorAll('.lit-qty').forEach(litInp => {
+                            const qty = parseInt(litInp.value);
+                            if (qty > 0) {
+                                litSelections.push({
+                                    type: litInp.getAttribute('data-lit-sub'),
+                                    qty: qty
+                                });
+                            }
+                        });
+                        if (litSelections.length > 0) {
+                            selections.push({
+                                subject: 'literature',
+                                sections: litSelections
+                            });
+                        }
+                    } else {
+                        const qtyInput = document.querySelector(`.subject-qty[data-subject="${subjectId}"]`);
+                        const qty = parseInt(qtyInput.value);
+                        if (qty > 0) {
+                            selections.push({
+                                subject: subjectId,
+                                qty: qty
+                            });
+                        }
+                    }
                 }
             });
+
             if (selections.length === 0) {
-                alert("Please select at least one subject with at least 1 question.");
+                alert("Please select at least one subject with questions.");
                 return;
             }
+
             localStorage.setItem('customExamSubjects', JSON.stringify(selections));
             window.location.href = 'cbt-taking.html?custom=true';
         }
@@ -501,7 +755,7 @@
         const startBtn = document.getElementById('startCustomExamBtn');
 
         customBtn.addEventListener('click', () => {
-            renderCustomModalSubjects();
+            renderCustomModal();
             modal.classList.add('active');
         });
 
