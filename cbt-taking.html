@@ -6,7 +6,7 @@
     <title>CBT Exam | Mr. Timi Scholar</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Same styles as previous cbt-taking.html - keep your existing CSS */
+        /* Keep your existing styles - same as before */
         * {
             margin: 0;
             padding: 0;
@@ -339,7 +339,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-        import { getFirestore, collection, getDocs, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, doc, setDoc, getDoc, query, where } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCictHNxtslYs9VR0hoicxlwPn_QghkgIA",
@@ -353,20 +353,22 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Literature subsections mapping to bookId filters
+        // Literature subsections mapping to sectionName
         const literatureFilters = {
-            general_literature: (q) => q.bookId === "general" || q.bookId === "unseen-poetry" || q.bookId === "unseen-prose" || q.bookId === "unseen-drama",
-            prose: (q) => ["to-kill-a-mockingbird", "path-of-lucas", "so-the-path-does-not-die", "redemption-road"].includes(q.bookId),
-            drama: (q) => ["antony-and-cleopatra", "once-upon-an-elephant", "marriage-of-anansewa", "inspector-calls", "man-for-all-seasons"].includes(q.bookId),
-            poetry: (q) => ["once-upon-a-time", "new-tongue", "night", "not-my-business", "hearty-garlands", "breast-of-the-sea", "she-walks-in-beauty", "the-stone", "telephone-call", "nuns-priest-tale"].includes(q.bookId)
+            'literature-general': (q) => q.bookId === "literature" && q.sectionName === "General Literature",
+            'literature-prose': (q) => q.bookId === "literature" && q.sectionName === "Prose",
+            'literature-drama': (q) => q.bookId === "literature" && q.sectionName === "Drama",
+            'literature-poetry': (q) => q.bookId === "literature" && q.sectionName === "Poetry"
         };
 
+        // Regular subject filters (by bookId)
         const subjectFilters = {
             english: (q) => q.bookId === "english",
             mathematics: (q) => q.bookId === "mathematics",
             physics: (q) => q.bookId === "physics",
             chemistry: (q) => q.bookId === "chemistry",
             biology: (q) => q.bookId === "biology",
+            literature: (q) => q.bookId === "literature",
             crs: (q) => q.bookId === "crs",
             government: (q) => q.bookId === "government",
             economics: (q) => q.bookId === "economics",
@@ -375,9 +377,9 @@
         };
 
         let allQuestions = [];
-        let examSections = [];
-        let activeSectionIdx = 0;
-        let combinedQuestions = [];
+        let selectedQuestions = [];
+        let userAnswers = {};
+        let currentIndex = 0;
         let timer = null;
         let timeLeft = 0;
         let currentExam = null;
@@ -388,6 +390,7 @@
                 const userProgressRef = doc(db, "userProgress", userId);
                 const docSnap = await getDoc(userProgressRef);
                 answeredQuestionIds = docSnap.exists() ? docSnap.data().answeredQuestions || [] : [];
+                console.log(`Loaded ${answeredQuestionIds.length} answered questions`);
             } catch (error) {
                 console.error(error);
                 answeredQuestionIds = [];
@@ -399,6 +402,7 @@
                 const userProgressRef = doc(db, "userProgress", userId);
                 const allAnswered = [...new Set([...answeredQuestionIds, ...newIds])];
                 await setDoc(userProgressRef, { answeredQuestions: allAnswered, lastUpdated: new Date().toISOString() }, { merge: true });
+                console.log(`Saved ${newIds.length} new answered questions`);
             } catch (error) {
                 console.error(error);
             }
@@ -431,156 +435,68 @@
             const subject = currentExam.subject;
             const subType = currentExam.subType;
 
+            // Load all questions
             const snapshot = await getDocs(collection(db, "questions"));
             allQuestions = [];
             snapshot.forEach(doc => allQuestions.push({ id: doc.id, ...doc.data() }));
 
             let filter;
+            
+            // Handle literature with subType
             if (subject === 'literature' && subType) {
                 filter = literatureFilters[subType];
-            } else {
-                filter = subjectFilters[subject] || (() => false);
+                if (!filter) {
+                    document.getElementById('mainContent').innerHTML = `
+                        <div style="text-align:center;padding:60px;background:white;border-radius:24px;">
+                            <i class="fas fa-exclamation-triangle" style="font-size:48px;color:var(--warning);margin-bottom:16px;"></i>
+                            <h3>Invalid Literature Section</h3>
+                            <p>The section "${subType}" is not recognized.</p>
+                            <button onclick="location.href='cbt-exam.html'" style="margin-top:20px;padding:12px 24px;background:var(--primary);color:white;border:none;border-radius:30px;">Back to Exams</button>
+                        </div>
+                    `;
+                    return;
+                }
+            } 
+            // Handle regular literature (no subType - should not happen but fallback)
+            else if (subject === 'literature') {
+                filter = (q) => q.bookId === "literature";
+            } 
+            // Handle other subjects
+            else {
+                filter = subjectFilters[subject];
+                if (!filter) {
+                    document.getElementById('mainContent').innerHTML = `
+                        <div style="text-align:center;padding:60px;background:white;border-radius:24px;">
+                            <i class="fas fa-exclamation-triangle" style="font-size:48px;color:var(--warning);margin-bottom:16px;"></i>
+                            <h3>Invalid Subject</h3>
+                            <p>The subject "${subject}" is not recognized.</p>
+                            <button onclick="location.href='cbt-exam.html'" style="margin-top:20px;padding:12px 24px;background:var(--primary);color:white;border:none;border-radius:30px;">Back to Exams</button>
+                        </div>
+                    `;
+                    return;
+                }
             }
 
-            if (!filter) {
-                document.getElementById('mainContent').innerHTML = `<div class="loading"><p>Invalid subject filter</p></div>`;
-                return;
-            }
+            selectedQuestions = selectQuestionsByFilter(filter, currentExam.totalQuestions);
 
-            const selected = selectQuestionsByFilter(filter, currentExam.totalQuestions);
-
-            if (selected.length === 0) {
+            if (selectedQuestions.length === 0) {
                 document.getElementById('mainContent').innerHTML = `
                     <div style="text-align:center;padding:60px;background:white;border-radius:24px;">
                         <i class="fas fa-database" style="font-size:48px;color:var(--gray);margin-bottom:16px;"></i>
                         <h3>No Questions Available</h3>
-                        <p>No questions found for ${currentExam.title}.</p>
+                        <p>No questions found for ${currentExam.title}. Please add questions in the admin panel.</p>
+                        <p style="margin-top:8px;font-size:13px;color:var(--gray);">Make sure questions have bookId="${subject}" and sectionName matches "${currentExam.subType ? currentExam.subType.replace('literature-', '') : 'General'}"</p>
                         <button onclick="location.href='cbt-exam.html'" style="margin-top:20px;padding:12px 24px;background:var(--primary);color:white;border:none;border-radius:30px;">Back to Exams</button>
                     </div>
                 `;
                 return;
             }
 
-            examSections = [{
-                name: currentExam.title,
-                questions: selected,
-                answers: {},
-                currentIndex: 0,
-                total: selected.length
-            }];
-            combinedQuestions = selected.map((q, idx) => ({
-                globalIndex: idx,
-                sectionIdx: 0,
-                qIdx: idx,
-                q: q,
-                sectionName: currentExam.title
-            }));
+            userAnswers = {};
+            currentIndex = 0;
             timeLeft = currentExam.duration * 60;
             startTimer();
             renderExam();
-        }
-
-        async function loadCustomExam() {
-            const stored = localStorage.getItem('customExamSubjects');
-            if (!stored) {
-                window.location.href = 'cbt-exam.html';
-                return;
-            }
-            const selections = JSON.parse(stored);
-
-            const snapshot = await getDocs(collection(db, "questions"));
-            allQuestions = [];
-            snapshot.forEach(doc => allQuestions.push({ id: doc.id, ...doc.data() }));
-
-            examSections = [];
-            let totalQuestions = 0;
-
-            for (const sel of selections) {
-                if (sel.subject === 'literature' && sel.sections) {
-                    for (const section of sel.sections) {
-                        const filter = literatureFilters[section.type];
-                        if (filter) {
-                            const questions = selectQuestionsByFilter(filter, section.qty);
-                            if (questions.length > 0) {
-                                examSections.push({
-                                    name: `Literature - ${getLitSectionName(section.type)}`,
-                                    questions: questions,
-                                    answers: {},
-                                    currentIndex: 0,
-                                    total: questions.length
-                                });
-                                totalQuestions += questions.length;
-                            }
-                        }
-                    }
-                } else {
-                    const filter = subjectFilters[sel.subject];
-                    if (filter) {
-                        const questions = selectQuestionsByFilter(filter, sel.qty);
-                        if (questions.length > 0) {
-                            examSections.push({
-                                name: getSubjectName(sel.subject),
-                                questions: questions,
-                                answers: {},
-                                currentIndex: 0,
-                                total: questions.length
-                            });
-                            totalQuestions += questions.length;
-                        }
-                    }
-                }
-            }
-
-            if (totalQuestions === 0) {
-                document.getElementById('mainContent').innerHTML = `
-                    <div style="text-align:center;padding:60px;background:white;border-radius:24px;">
-                        <i class="fas fa-database" style="font-size:48px;color:var(--gray);margin-bottom:16px;"></i>
-                        <h3>No Questions Available</h3>
-                        <p>No questions found for your selected combination.</p>
-                        <button onclick="location.href='cbt-exam.html'" style="margin-top:20px;padding:12px 24px;background:var(--primary);color:white;border:none;border-radius:30px;">Back to Exams</button>
-                    </div>
-                `;
-                return;
-            }
-
-            // Build flattened list
-            combinedQuestions = [];
-            for (let i = 0; i < examSections.length; i++) {
-                const sec = examSections[i];
-                for (let j = 0; j < sec.questions.length; j++) {
-                    const q = sec.questions[j];
-                    combinedQuestions.push({
-                        globalIndex: combinedQuestions.length,
-                        sectionIdx: i,
-                        qIdx: j,
-                        q: q,
-                        sectionName: sec.name
-                    });
-                }
-            }
-
-            timeLeft = 120 * 60; // 2 hours for custom exams
-            startTimer();
-            renderExam();
-        }
-
-        function getSubjectName(id) {
-            const names = {
-                english: "English", mathematics: "Mathematics", physics: "Physics", chemistry: "Chemistry",
-                biology: "Biology", crs: "CRS", government: "Government", economics: "Economics",
-                accounting: "Accounting", commerce: "Commerce"
-            };
-            return names[id] || id;
-        }
-
-        function getLitSectionName(type) {
-            const names = {
-                general_literature: "General Literature",
-                prose: "Prose",
-                drama: "Drama",
-                poetry: "Poetry"
-            };
-            return names[type] || type;
         }
 
         function startTimer() {
@@ -600,179 +516,110 @@
         }
 
         function renderExam() {
-            const currentSection = examSections[activeSectionIdx];
-            const currentQ = currentSection.questions[currentSection.currentIndex];
-            const selected = currentSection.answers[currentQ.id] || '';
-
-            const subjectTabs = examSections.map((sec, idx) => `
-                <button class="subject-tab ${idx === activeSectionIdx ? 'active' : ''}" data-section="${idx}">
-                    ${sec.name} (${Object.keys(sec.answers).length}/${sec.total})
-                </button>
-            `).join('');
-
-            const paletteBtns = combinedQuestions.map((item, idx) => {
-                const sec = examSections[item.sectionIdx];
-                const isAnswered = sec.answers[item.q.id] ? true : false;
-                const isCurrent = (activeSectionIdx === item.sectionIdx && sec.currentIndex === item.qIdx);
-                return `<button class="palette-btn ${isAnswered ? 'answered' : ''} ${isCurrent ? 'current' : ''}" data-global="${idx}">${idx+1}</button>`;
-            }).join('');
-
-            const answeredCount = examSections.reduce((sum, sec) => sum + Object.keys(sec.answers).length, 0);
+            const q = selectedQuestions[currentIndex];
+            const selected = userAnswers[q.id] || '';
+            const answeredCount = Object.keys(userAnswers).length;
 
             const html = `
                 <div class="question-area">
-                    <div class="subject-switcher">
-                        ${subjectTabs}
+                    <div style="margin-bottom: 12px; font-size: 12px; color: var(--gray); display: flex; justify-content: space-between;">
+                        <span><i class="fas fa-book"></i> ${q.sectionName || q.bookId || 'Literature'} | Question ${currentIndex+1} of ${selectedQuestions.length}</span>
                     </div>
-                    <div style="margin-bottom: 12px; font-size: 12px; color: var(--gray);">
-                        <i class="fas fa-book"></i> ${currentSection.name} | Question ${currentSection.currentIndex+1} of ${currentSection.total}
-                    </div>
-                    <div class="question-text">${escapeHtml(currentQ.questionText)}</div>
+                    <div class="question-text">${currentIndex+1}. ${escapeHtml(q.questionText)}</div>
                     <div class="options-list">
                         ${['A', 'B', 'C', 'D'].map(opt => `
                             <div class="option-item ${selected === opt ? 'selected' : ''}" data-option="${opt}">
                                 <div class="option-letter">${opt}</div>
-                                <div class="option-text">${escapeHtml(currentQ.options?.[opt] || '')}</div>
+                                <div class="option-text">${escapeHtml(q.options?.[opt] || '')}</div>
                             </div>
                         `).join('')}
                     </div>
                     <div class="nav-buttons">
-                        <button class="nav-btn prev" id="prevBtn" ${currentSection.currentIndex === 0 ? 'disabled style="opacity:0.5"' : ''}>
+                        <button class="nav-btn prev" id="prevBtn" ${currentIndex === 0 ? 'disabled style="opacity:0.5"' : ''}>
                             <i class="fas fa-chevron-left"></i> Previous
                         </button>
                         <button class="nav-btn next" id="nextBtn">
                             Next <i class="fas fa-chevron-right"></i>
                         </button>
-                        ${activeSectionIdx === examSections.length-1 && currentSection.currentIndex === currentSection.total-1 ?
-                            '<button class="nav-btn submit" id="submitBtn">Submit Exam <i class="fas fa-check"></i></button>' : ''}
+                        ${currentIndex === selectedQuestions.length-1 ? '<button class="nav-btn submit" id="submitBtn">Submit Exam <i class="fas fa-check"></i></button>' : ''}
                     </div>
                 </div>
                 <div class="palette-sidebar">
                     <h3><i class="fas fa-th"></i> Question Palette</h3>
                     <div class="palette-grid" id="paletteGrid">
-                        ${paletteBtns}
+                        ${selectedQuestions.map((_, idx) => `
+                            <button class="palette-btn ${userAnswers[selectedQuestions[idx].id] ? 'answered' : ''} ${idx === currentIndex ? 'current' : ''}" data-index="${idx}">
+                                ${idx+1}
+                            </button>
+                        `).join('')}
                     </div>
                     <div class="palette-legend">
                         <div class="legend-item"><div class="legend-color" style="background:var(--success);"></div> Answered (${answeredCount})</div>
                         <div class="legend-item"><div class="legend-color" style="background:var(--primary);"></div> Current</div>
-                        <div class="legend-item"><div class="legend-color" style="background:var(--light);"></div> Unanswered (${combinedQuestions.length - answeredCount})</div>
+                        <div class="legend-item"><div class="legend-color" style="background:var(--light);"></div> Unanswered (${selectedQuestions.length - answeredCount})</div>
                     </div>
                 </div>
             `;
-
             document.getElementById('mainContent').innerHTML = html;
-            document.getElementById('questionCounter').innerHTML = `Question ${currentSection.currentIndex+1} of ${currentSection.total} (${currentSection.name})`;
+            document.getElementById('questionCounter').innerHTML = `Question ${currentIndex+1} of ${selectedQuestions.length}`;
 
             document.querySelectorAll('.option-item').forEach(opt => {
                 opt.addEventListener('click', () => {
-                    currentSection.answers[currentQ.id] = opt.getAttribute('data-option');
+                    userAnswers[selectedQuestions[currentIndex].id] = opt.getAttribute('data-option');
                     renderExam();
                 });
             });
-
-            document.getElementById('prevBtn')?.addEventListener('click', () => {
-                if (currentSection.currentIndex > 0) {
-                    currentSection.currentIndex--;
-                    renderExam();
-                }
-            });
-
-            document.getElementById('nextBtn')?.addEventListener('click', () => {
-                if (currentSection.currentIndex < currentSection.total - 1) {
-                    currentSection.currentIndex++;
-                    renderExam();
-                } else if (activeSectionIdx < examSections.length - 1) {
-                    activeSectionIdx++;
-                    renderExam();
-                }
-            });
-
+            document.getElementById('prevBtn')?.addEventListener('click', () => { if (currentIndex > 0) { currentIndex--; renderExam(); } });
+            document.getElementById('nextBtn')?.addEventListener('click', () => { if (currentIndex < selectedQuestions.length-1) { currentIndex++; renderExam(); } });
             document.getElementById('submitBtn')?.addEventListener('click', () => {
-                const answered = examSections.reduce((sum, sec) => sum + Object.keys(sec.answers).length, 0);
-                if (confirm(`You have answered ${answered} out of ${combinedQuestions.length} questions. Submit?`)) submitExam();
+                const answered = Object.keys(userAnswers).length;
+                if (confirm(`You have answered ${answered} out of ${selectedQuestions.length} questions. Submit?`)) submitExam();
             });
-
-            document.querySelectorAll('.subject-tab').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    activeSectionIdx = parseInt(btn.getAttribute('data-section'));
-                    renderExam();
-                });
-            });
-
             document.querySelectorAll('.palette-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
-                    const item = combinedQuestions[parseInt(btn.getAttribute('data-global'))];
-                    if (item) {
-                        activeSectionIdx = item.sectionIdx;
-                        examSections[item.sectionIdx].currentIndex = item.qIdx;
-                        renderExam();
-                    }
+                    currentIndex = parseInt(btn.getAttribute('data-index'));
+                    renderExam();
                 });
             });
         }
 
         function calculateScore() {
             let correct = 0;
-            const details = [];
-            for (const sec of examSections) {
-                for (const q of sec.questions) {
-                    const userAns = sec.answers[q.id];
-                    const isCorrect = userAns === q.correctAnswer;
-                    if (isCorrect) correct++;
-                    details.push({
-                        id: q.id,
-                        text: q.questionText,
-                        options: q.options,
-                        userAnswer: userAns,
-                        correctAnswer: q.correctAnswer,
-                        isCorrect,
-                        explanation: q.explanation || '',
-                        section: sec.name
-                    });
-                }
-            }
-            return { correct, total: combinedQuestions.length, percentage: Math.round((correct / combinedQuestions.length) * 100), details };
+            const details = selectedQuestions.map(q => {
+                const userAns = userAnswers[q.id];
+                const isCorrect = userAns === q.correctAnswer;
+                if (isCorrect) correct++;
+                return { id: q.id, text: q.questionText, options: q.options, userAnswer: userAns, correctAnswer: q.correctAnswer, isCorrect, explanation: q.explanation || '' };
+            });
+            return { correct, total: selectedQuestions.length, percentage: Math.round((correct/selectedQuestions.length)*100), details };
         }
 
         async function submitExam() {
             clearInterval(timer);
             const score = calculateScore();
-            const newAnsweredIds = [];
-            for (const sec of examSections) {
-                for (const q of sec.questions) {
-                    newAnsweredIds.push(q.id);
-                }
-            }
+            const newAnsweredIds = Object.keys(userAnswers);
             const user = auth.currentUser;
             if (user) {
                 await saveAnsweredQuestions(user.uid, newAnsweredIds);
-                const resultId = `${user.uid}_${currentExam?.id || 'custom'}_${Date.now()}`;
-                const combinedAnswers = {};
-                for (const sec of examSections) {
-                    Object.assign(combinedAnswers, sec.answers);
-                }
+                const resultId = `${user.uid}_${currentExam.id}_${Date.now()}`;
                 await setDoc(doc(db, "userResults", resultId), {
                     userId: user.uid,
-                    examId: currentExam?.id || "custom",
-                    examTitle: currentExam?.title || "Custom Exam",
-                    totalQuestions: combinedQuestions.length,
+                    examId: currentExam.id,
+                    examTitle: currentExam.title,
+                    totalQuestions: selectedQuestions.length,
                     score: score.correct,
                     percentage: score.percentage,
-                    answers: combinedAnswers,
+                    answers: userAnswers,
                     completedAt: new Date().toISOString()
                 });
             }
             localStorage.setItem('examResults', JSON.stringify({
-                examId: currentExam?.id || "custom",
-                examTitle: currentExam?.title || "Custom Exam",
-                totalQuestions: combinedQuestions.length,
+                examId: currentExam.id,
+                examTitle: currentExam.title,
+                totalQuestions: selectedQuestions.length,
                 score: score.correct,
                 percentage: score.percentage,
-                answers: (() => {
-                    const combined = {};
-                    for (const sec of examSections) Object.assign(combined, sec.answers);
-                    return combined;
-                })(),
+                answers: userAnswers,
                 questions: score.details,
                 completedAt: new Date().toISOString()
             }));
@@ -784,13 +631,7 @@
         onAuthStateChanged(auth, async (user) => {
             if (!user) { window.location.href = "index.html"; return; }
             await loadAnsweredQuestions(user.uid);
-            const urlParams = new URLSearchParams(window.location.search);
-            const isCustom = urlParams.get('custom') === 'true';
-            if (isCustom) {
-                await loadCustomExam();
-            } else {
-                await loadSingleSubjectExam();
-            }
+            await loadSingleSubjectExam();
         });
     </script>
 </body>
