@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>CBT Exam | Mr. Timi Scholar - JAMB Standard</title>
+    <title>CBT Exam | Mr. Timi Scholar</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -19,7 +19,6 @@
             --secondary: #ff5722;
             --success: #10b981;
             --danger: #ef4444;
-            --warning: #f59e0b;
             --light: #f9fafb;
             --dark: #1f2937;
             --gray: #6b7280;
@@ -111,7 +110,6 @@
             border-left: 4px solid var(--primary);
             font-style: italic;
             line-height: 1.6;
-            font-size: 15px;
         }
 
         .question-text {
@@ -267,18 +265,6 @@
             border-radius: 4px;
         }
 
-        .category-stats {
-            margin-top: 20px;
-            padding-top: 16px;
-            border-top: 1px solid var(--border);
-            font-size: 12px;
-            color: var(--gray);
-        }
-
-        .category-stats div {
-            margin-bottom: 4px;
-        }
-
         .loading {
             text-align: center;
             padding: 60px;
@@ -347,27 +333,16 @@
             messagingSenderId: "79307850494",
             appId: "1:79307850494:web:b51ce51204140ec5429baf",
         };
-
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // All texts for balanced selection
-        const textList = [
-            "once-upon-a-time", "night", "not-my-business", "new-tongue", "hearty-garlands",
-            "breast-of-the-sea", "she-walks-in-beauty", "the-stone", "telephone-call", "nuns-priest-tale",
-            "to-kill-a-mockingbird", "antony-and-cleopatra", "once-upon-an-elephant",
-            "marriage-of-anansewa", "inspector-calls", "man-for-all-seasons",
-            "unseen-poetry", "unseen-prose", "unseen-drama"
-        ];
-
-        // Exam structure
-        const examStructure = {
-            perText: 3,
-            unseenPoetry: 5,
-            unseenProse: 5,
-            unseenDrama: 5,
-            totalQuestions: 100
+        // Filter functions for each exam type
+        const filterMap = {
+            general: (q) => q.bookId === "general" || q.bookId === "unseen-poetry" || q.bookId === "unseen-prose" || q.bookId === "unseen-drama",
+            prose: (q) => ["to-kill-a-mockingbird", "path-of-lucas", "so-the-path-does-not-die", "redemption-road"].includes(q.bookId),
+            drama: (q) => ["antony-and-cleopatra", "once-upon-an-elephant", "marriage-of-anansewa", "inspector-calls", "man-for-all-seasons"].includes(q.bookId),
+            poetry: (q) => ["once-upon-a-time", "new-tongue", "night", "not-my-business", "hearty-garlands", "breast-of-the-sea", "she-walks-in-beauty", "the-stone", "telephone-call", "nuns-priest-tale"].includes(q.bookId)
         };
 
         let allQuestions = [];
@@ -379,107 +354,47 @@
         let currentExam = null;
         let answeredQuestionIds = [];
 
-        // Load answered questions from Firebase
         async function loadAnsweredQuestions(userId) {
             try {
                 const userProgressRef = doc(db, "userProgress", userId);
                 const docSnap = await getDoc(userProgressRef);
-                if (docSnap.exists()) {
-                    answeredQuestionIds = docSnap.data().answeredQuestions || [];
-                } else {
-                    answeredQuestionIds = [];
-                }
+                answeredQuestionIds = docSnap.exists() ? docSnap.data().answeredQuestions || [] : [];
                 console.log(`Loaded ${answeredQuestionIds.length} answered questions`);
             } catch (error) {
-                console.error("Error loading answered questions:", error);
+                console.error(error);
                 answeredQuestionIds = [];
             }
         }
 
-        // Save answered questions to Firebase
-        async function saveAnsweredQuestions(userId, newQuestionIds) {
+        async function saveAnsweredQuestions(userId, newIds) {
             try {
                 const userProgressRef = doc(db, "userProgress", userId);
-                const allAnswered = [...new Set([...answeredQuestionIds, ...newQuestionIds])];
-                await setDoc(userProgressRef, {
-                    answeredQuestions: allAnswered,
-                    lastUpdated: new Date().toISOString()
-                }, { merge: true });
-                console.log(`Saved ${newQuestionIds.length} new answered questions. Total: ${allAnswered.length}`);
+                const allAnswered = [...new Set([...answeredQuestionIds, ...newIds])];
+                await setDoc(userProgressRef, { answeredQuestions: allAnswered, lastUpdated: new Date().toISOString() }, { merge: true });
+                console.log(`Saved ${newIds.length} new answered questions`);
             } catch (error) {
-                console.error("Error saving answered questions:", error);
+                console.error(error);
             }
         }
 
-        // Shuffle array
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
+        function shuffleArray(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
+                [arr[i], arr[j]] = [arr[j], arr[i]];
             }
-            return array;
+            return arr;
         }
 
-        // Select balanced questions for exam
-        function selectBalancedQuestions() {
-            // Group questions by text
-            const questionsByText = {};
-            textList.forEach(text => { questionsByText[text] = []; });
-            questionsByText["general"] = [];
-
-            allQuestions.forEach(q => {
-                let text = q.bookId;
-                if (textList.includes(text)) {
-                    questionsByText[text].push(q);
-                } else {
-                    questionsByText["general"].push(q);
-                }
-            });
-
-            const selected = [];
-            const usedQuestionIds = new Set(answeredQuestionIds);
-
-            // Select 3 questions from each text (unanswered first)
-            for (const text of textList) {
-                const available = questionsByText[text].filter(q => !usedQuestionIds.has(q.id));
-                const needed = examStructure.perText;
-                
-                if (available.length >= needed) {
-                    selected.push(...shuffleArray(available).slice(0, needed));
-                } else {
-                    selected.push(...available);
-                    const remaining = needed - available.length;
-                    const answered = questionsByText[text].filter(q => usedQuestionIds.has(q.id));
-                    if (answered.length >= remaining) {
-                        selected.push(...shuffleArray(answered).slice(0, remaining));
-                    } else {
-                        selected.push(...answered);
-                    }
-                }
+        function selectQuestionsForExam(filterFunc, targetCount) {
+            // Filter available questions by exam type and not answered before
+            let available = allQuestions.filter(q => filterFunc(q) && !answeredQuestionIds.includes(q.id));
+            // If not enough new questions, include some already answered
+            if (available.length < targetCount) {
+                const alreadyAnswered = allQuestions.filter(q => filterFunc(q) && answeredQuestionIds.includes(q.id));
+                available = [...available, ...alreadyAnswered];
             }
-
-            // Select unseen sections
-            const unseenPoetryAvailable = questionsByText["unseen-poetry"].filter(q => !usedQuestionIds.has(q.id));
-            const unseenProseAvailable = questionsByText["unseen-prose"].filter(q => !usedQuestionIds.has(q.id));
-            const unseenDramaAvailable = questionsByText["unseen-drama"].filter(q => !usedQuestionIds.has(q.id));
-            
-            selected.push(...shuffleArray(unseenPoetryAvailable).slice(0, examStructure.unseenPoetry));
-            selected.push(...shuffleArray(unseenProseAvailable).slice(0, examStructure.unseenProse));
-            selected.push(...shuffleArray(unseenDramaAvailable).slice(0, examStructure.unseenDrama));
-
-            // Select general literature questions for remaining
-            const generalAvailable = questionsByText["general"].filter(q => !usedQuestionIds.has(q.id));
-            const neededGeneral = examStructure.totalQuestions - selected.length;
-            if (generalAvailable.length >= neededGeneral) {
-                selected.push(...shuffleArray(generalAvailable).slice(0, neededGeneral));
-            } else {
-                selected.push(...generalAvailable);
-                const remaining = neededGeneral - generalAvailable.length;
-                const generalAnswered = questionsByText["general"].filter(q => usedQuestionIds.has(q.id));
-                selected.push(...shuffleArray(generalAnswered).slice(0, remaining));
-            }
-
-            return shuffleArray(selected);
+            const shuffled = shuffleArray([...available]);
+            return shuffled.slice(0, targetCount);
         }
 
         async function loadQuestions() {
@@ -489,39 +404,36 @@
                 return;
             }
             currentExam = JSON.parse(storedExam);
-            
-            // Load all questions from Firebase
+            const filter = filterMap[currentExam.filterType];
+            if (!filter) {
+                window.location.href = 'cbt-exam.html';
+                return;
+            }
+
             const snapshot = await getDocs(collection(db, "questions"));
             allQuestions = [];
-            snapshot.forEach(doc => {
-                allQuestions.push({ id: doc.id, ...doc.data() });
-            });
-            
-            console.log(`Total questions in database: ${allQuestions.length}`);
-            
-            // Select balanced questions
-            selectedQuestions = selectBalancedQuestions();
-            
+            snapshot.forEach(doc => allQuestions.push({ id: doc.id, ...doc.data() }));
+
+            selectedQuestions = selectQuestionsForExam(filter, currentExam.totalQuestions);
             if (selectedQuestions.length === 0) {
                 document.getElementById('mainContent').innerHTML = `
                     <div style="text-align:center;padding:60px;background:white;border-radius:24px;">
-                        <i class="fas fa-trophy" style="font-size:48px;color:var(--success);margin-bottom:16px;"></i>
-                        <h3>Congratulations!</h3>
-                        <p>You have answered all available questions!</p>
-                        <p>Total questions answered: ${answeredQuestionIds.length}</p>
-                        <button onclick="location.href='dashboard.html'" style="margin-top:20px;padding:12px 24px;background:var(--primary);color:white;border:none;border-radius:30px;">Return to Dashboard</button>
+                        <i class="fas fa-database" style="font-size:48px;color:var(--gray);margin-bottom:16px;"></i>
+                        <h3>No Questions Available</h3>
+                        <p>No questions found for this exam category.</p>
+                        <button onclick="location.href='cbt-exam.html'" style="margin-top:20px;padding:12px 24px;background:var(--primary);color:white;border:none;border-radius:30px;">Back to Exams</button>
                     </div>
                 `;
                 return;
             }
-            
+
             userAnswers = {};
             currentIndex = 0;
-            timeLeft = 120 * 60; // 2 hours for 100 questions
+            timeLeft = currentExam.duration * 60;
             startTimer();
             renderExam();
         }
-        
+
         function startTimer() {
             const timerElement = document.getElementById('timer');
             timer = setInterval(() => {
@@ -533,57 +445,22 @@
                     const minutes = Math.floor(timeLeft / 60);
                     const seconds = timeLeft % 60;
                     timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-                    
-                    if (timeLeft <= 300) {
-                        timerElement.style.background = '#ef4444';
-                    }
+                    if (timeLeft <= 300) timerElement.style.background = '#ef4444';
                 }
             }, 1000);
         }
-        
-        function getTextDisplay(bookId) {
-            const textNames = {
-                "once-upon-a-time": "📜 Once Upon a Time - Okara",
-                "night": "🌙 Night - Soyinka",
-                "not-my-business": "👔 Not My Business - Osundare",
-                "new-tongue": "🗣️ New Tongue - Kamara",
-                "hearty-garlands": "🎉 Hearty Garlands - Afriyie-Vidza",
-                "breast-of-the-sea": "🌊 The Breast of the Sea - Cheney-Coker",
-                "she-walks-in-beauty": "✨ She Walks in Beauty - Byron",
-                "the-stone": "🪨 The Stone - Gibson",
-                "telephone-call": "📞 The Telephone Call - Adcock",
-                "nuns-priest-tale": "🐔 The Nun's Priest's Tale - Chaucer",
-                "to-kill-a-mockingbird": "📖 To Kill a Mockingbird - Lee",
-                "antony-and-cleopatra": "👑 Antony and Cleopatra - Shakespeare",
-                "once-upon-an-elephant": "🐘 Once Upon an Elephant - Ademilua-Afolayan",
-                "marriage-of-anansewa": "🕷️ The Marriage of Anansewa - Sutherland",
-                "inspector-calls": "🔍 An Inspector Calls - Priestley",
-                "man-for-all-seasons": "⚖️ A Man for All Seasons - Bolt",
-                "unseen-poetry": "📜 Unseen Poetry",
-                "unseen-prose": "📖 Unseen Prose",
-                "unseen-drama": "🎭 Unseen Drama",
-                "general": "📚 General Literature"
-            };
-            return textNames[bookId] || "📚 Literature";
-        }
-        
+
         function renderExam() {
             const q = selectedQuestions[currentIndex];
             const selected = userAnswers[q.id] || '';
-            
-            // Check if this is a passage-based question
-            const hasPassage = q.passage || (q.sectionName && q.sectionName.includes("Read"));
-            
             const answeredCount = Object.keys(userAnswers).length;
-            
+
             const html = `
                 <div class="question-area">
-                    <div style="margin-bottom: 12px; font-size: 12px; color: var(--gray); display: flex; justify-content: space-between;">
-                        <span><i class="fas fa-book"></i> ${getTextDisplay(q.bookId)}</span>
-                        <span><i class="fas fa-hashtag"></i> Question ${currentIndex + 1} of ${selectedQuestions.length}</span>
+                    <div style="margin-bottom: 12px; font-size: 12px; color: var(--gray);">
+                        <i class="fas fa-book"></i> ${q.bookId || 'Literature'} | Question ${currentIndex+1} of ${selectedQuestions.length}
                     </div>
-                    ${hasPassage ? `<div class="passage-box">${escapeHtml(q.passage || q.questionText)}</div>` : ''}
-                    <div class="question-text">${currentIndex + 1}. ${escapeHtml(hasPassage ? q.subQuestion || q.questionText : q.questionText)}</div>
+                    <div class="question-text">${currentIndex+1}. ${escapeHtml(q.questionText)}</div>
                     <div class="options-list">
                         ${['A', 'B', 'C', 'D'].map(opt => `
                             <div class="option-item ${selected === opt ? 'selected' : ''}" data-option="${opt}">
@@ -599,7 +476,7 @@
                         <button class="nav-btn next" id="nextBtn">
                             Next <i class="fas fa-chevron-right"></i>
                         </button>
-                        ${currentIndex === selectedQuestions.length - 1 ? '<button class="nav-btn submit" id="submitBtn">Submit Exam <i class="fas fa-check"></i></button>' : ''}
+                        ${currentIndex === selectedQuestions.length-1 ? '<button class="nav-btn submit" id="submitBtn">Submit Exam <i class="fas fa-check"></i></button>' : ''}
                     </div>
                 </div>
                 <div class="palette-sidebar">
@@ -607,7 +484,7 @@
                     <div class="palette-grid" id="paletteGrid">
                         ${selectedQuestions.map((_, idx) => `
                             <button class="palette-btn ${userAnswers[selectedQuestions[idx].id] ? 'answered' : ''} ${idx === currentIndex ? 'current' : ''}" data-index="${idx}">
-                                ${idx + 1}
+                                ${idx+1}
                             </button>
                         `).join('')}
                     </div>
@@ -616,144 +493,68 @@
                         <div class="legend-item"><div class="legend-color" style="background:var(--primary);"></div> Current</div>
                         <div class="legend-item"><div class="legend-color" style="background:var(--light);"></div> Unanswered (${selectedQuestions.length - answeredCount})</div>
                     </div>
-                    <div class="category-stats">
-                        <strong><i class="fas fa-chart-pie"></i> Exam Composition:</strong><br>
-                        📚 3 Qs each from 19 texts<br>
-                        📜 5 Unseen Poetry<br>
-                        📖 5 Unseen Prose<br>
-                        🎭 5 Unseen Drama<br>
-                        <strong>Total: ${selectedQuestions.length} Questions</strong>
-                    </div>
                 </div>
             `;
-            
             document.getElementById('mainContent').innerHTML = html;
-            document.getElementById('questionCounter').innerHTML = `Question ${currentIndex + 1} of ${selectedQuestions.length}`;
-            
-            // Add event listeners
+            document.getElementById('questionCounter').innerHTML = `Question ${currentIndex+1} of ${selectedQuestions.length}`;
+
             document.querySelectorAll('.option-item').forEach(opt => {
                 opt.addEventListener('click', () => {
-                    const selectedOpt = opt.getAttribute('data-option');
-                    userAnswers[selectedQuestions[currentIndex].id] = selectedOpt;
+                    userAnswers[selectedQuestions[currentIndex].id] = opt.dataset.option;
                     renderExam();
                 });
             });
-            
-            document.getElementById('prevBtn')?.addEventListener('click', () => {
-                if (currentIndex > 0) {
-                    currentIndex--;
-                    renderExam();
-                }
-            });
-            
-            document.getElementById('nextBtn')?.addEventListener('click', () => {
-                if (currentIndex < selectedQuestions.length - 1) {
-                    currentIndex++;
-                    renderExam();
-                }
-            });
-            
+            document.getElementById('prevBtn')?.addEventListener('click', () => { if (currentIndex > 0) { currentIndex--; renderExam(); } });
+            document.getElementById('nextBtn')?.addEventListener('click', () => { if (currentIndex < selectedQuestions.length-1) { currentIndex++; renderExam(); } });
             document.getElementById('submitBtn')?.addEventListener('click', () => {
                 const answered = Object.keys(userAnswers).length;
-                if (confirm(`You have answered ${answered} out of ${selectedQuestions.length} questions.\n\nSubmit your exam?`)) {
-                    submitExam();
-                }
+                if (confirm(`You have answered ${answered} out of ${selectedQuestions.length} questions. Submit?`)) submitExam();
             });
-            
             document.querySelectorAll('.palette-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
-                    const idx = parseInt(btn.getAttribute('data-index'));
-                    currentIndex = idx;
+                    currentIndex = parseInt(btn.dataset.index);
                     renderExam();
                 });
             });
         }
-        
+
         function calculateScore() {
             let correct = 0;
             const details = selectedQuestions.map(q => {
-                const userAnswer = userAnswers[q.id];
-                const isCorrect = userAnswer === q.correctAnswer;
+                const userAns = userAnswers[q.id];
+                const isCorrect = userAns === q.correctAnswer;
                 if (isCorrect) correct++;
-                return {
-                    id: q.id,
-                    text: q.questionText,
-                    options: q.options,
-                    userAnswer: userAnswer,
-                    correctAnswer: q.correctAnswer,
-                    isCorrect: isCorrect,
-                    explanation: q.explanation || ''
-                };
+                return { id: q.id, text: q.questionText, options: q.options, userAnswer: userAns, correctAnswer: q.correctAnswer, isCorrect, explanation: q.explanation || '' };
             });
-            return { correct, total: selectedQuestions.length, percentage: Math.round((correct / selectedQuestions.length) * 100), details };
+            return { correct, total: selectedQuestions.length, percentage: Math.round((correct/selectedQuestions.length)*100), details };
         }
-        
+
         async function submitExam() {
             clearInterval(timer);
             const score = calculateScore();
-            
-            // Get IDs of questions answered in this exam
             const newAnsweredIds = Object.keys(userAnswers);
-            
-            // Save to Firebase
             const user = auth.currentUser;
             if (user) {
-                // Save answered questions
                 await saveAnsweredQuestions(user.uid, newAnsweredIds);
-                
-                // Save exam results to userResults collection
                 const resultId = `${user.uid}_${currentExam.id}_${Date.now()}`;
-                const resultsData = {
-                    userId: user.uid,
-                    examId: currentExam.id,
-                    examTitle: currentExam.title,
-                    totalQuestions: selectedQuestions.length,
-                    score: score.correct,
-                    percentage: score.percentage,
-                    answers: userAnswers,
-                    completedAt: new Date().toISOString()
-                };
-                
-                try {
-                    await setDoc(doc(db, "userResults", resultId), resultsData);
-                    console.log("Exam results saved to Firebase");
-                } catch (error) {
-                    console.error("Error saving results:", error);
-                }
+                await setDoc(doc(db, "userResults", resultId), {
+                    userId: user.uid, examId: currentExam.id, examTitle: currentExam.title,
+                    totalQuestions: selectedQuestions.length, score: score.correct, percentage: score.percentage,
+                    answers: userAnswers, completedAt: new Date().toISOString()
+                });
             }
-            
-            const results = {
-                examId: currentExam.id,
-                examTitle: currentExam.title,
-                totalQuestions: selectedQuestions.length,
-                score: score.correct,
-                percentage: score.percentage,
-                answers: userAnswers,
-                questions: score.details,
-                completedAt: new Date().toISOString()
-            };
-            
-            localStorage.setItem('examResults', JSON.stringify(results));
+            localStorage.setItem('examResults', JSON.stringify({
+                examId: currentExam.id, examTitle: currentExam.title, totalQuestions: selectedQuestions.length,
+                score: score.correct, percentage: score.percentage, answers: userAnswers, questions: score.details, completedAt: new Date().toISOString()
+            }));
             window.location.href = 'cbt-results.html';
         }
-        
-        function escapeHtml(text) {
-            if (!text) return '';
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-        
+
+        function escapeHtml(text) { if (!text) return ''; const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
+
         onAuthStateChanged(auth, async (user) => {
-            if (!user) {
-                window.location.href = "index.html";
-                return;
-            }
-            
-            // Load previously answered questions
+            if (!user) { window.location.href = "index.html"; return; }
             await loadAnsweredQuestions(user.uid);
-            
-            // Load and select questions
             await loadQuestions();
         });
     </script>
