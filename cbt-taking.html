@@ -6,6 +6,7 @@
     <title>CBT Exam | Mr. Timi Scholar</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* ========== STYLES (same as before) ========== */
         * {
             margin: 0;
             padding: 0;
@@ -337,13 +338,14 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Filter functions for each exam type
-        const filterMap = {
-            general: (q) => q.bookId === "general" || q.bookId === "unseen-poetry" || q.bookId === "unseen-prose" || q.bookId === "unseen-drama",
-            prose: (q) => ["to-kill-a-mockingbird", "path-of-lucas", "so-the-path-does-not-die", "redemption-road"].includes(q.bookId),
-            drama: (q) => ["antony-and-cleopatra", "once-upon-an-elephant", "marriage-of-anansewa", "inspector-calls", "man-for-all-seasons"].includes(q.bookId),
-            poetry: (q) => ["once-upon-a-time", "new-tongue", "night", "not-my-business", "hearty-garlands", "breast-of-the-sea", "she-walks-in-beauty", "the-stone", "telephone-call", "nuns-priest-tale"].includes(q.bookId)
-        };
+        // List of literature book IDs (used only when subject is "literature")
+        const literatureBooks = [
+            "to-kill-a-mockingbird", "path-of-lucas", "so-the-path-does-not-die", "redemption-road",
+            "antony-and-cleopatra", "once-upon-an-elephant", "marriage-of-anansewa", "inspector-calls", "man-for-all-seasons",
+            "once-upon-a-time", "new-tongue", "night", "not-my-business", "hearty-garlands", "breast-of-the-sea",
+            "she-walks-in-beauty", "the-stone", "telephone-call", "nuns-priest-tale",
+            "general", "unseen-poetry", "unseen-prose", "unseen-drama"
+        ];
 
         let allQuestions = [];
         let selectedQuestions = [];
@@ -354,6 +356,7 @@
         let currentExam = null;
         let answeredQuestionIds = [];
 
+        // Load answered questions from Firebase
         async function loadAnsweredQuestions(userId) {
             try {
                 const userProgressRef = doc(db, "userProgress", userId);
@@ -385,12 +388,23 @@
             return arr;
         }
 
-        function selectQuestionsForExam(filterFunc, targetCount) {
-            // Filter available questions by exam type and not answered before
-            let available = allQuestions.filter(q => filterFunc(q) && !answeredQuestionIds.includes(q.id));
+        // Create filter function based on subject
+        function createFilter(subject) {
+            // For literature, accept any bookId from the literature list
+            if (subject === "literature") {
+                return (q) => literatureBooks.includes(q.bookId);
+            }
+            // For other subjects, exact match on bookId
+            return (q) => q.bookId === subject;
+        }
+
+        // Select questions for the exam
+        function selectQuestionsForExam(filter, targetCount) {
+            // Filter available questions by subject and not answered before
+            let available = allQuestions.filter(q => filter(q) && !answeredQuestionIds.includes(q.id));
             // If not enough new questions, include some already answered
             if (available.length < targetCount) {
-                const alreadyAnswered = allQuestions.filter(q => filterFunc(q) && answeredQuestionIds.includes(q.id));
+                const alreadyAnswered = allQuestions.filter(q => filter(q) && answeredQuestionIds.includes(q.id));
                 available = [...available, ...alreadyAnswered];
             }
             const shuffled = shuffleArray([...available]);
@@ -404,15 +418,20 @@
                 return;
             }
             currentExam = JSON.parse(storedExam);
-            const filter = filterMap[currentExam.filterType];
-            if (!filter) {
+            const subject = currentExam.subject;
+            if (!subject) {
+                alert("Exam subject not specified.");
                 window.location.href = 'cbt-exam.html';
                 return;
             }
 
+            const filter = createFilter(subject);
+            // Load all questions from Firebase
             const snapshot = await getDocs(collection(db, "questions"));
             allQuestions = [];
-            snapshot.forEach(doc => allQuestions.push({ id: doc.id, ...doc.data() }));
+            snapshot.forEach(doc => {
+                allQuestions.push({ id: doc.id, ...doc.data() });
+            });
 
             selectedQuestions = selectQuestionsForExam(filter, currentExam.totalQuestions);
             if (selectedQuestions.length === 0) {
@@ -420,7 +439,7 @@
                     <div style="text-align:center;padding:60px;background:white;border-radius:24px;">
                         <i class="fas fa-database" style="font-size:48px;color:var(--gray);margin-bottom:16px;"></i>
                         <h3>No Questions Available</h3>
-                        <p>No questions found for this exam category.</p>
+                        <p>No questions found for ${subject}. Please add questions in the admin panel.</p>
                         <button onclick="location.href='cbt-exam.html'" style="margin-top:20px;padding:12px 24px;background:var(--primary);color:white;border:none;border-radius:30px;">Back to Exams</button>
                     </div>
                 `;
@@ -458,7 +477,7 @@
             const html = `
                 <div class="question-area">
                     <div style="margin-bottom: 12px; font-size: 12px; color: var(--gray);">
-                        <i class="fas fa-book"></i> ${q.bookId || 'Literature'} | Question ${currentIndex+1} of ${selectedQuestions.length}
+                        <i class="fas fa-book"></i> ${q.bookId || 'Subject'} | Question ${currentIndex+1} of ${selectedQuestions.length}
                     </div>
                     <div class="question-text">${currentIndex+1}. ${escapeHtml(q.questionText)}</div>
                     <div class="options-list">
@@ -540,12 +559,14 @@
                 await setDoc(doc(db, "userResults", resultId), {
                     userId: user.uid, examId: currentExam.id, examTitle: currentExam.title,
                     totalQuestions: selectedQuestions.length, score: score.correct, percentage: score.percentage,
-                    answers: userAnswers, completedAt: new Date().toISOString()
+                    answers: userAnswers, completedAt: new Date().toISOString(),
+                    subject: currentExam.subject
                 });
             }
             localStorage.setItem('examResults', JSON.stringify({
                 examId: currentExam.id, examTitle: currentExam.title, totalQuestions: selectedQuestions.length,
-                score: score.correct, percentage: score.percentage, answers: userAnswers, questions: score.details, completedAt: new Date().toISOString()
+                score: score.correct, percentage: score.percentage, answers: userAnswers, questions: score.details, completedAt: new Date().toISOString(),
+                subject: currentExam.subject
             }));
             window.location.href = 'cbt-results.html';
         }
