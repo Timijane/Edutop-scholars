@@ -23,7 +23,6 @@
             position: relative;
         }
 
-        /* Animated background effect (like login page) */
         body::before {
             content: '';
             position: fixed;
@@ -43,7 +42,6 @@
             width: 100%;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
             transition: transform 0.3s ease;
-            backdrop-filter: blur(10px);
         }
 
         .container:hover {
@@ -219,7 +217,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, updateDoc, setDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCictHNxtslYs9VR0hoicxlwPn_QghkgIA",
@@ -241,7 +239,7 @@
             errorDiv.style.display = 'flex';
             setTimeout(() => {
                 errorDiv.style.display = 'none';
-            }, 4000);
+            }, 5000);
         }
 
         // Check auth and redirect if already has department
@@ -250,11 +248,22 @@
                 window.location.href = "index.html";
                 return;
             }
+            
             try {
                 const userRef = doc(db, "users", user.uid);
                 const userDoc = await getDoc(userRef);
+                
+                // If user document doesn't exist, create it
+                if (!userDoc.exists()) {
+                    await setDoc(userRef, {
+                        fullName: user.displayName || "Scholar",
+                        email: user.email,
+                        createdAt: new Date().toISOString()
+                    });
+                }
+                
+                // Check if department already exists
                 if (userDoc.exists() && userDoc.data().department) {
-                    // Already has department, go to subject selection
                     window.location.href = "subject-selection.html";
                 }
             } catch (err) {
@@ -281,12 +290,33 @@
 
                 try {
                     const userRef = doc(db, "users", user.uid);
-                    await updateDoc(userRef, { department: department });
+                    
+                    // First check if user document exists
+                    const userDoc = await getDoc(userRef);
+                    
+                    if (!userDoc.exists()) {
+                        // Create user document if it doesn't exist
+                        await setDoc(userRef, {
+                            fullName: user.displayName || "Scholar",
+                            email: user.email,
+                            department: department,
+                            createdAt: new Date().toISOString()
+                        });
+                    } else {
+                        // Update existing user document
+                        await updateDoc(userRef, { 
+                            department: department,
+                            updatedAt: new Date().toISOString()
+                        });
+                    }
+                    
+                    console.log("Department saved:", department);
                     // Success, go to subject selection
                     window.location.href = "subject-selection.html";
+                    
                 } catch (error) {
                     console.error("Error saving department:", error);
-                    showError("Failed to save department. Please try again.");
+                    showError("Failed to save department: " + error.message);
                     btn.innerHTML = originalText;
                     btn.disabled = false;
                 }
