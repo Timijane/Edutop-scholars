@@ -6,7 +6,7 @@
     <title>CBT Exam | Mr. Timi Scholar</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Keep your existing styles - same as before */
+        /* Your existing styles (keep as is) */
         * {
             margin: 0;
             padding: 0;
@@ -416,13 +416,28 @@
             return arr;
         }
 
-        function selectQuestionsByFilter(filter, targetCount) {
-            let available = allQuestions.filter(q => filter(q) && !answeredQuestionIds.includes(q.id));
-            if (available.length < targetCount) {
-                const alreadyAnswered = allQuestions.filter(q => filter(q) && answeredQuestionIds.includes(q.id));
-                available = [...available, ...alreadyAnswered];
+        // NEW: Select questions without ever reusing answered ones.
+        // Returns null if not enough unanswered questions.
+        function selectQuestionsNoRepeats(filter, targetCount) {
+            // Get only unanswered questions that match the filter
+            const unanswered = allQuestions.filter(q => filter(q) && !answeredQuestionIds.includes(q.id));
+            
+            // Remove duplicates by question text (in case of duplicate entries in DB)
+            const uniqueUnanswered = [];
+            const seen = new Set();
+            for (const q of unanswered) {
+                if (!seen.has(q.questionText)) {
+                    seen.add(q.questionText);
+                    uniqueUnanswered.push(q);
+                }
             }
-            return shuffleArray(available).slice(0, targetCount);
+            
+            if (uniqueUnanswered.length >= targetCount) {
+                return shuffleArray(uniqueUnanswered).slice(0, targetCount);
+            }
+            
+            // Not enough unanswered – cannot form a full exam without repeats
+            return null;
         }
 
         async function loadSingleSubjectExam() {
@@ -437,8 +452,17 @@
 
             // Load all questions
             const snapshot = await getDocs(collection(db, "questions"));
-            allQuestions = [];
-            snapshot.forEach(doc => allQuestions.push({ id: doc.id, ...doc.data() }));
+            
+            // Deduplicate questions by questionText to prevent repeats from duplicate DB entries
+            const uniqueMap = new Map();
+            snapshot.forEach(doc => {
+                const q = { id: doc.id, ...doc.data() };
+                if (!uniqueMap.has(q.questionText)) {
+                    uniqueMap.set(q.questionText, q);
+                }
+            });
+            allQuestions = Array.from(uniqueMap.values());
+            console.log(`Loaded ${allQuestions.length} unique questions (after dedup)`);
 
             let filter;
             
@@ -457,7 +481,7 @@
                     return;
                 }
             } 
-            // Handle regular literature (no subType - should not happen but fallback)
+            // Handle regular literature (no subType)
             else if (subject === 'literature') {
                 filter = (q) => q.bookId === "literature";
             } 
@@ -477,16 +501,25 @@
                 }
             }
 
-            selectedQuestions = selectQuestionsByFilter(filter, currentExam.totalQuestions);
+            // Use the new selection method that never reuses answered questions
+            selectedQuestions = selectQuestionsNoRepeats(filter, currentExam.totalQuestions);
 
-            if (selectedQuestions.length === 0) {
+            if (selectedQuestions === null || selectedQuestions.length < currentExam.totalQuestions) {
+                const totalAvailable = allQuestions.filter(filter).length;
+                const unansweredCount = allQuestions.filter(q => filter(q) && !answeredQuestionIds.includes(q.id)).length;
                 document.getElementById('mainContent').innerHTML = `
                     <div style="text-align:center;padding:60px;background:white;border-radius:24px;">
                         <i class="fas fa-database" style="font-size:48px;color:var(--gray);margin-bottom:16px;"></i>
-                        <h3>No Questions Available</h3>
-                        <p>No questions found for ${currentExam.title}. Please add questions in the admin panel.</p>
-                        <p style="margin-top:8px;font-size:13px;color:var(--gray);">Make sure questions have bookId="${subject}" and sectionName matches "${currentExam.subType ? currentExam.subType.replace('literature-', '') : 'General'}"</p>
-                        <button onclick="location.href='cbt-exam.html'" style="margin-top:20px;padding:12px 24px;background:var(--primary);color:white;border:none;border-radius:30px;">Back to Exams</button>
+                        <h3>Not Enough New Questions</h3>
+                        <p>You need ${currentExam.totalQuestions} new questions for this exam.</p>
+                        <p>Total questions available in this subject: ${totalAvailable}<br>
+                        Questions you have already answered: ${totalAvailable - unansweredCount}<br>
+                        Remaining unanswered: ${unansweredCount}</p>
+                        <p>Please try a smaller exam or come back after more questions are added.</p>
+                        <div style="margin-top:20px; display:flex; gap:12px; justify-content:center;">
+                            <button onclick="location.href='cbt-exam.html'" class="btn btn-primary" style="background:var(--primary);color:white;padding:10px 20px;border-radius:40px;border:none;cursor:pointer;">Back to Exams</button>
+                            <button onclick="location.href='cbt-exam.html?custom=true'" class="btn btn-secondary" style="background:var(--light);color:var(--dark);padding:10px 20px;border-radius:40px;border:1px solid var(--border);cursor:pointer;">Create Custom Exam</button>
+                        </div>
                     </div>
                 `;
                 return;
