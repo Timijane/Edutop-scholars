@@ -249,6 +249,40 @@
             resize: vertical;
         }
 
+        .file-upload-area {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .file-upload-label {
+            background: var(--primary);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .file-upload-label:hover {
+            background: var(--primary-light);
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .file-name {
+            color: var(--gray);
+            font-size: 13px;
+        }
+
         .question-form {
             display: flex;
             flex-direction: column;
@@ -452,16 +486,28 @@
 
         <!-- Bulk Upload Tab -->
         <div id="bulkTab" class="upload-section">
-            <h3><i class="fas fa-file-upload"></i> Bulk Upload Questions (CSV Format)</h3>
+            <h3><i class="fas fa-file-upload"></i> Bulk Upload Questions</h3>
             <div class="csv-template">
-                <strong>📝 CSV Format - Copy and paste:</strong><br>
+                <strong>📝 CSV Format - First line must be headers:</strong><br>
                 <code>sectionName,questionText,optionA,optionB,optionC,optionD,correctAnswer,difficulty,explanation,passage</code><br><br>
-                <strong>Example (without passage):</strong><br>
-                <code>General,What is the capital of Nigeria?,Lagos,Abuja,Kano,Ibadan,B,Easy,Abuja is the capital city of Nigeria,</code><br>
-                <strong>Example (with passage):</strong><br>
-                <code>Comprehension,According to the passage what is the main idea?,Option A,Option B,Option C,Option D,A,Medium,Explanation here,"The passage text goes here. It can span multiple sentences."</code>
+                <strong>Example:</strong><br>
+                <code>General,What is the capital of Nigeria?,Lagos,Abuja,Kano,Ibadan,B,Easy,Abuja is the capital city,</code>
             </div>
+            
+            <!-- File Upload Area -->
+            <div class="file-upload-area">
+                <label class="file-upload-label">
+                    <i class="fas fa-folder-open"></i> Choose CSV File
+                    <input type="file" id="csvFileInput" accept=".csv">
+                </label>
+                <span class="file-name" id="fileName">No file chosen</span>
+                <button id="clearFileBtn" class="btn btn-secondary" style="padding: 8px 16px;">Clear</button>
+            </div>
+            
+            <div style="text-align: center; margin: 10px 0;">OR</div>
+            
             <textarea id="csvInput" rows="8" placeholder="Paste your CSV data here..."></textarea>
+            
             <div style="display: flex; gap: 12px; flex-wrap: wrap;">
                 <button id="uploadBtn" class="btn btn-primary"><i class="fas fa-upload"></i> Upload Questions</button>
                 <button id="downloadTemplateBtn" class="btn btn-secondary"><i class="fas fa-download"></i> Download CSV Template</button>
@@ -470,7 +516,7 @@
                 <i class="fas fa-spinner fa-spin"></i> Uploading... <span id="progressCount">0</span> / <span id="totalRows">0</span>
             </div>
             <p style="margin-top: 12px; font-size: 12px; color: var(--gray);">
-                <i class="fas fa-info-circle"></i> The subject is automatically set to your selected subject. First line must be headers. Passage is optional.
+                <i class="fas fa-info-circle"></i> The subject is automatically set to your selected subject. correctAnswer must be A, B, C, or D.
             </p>
         </div>
 
@@ -675,7 +721,6 @@
                 const ch = text[i];
                 if (ch === '"') {
                     if (inQuotes && text[i+1] === '"') {
-                        // escaped quote
                         currentField += '"';
                         i++;
                     } else {
@@ -685,8 +730,7 @@
                     currentRow.push(currentField);
                     currentField = '';
                 } else if ((ch === '\n' || ch === '\r') && !inQuotes) {
-                    // end of row
-                    if (ch === '\r' && text[i+1] === '\n') i++; // skip \r\n
+                    if (ch === '\r' && text[i+1] === '\n') i++;
                     currentRow.push(currentField);
                     rows.push(currentRow);
                     currentRow = [];
@@ -703,14 +747,37 @@
             return rows;
         }
 
+        // Clean CSV value - remove BOM, trim, handle empty values
+        function cleanValue(value) {
+            if (!value) return '';
+            // Remove BOM if present
+            let cleaned = value.replace(/^\uFEFF/, '');
+            cleaned = cleaned.trim();
+            return cleaned;
+        }
+
         async function uploadBulk() {
             if (!currentSubject) {
                 showToast('Please select a subject first', true);
                 return;
             }
-            const csvText = document.getElementById('csvInput').value;
-            if (!csvText.trim()) {
-                showToast('Please paste CSV data', true);
+            
+            let csvText = document.getElementById('csvInput').value;
+            
+            // If file was uploaded, use file content instead
+            const fileInput = document.getElementById('csvFileInput');
+            if (fileInput.files && fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                try {
+                    csvText = await file.text();
+                } catch (err) {
+                    showToast('Error reading file: ' + err.message, true);
+                    return;
+                }
+            }
+            
+            if (!csvText || !csvText.trim()) {
+                showToast('Please paste CSV data or choose a CSV file', true);
                 return;
             }
 
@@ -720,34 +787,36 @@
                 return;
             }
 
-            // Assume first row is header
-            const headers = rows[0].map(h => h.trim().toLowerCase());
+            // Assume first row is header - clean header values
+            const headers = rows[0].map(h => cleanValue(h).toLowerCase());
             const expectedHeaders = ['sectionname', 'questiontext', 'optiona', 'optionb', 'optionc', 'optiond', 'correctanswer', 'difficulty', 'explanation', 'passage'];
-            const missingHeaders = expectedHeaders.filter(h => !headers.includes(h));
-            if (missingHeaders.length > 0) {
-                showToast(`Missing columns: ${missingHeaders.join(', ')}. Please check CSV header.`, true);
+            
+            // Find column indices - be flexible with column names
+            const idx = {
+                sectionName: headers.findIndex(h => h.includes('section')),
+                questionText: headers.findIndex(h => h.includes('question')),
+                optionA: headers.findIndex(h => h === 'optiona' || h === 'option a'),
+                optionB: headers.findIndex(h => h === 'optionb' || h === 'option b'),
+                optionC: headers.findIndex(h => h === 'optionc' || h === 'option c'),
+                optionD: headers.findIndex(h => h === 'optiond' || h === 'option d'),
+                correctAnswer: headers.findIndex(h => h.includes('correct')),
+                difficulty: headers.findIndex(h => h.includes('difficulty')),
+                explanation: headers.findIndex(h => h.includes('explanation')),
+                passage: headers.findIndex(h => h.includes('passage'))
+            };
+            
+            // Validate required columns exist
+            if (idx.sectionName === -1 || idx.questionText === -1 || idx.optionA === -1 || idx.correctAnswer === -1) {
+                showToast('CSV missing required columns. Need: sectionName, questionText, optionA, optionB, optionC, optionD, correctAnswer', true);
                 return;
             }
-
-            // Find column indices
-            const idx = {
-                sectionName: headers.indexOf('sectionname'),
-                questionText: headers.indexOf('questiontext'),
-                optionA: headers.indexOf('optiona'),
-                optionB: headers.indexOf('optionb'),
-                optionC: headers.indexOf('optionc'),
-                optionD: headers.indexOf('optiond'),
-                correctAnswer: headers.indexOf('correctanswer'),
-                difficulty: headers.indexOf('difficulty'),
-                explanation: headers.indexOf('explanation'),
-                passage: headers.indexOf('passage')
-            };
 
             const totalRows = rows.length - 1;
             document.getElementById('totalRows').innerText = totalRows;
             document.getElementById('uploadProgress').style.display = 'block';
-            document.getElementById('uploadBtn').disabled = true;
-            document.getElementById('uploadBtn').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
+            const uploadBtn = document.getElementById('uploadBtn');
+            uploadBtn.disabled = true;
+            uploadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
 
             let success = 0;
             let failed = 0;
@@ -757,31 +826,38 @@
                 const row = rows[i];
                 document.getElementById('progressCount').innerText = i;
                 
-                if (row.length < 9) {
-                    errors.push(`Row ${i+1}: Not enough columns (${row.length} instead of 9+)`);
+                // Skip empty rows
+                if (row.length === 0 || (row.length === 1 && !row[0].trim())) {
+                    continue;
+                }
+                
+                const sectionName = cleanValue(row[idx.sectionName]) || 'General';
+                const questionText = cleanValue(row[idx.questionText]);
+                const optionA = cleanValue(row[idx.optionA]);
+                const optionB = idx.optionB !== -1 ? cleanValue(row[idx.optionB]) : '';
+                const optionC = idx.optionC !== -1 ? cleanValue(row[idx.optionC]) : '';
+                const optionD = idx.optionD !== -1 ? cleanValue(row[idx.optionD]) : '';
+                let correctAnswer = idx.correctAnswer !== -1 ? cleanValue(row[idx.correctAnswer]).toUpperCase() : '';
+                const difficulty = idx.difficulty !== -1 ? cleanValue(row[idx.difficulty]) || 'Medium' : 'Medium';
+                const explanation = idx.explanation !== -1 ? cleanValue(row[idx.explanation]) : '';
+                const passage = idx.passage !== -1 ? cleanValue(row[idx.passage]) : '';
+
+                // Validate required fields
+                if (!questionText) {
+                    errors.push(`Row ${i+1}: Missing question text`);
                     failed++;
                     continue;
                 }
-
-                const sectionName = row[idx.sectionName]?.trim() || 'General';
-                const questionText = row[idx.questionText]?.trim();
-                const optionA = row[idx.optionA]?.trim();
-                const optionB = row[idx.optionB]?.trim();
-                const optionC = row[idx.optionC]?.trim();
-                const optionD = row[idx.optionD]?.trim();
-                const correctAnswer = row[idx.correctAnswer]?.trim().toUpperCase();
-                const difficulty = row[idx.difficulty]?.trim() || 'Medium';
-                const explanation = row[idx.explanation]?.trim() || '';
-                const passage = idx.passage !== -1 ? (row[idx.passage]?.trim() || '') : '';
-
-                if (!questionText || !optionA || !optionB || !optionC || !optionD || !correctAnswer) {
-                    errors.push(`Row ${i+1}: Missing required fields (questionText or options)`);
+                
+                if (!optionA || !optionB || !optionC || !optionD) {
+                    errors.push(`Row ${i+1}: Missing one or more options (A, B, C, D)`);
                     failed++;
                     continue;
                 }
-
-                if (!['A','B','C','D'].includes(correctAnswer)) {
-                    errors.push(`Row ${i+1}: Invalid correctAnswer '${correctAnswer}' (must be A, B, C, D)`);
+                
+                // Validate correctAnswer - must be A, B, C, or D
+                if (!correctAnswer || !['A', 'B', 'C', 'D'].includes(correctAnswer)) {
+                    errors.push(`Row ${i+1}: Invalid correctAnswer '${correctAnswer || 'empty'}' (must be A, B, C, D). Check your CSV columns alignment.`);
                     failed++;
                     continue;
                 }
@@ -806,23 +882,46 @@
             }
 
             document.getElementById('uploadProgress').style.display = 'none';
-            document.getElementById('uploadBtn').disabled = false;
-            document.getElementById('uploadBtn').innerHTML = '<i class="fas fa-upload"></i> Upload Questions';
+            uploadBtn.disabled = false;
+            uploadBtn.innerHTML = '<i class="fas fa-upload"></i> Upload Questions';
 
             let message = `✅ Uploaded ${success} questions. Failed: ${failed}.`;
             if (errors.length > 0) {
                 console.error("Upload errors:", errors);
-                message += `\nFirst 5 errors:\n${errors.slice(0,5).join('\n')}`;
+                const firstErrors = errors.slice(0, 5).join('\n');
+                message += `\nFirst 5 errors:\n${firstErrors}`;
                 if (failed > 0) {
-                    message += `\n\nCheck console for full error list.`;
+                    message += `\n\nCheck console (F12) for full error list.`;
                 }
+                showToast(message, true);
+            } else {
+                showToast(message, false);
             }
-            showToast(message, failed > 0);
+            
             if (success > 0) {
                 document.getElementById('csvInput').value = '';
+                document.getElementById('csvFileInput').value = '';
+                document.getElementById('fileName').innerText = 'No file chosen';
                 loadQuestionsForSubject();
             }
         }
+
+        // File upload handler
+        document.getElementById('csvFileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                document.getElementById('fileName').innerText = file.name;
+                // Optionally clear textarea when file is selected
+                document.getElementById('csvInput').value = '';
+            } else {
+                document.getElementById('fileName').innerText = 'No file chosen';
+            }
+        });
+        
+        document.getElementById('clearFileBtn').addEventListener('click', function() {
+            document.getElementById('csvFileInput').value = '';
+            document.getElementById('fileName').innerText = 'No file chosen';
+        });
 
         async function addSingleQuestion() {
             if (!currentSubject) { showToast('Please select a subject first', true); return; }
