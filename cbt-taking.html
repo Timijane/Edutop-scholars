@@ -6,7 +6,6 @@
     <title>CBT Exam | Mr. Timi Scholar</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Your existing styles (keep as is) */
         * {
             margin: 0;
             padding: 0;
@@ -48,26 +47,11 @@
             gap: 10px;
         }
 
-        .logo h1 {
-            color: var(--primary);
-            font-size: 22px;
-        }
+        .logo h1 { color: var(--primary); font-size: 22px; }
+        .logo span { color: var(--secondary); }
+        .logo a { text-decoration: none; }
 
-        .logo span {
-            color: var(--secondary);
-        }
-
-        .logo a {
-            text-decoration: none;
-        }
-
-        .exam-header {
-            display: flex;
-            gap: 15px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
+        .exam-header { display: flex; gap: 15px; align-items: center; flex-wrap: wrap; }
         .timer-box {
             background: var(--danger);
             color: white;
@@ -77,7 +61,6 @@
             font-size: 20px;
             font-family: monospace;
         }
-
         .question-counter {
             background: var(--light);
             padding: 8px 16px;
@@ -103,6 +86,19 @@
             box-shadow: 0 4px 20px rgba(0,0,0,0.08);
         }
 
+        .passage-box {
+            background: var(--light);
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 24px;
+            border-left: 4px solid var(--primary);
+            font-style: italic;
+            line-height: 1.6;
+            font-size: 15px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
         .subject-switcher {
             display: flex;
             flex-wrap: wrap;
@@ -111,7 +107,6 @@
             padding-bottom: 12px;
             border-bottom: 2px solid var(--border);
         }
-
         .subject-tab {
             background: var(--light);
             border: none;
@@ -122,11 +117,7 @@
             transition: all 0.2s;
             font-size: 13px;
         }
-
-        .subject-tab.active {
-            background: var(--primary);
-            color: white;
-        }
+        .subject-tab.active { background: var(--primary); color: white; }
 
         .question-text {
             font-size: 18px;
@@ -153,16 +144,8 @@
             transition: all 0.2s;
             border: 2px solid transparent;
         }
-
-        .option-item:hover {
-            background: var(--border);
-        }
-
-        .option-item.selected {
-            background: #e8eaf6;
-            border-color: var(--primary);
-        }
-
+        .option-item:hover { background: var(--border); }
+        .option-item.selected { background: #e8eaf6; border-color: var(--primary); }
         .option-letter {
             width: 40px;
             height: 40px;
@@ -175,17 +158,8 @@
             color: var(--primary);
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-
-        .option-item.selected .option-letter {
-            background: var(--primary);
-            color: white;
-        }
-
-        .option-text {
-            flex: 1;
-            font-size: 15px;
-            line-height: 1.4;
-        }
+        .option-item.selected .option-letter { background: var(--primary); color: white; }
+        .option-text { flex: 1; font-size: 15px; line-height: 1.4; }
 
         .nav-buttons {
             display: flex;
@@ -193,7 +167,6 @@
             margin-top: 24px;
             flex-wrap: wrap;
         }
-
         .nav-btn {
             padding: 12px 24px;
             border-radius: 40px;
@@ -204,21 +177,9 @@
             align-items: center;
             gap: 8px;
         }
-
-        .nav-btn.prev {
-            background: var(--light);
-            color: var(--dark);
-        }
-
-        .nav-btn.next {
-            background: var(--primary);
-            color: white;
-        }
-
-        .nav-btn.submit {
-            background: var(--success);
-            color: white;
-        }
+        .nav-btn.prev { background: var(--light); color: var(--dark); }
+        .nav-btn.next { background: var(--primary); color: white; }
+        .nav-btn.submit { background: var(--success); color: white; }
 
         .palette-sidebar {
             flex: 1;
@@ -229,20 +190,13 @@
             position: sticky;
             top: 80px;
         }
-
-        .palette-sidebar h3 {
-            color: var(--primary);
-            margin-bottom: 16px;
-            font-size: 16px;
-        }
-
+        .palette-sidebar h3 { color: var(--primary); margin-bottom: 16px; font-size: 16px; }
         .palette-grid {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
             gap: 8px;
             margin-bottom: 20px;
         }
-
         .palette-btn {
             aspect-ratio: 1;
             border-radius: 12px;
@@ -253,18 +207,8 @@
             font-size: 14px;
             transition: all 0.2s;
         }
-
-        .palette-btn.answered {
-            background: var(--success);
-            color: white;
-        }
-
-        .palette-btn.current {
-            background: var(--primary);
-            color: white;
-            transform: scale(1.05);
-        }
-
+        .palette-btn.answered { background: var(--success); color: white; }
+        .palette-btn.current { background: var(--primary); color: white; transform: scale(1.05); }
         .palette-legend {
             display: flex;
             gap: 15px;
@@ -274,18 +218,9 @@
             padding-top: 16px;
             border-top: 1px solid var(--border);
         }
+        .legend-color { width: 16px; height: 16px; border-radius: 4px; }
 
-        .legend-color {
-            width: 16px;
-            height: 16px;
-            border-radius: 4px;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 60px;
-        }
-
+        .loading { text-align: center; padding: 60px; }
         .loading-spinner {
             width: 50px;
             height: 50px;
@@ -295,34 +230,15 @@
             animation: spin 0.8s linear infinite;
             margin: 0 auto 20px;
         }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        @media (max-width: 900px) {
-            .main-content {
-                flex-direction: column;
-            }
-            .palette-sidebar {
-                position: static;
-            }
-        }
-
-        @media (max-width: 600px) {
-            .palette-grid {
-                grid-template-columns: repeat(8, 1fr);
-            }
-        }
+        @media (max-width: 900px) { .main-content { flex-direction: column; } .palette-sidebar { position: static; } }
+        @media (max-width: 600px) { .palette-grid { grid-template-columns: repeat(8, 1fr); } }
     </style>
 </head>
 <body>
     <header class="header">
-        <div class="logo">
-            <a href="dashboard.html">
-                <h1>Mr. Timi <span>Scholar</span></h1>
-            </a>
-        </div>
+        <div class="logo"><a href="dashboard.html"><h1>Mr. Timi <span>Scholar</span></h1></a></div>
         <div class="exam-header">
             <div class="timer-box" id="timer">00:00</div>
             <div class="question-counter" id="questionCounter">Question 1 of 0</div>
@@ -330,10 +246,7 @@
     </header>
 
     <div class="main-content" id="mainContent">
-        <div class="loading">
-            <div class="loading-spinner"></div>
-            <p>Loading exam...</p>
-        </div>
+        <div class="loading"><div class="loading-spinner"></div><p>Loading exam...</p></div>
     </div>
 
     <script type="module">
@@ -416,13 +329,10 @@
             return arr;
         }
 
-        // NEW: Select questions without ever reusing answered ones.
-        // Returns null if not enough unanswered questions.
+        // Select questions without reusing answered ones.
         function selectQuestionsNoRepeats(filter, targetCount) {
-            // Get only unanswered questions that match the filter
             const unanswered = allQuestions.filter(q => filter(q) && !answeredQuestionIds.includes(q.id));
-            
-            // Remove duplicates by question text (in case of duplicate entries in DB)
+            // Deduplicate by question text
             const uniqueUnanswered = [];
             const seen = new Set();
             for (const q of unanswered) {
@@ -431,12 +341,9 @@
                     uniqueUnanswered.push(q);
                 }
             }
-            
             if (uniqueUnanswered.length >= targetCount) {
                 return shuffleArray(uniqueUnanswered).slice(0, targetCount);
             }
-            
-            // Not enough unanswered – cannot form a full exam without repeats
             return null;
         }
 
@@ -452,8 +359,7 @@
 
             // Load all questions
             const snapshot = await getDocs(collection(db, "questions"));
-            
-            // Deduplicate questions by questionText to prevent repeats from duplicate DB entries
+            // Deduplicate globally by question text to avoid duplicates from DB
             const uniqueMap = new Map();
             snapshot.forEach(doc => {
                 const q = { id: doc.id, ...doc.data() };
@@ -462,46 +368,19 @@
                 }
             });
             allQuestions = Array.from(uniqueMap.values());
-            console.log(`Loaded ${allQuestions.length} unique questions (after dedup)`);
+            console.log(`Loaded ${allQuestions.length} unique questions`);
 
             let filter;
-            
-            // Handle literature with subType
             if (subject === 'literature' && subType) {
                 filter = literatureFilters[subType];
-                if (!filter) {
-                    document.getElementById('mainContent').innerHTML = `
-                        <div style="text-align:center;padding:60px;background:white;border-radius:24px;">
-                            <i class="fas fa-exclamation-triangle" style="font-size:48px;color:var(--warning);margin-bottom:16px;"></i>
-                            <h3>Invalid Literature Section</h3>
-                            <p>The section "${subType}" is not recognized.</p>
-                            <button onclick="location.href='cbt-exam.html'" style="margin-top:20px;padding:12px 24px;background:var(--primary);color:white;border:none;border-radius:30px;">Back to Exams</button>
-                        </div>
-                    `;
-                    return;
-                }
-            } 
-            // Handle regular literature (no subType)
-            else if (subject === 'literature') {
+                if (!filter) { showInvalid(); return; }
+            } else if (subject === 'literature') {
                 filter = (q) => q.bookId === "literature";
-            } 
-            // Handle other subjects
-            else {
+            } else {
                 filter = subjectFilters[subject];
-                if (!filter) {
-                    document.getElementById('mainContent').innerHTML = `
-                        <div style="text-align:center;padding:60px;background:white;border-radius:24px;">
-                            <i class="fas fa-exclamation-triangle" style="font-size:48px;color:var(--warning);margin-bottom:16px;"></i>
-                            <h3>Invalid Subject</h3>
-                            <p>The subject "${subject}" is not recognized.</p>
-                            <button onclick="location.href='cbt-exam.html'" style="margin-top:20px;padding:12px 24px;background:var(--primary);color:white;border:none;border-radius:30px;">Back to Exams</button>
-                        </div>
-                    `;
-                    return;
-                }
+                if (!filter) { showInvalid(); return; }
             }
 
-            // Use the new selection method that never reuses answered questions
             selectedQuestions = selectQuestionsNoRepeats(filter, currentExam.totalQuestions);
 
             if (selectedQuestions === null || selectedQuestions.length < currentExam.totalQuestions) {
@@ -512,13 +391,11 @@
                         <i class="fas fa-database" style="font-size:48px;color:var(--gray);margin-bottom:16px;"></i>
                         <h3>Not Enough New Questions</h3>
                         <p>You need ${currentExam.totalQuestions} new questions for this exam.</p>
-                        <p>Total questions available in this subject: ${totalAvailable}<br>
-                        Questions you have already answered: ${totalAvailable - unansweredCount}<br>
-                        Remaining unanswered: ${unansweredCount}</p>
-                        <p>Please try a smaller exam or come back after more questions are added.</p>
+                        <p>Total available in this subject: ${totalAvailable}<br>Already answered: ${totalAvailable - unansweredCount}<br>Remaining unanswered: ${unansweredCount}</p>
+                        <p>Please try a smaller exam or create a custom combination.</p>
                         <div style="margin-top:20px; display:flex; gap:12px; justify-content:center;">
-                            <button onclick="location.href='cbt-exam.html'" class="btn btn-primary" style="background:var(--primary);color:white;padding:10px 20px;border-radius:40px;border:none;cursor:pointer;">Back to Exams</button>
-                            <button onclick="location.href='cbt-exam.html?custom=true'" class="btn btn-secondary" style="background:var(--light);color:var(--dark);padding:10px 20px;border-radius:40px;border:1px solid var(--border);cursor:pointer;">Create Custom Exam</button>
+                            <button onclick="location.href='cbt-exam.html'" style="background:var(--primary);color:white;padding:10px 20px;border-radius:40px;border:none;cursor:pointer;">Back to Exams</button>
+                            <button onclick="location.href='cbt-exam.html?custom=true'" style="background:var(--light);color:var(--dark);padding:10px 20px;border-radius:40px;border:1px solid var(--border);cursor:pointer;">Create Custom Exam</button>
                         </div>
                     </div>
                 `;
@@ -530,6 +407,16 @@
             timeLeft = currentExam.duration * 60;
             startTimer();
             renderExam();
+        }
+
+        function showInvalid() {
+            document.getElementById('mainContent').innerHTML = `
+                <div style="text-align:center;padding:60px;background:white;border-radius:24px;">
+                    <i class="fas fa-exclamation-triangle" style="font-size:48px;color:var(--warning);margin-bottom:16px;"></i>
+                    <h3>Invalid Exam Selection</h3>
+                    <button onclick="location.href='cbt-exam.html'" style="margin-top:20px;padding:12px 24px;background:var(--primary);color:white;border:none;border-radius:30px;">Back to Exams</button>
+                </div>
+            `;
         }
 
         function startTimer() {
@@ -553,11 +440,14 @@
             const selected = userAnswers[q.id] || '';
             const answeredCount = Object.keys(userAnswers).length;
 
+            const passageHtml = q.passage ? `<div class="passage-box">${escapeHtml(q.passage)}</div>` : '';
+
             const html = `
                 <div class="question-area">
                     <div style="margin-bottom: 12px; font-size: 12px; color: var(--gray); display: flex; justify-content: space-between;">
                         <span><i class="fas fa-book"></i> ${q.sectionName || q.bookId || 'Literature'} | Question ${currentIndex+1} of ${selectedQuestions.length}</span>
                     </div>
+                    ${passageHtml}
                     <div class="question-text">${currentIndex+1}. ${escapeHtml(q.questionText)}</div>
                     <div class="options-list">
                         ${['A', 'B', 'C', 'D'].map(opt => `
