@@ -6,13 +6,13 @@
     <title>Admin - Question Manager | Mr. Timi Scholar</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Keep your existing CSS – unchanged */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
+
         :root {
             --primary: #311b92;
             --primary-light: #4527a0;
@@ -26,10 +26,12 @@
             --border: #e5e7eb;
             --white: #ffffff;
         }
+
         body {
             background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
             min-height: 100vh;
         }
+
         .header {
             background: var(--white);
             padding: 12px 24px;
@@ -43,10 +45,27 @@
             flex-wrap: wrap;
             gap: 15px;
         }
-        .logo h1 { color: var(--primary); font-size: 24px; }
-        .logo span { color: var(--secondary); }
-        .logo a { text-decoration: none; }
-        .header-actions { display: flex; gap: 15px; align-items: center; flex-wrap: wrap; }
+
+        .logo h1 {
+            color: var(--primary);
+            font-size: 24px;
+        }
+
+        .logo span {
+            color: var(--secondary);
+        }
+
+        .logo a {
+            text-decoration: none;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
         .nav-btn {
             background: var(--light);
             border: none;
@@ -61,6 +80,7 @@
             text-decoration: none;
             color: var(--dark);
         }
+
         .admin-badge {
             background: var(--secondary);
             color: white;
@@ -69,7 +89,13 @@
             font-size: 12px;
             font-weight: 600;
         }
-        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
         .subject-selector {
             background: var(--white);
             border-radius: 24px;
@@ -78,13 +104,20 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
             border: 1px solid var(--border);
         }
-        .subject-selector h3 { color: var(--primary); margin-bottom: 16px; font-size: 18px; }
+
+        .subject-selector h3 {
+            color: var(--primary);
+            margin-bottom: 16px;
+            font-size: 18px;
+        }
+
         .subject-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             gap: 12px;
             margin-top: 16px;
         }
+
         .subject-btn {
             background: var(--light);
             border: 2px solid var(--border);
@@ -99,8 +132,18 @@
             gap: 10px;
             font-size: 14px;
         }
-        .subject-btn:hover { border-color: var(--primary); background: #e8eaf6; }
-        .subject-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+        .subject-btn:hover {
+            border-color: var(--primary);
+            background: #e8eaf6;
+        }
+
+        .subject-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
         .stats-bar {
             background: var(--light);
             border-radius: 16px;
@@ -112,8 +155,17 @@
             flex-wrap: wrap;
             gap: 15px;
         }
-        .stats-bar span { font-size: 14px; color: var(--gray); }
-        .stats-bar strong { color: var(--primary); font-size: 18px; }
+
+        .stats-bar span {
+            font-size: 14px;
+            color: var(--gray);
+        }
+
+        .stats-bar strong {
+            color: var(--primary);
+            font-size: 18px;
+        }
+
         .delete-all-btn {
             background: var(--danger);
             color: white;
@@ -127,6 +179,7 @@
             align-items: center;
             gap: 6px;
         }
+
         .tabs {
             display: flex;
             gap: 10px;
@@ -137,6 +190,7 @@
             flex-wrap: wrap;
             border: 1px solid var(--border);
         }
+
         .tab-btn {
             padding: 10px 24px;
             border-radius: 40px;
@@ -146,7 +200,12 @@
             font-weight: 600;
             transition: all 0.2s;
         }
-        .tab-btn.active { background: var(--primary); color: white; }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
         .upload-section {
             background: var(--white);
             border-radius: 24px;
@@ -155,7 +214,13 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
             border: 1px solid var(--border);
         }
-        .upload-section h3 { color: var(--primary); margin-bottom: 16px; font-size: 18px; }
+
+        .upload-section h3 {
+            color: var(--primary);
+            margin-bottom: 16px;
+            font-size: 18px;
+        }
+
         .csv-template {
             background: var(--light);
             padding: 16px;
@@ -164,6 +229,7 @@
             font-size: 13px;
             overflow-x: auto;
         }
+
         .csv-template code {
             background: var(--border);
             padding: 2px 6px;
@@ -171,6 +237,7 @@
             font-family: monospace;
             font-size: 12px;
         }
+
         textarea {
             width: 100%;
             padding: 16px;
@@ -181,16 +248,43 @@
             margin-bottom: 16px;
             resize: vertical;
         }
+
         .question-form {
             display: flex;
             flex-direction: column;
             gap: 16px;
         }
-        .form-row { display: flex; gap: 12px; flex-wrap: wrap; }
-        .form-row input, .form-row select { flex: 1; padding: 12px; border: 2px solid var(--border); border-radius: 12px; }
-        .options-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-        .option-input { display: flex; align-items: center; gap: 10px; }
-        .option-input span { font-weight: 700; width: 30px; }
+
+        .form-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .form-row input, .form-row select {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .option-input {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .option-input span {
+            font-weight: 700;
+            width: 30px;
+        }
+
         .btn {
             padding: 10px 20px;
             border-radius: 40px;
@@ -201,16 +295,35 @@
             align-items: center;
             gap: 8px;
         }
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-success { background: var(--success); color: white; }
-        .btn-danger { background: var(--danger); color: white; }
-        .btn-secondary { background: var(--light); color: var(--dark); border: 1px solid var(--border); }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: var(--light);
+            color: var(--dark);
+            border: 1px solid var(--border);
+        }
+
         .questions-list {
             background: var(--white);
             border-radius: 24px;
             padding: 20px;
             border: 1px solid var(--border);
         }
+
         .questions-header {
             display: flex;
             justify-content: space-between;
@@ -219,19 +332,26 @@
             flex-wrap: wrap;
             gap: 15px;
         }
+
         .search-box {
             padding: 8px 16px;
             border: 2px solid var(--border);
             border-radius: 30px;
             width: 250px;
         }
+
         .question-item {
             background: var(--light);
             border-radius: 16px;
             padding: 16px;
             margin-bottom: 12px;
         }
-        .question-text { font-weight: 600; margin-bottom: 12px; }
+
+        .question-text {
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
         .question-meta {
             display: flex;
             gap: 20px;
@@ -240,18 +360,25 @@
             margin-bottom: 12px;
             flex-wrap: wrap;
         }
+
         .options-preview {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 8px;
             font-size: 13px;
         }
+
         .option-preview {
             padding: 4px 8px;
             background: var(--white);
             border-radius: 8px;
         }
-        .option-preview.correct { background: #d1fae5; color: #065f46; }
+
+        .option-preview.correct {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
         .toast {
             position: fixed;
             bottom: 30px;
@@ -263,17 +390,33 @@
             z-index: 1000;
             display: none;
         }
-        .loading { text-align: center; padding: 40px; color: var(--gray); }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--gray);
+        }
+
         @media (max-width: 768px) {
-            .container { padding: 16px; }
-            .options-grid { grid-template-columns: 1fr; }
-            .subject-grid { grid-template-columns: repeat(2, 1fr); }
+            .container {
+                padding: 16px;
+            }
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+            .subject-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
     </style>
 </head>
 <body>
     <header class="header">
-        <div class="logo"><a href="dashboard.html"><h1>Mr. Timi <span>Scholar</span></h1></a></div>
+        <div class="logo">
+            <a href="dashboard.html">
+                <h1>Mr. Timi <span>Scholar</span></h1>
+            </a>
+        </div>
         <div class="header-actions">
             <a href="dashboard.html" class="nav-btn"><i class="fas fa-home"></i> Dashboard</a>
             <a href="admin-write.html" class="nav-btn"><i class="fas fa-edit"></i> Write Summary</a>
@@ -531,7 +674,6 @@
                 }
                 parts.push(current.trim());
                 const cleanParts = parts.map(p => p.replace(/^"|"$/g, ''));
-                // Expected columns: sectionName, questionText, optionA, optionB, optionC, optionD, correctAnswer, difficulty, explanation, passage (optional)
                 if (cleanParts.length >= 8) {
                     const passage = cleanParts.length > 9 ? cleanParts[9] : '';
                     try {
