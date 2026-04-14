@@ -6,13 +6,13 @@
     <title>Admin - Question Manager | Mr. Timi Scholar</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* Keep your existing CSS – unchanged */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
         :root {
             --primary: #311b92;
             --primary-light: #4527a0;
@@ -26,12 +26,10 @@
             --border: #e5e7eb;
             --white: #ffffff;
         }
-
         body {
             background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
             min-height: 100vh;
         }
-
         .header {
             background: var(--white);
             padding: 12px 24px;
@@ -45,27 +43,10 @@
             flex-wrap: wrap;
             gap: 15px;
         }
-
-        .logo h1 {
-            color: var(--primary);
-            font-size: 24px;
-        }
-
-        .logo span {
-            color: var(--secondary);
-        }
-
-        .logo a {
-            text-decoration: none;
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 15px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
+        .logo h1 { color: var(--primary); font-size: 24px; }
+        .logo span { color: var(--secondary); }
+        .logo a { text-decoration: none; }
+        .header-actions { display: flex; gap: 15px; align-items: center; flex-wrap: wrap; }
         .nav-btn {
             background: var(--light);
             border: none;
@@ -80,7 +61,6 @@
             text-decoration: none;
             color: var(--dark);
         }
-
         .admin-badge {
             background: var(--secondary);
             color: white;
@@ -89,13 +69,7 @@
             font-size: 12px;
             font-weight: 600;
         }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
         .subject-selector {
             background: var(--white);
             border-radius: 24px;
@@ -104,20 +78,13 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
             border: 1px solid var(--border);
         }
-
-        .subject-selector h3 {
-            color: var(--primary);
-            margin-bottom: 16px;
-            font-size: 18px;
-        }
-
+        .subject-selector h3 { color: var(--primary); margin-bottom: 16px; font-size: 18px; }
         .subject-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             gap: 12px;
             margin-top: 16px;
         }
-
         .subject-btn {
             background: var(--light);
             border: 2px solid var(--border);
@@ -132,18 +99,8 @@
             gap: 10px;
             font-size: 14px;
         }
-
-        .subject-btn:hover {
-            border-color: var(--primary);
-            background: #e8eaf6;
-        }
-
-        .subject-btn.active {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
-
+        .subject-btn:hover { border-color: var(--primary); background: #e8eaf6; }
+        .subject-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
         .stats-bar {
             background: var(--light);
             border-radius: 16px;
@@ -155,17 +112,8 @@
             flex-wrap: wrap;
             gap: 15px;
         }
-
-        .stats-bar span {
-            font-size: 14px;
-            color: var(--gray);
-        }
-
-        .stats-bar strong {
-            color: var(--primary);
-            font-size: 18px;
-        }
-
+        .stats-bar span { font-size: 14px; color: var(--gray); }
+        .stats-bar strong { color: var(--primary); font-size: 18px; }
         .delete-all-btn {
             background: var(--danger);
             color: white;
@@ -179,7 +127,6 @@
             align-items: center;
             gap: 6px;
         }
-
         .tabs {
             display: flex;
             gap: 10px;
@@ -190,7 +137,6 @@
             flex-wrap: wrap;
             border: 1px solid var(--border);
         }
-
         .tab-btn {
             padding: 10px 24px;
             border-radius: 40px;
@@ -200,12 +146,7 @@
             font-weight: 600;
             transition: all 0.2s;
         }
-
-        .tab-btn.active {
-            background: var(--primary);
-            color: white;
-        }
-
+        .tab-btn.active { background: var(--primary); color: white; }
         .upload-section {
             background: var(--white);
             border-radius: 24px;
@@ -214,13 +155,7 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
             border: 1px solid var(--border);
         }
-
-        .upload-section h3 {
-            color: var(--primary);
-            margin-bottom: 16px;
-            font-size: 18px;
-        }
-
+        .upload-section h3 { color: var(--primary); margin-bottom: 16px; font-size: 18px; }
         .csv-template {
             background: var(--light);
             padding: 16px;
@@ -229,7 +164,6 @@
             font-size: 13px;
             overflow-x: auto;
         }
-
         .csv-template code {
             background: var(--border);
             padding: 2px 6px;
@@ -237,7 +171,6 @@
             font-family: monospace;
             font-size: 12px;
         }
-
         textarea {
             width: 100%;
             padding: 16px;
@@ -248,43 +181,16 @@
             margin-bottom: 16px;
             resize: vertical;
         }
-
         .question-form {
             display: flex;
             flex-direction: column;
             gap: 16px;
         }
-
-        .form-row {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .form-row input, .form-row select {
-            flex: 1;
-            padding: 12px;
-            border: 2px solid var(--border);
-            border-radius: 12px;
-        }
-
-        .options-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-        }
-
-        .option-input {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .option-input span {
-            font-weight: 700;
-            width: 30px;
-        }
-
+        .form-row { display: flex; gap: 12px; flex-wrap: wrap; }
+        .form-row input, .form-row select { flex: 1; padding: 12px; border: 2px solid var(--border); border-radius: 12px; }
+        .options-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .option-input { display: flex; align-items: center; gap: 10px; }
+        .option-input span { font-weight: 700; width: 30px; }
         .btn {
             padding: 10px 20px;
             border-radius: 40px;
@@ -295,35 +201,16 @@
             align-items: center;
             gap: 8px;
         }
-
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-        }
-
-        .btn-success {
-            background: var(--success);
-            color: white;
-        }
-
-        .btn-danger {
-            background: var(--danger);
-            color: white;
-        }
-
-        .btn-secondary {
-            background: var(--light);
-            color: var(--dark);
-            border: 1px solid var(--border);
-        }
-
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-success { background: var(--success); color: white; }
+        .btn-danger { background: var(--danger); color: white; }
+        .btn-secondary { background: var(--light); color: var(--dark); border: 1px solid var(--border); }
         .questions-list {
             background: var(--white);
             border-radius: 24px;
             padding: 20px;
             border: 1px solid var(--border);
         }
-
         .questions-header {
             display: flex;
             justify-content: space-between;
@@ -332,26 +219,19 @@
             flex-wrap: wrap;
             gap: 15px;
         }
-
         .search-box {
             padding: 8px 16px;
             border: 2px solid var(--border);
             border-radius: 30px;
             width: 250px;
         }
-
         .question-item {
             background: var(--light);
             border-radius: 16px;
             padding: 16px;
             margin-bottom: 12px;
         }
-
-        .question-text {
-            font-weight: 600;
-            margin-bottom: 12px;
-        }
-
+        .question-text { font-weight: 600; margin-bottom: 12px; }
         .question-meta {
             display: flex;
             gap: 20px;
@@ -360,25 +240,18 @@
             margin-bottom: 12px;
             flex-wrap: wrap;
         }
-
         .options-preview {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 8px;
             font-size: 13px;
         }
-
         .option-preview {
             padding: 4px 8px;
             background: var(--white);
             border-radius: 8px;
         }
-
-        .option-preview.correct {
-            background: #d1fae5;
-            color: #065f46;
-        }
-
+        .option-preview.correct { background: #d1fae5; color: #065f46; }
         .toast {
             position: fixed;
             bottom: 30px;
@@ -390,33 +263,17 @@
             z-index: 1000;
             display: none;
         }
-
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: var(--gray);
-        }
-
+        .loading { text-align: center; padding: 40px; color: var(--gray); }
         @media (max-width: 768px) {
-            .container {
-                padding: 16px;
-            }
-            .options-grid {
-                grid-template-columns: 1fr;
-            }
-            .subject-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
+            .container { padding: 16px; }
+            .options-grid { grid-template-columns: 1fr; }
+            .subject-grid { grid-template-columns: repeat(2, 1fr); }
         }
     </style>
 </head>
 <body>
     <header class="header">
-        <div class="logo">
-            <a href="dashboard.html">
-                <h1>Mr. Timi <span>Scholar</span></h1>
-            </a>
-        </div>
+        <div class="logo"><a href="dashboard.html"><h1>Mr. Timi <span>Scholar</span></h1></a></div>
         <div class="header-actions">
             <a href="dashboard.html" class="nav-btn"><i class="fas fa-home"></i> Dashboard</a>
             <a href="admin-write.html" class="nav-btn"><i class="fas fa-edit"></i> Write Summary</a>
@@ -433,9 +290,7 @@
         <div class="stats-bar" id="statsBar">
             <span><i class="fas fa-database"></i> Total Questions: <strong id="totalCount">0</strong></span>
             <span><i class="fas fa-book"></i> Current Subject: <strong id="currentSubject">None Selected</strong></span>
-            <button id="deleteAllSubjectBtn" class="delete-all-btn" style="display: none;">
-                <i class="fas fa-trash-alt"></i> Delete All in Subject
-            </button>
+            <button id="deleteAllSubjectBtn" class="delete-all-btn" style="display: none;"><i class="fas fa-trash-alt"></i> Delete All in Subject</button>
         </div>
 
         <div class="tabs">
@@ -444,13 +299,16 @@
             <button class="tab-btn" data-tab="list">📋 Question List</button>
         </div>
 
+        <!-- Bulk Upload Tab -->
         <div id="bulkTab" class="upload-section">
             <h3><i class="fas fa-file-upload"></i> Bulk Upload Questions (CSV Format)</h3>
             <div class="csv-template">
                 <strong>📝 CSV Format - Copy and paste:</strong><br>
-                <code>sectionName,questionText,optionA,optionB,optionC,optionD,correctAnswer,difficulty,explanation</code><br><br>
-                <strong>Example:</strong><br>
-                <code>General,Which of the following is NOT a characteristic of the parliamentary system of government?,Ministers are usually members of parliament,The Prime Minister is politically responsible to the parliament,The Head of State is the powerful organ of government,The Head of Government may advise the Head of State to dissolve parliament,C,Medium,In a parliamentary system the Head of State is ceremonial while the Head of Government exercises real power.</code>
+                <code>sectionName,questionText,optionA,optionB,optionC,optionD,correctAnswer,difficulty,explanation,passage</code><br><br>
+                <strong>Example (without passage):</strong><br>
+                <code>General,What is the capital of Nigeria?,Lagos,Abuja,Kano,Ibadan,B,Easy,Abuja is the capital city of Nigeria,</code><br>
+                <strong>Example (with passage):</strong><br>
+                <code>Comprehension,According to the passage what is the main idea?,Option A,Option B,Option C,Option D,A,Medium,Explanation here,The passage text goes here. It can span multiple sentences.</code>
             </div>
             <textarea id="csvInput" rows="8" placeholder="Paste your CSV data here..."></textarea>
             <div style="display: flex; gap: 12px; flex-wrap: wrap;">
@@ -458,16 +316,18 @@
                 <button id="downloadTemplateBtn" class="btn btn-secondary"><i class="fas fa-download"></i> Download CSV Template</button>
             </div>
             <p style="margin-top: 12px; font-size: 12px; color: var(--gray);">
-                <i class="fas fa-info-circle"></i> The subject is automatically set to your selected subject. First line should be headers.
+                <i class="fas fa-info-circle"></i> The subject is automatically set to your selected subject. First line must be headers. Passage is optional.
             </p>
         </div>
 
+        <!-- Single Question Tab -->
         <div id="singleTab" class="upload-section" style="display: none;">
             <h3><i class="fas fa-plus-circle"></i> Add Single Question</h3>
             <div class="question-form">
                 <div class="form-row">
-                    <input type="text" id="sectionName" placeholder="Section (e.g., Chapter 1, General)">
+                    <input type="text" id="sectionName" placeholder="Section (e.g., Chapter 1, General, Comprehension)">
                 </div>
+                <textarea id="passage" rows="4" placeholder="Passage (for comprehension questions) - optional"></textarea>
                 <textarea id="questionText" rows="3" placeholder="Question text..."></textarea>
                 <div class="options-grid">
                     <div class="option-input"><span>A.</span><input type="text" id="optionA" placeholder="Option A"></div>
@@ -494,6 +354,7 @@
             </div>
         </div>
 
+        <!-- Question Bank List -->
         <div id="listTab" class="questions-list" style="display: none;">
             <div class="questions-header">
                 <h3><i class="fas fa-list"></i> Questions for <span id="listSubjectName">-</span></h3>
@@ -520,7 +381,6 @@
             messagingSenderId: "79307850494",
             appId: "1:79307850494:web:b51ce51204140ec5429baf",
         };
-
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
@@ -552,7 +412,6 @@
                     ${subj.name}
                 </button>
             `).join('');
-
             document.querySelectorAll('.subject-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
                     document.querySelectorAll('.subject-btn').forEach(b => b.classList.remove('active'));
@@ -571,34 +430,25 @@
             if (!currentSubject) return;
             const container = document.getElementById('questionsContainer');
             container.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading questions...</div>';
-            
             try {
                 const q = query(collection(db, "questions"), where("bookId", "==", currentSubject));
                 const snapshot = await getDocs(q);
                 currentQuestions = [];
-                snapshot.forEach(doc => {
-                    currentQuestions.push({ id: doc.id, ...doc.data() });
-                });
-                
+                snapshot.forEach(doc => { currentQuestions.push({ id: doc.id, ...doc.data() }); });
                 document.getElementById('totalCount').innerText = currentQuestions.length;
-                
                 let filtered = currentQuestions;
                 if (searchTerm) {
                     const term = searchTerm.toLowerCase();
-                    filtered = currentQuestions.filter(q => 
-                        q.questionText?.toLowerCase().includes(term) ||
-                        q.sectionName?.toLowerCase().includes(term)
-                    );
+                    filtered = currentQuestions.filter(q => q.questionText?.toLowerCase().includes(term) || q.sectionName?.toLowerCase().includes(term));
                 }
-                
                 if (filtered.length === 0) {
                     container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--gray);"><i class="fas fa-folder-open"></i> No questions yet. Upload some!</div>';
                     return;
                 }
-                
                 container.innerHTML = filtered.map(q => `
                     <div class="question-item">
                         <div class="question-text">${escapeHtml(q.questionText)}</div>
+                        ${q.passage ? `<div style="background:#eef2ff; padding:8px; border-radius:8px; margin-bottom:8px; font-style:italic; font-size:13px;"><strong>📖 Passage:</strong> ${escapeHtml(q.passage.substring(0,200))}${q.passage.length>200?'...':''}</div>` : ''}
                         <div class="question-meta">
                             <span><i class="fas fa-tag"></i> ${q.sectionName || 'General'}</span>
                             <span><i class="fas fa-chart-line"></i> ${q.difficulty || 'Medium'}</span>
@@ -610,15 +460,13 @@
                             <div class="option-preview ${q.correctAnswer === 'C' ? 'correct' : ''}"><strong>C.</strong> ${escapeHtml(q.options?.C || '')}</div>
                             <div class="option-preview ${q.correctAnswer === 'D' ? 'correct' : ''}"><strong>D.</strong> ${escapeHtml(q.options?.D || '')}</div>
                         </div>
-                        ${q.explanation ? `<div style="font-size:12px;color:var(--gray);margin-top:8px;"><i class="fas fa-info-circle"></i> ${escapeHtml(q.explanation.substring(0, 100))}${q.explanation.length > 100 ? '...' : ''}</div>` : ''}
+                        ${q.explanation ? `<div style="font-size:12px;color:var(--gray);margin-top:8px;"><i class="fas fa-info-circle"></i> ${escapeHtml(q.explanation.substring(0,100))}${q.explanation.length>100?'...':''}</div>` : ''}
                         <div style="margin-top:12px;display:flex;justify-content:flex-end;">
                             <button class="btn-danger" style="padding:6px 12px;border-radius:20px;font-size:12px;" onclick="window.deleteQuestion('${q.id}')">Delete</button>
                         </div>
                     </div>
                 `).join('');
-                
                 window.deleteQuestion = deleteQuestion;
-                
             } catch (error) {
                 console.error(error);
                 container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--danger);">Error loading questions</div>';
@@ -634,28 +482,19 @@
         }
 
         async function deleteAllQuestionsInSubject() {
-            if (!currentSubject) {
-                showToast('No subject selected', true);
-                return;
-            }
+            if (!currentSubject) { showToast('No subject selected', true); return; }
             if (confirm(`⚠️ Delete ALL ${currentQuestions.length} questions for ${subjects.find(s => s.id === currentSubject)?.name}? This cannot be undone!`)) {
                 const confirmText = prompt(`Type "DELETE ${currentSubject.toUpperCase()}" to confirm:`);
-                if (confirmText !== `DELETE ${currentSubject.toUpperCase()}`) {
-                    showToast('Deletion cancelled', true);
-                    return;
-                }
-                
+                if (confirmText !== `DELETE ${currentSubject.toUpperCase()}`) { showToast('Deletion cancelled', true); return; }
                 const deleteBtn = document.getElementById('deleteAllSubjectBtn');
                 deleteBtn.disabled = true;
                 deleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Deleting...';
-                
                 let deleted = 0;
                 for (const q of currentQuestions) {
                     await deleteDoc(doc(db, "questions", q.id));
                     deleted++;
                     deleteBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Deleting: ${deleted}/${currentQuestions.length}`;
                 }
-                
                 showToast(`✅ Deleted ${deleted} questions`);
                 loadQuestionsForSubject();
                 deleteBtn.disabled = false;
@@ -672,93 +511,53 @@
         }
 
         async function uploadBulk() {
-            if (!currentSubject) {
-                showToast('Please select a subject first', true);
-                return;
-            }
-            
+            if (!currentSubject) { showToast('Please select a subject first', true); return; }
             const csvText = document.getElementById('csvInput').value;
-            if (!csvText.trim()) {
-                showToast('Please paste CSV data', true);
-                return;
-            }
-            
+            if (!csvText.trim()) { showToast('Please paste CSV data', true); return; }
             const lines = csvText.trim().split(/\r?\n/);
             let success = 0, failed = 0;
-            
-            // Skip header row if it exists
             let startIndex = 0;
-            if (lines[0].toLowerCase().includes('sectionname')) {
-                startIndex = 1;
-            }
-            
+            if (lines[0].toLowerCase().includes('sectionname')) startIndex = 1;
             for (let i = startIndex; i < lines.length; i++) {
                 const line = lines[i].trim();
                 if (!line) continue;
-                
-                // Parse CSV line (handles quotes)
                 const parts = [];
-                let current = '';
-                let inQuotes = false;
-                
+                let current = '', inQuotes = false;
                 for (let j = 0; j < line.length; j++) {
                     const char = line[j];
-                    if (char === '"') {
-                        inQuotes = !inQuotes;
-                    } else if (char === ',' && !inQuotes) {
-                        parts.push(current.trim());
-                        current = '';
-                    } else {
-                        current += char;
-                    }
+                    if (char === '"') inQuotes = !inQuotes;
+                    else if (char === ',' && !inQuotes) { parts.push(current.trim()); current = ''; }
+                    else current += char;
                 }
                 parts.push(current.trim());
-                
-                // Remove quotes from parts
                 const cleanParts = parts.map(p => p.replace(/^"|"$/g, ''));
-                
+                // Expected columns: sectionName, questionText, optionA, optionB, optionC, optionD, correctAnswer, difficulty, explanation, passage (optional)
                 if (cleanParts.length >= 8) {
+                    const passage = cleanParts.length > 9 ? cleanParts[9] : '';
                     try {
                         await addDoc(collection(db, "questions"), {
                             bookId: currentSubject,
                             sectionName: cleanParts[0] || 'General',
                             questionText: cleanParts[1],
-                            options: { 
-                                A: cleanParts[2] || '', 
-                                B: cleanParts[3] || '', 
-                                C: cleanParts[4] || '', 
-                                D: cleanParts[5] || '' 
-                            },
+                            options: { A: cleanParts[2] || '', B: cleanParts[3] || '', C: cleanParts[4] || '', D: cleanParts[5] || '' },
                             correctAnswer: cleanParts[6].toUpperCase(),
                             difficulty: cleanParts[7] || 'Medium',
                             explanation: cleanParts[8] || '',
+                            passage: passage,
                             createdAt: new Date().toISOString()
                         });
                         success++;
-                    } catch (e) { 
-                        console.error(e);
-                        failed++; 
-                    }
-                } else {
-                    console.log('Skipping line, not enough parts:', cleanParts);
-                    failed++;
-                }
+                    } catch (e) { console.error(e); failed++; }
+                } else { failed++; }
             }
-            
             showToast(`✅ Uploaded ${success} questions. Failed: ${failed}`);
-            if (success > 0) {
-                document.getElementById('csvInput').value = '';
-                loadQuestionsForSubject();
-            }
+            if (success > 0) { document.getElementById('csvInput').value = ''; loadQuestionsForSubject(); }
         }
 
         async function addSingleQuestion() {
-            if (!currentSubject) {
-                showToast('Please select a subject first', true);
-                return;
-            }
-            
+            if (!currentSubject) { showToast('Please select a subject first', true); return; }
             const sectionName = document.getElementById('sectionName').value;
+            const passage = document.getElementById('passage').value;
             const questionText = document.getElementById('questionText').value;
             const optionA = document.getElementById('optionA').value;
             const optionB = document.getElementById('optionB').value;
@@ -767,16 +566,12 @@
             const correctAnswer = document.getElementById('correctAnswer').value;
             const difficulty = document.getElementById('difficulty').value;
             const explanation = document.getElementById('explanation').value;
-            
-            if (!questionText || !optionA || !correctAnswer) {
-                showToast('Please fill all required fields', true);
-                return;
-            }
-            
+            if (!questionText || !optionA || !correctAnswer) { showToast('Please fill all required fields', true); return; }
             try {
                 await addDoc(collection(db, "questions"), {
                     bookId: currentSubject,
                     sectionName: sectionName || 'General',
+                    passage: passage || '',
                     questionText,
                     options: { A: optionA, B: optionB, C: optionC, D: optionD },
                     correctAnswer,
@@ -786,6 +581,7 @@
                 });
                 showToast('✅ Question added!');
                 document.getElementById('sectionName').value = '';
+                document.getElementById('passage').value = '';
                 document.getElementById('questionText').value = '';
                 document.getElementById('optionA').value = '';
                 document.getElementById('optionB').value = '';
@@ -794,13 +590,11 @@
                 document.getElementById('correctAnswer').value = '';
                 document.getElementById('explanation').value = '';
                 loadQuestionsForSubject();
-            } catch (error) {
-                showToast('Error adding question', true);
-            }
+            } catch (error) { showToast('Error adding question', true); }
         }
 
         function downloadTemplate() {
-            const template = `sectionName,questionText,optionA,optionB,optionC,optionD,correctAnswer,difficulty,explanation\nGeneral,What is the capital of Nigeria?,Lagos,Abuja,Kano,Ibadan,B,Easy,Abuja is the capital city of Nigeria`;
+            const template = `sectionName,questionText,optionA,optionB,optionC,optionD,correctAnswer,difficulty,explanation,passage\nGeneral,What is the capital of Nigeria?,Lagos,Abuja,Kano,Ibadan,B,Easy,Abuja is the capital city of Nigeria,\nComprehension,According to the passage what is the main idea?,Option A,Option B,Option C,Option D,A,Medium,Explanation here,The passage text goes here. It can span multiple sentences.`;
             const blob = new Blob([template], { type: 'text/csv' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -812,12 +606,7 @@
             URL.revokeObjectURL(url);
         }
 
-        function escapeHtml(text) { 
-            if (!text) return ''; 
-            const d = document.createElement('div'); 
-            d.textContent = text; 
-            return d.innerHTML; 
-        }
+        function escapeHtml(text) { if (!text) return ''; const d = document.createElement('div'); d.textContent = text; return d.innerHTML; }
 
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.addEventListener('click', () => {
@@ -835,7 +624,6 @@
         document.getElementById('addQuestionBtn').addEventListener('click', addSingleQuestion);
         document.getElementById('downloadTemplateBtn').addEventListener('click', downloadTemplate);
         document.getElementById('deleteAllSubjectBtn').addEventListener('click', deleteAllQuestionsInSubject);
-        
         let searchTimeout;
         document.getElementById('searchQuestions').addEventListener('input', (e) => {
             clearTimeout(searchTimeout);
@@ -844,10 +632,7 @@
 
         onAuthStateChanged(auth, (user) => {
             if (!user) { window.location.href = "index.html"; return; }
-            if (!adminEmails.includes(user.email)) {
-                document.body.innerHTML = '<div style="text-align:center;padding:80px"><i class="fas fa-lock"></i><h2>Access Denied</h2></div>';
-                return;
-            }
+            if (!adminEmails.includes(user.email)) { document.body.innerHTML = '<div style="text-align:center;padding:80px"><i class="fas fa-lock"></i><h2>Access Denied</h2></div>'; return; }
             renderSubjectGrid();
         });
     </script>
