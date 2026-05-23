@@ -2,914 +2,918 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Mr. Timi Edutop Scholar - Literature Learning Platform</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mr. Timi Edutop Scholar — Sign In</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Keep all your existing styles - they remain the same */
-        * { 
-            margin: 0; 
-            padding: 0; 
-            box-sizing: border-box; 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+        :root {
+            --brand-primary: #2563EB;
+            --brand-primary-dark: #1D4ED8;
+            --brand-accent: #F59E0B;
+            --text-primary: #111827;
+            --text-secondary: #6B7280;
+            --text-muted: #9CA3AF;
+            --bg-white: #FFFFFF;
+            --bg-gray-50: #F9FAFB;
+            --bg-gray-100: #F3F4F6;
+            --border-light: #E5E7EB;
+            --border-focus: #93C5FD;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -2px rgba(0,0,0,0.05);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.04);
+            --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+            --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-smooth: 250ms cubic-bezier(0.4, 0, 0.2, 1);
         }
-        
-        body { 
-            background: linear-gradient(135deg, #1a237e 0%, #311b92 100%);
-            min-height: 100vh; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            padding: 20px;
-            position: relative;
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at 20% 50%, rgba(255,87,34,0.08) 0%, transparent 50%);
-            pointer-events: none;
-        }
-        
-        .container { 
-            display: flex; 
-            width: 100%; 
-            max-width: 1200px; 
-            min-height: auto;
-            background: rgba(255, 255, 255, 0.98); 
-            border-radius: 32px; 
-            overflow: hidden; 
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
-            transition: transform 0.3s ease;
-        }
-        
-        .container:hover {
-            transform: translateY(-5px);
-        }
-        
-        .slider-section { 
-            flex: 1; 
-            position: relative; 
-            overflow: hidden; 
-            min-height: 600px;
-            background: linear-gradient(135deg, #1a237e 0%, #311b92 100%);
-        }
-        
-        .slider { 
-            position: relative; 
-            width: 100%; 
-            height: 100%; 
-        }
-        
-        .slide { 
-            position: absolute; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%; 
-            opacity: 0; 
-            transition: opacity 1s ease-in-out; 
-            background-size: cover; 
-            background-position: center; 
-            background-repeat: no-repeat; 
-        }
-        
-        .slide::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(26,35,126,0.7) 0%, rgba(49,27,146,0.7) 100%);
-        }
-        
-        .slide.active { 
-            opacity: 1; 
-        }
-        
-        .slide-content { 
-            position: absolute; 
-            bottom: 0; 
-            left: 0; 
-            right: 0; 
-            padding: 40px; 
-            background: linear-gradient(transparent, rgba(0, 0, 0, 0.85)); 
-            color: white; 
-            z-index: 2;
-        }
-        
-        .slide-content h3 { 
-            font-size: 28px; 
-            margin-bottom: 12px; 
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-            font-weight: 700;
-        }
-        
-        .slide-content p { 
-            font-size: 16px; 
-            opacity: 0.95; 
-            line-height: 1.5;
-        }
-        
-        .slider-indicators { 
-            position: absolute; 
-            bottom: 25px; 
-            left: 0; 
-            right: 0; 
-            display: flex; 
-            justify-content: center; 
-            gap: 12px; 
-            z-index: 10; 
-        }
-        
-        .indicator { 
-            width: 10px; 
-            height: 10px; 
-            border-radius: 50%; 
-            background: rgba(255, 255, 255, 0.5); 
-            cursor: pointer; 
-            transition: all 0.3s; 
-        }
-        
-        .indicator.active { 
-            background: #ff5722; 
-            transform: scale(1.3);
-            box-shadow: 0 0 10px rgba(255,87,34,0.5);
-        }
-        
-        .form-section { 
-            flex: 1; 
-            padding: 50px 45px; 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: center; 
-            background: white;
-        }
-        
-        .logo { 
-            text-align: center; 
-            margin-bottom: 35px; 
-        }
-        
-        .logo h1 { 
-            color: #311b92;
-            font-size: 36px; 
-            margin-bottom: 8px; 
-            font-weight: 800;
-        }
-        
-        .logo span { 
-            color: #ff5722;
-        }
-        
-        .logo p { 
-            color: #888; 
-            font-size: 14px; 
-            letter-spacing: 1px; 
-            font-weight: 500;
-        }
-        
-        .form-container { 
-            width: 100%; 
-        }
-        
-        .form-toggle { 
-            display: flex; 
-            margin-bottom: 35px; 
-            background: #f5f5f5; 
-            border-radius: 60px; 
-            padding: 5px; 
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-        
-        .toggle-btn { 
-            flex: 1; 
-            padding: 12px; 
-            text-align: center; 
-            cursor: pointer; 
-            border-radius: 60px; 
-            font-weight: 700; 
-            transition: all 0.3s ease; 
-            border: none; 
-            background: transparent; 
-            font-size: 15px; 
-            letter-spacing: 0.5px;
-            color: #666;
-        }
-        
-        .toggle-btn.active { 
-            background: #311b92;
-            color: white; 
-            box-shadow: 0 5px 15px rgba(49, 27, 146, 0.3);
-            transform: scale(1.02);
-        }
-        
-        .form { 
-            display: none; 
-        }
-        
-        .form.active { 
-            display: block; 
-            animation: fadeInUp 0.5s ease; 
-        }
-        
-        @keyframes fadeInUp { 
-            from { 
-                opacity: 0; 
-                transform: translateY(20px); 
-            } 
-            to { 
-                opacity: 1; 
-                transform: translateY(0); 
-            } 
-        }
-        
-        .form h2 { 
-            margin-bottom: 30px; 
-            color: #311b92;
-            text-align: center; 
-            font-size: 28px;
-            font-weight: 700;
-        }
-        
-        .form-group { 
-            margin-bottom: 22px; 
-            position: relative; 
-        }
-        
-        .form-group .input-icon { 
-            position: absolute; 
-            left: 18px; 
-            top: 50%; 
-            transform: translateY(-50%); 
-            color: #aaa; 
-            z-index: 2; 
-            font-size: 16px;
-            transition: color 0.3s;
-        }
-        
-        .form-group:focus-within .input-icon {
-            color: #311b92;
-        }
-        
-        .form-control { 
-            width: 100%; 
-            padding: 14px 50px 14px 48px; 
-            border: 2px solid #e8e8e8; 
-            border-radius: 16px; 
-            font-size: 15px; 
-            transition: all 0.3s; 
-            background: #fafafa;
-        }
-        
-        .form-control:focus { 
-            border-color: #311b92; 
-            outline: none; 
-            background: white;
-            box-shadow: 0 0 0 4px rgba(49, 27, 146, 0.1);
-        }
-        
-        .password-toggle { 
-            position: absolute; 
-            right: 18px; 
-            top: 50%; 
-            transform: translateY(-50%); 
-            color: #aaa; 
-            cursor: pointer; 
-            z-index: 2; 
-            transition: all 0.3s; 
-        }
-        
-        .password-toggle:hover { 
-            color: #311b92; 
-        }
-        
-        .remember-forgot { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            margin-bottom: 28px; 
-            font-size: 14px; 
-        }
-        
-        .remember-me { 
-            display: flex; 
-            align-items: center; 
-            cursor: pointer; 
-        }
-        
-        .remember-me input { 
-            margin-right: 10px; 
-            accent-color: #311b92; 
-            cursor: pointer;
-            width: 18px;
-            height: 18px;
-        }
-        
-        .remember-me label { 
-            cursor: pointer; 
-            color: #666;
-            font-weight: 500;
-        }
-        
-        .forgot-password { 
-            color: #311b92; 
-            text-decoration: none; 
-            font-weight: 600; 
-            font-size: 14px;
-            transition: color 0.3s;
-        }
-        
-        .forgot-password:hover { 
-            color: #ff5722;
-            text-decoration: underline; 
-        }
-        
-        .btn { 
-            display: block; 
-            width: 100%; 
-            padding: 14px; 
-            background: #311b92;
-            color: white; 
-            border: none; 
-            border-radius: 16px; 
-            font-size: 16px; 
-            font-weight: 700; 
-            cursor: pointer; 
-            transition: all 0.3s; 
-            margin-top: 10px; 
-            box-shadow: 0 4px 15px rgba(49, 27, 146, 0.3);
-            letter-spacing: 0.5px;
-        }
-        
-        .btn:hover { 
-            background: #1a237e;
-            transform: translateY(-2px); 
-            box-shadow: 0 8px 25px rgba(49, 27, 146, 0.4);
-        }
-        
-        .btn:active {
-            transform: translateY(0);
-        }
-        
-        .btn:disabled { 
-            background: #9da0bc;
-            cursor: not-allowed; 
-            transform: none; 
-            box-shadow: none; 
-        }
-        
-        .form-footer { 
-            text-align: center; 
-            margin-top: 25px; 
-            font-size: 14px; 
-            color: #888; 
-        }
-        
-        .form-footer a { 
-            color: #311b92; 
-            text-decoration: none; 
-            font-weight: 700; 
-        }
-        
-        .form-footer a:hover { 
-            text-decoration: underline; 
-            color: #ff5722;
-        }
-        
-        .features-preview { 
-            margin-top: 35px; 
-            padding: 22px; 
-            background: linear-gradient(135deg, #fff5f0 0%, #fff0e8 100%);
-            border-radius: 20px; 
-            border-left: 5px solid #ff5722;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-        }
-        
-        .features-preview h4 { 
-            color: #311b92;
-            margin-bottom: 12px; 
-            font-size: 18px; 
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg-gray-50);
+            min-height: 100vh;
             display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: 700;
-        }
-        
-        .features-preview h4 i {
-            color: #ff5722;
-            font-size: 20px;
-        }
-        
-        .features-preview p { 
-            color: #555; 
-            font-size: 14px; 
-            line-height: 1.6;
-            margin-bottom: 15px;
-            font-weight: 500;
-        }
-        
-        .features-preview ul { 
-            padding-left: 22px; 
-            color: #666; 
-        }
-        
-        .features-preview li { 
-            margin-bottom: 8px; 
-            font-size: 13px; 
-            line-height: 1.5;
-            font-weight: 500;
-        }
-        
-        .features-preview li::marker {
-            color: #ff5722;
-        }
-        
-        .copyright {
-            text-align: center;
-            margin-top: 25px;
-            padding-top: 20px;
-            border-top: 1px solid #f0f0f0;
-            font-size: 12px;
-            color: #aaa;
-        }
-        
-        @media (max-width: 992px) { 
-            .container { 
-                flex-direction: column; 
-                max-width: 550px; 
-            } 
-            .slider-section { 
-                height: 300px; 
-                min-height: auto;
-            } 
-            .form-section { 
-                padding: 35px 30px; 
-            } 
-            .slide-content { 
-                padding: 25px; 
-            } 
-            .slide-content h3 { 
-                font-size: 22px; 
-            }
-            .logo h1 {
-                font-size: 32px;
-            }
-        }
-        
-        @media (max-width: 576px) { 
-            body { 
-                padding: 12px; 
-            } 
-            .container { 
-                border-radius: 24px; 
-            } 
-            .form-section { 
-                padding: 28px 22px; 
-            } 
-            .slide-content { 
-                padding: 20px; 
-            } 
-            .slide-content h3 { 
-                font-size: 20px; 
-            } 
-            .slide-content p { 
-                font-size: 13px; 
-            }
-            .logo h1 {
-                font-size: 28px;
-            }
-            .form h2 {
-                font-size: 24px;
-            }
-            .features-preview {
-                padding: 18px;
-            }
-        }
-        
-        @media (max-width: 380px) {
-            .form-section {
-                padding: 22px 18px;
-            }
-            .form-control {
-                padding: 12px 45px 12px 42px;
-                font-size: 14px;
-            }
-            .btn {
-                padding: 12px;
-                font-size: 15px;
-            }
-        }
-        
-        .loading-spinner {
-            display: inline-block;
-            width: 18px;
-            height: 18px;
-            border: 2px solid rgba(255,255,255,0.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 0.6s linear infinite;
-            margin-right: 10px;
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.6);
-            backdrop-filter: blur(5px);
-            z-index: 1000;
             align-items: center;
             justify-content: center;
+            padding: 16px;
+            color: var(--text-primary);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
-        
-        .modal.active {
+
+        /* ============ MAIN CONTAINER ============ */
+        .auth-container {
             display: flex;
-            animation: fadeIn 0.3s ease;
+            width: 100%;
+            max-width: 1040px;
+            min-height: 640px;
+            background: var(--bg-white);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            box-shadow: var(--shadow-xl);
         }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        .modal-content {
-            background: white;
-            padding: 30px;
-            border-radius: 28px;
-            max-width: 420px;
-            width: 90%;
+
+        /* ============ LEFT PANEL (Branding / Slider) ============ */
+        .brand-panel {
+            flex: 1;
+            background: #0F172A;
             position: relative;
-            animation: modalSlideIn 0.4s ease;
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            overflow: hidden;
+            min-height: 100%;
         }
-        
-        @keyframes modalSlideIn {
+
+        .brand-slider {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+        }
+
+        .brand-slide {
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .brand-slide.active {
+            opacity: 1;
+        }
+
+        .brand-slide::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(15, 23, 42, 0.3) 0%, rgba(15, 23, 42, 0.85) 70%, rgba(15, 23, 42, 0.95) 100%);
+        }
+
+        .brand-overlay {
+            position: relative;
+            z-index: 2;
+            padding: 48px 40px;
+            color: #FFFFFF;
+        }
+
+        .brand-overlay .brand-tag {
+            display: inline-block;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            padding: 6px 14px;
+            border-radius: 100px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .brand-overlay h2 {
+            font-size: clamp(24px, 3vw, 32px);
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 12px;
+            letter-spacing: -0.3px;
+        }
+
+        .brand-overlay p {
+            font-size: 15px;
+            line-height: 1.6;
+            opacity: 0.85;
+            max-width: 400px;
+        }
+
+        .brand-dots {
+            position: absolute;
+            bottom: 32px;
+            left: 40px;
+            z-index: 3;
+            display: flex;
+            gap: 8px;
+        }
+
+        .brand-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.4);
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            transition: all var(--transition-smooth);
+        }
+
+        .brand-dot.active {
+            background: #FFFFFF;
+            transform: scale(1.4);
+            box-shadow: 0 0 0 4px rgba(255,255,255,0.2);
+        }
+
+        /* ============ RIGHT PANEL (Form) ============ */
+        .form-panel {
+            flex: 1;
+            padding: 48px 44px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            overflow-y: auto;
+        }
+
+        .form-panel-header {
+            text-align: center;
+            margin-bottom: 36px;
+        }
+
+        .form-panel-header .logo-text {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--text-primary);
+            letter-spacing: -0.5px;
+            margin-bottom: 4px;
+        }
+
+        .form-panel-header .logo-text span {
+            color: var(--brand-primary);
+        }
+
+        .form-panel-header .subtitle {
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+
+        /* ============ TAB SWITCHER ============ */
+        .tab-switcher {
+            display: flex;
+            background: var(--bg-gray-100);
+            border-radius: 100px;
+            padding: 4px;
+            margin-bottom: 32px;
+            gap: 4px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px 20px;
+            border: none;
+            background: transparent;
+            border-radius: 100px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-smooth);
+            color: var(--text-secondary);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .tab-btn.active {
+            background: var(--bg-white);
+            color: var(--text-primary);
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* ============ FORMS ============ */
+        .auth-form {
+            display: none;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .auth-form.active {
+            display: flex;
+            animation: formFadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes formFadeIn {
             from {
                 opacity: 0;
-                transform: scale(0.95) translateY(-20px);
+                transform: translateY(8px);
             }
             to {
                 opacity: 1;
-                transform: scale(1) translateY(0);
+                transform: translateY(0);
             }
         }
-        
-        .modal-content h3 {
-            color: #311b92;
-            margin-bottom: 15px;
-            font-size: 24px;
-            font-weight: 700;
+
+        .form-field {
+            position: relative;
         }
-        
-        .modal-content p {
-            color: #666;
-            margin-bottom: 20px;
+
+        .form-field .field-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 15px;
+            pointer-events: none;
+            transition: color var(--transition-fast);
+            z-index: 2;
+        }
+
+        .form-field:focus-within .field-icon {
+            color: var(--brand-primary);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 13px 16px 13px 44px;
+            border: 1.5px solid var(--border-light);
+            border-radius: var(--radius-md);
             font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-gray-50);
+            color: var(--text-primary);
+            transition: all var(--transition-fast);
+            outline: none;
+        }
+
+        .form-input:focus {
+            border-color: var(--brand-primary);
+            background: var(--bg-white);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
+        }
+
+        .form-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .password-toggle-btn {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 4px;
+            font-size: 15px;
+            z-index: 2;
+            transition: color var(--transition-fast);
+        }
+
+        .password-toggle-btn:hover {
+            color: var(--text-secondary);
+        }
+
+        .form-row-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            font-weight: 500;
+            user-select: none;
+        }
+
+        .checkbox-label input[type="checkbox"] {
+            accent-color: var(--brand-primary);
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        .text-link {
+            color: var(--brand-primary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 13px;
+            transition: color var(--transition-fast);
+        }
+
+        .text-link:hover {
+            color: var(--brand-primary-dark);
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 13px;
+            background: var(--brand-primary);
+            color: #FFFFFF;
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: 15px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: all var(--transition-smooth);
+            letter-spacing: 0.2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary:hover {
+            background: var(--brand-primary-dark);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+            box-shadow: none;
+        }
+
+        .btn-primary:disabled {
+            background: #94A3B8;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-primary .spinner {
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: #FFFFFF;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .form-footer-text {
+            text-align: center;
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .form-footer-text a {
+            color: var(--brand-primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .form-footer-text a:hover {
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
+
+        /* ============ FEATURE CARD ============ */
+        .feature-card {
+            margin-top: 28px;
+            padding: 20px;
+            background: #FFFBEB;
+            border-radius: var(--radius-lg);
+            border: 1px solid #FDE68A;
+        }
+
+        .feature-card h4 {
+            font-size: 14px;
+            font-weight: 700;
+            color: #92400E;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .feature-card h4 i {
+            color: var(--brand-accent);
+            font-size: 16px;
+        }
+
+        .feature-card ul {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .feature-card ul li {
+            font-size: 12px;
+            color: #78350F;
+            padding-left: 18px;
+            position: relative;
             line-height: 1.5;
         }
-        
-        .modal-content .form-group {
-            margin-bottom: 25px;
-        }
-        
-        .modal-close {
+
+        .feature-card ul li::before {
+            content: '✓';
             position: absolute;
-            top: 18px;
-            right: 22px;
-            font-size: 28px;
-            cursor: pointer;
-            color: #aaa;
-            transition: all 0.3s;
-            font-weight: 300;
-        }
-        
-        .modal-close:hover {
-            color: #311b92;
-            transform: rotate(90deg);
-        }
-        
-        .modal-btn {
-            background: #311b92;
-            color: white;
-            border: none;
-            padding: 14px;
-            border-radius: 16px;
-            width: 100%;
-            font-size: 15px;
+            left: 0;
             font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 4px 12px rgba(49,27,146,0.3);
+            color: var(--brand-accent);
         }
-        
-        .modal-btn:hover {
-            background: #1a237e;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(49,27,146,0.4);
-        }
-        
-        .modal-message {
+
+        .copyright-text {
+            text-align: center;
             margin-top: 20px;
-            padding: 12px;
-            border-radius: 12px;
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        /* ============ MODAL ============ */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity var(--transition-smooth);
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-dialog {
+            background: var(--bg-white);
+            border-radius: var(--radius-xl);
+            padding: 32px;
+            max-width: 420px;
+            width: 90%;
+            position: relative;
+            box-shadow: var(--shadow-xl);
+        }
+
+        .modal-dialog .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-muted);
+            transition: color var(--transition-fast);
+            padding: 4px;
+            line-height: 1;
+        }
+
+        .modal-dialog .modal-close:hover {
+            color: var(--text-primary);
+        }
+
+        .modal-dialog h3 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+
+        .modal-dialog p {
             font-size: 13px;
-            display: none;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .modal-message {
+            margin-top: 16px;
+            padding: 12px 16px;
+            border-radius: var(--radius-sm);
+            font-size: 13px;
             font-weight: 500;
+            display: none;
         }
-        
+
         .modal-message.success {
-            background: #d4edda;
-            color: #155724;
             display: block;
-            border-left: 4px solid #28a745;
+            background: #ECFDF5;
+            color: #065F46;
+            border: 1px solid #A7F3D0;
         }
-        
+
         .modal-message.error {
-            background: #f8d7da;
-            color: #721c24;
             display: block;
-            border-left: 4px solid #dc3545;
+            background: #FEF2F2;
+            color: #991B1B;
+            border: 1px solid #FECACA;
         }
-        
-        .features-preview {
-            animation: float 3s ease-in-out infinite;
+
+        /* ============ TOAST (replaces alert) ============ */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #1F2937;
+            color: #FFFFFF;
+            padding: 12px 24px;
+            border-radius: 100px;
+            font-size: 13px;
+            font-weight: 600;
+            z-index: 2000;
+            box-shadow: var(--shadow-lg);
+            transition: transform var(--transition-smooth);
+            max-width: 90%;
+            text-align: center;
         }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* ============ RESPONSIVE ============ */
+        @media (max-width: 768px) {
+            .auth-container {
+                flex-direction: column;
+                max-width: 480px;
+                min-height: auto;
+                border-radius: var(--radius-lg);
+            }
+
+            .brand-panel {
+                height: 220px;
+                min-height: auto;
+                flex-shrink: 0;
+            }
+
+            .brand-overlay {
+                padding: 28px 24px;
+            }
+
+            .brand-overlay h2 {
+                font-size: 20px;
+            }
+
+            .brand-overlay p {
+                font-size: 13px;
+            }
+
+            .brand-dots {
+                bottom: 20px;
+                left: 24px;
+            }
+
+            .form-panel {
+                padding: 32px 24px;
+            }
+
+            .form-panel-header .logo-text {
+                font-size: 24px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 8px;
+            }
+
+            .auth-container {
+                border-radius: var(--radius-lg);
+            }
+
+            .brand-panel {
+                height: 180px;
+            }
+
+            .form-panel {
+                padding: 24px 18px;
+            }
+
+            .form-input {
+                padding: 12px 14px 12px 40px;
+                font-size: 13px;
+            }
+
+            .btn-primary {
+                padding: 12px;
+                font-size: 14px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="slider-section">
-            <div class="slider">
-                <div class="slide active" style="background-image: url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80');">
-                    <div class="slide-content">
-                        <h3>Master Literature with Mr. Timi</h3>
-                        <p>Expert summaries and analysis for all JAMB recommended texts 2026-2030</p>
-                    </div>
-                </div>
-                <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80');">
-                    <div class="slide-content">
-                        <h3>Prose & Drama Excellence</h3>
-                        <p>In-depth chapter summaries, character analysis, and thematic exploration</p>
-                    </div>
-                </div>
-                <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1474932430478-367dbb6832c0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80');">
-                    <div class="slide-content">
-                        <h3>Poetry Made Simple</h3>
-                        <p>Simplified poetry analysis with literary device explanations</p>
-                    </div>
-                </div>
-                <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1434030216411-0b793f4b4173?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80');">
-                    <div class="slide-content">
-                        <h3>CBT Literature Exams</h3>
-                        <p>Practice with JAMB-standard CBT questions on literature topics</p>
-                    </div>
-                </div>
+    <div class="auth-container">
+        <!-- ========== LEFT: BRAND PANEL ========== -->
+        <div class="brand-panel">
+            <div class="brand-slider">
+                <div class="brand-slide active" style="background-image: url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80');"></div>
+                <div class="brand-slide" style="background-image: url('https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80');"></div>
+                <div class="brand-slide" style="background-image: url('https://images.unsplash.com/photo-1474932430478-367dbb6832c0?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80');"></div>
+                <div class="brand-slide" style="background-image: url('https://images.unsplash.com/photo-1434030216411-0b793f4b4173?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80');"></div>
             </div>
-            
-            <div class="slider-indicators">
-                <div class="indicator active" data-slide="0"></div>
-                <div class="indicator" data-slide="1"></div>
-                <div class="indicator" data-slide="2"></div>
-                <div class="indicator" data-slide="3"></div>
+            <div class="brand-overlay">
+                <span class="brand-tag">JAMB 2026–2030</span>
+                <h2 id="brand-title">Master Literature with Mr. Timi</h2>
+                <p id="brand-desc">Expert summaries and analysis for all JAMB recommended texts</p>
+            </div>
+            <div class="brand-dots" id="brand-dots">
+                <button class="brand-dot active" data-index="0" aria-label="Slide 1"></button>
+                <button class="brand-dot" data-index="1" aria-label="Slide 2"></button>
+                <button class="brand-dot" data-index="2" aria-label="Slide 3"></button>
+                <button class="brand-dot" data-index="3" aria-label="Slide 4"></button>
             </div>
         </div>
-        
-        <div class="form-section">
-            <div class="logo">
-                <h1>Mr. Timi <span>Edutop Scholar</span></h1>
-                <p>Your Path to Literature Excellence</p>
+
+        <!-- ========== RIGHT: FORM PANEL ========== -->
+        <div class="form-panel">
+            <div class="form-panel-header">
+                <div class="logo-text">Mr. Timi <span>Edutop Scholar</span></div>
+                <p class="subtitle">Your Path to Literature Excellence</p>
             </div>
-            
-            <div class="form-container">
-                <div class="form-toggle">
-                    <button class="toggle-btn active" id="login-toggle">Login</button>
-                    <button class="toggle-btn" id="signup-toggle">Sign Up</button>
-                </div>
-                
-                <form class="form active" id="login-form">
-                    <h2>Welcome Back ✨</h2>
-                    
-                    <div class="form-group">
-                        <i class="fas fa-envelope input-icon"></i>
-                        <input type="email" id="login-email" class="form-control" placeholder="Email Address" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <i class="fas fa-lock input-icon"></i>
-                        <input type="password" id="login-password" class="form-control" placeholder="Password" required>
-                        <i class="fas fa-eye password-toggle" onclick="togglePassword('login-password', this)"></i>
-                    </div>
-                    
-                    <div class="remember-forgot">
-                        <div class="remember-me">
-                            <input type="checkbox" id="remember">
-                            <label for="remember">Remember me</label>
-                        </div>
-                        <a href="#" class="forgot-password" id="forgot-password-link">Forgot Password?</a>
-                    </div>
-                    
-                    <button type="submit" class="btn" id="login-btn">Login to Dashboard</button>
-                    
-                    <div class="form-footer">
-                        <p>Don't have an account? <a href="#" id="go-to-signup">Sign Up</a></p>
-                    </div>
-                </form>
-                
-                <form class="form" id="signup-form">
-                    <h2>Create Account 🎓</h2>
-                    
-                    <div class="form-group">
-                        <i class="fas fa-user input-icon"></i>
-                        <input type="text" id="signup-fullname" class="form-control" placeholder="Full Name" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <i class="fas fa-envelope input-icon"></i>
-                        <input type="email" id="signup-email" class="form-control" placeholder="Email Address" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <i class="fas fa-phone input-icon"></i>
-                        <input type="tel" id="signup-phone" class="form-control" placeholder="Phone Number" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <i class="fas fa-lock input-icon"></i>
-                        <input type="password" id="signup-password" class="form-control" placeholder="Password (Min 6 chars)" required minlength="6">
-                        <i class="fas fa-eye password-toggle" onclick="togglePassword('signup-password', this)"></i>
-                    </div>
-                    
-                    <div class="form-group">
-                        <i class="fas fa-lock input-icon"></i>
-                        <input type="password" id="signup-confirm-password" class="form-control" placeholder="Confirm Password" required>
-                        <i class="fas fa-eye password-toggle" onclick="togglePassword('signup-confirm-password', this)"></i>
-                    </div>
-                    
-                    <button type="submit" class="btn" id="signup-btn">Create Free Account</button>
-                    
-                    <div class="form-footer">
-                        <p>Already have an account? <a href="#" id="go-to-login">Login</a></p>
-                    </div>
-                </form>
-                
-                <div class="features-preview">
-                    <h4><i class="fas fa-book-open"></i> JAMB Recommended Texts (2026-2030)</h4>
-                    <p>Comprehensive summaries and analysis by <strong>Master Timi</strong></p>
-                    <ul>
-                        <li>✓ Detailed prose summaries for all JAMB novels</li>
-                        <li>✓ Complete drama analysis with character breakdowns</li>
-                        <li>✓ Poetry annotations and literary device explanations</li>
-                        <li>✓ Literature CBT practice exams with instant feedback</li>
-                        <li>✓ Chapter-by-chapter breakdown for easy understanding</li>
-                    </ul>
-                </div>
-                
-                <div class="copyright">
-                    <i class="fas fa-copyright"></i> 2026 Mr. Timi Edutop Scholar | Powered by Triangle Tech
-                </div>
+
+            <!-- Tab Switcher -->
+            <div class="tab-switcher" role="tablist">
+                <button class="tab-btn active" role="tab" aria-selected="true" id="tab-login">Sign In</button>
+                <button class="tab-btn" role="tab" aria-selected="false" id="tab-signup">Create Account</button>
             </div>
-        </div>
-    </div>
-    
-    <div id="forgot-password-modal" class="modal">
-        <div class="modal-content">
-            <span class="modal-close" id="modal-close">&times;</span>
-            <h3>Reset Password 🔐</h3>
-            <p>Enter your email address and we'll send you a link to reset your password.</p>
-            <div class="form-group">
-                <i class="fas fa-envelope input-icon"></i>
-                <input type="email" id="reset-email" class="form-control" placeholder="Email Address" style="padding-left: 45px;">
+
+            <!-- Login Form -->
+            <form class="auth-form active" id="login-form" novalidate>
+                <div class="form-field">
+                    <i class="fas fa-envelope field-icon"></i>
+                    <input type="email" class="form-input" id="login-email" placeholder="Email address" required autocomplete="email">
+                </div>
+                <div class="form-field">
+                    <i class="fas fa-lock field-icon"></i>
+                    <input type="password" class="form-input" id="login-password" placeholder="Password" required autocomplete="current-password">
+                    <button type="button" class="password-toggle-btn" aria-label="Toggle password visibility">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+                <div class="form-row-options">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="remember-me">
+                        Remember me
+                    </label>
+                    <a href="#" class="text-link" id="forgot-password-link">Forgot password?</a>
+                </div>
+                <button type="submit" class="btn-primary" id="login-btn">Sign In</button>
+                <p class="form-footer-text">Don't have an account? <a href="#" id="go-to-signup">Create one</a></p>
+            </form>
+
+            <!-- Signup Form -->
+            <form class="auth-form" id="signup-form" novalidate>
+                <div class="form-field">
+                    <i class="fas fa-user field-icon"></i>
+                    <input type="text" class="form-input" id="signup-fullname" placeholder="Full name" required autocomplete="name">
+                </div>
+                <div class="form-field">
+                    <i class="fas fa-envelope field-icon"></i>
+                    <input type="email" class="form-input" id="signup-email" placeholder="Email address" required autocomplete="email">
+                </div>
+                <div class="form-field">
+                    <i class="fas fa-phone field-icon"></i>
+                    <input type="tel" class="form-input" id="signup-phone" placeholder="Phone number" required autocomplete="tel">
+                </div>
+                <div class="form-field">
+                    <i class="fas fa-lock field-icon"></i>
+                    <input type="password" class="form-input" id="signup-password" placeholder="Password (min. 6 characters)" required minlength="6" autocomplete="new-password">
+                    <button type="button" class="password-toggle-btn" aria-label="Toggle password visibility">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+                <div class="form-field">
+                    <i class="fas fa-lock field-icon"></i>
+                    <input type="password" class="form-input" id="signup-confirm-password" placeholder="Confirm password" required autocomplete="new-password">
+                    <button type="button" class="password-toggle-btn" aria-label="Toggle password visibility">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+                <button type="submit" class="btn-primary" id="signup-btn">Create Free Account</button>
+                <p class="form-footer-text">Already have an account? <a href="#" id="go-to-login">Sign in</a></p>
+            </form>
+
+            <!-- Feature Card -->
+            <div class="feature-card">
+                <h4><i class="fas fa-book-open"></i> JAMB Recommended Texts (2026–2030)</h4>
+                <ul>
+                    <li>Detailed prose summaries for all JAMB novels</li>
+                    <li>Complete drama analysis with character breakdowns</li>
+                    <li>Poetry annotations and literary device explanations</li>
+                    <li>Literature CBT practice exams with instant feedback</li>
+                    <li>Chapter-by-chapter breakdown for easy understanding</li>
+                </ul>
             </div>
-            <button id="send-reset-btn" class="modal-btn">Send Reset Link</button>
-            <div id="modal-message" class="modal-message"></div>
+
+            <p class="copyright-text">&copy; 2026 Mr. Timi Edutop Scholar &mdash; Powered by Triangle Tech</p>
         </div>
     </div>
 
+    <!-- Forgot Password Modal -->
+    <div class="modal-overlay" id="forgot-password-modal">
+        <div class="modal-dialog">
+            <button class="modal-close" id="modal-close">&times;</button>
+            <h3>Reset Password</h3>
+            <p>Enter your email address and we'll send you a link to reset your password.</p>
+            <div class="form-field">
+                <i class="fas fa-envelope field-icon"></i>
+                <input type="email" class="form-input" id="reset-email" placeholder="Email address">
+            </div>
+            <button class="btn-primary" id="send-reset-btn">Send Reset Link</button>
+            <div class="modal-message" id="modal-message"></div>
+        </div>
+    </div>
+
+    <!-- Toast notification -->
+    <div class="toast" id="toast"></div>
+
     <script>
-        // Slider & UI Logic
+        // ============ TOAST SYSTEM ============
+        let toastTimeout;
+        function showToast(message, duration = 3500) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.remove('show');
+            }, duration);
+        }
+
+        // ============ BRAND SLIDER ============
+        const brandSlides = document.querySelectorAll('.brand-slide');
+        const brandDots = document.querySelectorAll('.brand-dot');
+        const brandTitle = document.getElementById('brand-title');
+        const brandDesc = document.getElementById('brand-desc');
         let currentSlide = 0;
-        const slides = document.querySelectorAll('.slide');
-        const indicators = document.querySelectorAll('.indicator');
-        
-        function showSlide(index) {
-            if (!slides.length) return;
-            slides.forEach(slide => slide.classList.remove('active'));
-            indicators.forEach(indicator => indicator.classList.remove('active'));
-            slides[index].classList.add('active');
-            if (indicators[index]) indicators[index].classList.add('active');
+        const totalSlides = brandSlides.length;
+
+        const slideData = [
+            { title: 'Master Literature with Mr. Timi', desc: 'Expert summaries and analysis for all JAMB recommended texts 2026-2030' },
+            { title: 'Prose & Drama Excellence', desc: 'In-depth chapter summaries, character analysis, and thematic exploration' },
+            { title: 'Poetry Made Simple', desc: 'Simplified poetry analysis with literary device explanations' },
+            { title: 'CBT Literature Exams', desc: 'Practice with JAMB-standard CBT questions on literature topics' },
+        ];
+
+        function goToSlide(index) {
+            brandSlides.forEach(s => s.classList.remove('active'));
+            brandDots.forEach(d => d.classList.remove('active'));
+            brandSlides[index].classList.add('active');
+            brandDots[index].classList.add('active');
+            brandTitle.textContent = slideData[index].title;
+            brandDesc.textContent = slideData[index].desc;
             currentSlide = index;
         }
-        
-        function initSlider() {
-            if (!indicators.length) return;
-            indicators.forEach((indicator, index) => {
-                indicator.addEventListener('click', () => showSlide(index));
+
+        brandDots.forEach(dot => {
+            dot.addEventListener('click', () => {
+                goToSlide(parseInt(dot.dataset.index));
+                resetAutoSlide();
             });
-            setInterval(() => {
-                let nextSlide = (currentSlide + 1) % slides.length;
-                showSlide(nextSlide);
+        });
+
+        let autoSlideInterval = setInterval(() => {
+            goToSlide((currentSlide + 1) % totalSlides);
+        }, 5000);
+
+        function resetAutoSlide() {
+            clearInterval(autoSlideInterval);
+            autoSlideInterval = setInterval(() => {
+                goToSlide((currentSlide + 1) % totalSlides);
             }, 5000);
         }
-        
-        // Form Toggling
-        const loginToggle = document.getElementById('login-toggle');
-        const signupToggle = document.getElementById('signup-toggle');
+
+        // ============ FORM TAB SWITCHING ============
+        const tabLogin = document.getElementById('tab-login');
+        const tabSignup = document.getElementById('tab-signup');
         const loginForm = document.getElementById('login-form');
         const signupForm = document.getElementById('signup-form');
         const goToSignup = document.getElementById('go-to-signup');
         const goToLogin = document.getElementById('go-to-login');
-        
-        function toggleForms(isLogin) {
-            if(isLogin) {
-                loginToggle.classList.add('active');
-                signupToggle.classList.remove('active');
+
+        function switchForm(showLogin) {
+            if (showLogin) {
+                tabLogin.classList.add('active');
+                tabSignup.classList.remove('active');
+                tabLogin.setAttribute('aria-selected', 'true');
+                tabSignup.setAttribute('aria-selected', 'false');
                 loginForm.classList.add('active');
                 signupForm.classList.remove('active');
             } else {
-                signupToggle.classList.add('active');
-                loginToggle.classList.remove('active');
+                tabSignup.classList.add('active');
+                tabLogin.classList.remove('active');
+                tabSignup.setAttribute('aria-selected', 'true');
+                tabLogin.setAttribute('aria-selected', 'false');
                 signupForm.classList.add('active');
                 loginForm.classList.remove('active');
             }
         }
 
-        if (loginToggle && signupToggle) {
-            loginToggle.addEventListener('click', () => toggleForms(true));
-            signupToggle.addEventListener('click', () => toggleForms(false));
-        }
-        if (goToSignup) goToSignup.addEventListener('click', (e) => { e.preventDefault(); toggleForms(false); });
-        if (goToLogin) goToLogin.addEventListener('click', (e) => { e.preventDefault(); toggleForms(true); });
+        tabLogin.addEventListener('click', () => switchForm(true));
+        tabSignup.addEventListener('click', () => switchForm(false));
+        goToSignup?.addEventListener('click', (e) => { e.preventDefault(); switchForm(false); });
+        goToLogin?.addEventListener('click', (e) => { e.preventDefault(); switchForm(true); });
 
-        // Password Visibility Toggle
-        window.togglePassword = function(inputId, icon) {
-            const input = document.getElementById(inputId);
-            if (input) {
-                if (input.type === "password") {
-                    input.type = "text";
-                    icon.classList.remove("fa-eye");
-                    icon.classList.add("fa-eye-slash");
+        // ============ PASSWORD TOGGLE ============
+        document.querySelectorAll('.password-toggle-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const field = btn.parentElement;
+                const input = field.querySelector('input');
+                const icon = btn.querySelector('i');
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    icon.classList.replace('fa-eye', 'fa-eye-slash');
                 } else {
-                    input.type = "password";
-                    icon.classList.remove("fa-eye-slash");
-                    icon.classList.add("fa-eye");
+                    input.type = 'password';
+                    icon.classList.replace('fa-eye-slash', 'fa-eye');
                 }
-            }
-        }
-        
-        // Modal Functions
+            });
+        });
+
+        // ============ MODAL ============
         const modal = document.getElementById('forgot-password-modal');
         const modalClose = document.getElementById('modal-close');
         const forgotLink = document.getElementById('forgot-password-link');
-        
-        function openModal() {
-            if (modal) {
-                modal.classList.add('active');
-                document.getElementById('reset-email').value = document.getElementById('login-email').value || '';
-            }
-        }
-        
-        function closeModal() {
-            if (modal) {
-                modal.classList.remove('active');
-                document.getElementById('modal-message').className = 'modal-message';
-                document.getElementById('modal-message').style.display = 'none';
-            }
-        }
-        
-        if (forgotLink) forgotLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            openModal();
-        });
-        
-        if (modalClose) modalClose.addEventListener('click', closeModal);
-        
-        window.addEventListener('click', (e) => {
-            if (e.target === modal) closeModal();
-        });
+        const resetEmail = document.getElementById('reset-email');
+        const modalMessage = document.getElementById('modal-message');
 
-        document.addEventListener('DOMContentLoaded', () => {
-            initSlider();
-        });
+        function openModal() {
+            modal.classList.add('active');
+            resetEmail.value = document.getElementById('login-email')?.value || '';
+            modalMessage.className = 'modal-message';
+            modalMessage.style.display = 'none';
+        }
+
+        function closeModal() {
+            modal.classList.remove('active');
+        }
+
+        forgotLink?.addEventListener('click', (e) => { e.preventDefault(); openModal(); });
+        modalClose?.addEventListener('click', closeModal);
+        modal?.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+
+        // ============ TOAST WRAPPER FOR ALERT REPLACEMENT ============
+        window.showNotification = function(message, type = 'info') {
+            showToast(message);
+            // Optionally log type for analytics
+            console.log(`[${type.toUpperCase()}] ${message}`);
+        };
     </script>
 
+    <!-- ============ FIREBASE ============ -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
         import { 
@@ -925,6 +929,7 @@
         } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
         import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
+        // IMPORTANT: Move this to environment variables or a secure backend in production
         const firebaseConfig = {
             apiKey: "AIzaSyCictHNxtslYs9VR0hoicxlwPn_QghkgIA",
             authDomain: "edutop-7ff51.firebaseapp.com",
@@ -943,14 +948,14 @@
             "triangleofscholars@gmail.com"
         ];
 
-        // Function to wait for user data to be fully saved
+        // Helper: Wait for Firestore document with retries
         async function waitForUserData(userId, maxAttempts = 15) {
             for (let i = 0; i < maxAttempts; i++) {
                 try {
                     const userRef = doc(db, "users", userId);
                     const userDoc = await getDoc(userRef);
                     if (userDoc.exists()) {
-                        console.log(`User data found on attempt ${i + 1}`);
+                        console.log(`User data confirmed on attempt ${i + 1}`);
                         return userDoc.data();
                     }
                 } catch (error) {
@@ -961,15 +966,14 @@
             return null;
         }
 
+        // Auth state listener
         onAuthStateChanged(auth, async (user) => {
             if (user) {
-                console.log("User already logged in:", user.email);
-                
+                console.log("User already authenticated:", user.email);
                 if (adminEmails.includes(user.email)) {
                     window.location.href = "dashboard.html";
                     return;
                 }
-                
                 try {
                     const userRef = doc(db, "users", user.uid);
                     const userDoc = await getDoc(userRef);
@@ -985,168 +989,124 @@
             }
         });
 
-        // SIGN UP LOGIC - Wait for data to be saved before redirecting
-        const signupFormElement = document.getElementById('signup-form');
-        if (signupFormElement) {
-            signupFormElement.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                
-                const fullName = document.getElementById('signup-fullname').value;
-                const email = document.getElementById('signup-email').value;
-                const phone = document.getElementById('signup-phone').value;
-                const password = document.getElementById('signup-password').value;
-                const confirmPassword = document.getElementById('signup-confirm-password').value;
-                const btn = document.getElementById('signup-btn');
+        // ============ SIGNUP ============
+        const signupFormEl = document.getElementById('signup-form');
+        signupFormEl?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const fullName = document.getElementById('signup-fullname').value.trim();
+            const email = document.getElementById('signup-email').value.trim();
+            const phone = document.getElementById('signup-phone').value.trim();
+            const password = document.getElementById('signup-password').value;
+            const confirmPassword = document.getElementById('signup-confirm-password').value;
+            const btn = document.getElementById('signup-btn');
 
-                if (password !== confirmPassword) {
-                    alert("Passwords do not match!");
+            if (password !== confirmPassword) {
+                showToast("Passwords do not match. Please try again.");
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner"></span> Creating Account...';
+
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+                await updateProfile(user, { displayName: fullName });
+                await setDoc(doc(db, "users", user.uid), {
+                    fullName,
+                    email,
+                    phone,
+                    pinVerified: false,
+                    createdAt: new Date().toISOString()
+                });
+                const savedData = await waitForUserData(user.uid);
+                if (savedData) {
+                    showToast("Account created successfully! Welcome aboard.");
+                    window.location.href = 'pin-verification.html';
+                } else {
+                    throw new Error("User data verification failed after multiple retries.");
+                }
+            } catch (error) {
+                console.error("Signup Error:", error);
+                let message = "An error occurred during signup.";
+                if (error.code === 'auth/email-already-in-use') message = "This email is already registered.";
+                if (error.code === 'auth/weak-password') message = "Password must be at least 6 characters.";
+                showToast(message);
+                btn.disabled = false;
+                btn.innerHTML = "Create Free Account";
+            }
+        });
+
+        // ============ LOGIN ============
+        const loginFormEl = document.getElementById('login-form');
+        loginFormEl?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-password').value;
+            const rememberMe = document.getElementById('remember-me')?.checked || false;
+            const btn = document.getElementById('login-btn');
+
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner"></span> Signing In...';
+
+            try {
+                await setPersistence(auth, rememberMe ? browserLocalPersistence : browserSessionPersistence);
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+                if (adminEmails.includes(user.email)) {
+                    window.location.href = 'dashboard.html';
                     return;
                 }
-
-                const originalBtnText = btn.innerText;
-                btn.innerHTML = '<span class="loading-spinner"></span> Creating Account...';
-                btn.disabled = true;
-
-                try {
-                    // Create user
-                    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                    const user = userCredential.user;
-                    console.log("User created:", user.uid);
-
-                    // Update profile
-                    await updateProfile(user, { displayName: fullName });
-                    console.log("Profile updated");
-
-                    // Save user data to Firestore
-                    await setDoc(doc(db, "users", user.uid), {
-                        fullName: fullName,
-                        email: email,
-                        phone: phone,
-                        pinVerified: false,
-                        createdAt: new Date().toISOString()
-                    });
-                    console.log("User data saved to Firestore");
-
-                    // Wait for data to be confirmed saved
-                    const savedData = await waitForUserData(user.uid);
-                    
-                    if (savedData) {
-                        console.log("User data confirmed saved:", savedData);
-                        alert(`Account created successfully! Welcome to Mr. Timi Edutop Scholar.`);
-                        window.location.href = 'pin-verification.html';
-                    } else {
-                        throw new Error("User data not found after multiple attempts");
-                    }
-                    
-                } catch (error) {
-                    console.error("Signup Error:", error);
-                    let message = "An error occurred during signup.";
-                    if(error.code === 'auth/email-already-in-use') message = "This email is already registered.";
-                    if(error.code === 'auth/weak-password') message = "Password should be at least 6 characters.";
-                    alert(message);
-                    btn.innerHTML = originalBtnText;
-                    btn.disabled = false;
+                const userData = await waitForUserData(user.uid);
+                if (userData && userData.pinVerified === true) {
+                    window.location.href = 'dashboard.html';
+                } else {
+                    window.location.href = 'pin-verification.html';
                 }
-            });
-        }
-
-        // LOGIN LOGIC
-        const loginFormElement = document.getElementById('login-form');
-        if (loginFormElement) {
-            loginFormElement.addEventListener('submit', async (e) => {
-                e.preventDefault();
-
-                const email = document.getElementById('login-email').value;
-                const password = document.getElementById('login-password').value;
-                const rememberMe = document.getElementById('remember').checked;
-                const btn = document.getElementById('login-btn');
-
-                btn.innerHTML = '<span class="loading-spinner"></span> Authenticating...';
-                btn.disabled = true;
-
-                try {
-                    const mode = rememberMe ? browserLocalPersistence : browserSessionPersistence;
-                    await setPersistence(auth, mode);
-
-                    const userCredential = await signInWithEmailAndPassword(auth, email, password);
-                    const user = userCredential.user;
-                    
-                    if (adminEmails.includes(user.email)) {
-                        window.location.href = 'dashboard.html';
-                        return;
-                    }
-                    
-                    // Wait for user data to be available
-                    const userData = await waitForUserData(user.uid);
-                    
-                    if (userData && userData.pinVerified === true) {
-                        window.location.href = 'dashboard.html';
-                    } else {
-                        window.location.href = 'pin-verification.html';
-                    }
-
-                } catch (error) {
-                    console.error("Login Error:", error);
-                    let message = "Login failed.";
-                    if(error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
-                        message = "Invalid email or password.";
-                    } else if (error.code === 'auth/invalid-email') {
-                        message = "Please enter a valid email address.";
-                    }
-                    alert(message);
-                    btn.innerHTML = "Login to Dashboard";
-                    btn.disabled = false;
+            } catch (error) {
+                console.error("Login Error:", error);
+                let message = "Sign in failed. Please try again.";
+                if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+                    message = "Invalid email or password.";
+                } else if (error.code === 'auth/invalid-email') {
+                    message = "Please enter a valid email address.";
                 }
-            });
-        }
+                showToast(message);
+                btn.disabled = false;
+                btn.innerHTML = "Sign In";
+            }
+        });
 
-        // FORGOT PASSWORD LOGIC
+        // ============ FORGOT PASSWORD ============
         const sendResetBtn = document.getElementById('send-reset-btn');
-        const resetEmail = document.getElementById('reset-email');
-        const modalMessage = document.getElementById('modal-message');
-        
-        if (sendResetBtn) {
-            sendResetBtn.addEventListener('click', async () => {
-                const email = resetEmail.value;
-                
-                if (!email) {
-                    modalMessage.textContent = "Please enter your email address.";
-                    modalMessage.className = "modal-message error";
-                    return;
-                }
-                
-                const originalBtnText = sendResetBtn.innerText;
-                sendResetBtn.innerHTML = '<span class="loading-spinner"></span> Sending...';
-                sendResetBtn.disabled = true;
-                
-                try {
-                    await sendPasswordResetEmail(auth, email);
-                    modalMessage.textContent = `✨ Reset link sent to ${email}! Please check your inbox and spam folder.`;
-                    modalMessage.className = "modal-message success";
-                    resetEmail.value = '';
-                    
-                    setTimeout(() => {
-                        closeModal();
-                    }, 3000);
-                    
-                } catch (error) {
-                    console.error("Reset Error:", error);
-                    let errMsg = "Error sending reset email.";
-                    if (error.code === 'auth/user-not-found') errMsg = "No account found with this email address.";
-                    if (error.code === 'auth/invalid-email') errMsg = "Please enter a valid email address.";
-                    modalMessage.textContent = errMsg;
-                    modalMessage.className = "modal-message error";
-                } finally {
-                    sendResetBtn.innerHTML = originalBtnText;
-                    sendResetBtn.disabled = false;
-                }
-            });
-        }
-        
-        window.closeModal = function() {
-            const modalEl = document.getElementById('forgot-password-modal');
-            if (modalEl) modalEl.classList.remove('active');
-        };
+        sendResetBtn?.addEventListener('click', async () => {
+            const email = document.getElementById('reset-email')?.value.trim();
+            const msgEl = document.getElementById('modal-message');
+            if (!email) {
+                msgEl.textContent = "Please enter your email address.";
+                msgEl.className = "modal-message error";
+                return;
+            }
+            sendResetBtn.disabled = true;
+            sendResetBtn.innerHTML = '<span class="spinner"></span> Sending...';
+            try {
+                await sendPasswordResetEmail(auth, email);
+                msgEl.textContent = `Reset link sent to ${email}. Check your inbox and spam folder.`;
+                msgEl.className = "modal-message success";
+                document.getElementById('reset-email').value = '';
+                setTimeout(closeModal, 3500);
+            } catch (error) {
+                console.error("Reset Error:", error);
+                let errMsg = "Error sending reset email. Try again.";
+                if (error.code === 'auth/user-not-found') errMsg = "No account found with this email.";
+                if (error.code === 'auth/invalid-email') errMsg = "Please enter a valid email address.";
+                msgEl.textContent = errMsg;
+                msgEl.className = "modal-message error";
+            } finally {
+                sendResetBtn.disabled = false;
+                sendResetBtn.innerHTML = "Send Reset Link";
+            }
+        });
     </script>
 </body>
 </html>
