@@ -548,10 +548,10 @@
 
                 <form id="login-form">
                     <div class="form-group">
-                        <label for="login-matric">Matric / Reg No.</label>
+                        <label for="login-matric">Matric / Reg No. or Admin Email</label>
                         <div class="input-wrap">
                             <i class="fas fa-id-card"></i>
-                            <input type="text" id="login-matric" class="form-control" placeholder="e.g. CSC/2023/001" required autocomplete="username">
+                            <input type="text" id="login-matric" class="form-control" placeholder="e.g. CSC/2023/001 or admin@email.com" required autocomplete="username">
                         </div>
                     </div>
 
@@ -732,11 +732,7 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        const adminEmails = [
-            "okewunmitimileyin23@gmail.com",
-            "triangleofscholars@gmail.com"
-        ];
-
+        // --- HELPER FUNCTIONS ---
         async function getUserByMatric(matric) {
             const usersRef = collection(db, "users");
             const q = query(usersRef, where("matricNo", "==", matric.trim().toUpperCase()));
@@ -746,12 +742,27 @@
             return { uid: d.id, ...d.data() };
         }
 
+        async function getStaffRole(email) {
+            const staffRef = collection(db, "staff");
+            const q = query(staffRef, where("email", "==", email.toLowerCase()));
+            const snap = await getDocs(q);
+            if (snap.empty) return null;
+            return snap.docs[0].data().role; 
+        }
+
+        // --- SESSION CHECK (If already logged in) ---
         onAuthStateChanged(auth, async (user) => {
             if (user) {
-                if (adminEmails.includes(user.email)) {
-                    window.location.href = "dashboard.html";
+                const role = await getStaffRole(user.email);
+                if (role) {
+                    if (role === 'question_manager') {
+                        window.location.href = "question-manager.html";
+                    } else {
+                        window.location.href = "admin-dashboard.html";
+                    }
                     return;
                 }
+                
                 try {
                     const userDoc = await getDoc(doc(db, "users", user.uid));
                     if (userDoc.exists()) {
@@ -763,10 +774,12 @@
             }
         });
 
+        // --- LOGIN LOGIC ---
         const loginFormElement = document.getElementById('login-form');
         loginFormElement.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const matric = document.getElementById('login-matric').value.trim().toUpperCase();
+            
+            const loginInput = document.getElementById('login-matric').value.trim();
             const password = document.getElementById('login-password').value;
             const rememberMe = document.getElementById('remember').checked;
             const btn = document.getElementById('login-btn');
@@ -775,40 +788,62 @@
             btn.disabled = true;
 
             try {
-                const student = await getUserByMatric(matric);
-                if (!student || !student.email) throw { code: 'app/matric-not-found' };
+                let loginEmail = '';
+
+                // Check if input is email (Staff) or Matric No (Student)
+                if (loginInput.includes('@')) {
+                    loginEmail = loginInput.toLowerCase();
+                } else {
+                    const student = await getUserByMatric(loginInput.toUpperCase());
+                    if (!student || !student.email) throw { code: 'app/matric-not-found' };
+                    loginEmail = student.email;
+                }
 
                 const mode = rememberMe ? browserLocalPersistence : browserSessionPersistence;
                 await setPersistence(auth, mode);
-                await signInWithEmailAndPassword(auth, student.email, password);
+                const userCredential = await signInWithEmailAndPassword(auth, loginEmail, password);
 
-                window.location.href = 'dashboard.html';
+                // Determine where to redirect
+                const role = await getStaffRole(userCredential.user.email);
+                
+                if (role) {
+                    if (role === 'question_manager') {
+                        window.location.href = 'question-manager.html'; 
+                    } else {
+                        window.location.href = 'admin-dashboard.html'; 
+                    }
+                } else {
+                    window.location.href = 'dashboard.html';
+                }
 
             } catch (error) {
                 console.error("Login Error:", error);
-                let message = "Login failed. Please try again.";
+                let message = "Login failed. Please check your details.";
+                
                 if (error.code === 'app/matric-not-found') {
                     message = "Matric number not found. Contact the exam administrator.";
-                } else if (error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found') {
-                    message = "Invalid matric number or password.";
+                } else if (error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found' || error.code === 'auth/invalid-email') {
+                    message = "Invalid login details.";
                 } else if (error.code === 'auth/too-many-requests') {
                     message = "Too many attempts. Please try again later.";
                 }
+                
                 alert(message);
                 btn.innerHTML = "Sign In";
                 btn.disabled = false;
             }
         });
 
+        // --- FORGOT PASSWORD LOGIC ---
         const sendResetBtn = document.getElementById('send-reset-btn');
         const resetMatric = document.getElementById('reset-matric');
         const modalMessage = document.getElementById('modal-message');
         
         sendResetBtn.addEventListener('click', async () => {
-            const matric = resetMatric.value.trim().toUpperCase();
+            const input = resetMatric.value.trim();
             
-            if (!matric) {
-                modalMessage.textContent = "Please enter your matric number.";
+            if (!input) {
+                modalMessage.textContent = "Please enter your matric number or email.";
                 modalMessage.className = "modal-message error";
                 return;
             }
@@ -818,11 +853,18 @@
             sendResetBtn.disabled = true;
             
             try {
-                const student = await getUserByMatric(matric);
-                if (!student || !student.email) throw { code: 'app/matric-not-found' };
+                let resetEmail = '';
                 
-                await sendPasswordResetEmail(auth, student.email);
-                modalMessage.textContent = `Reset link sent to the email on record for ${matric}.`;
+                if (input.includes('@')) {
+                    resetEmail = input.toLowerCase();
+                } else {
+                    const student = await getUserByMatric(input.toUpperCase());
+                    if (!student || !student.email) throw { code: 'app/matric-not-found' };
+                    resetEmail = student.email;
+                }
+                
+                await sendPasswordResetEmail(auth, resetEmail);
+                modalMessage.textContent = `Reset link sent to the email on record.`;
                 modalMessage.className = "modal-message success";
                 resetMatric.value = '';
                 
