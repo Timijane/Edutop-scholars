@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Results & Publish · Aaronice Prime Edu</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-page: #dcece7;          
+            --bg-card: #ffffff;          
+            --primary-deep: #2d6a4f;     
+            --primary-teal: #52b788;     
+            --primary-light: #e3f0ec;    
+            --text-main: #0f172a;        
+            --text-muted: #64748b;       
+            --border: #e2e8f0;
+            --sidebar-grad: linear-gradient(180deg, #2d6a4f 0%, #40916c 100%);
+            --sidebar-active: rgba(255, 255, 255, 0.15);
+            --danger: #ef4444;
+            --warning: #f59e0b;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            width: 100%; min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            -webkit-font-smoothing: antialiased;
+            display: flex; padding: 16px; gap: 16px;
+            overflow-x: hidden;
+        }
+
+        /* ============ SIDEBAR ============ */
+        .sidebar {
+            width: 250px; background: var(--sidebar-grad);
+            border-radius: 24px; display: flex; flex-direction: column;
+            padding: 24px 16px; color: #ffffff; flex-shrink: 0;
+            box-shadow: 0 10px 30px rgba(45, 106, 79, 0.15);
+            height: calc(100vh - 32px); position: sticky; top: 16px;
+        }
+        .sidebar-brand { display: flex; align-items: center; gap: 12px; padding: 0 12px; margin-bottom: 40px; }
+        .sidebar-brand .icon {
+            width: 32px; height: 32px; background: #ffffff; color: var(--primary-deep);
+            border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px;
+        }
+        .sidebar-brand h1 { font-family: 'Outfit', sans-serif; font-size: 18px; font-weight: 700; letter-spacing: -0.5px; }
+        .nav-menu { display: flex; flex-direction: column; gap: 8px; flex: 1; }
+        .nav-item {
+            display: flex; align-items: center; gap: 14px; padding: 14px 16px;
+            border-radius: 12px; color: rgba(255, 255, 255, 0.7); text-decoration: none;
+            font-size: 14px; font-weight: 500; transition: all 0.2s; cursor: pointer;
+        }
+        .nav-item i { font-size: 18px; width: 20px; text-align: center; }
+        .nav-item:hover, .nav-item.active { background: var(--sidebar-active); color: #ffffff; }
+        .nav-bottom { margin-top: auto; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 16px; }
+
+        /* ============ MAIN CONTENT ============ */
+        .main-content { flex: 1; display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+        
+        .topbar {
+            display: flex; justify-content: space-between; align-items: center;
+            background: var(--bg-card); padding: 16px 24px; border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+        }
+        .topbar-left h2 { font-family: 'Outfit', sans-serif; font-size: 22px; font-weight: 700; color: var(--primary-deep); }
+        
+        .search-box { position: relative; width: 300px; }
+        .search-box i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 14px; }
+        .search-box input {
+            width: 100%; padding: 12px 16px 12px 42px; border-radius: 100px;
+            border: 1px solid var(--border); background: #f8fafc; font-size: 13px; outline: none;
+        }
+        .search-box input:focus { border-color: var(--primary-teal); background: #ffffff; box-shadow: 0 0 0 3px rgba(82, 183, 136, 0.1); }
+
+        /* ============ KPI CARDS ============ */
+        .kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+        .kpi-card { background: var(--bg-card); padding: 20px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
+        .kpi-title { font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 8px; }
+        .kpi-value { font-family: 'Outfit', sans-serif; font-size: 28px; font-weight: 700; color: var(--text-main); }
+
+        /* ============ TABLE ============ */
+        .card { background: var(--bg-card); border-radius: 20px; padding: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .card-title { font-family: 'Outfit', sans-serif; font-size: 18px; font-weight: 700; }
+
+        .table-responsive { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 16px; font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; border-bottom: 1px solid var(--border); }
+        td { padding: 16px; font-size: 14px; border-bottom: 1px solid var(--border); color: var(--text-main); vertical-align: middle; }
+        tr:hover td { background: #f8fafc; }
+
+        .badge { padding: 6px 12px; border-radius: 100px; font-size: 11px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
+        .badge-green { background: #d1fae5; color: #065f46; }
+        .badge-warning { background: #fef3c7; color: #92400e; }
+        .badge-gray { background: #f1f5f9; color: #475569; }
+        
+        .score-pill { font-family: 'Outfit', sans-serif; font-weight: 700; color: var(--primary-deep); font-size: 15px; }
+        .btn-publish {
+            background: var(--primary-deep); color: white; padding: 6px 12px;
+            border-radius: 6px; font-size: 12px; font-weight: 600; border: none;
+            cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; gap: 6px;
+        }
+        .btn-publish:hover { background: #1b4332; transform: translateY(-1px); }
+
+        /* ============ TOAST ============ */
+        .toast {
+            position: fixed; bottom: 24px; right: 24px;
+            background: var(--primary-deep); color: white;
+            padding: 16px 24px; border-radius: 12px;
+            font-weight: 600; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: flex; align-items: center; gap: 12px;
+            transform: translateY(100px); opacity: 0; transition: all 0.3s;
+            z-index: 1000;
+        }
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .toast.error { background: var(--danger); }
+
+        @media (max-width: 992px) {
+            body { flex-direction: column; padding: 10px; }
+            .sidebar { width: 100%; height: auto; position: relative; top: 0; flex-direction: row; align-items: center; justify-content: space-between; padding: 12px 20px; }
+            .sidebar-brand { margin-bottom: 0; }
+            .nav-menu { flex-direction: row; gap: 4px; overflow-x: auto; width: auto; flex: none; }
+            .nav-item { padding: 10px; }
+            .nav-item span { display: none; }
+            .nav-bottom { display: none; }
+            .kpi-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <div class="icon"><i class="fas fa-graduation-cap"></i></div>
+            <h1>Admin Panel</h1>
+        </div>
+        <nav class="nav-menu">
+            <a href="admin-dashboard.html" class="nav-item">
+                <i class="fas fa-th-large"></i> <span>Dashboard</span>
+            </a>
+            <a href="admin-students.html" class="nav-item">
+                <i class="fas fa-users"></i> <span>Students & Courses</span>
+            </a>
+            <a href="admin-exams.html" class="nav-item">
+                <i class="fas fa-file-alt"></i> <span>Exams</span>
+            </a>
+            <a href="admin-questions.html" class="nav-item">
+                <i class="fas fa-question-circle"></i> <span>Question Bank</span>
+            </a>
+            <a href="#" class="nav-item active">
+                <i class="fas fa-chart-bar"></i> <span>Results & Publish</span>
+            </a>
+        </nav>
+        <div class="nav-bottom">
+            <a href="index.html" class="nav-item">
+                <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+        
+        <header class="topbar">
+            <div class="topbar-left">
+                <h2>Results & Publish</h2>
+            </div>
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Search by name or matric..." oninput="filterResults()">
+            </div>
+        </header>
+
+        <!-- KPI CARDS -->
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-title">Total Submissions</div>
+                <div class="kpi-value" id="kpiTotal">0</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title">Average Score</div>
+                <div class="kpi-value" id="kpiAvg">0%</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title">Pass Rate (≥ 50%)</div>
+                <div class="kpi-value" id="kpiPass">0%</div>
+            </div>
+        </div>
+
+        <!-- RESULTS TABLE -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">All Exam Attempts</h3>
+            </div>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Matric No</th>
+                            <th>Exam</th>
+                            <th>Score</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resultsTableBody">
+                        <tr><td colspan="7" style="text-align:center;">Loading results...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- TOAST -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMsg">Success</span>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+        import { getFirestore, collection, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCictHNxtslYs9VR0hoicxlwPn_QghkgIA",
+            authDomain: "edutop-7ff51.firebaseapp.com",
+            projectId: "edutop-7ff51",
+            storageBucket: "edutop-7ff51.firebasestorage.app",
+            messagingSenderId: "79307850494",
+            appId: "1:79307850494:web:b51ce51204140ec5429baf",
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let allResults = [];
+
+        // --- INITIALIZATION ---
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) { window.location.href = "index.html"; return; }
+            await loadResults();
+        });
+
+        // --- LOAD RESULTS FROM FIREBASE ---
+        async function loadResults() {
+            const tbody = document.getElementById('resultsTableBody');
+            try {
+                const snap = await getDocs(collection(db, "attempts"));
+                allResults = [];
+                snap.forEach(doc => {
+                    allResults.push({ id: doc.id, ...doc.data() });
+                });
+
+                // Sort by newest first
+                allResults.sort((a, b) => new Date(b.submittedAt) - new Date(a.submittedAt));
+
+                renderTable(allResults);
+                calculateKPIs(allResults);
+
+            } catch (e) {
+                console.error("Error loading results:", e);
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:red;">Failed to load results.</td></tr>';
+            }
+        }
+
+        // --- RENDER TABLE ---
+        function renderTable(results) {
+            const tbody = document.getElementById('resultsTableBody');
+            
+            if (results.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:var(--text-muted);">No results found.</td></tr>';
+                return;
+            }
+
+            let html = '';
+            results.forEach(r => {
+                const date = new Date(r.submittedAt).toLocaleDateString('en-GB');
+                
+                // Status Badge
+                const statusHtml = r.isPublished 
+                    ? '<span class="badge badge-green"><i class="fas fa-check-circle"></i> Published</span>' 
+                    : '<span class="badge badge-warning"><i class="fas fa-clock"></i> Pending Review</span>';
+
+                // Publish Button (Only show if not published)
+                const actionHtml = !r.isPublished 
+                    ? `<button class="btn-publish" onclick="publishResult('${r.id}')"><i class="fas fa-upload"></i> Publish</button>` 
+                    : `<span style="color:var(--text-muted); font-size:12px;"><i class="fas fa-check"></i> Done</span>`;
+
+                html += `
+                    <tr>
+                        <td style="font-weight:600;">${escapeHTML(r.studentName)}</td>
+                        <td><span class="badge badge-gray">${escapeHTML(r.matricNo)}</span></td>
+                        <td>${escapeHTML(r.examTitle)} <br><span style="font-size:11px; color:var(--text-muted);">${escapeHTML(r.courseId)}</span></td>
+                        <td class="score-pill">${r.percentage}%</td>
+                        <td>${statusHtml}</td>
+                        <td style="font-size:12px; color:var(--text-muted);">${date}</td>
+                        <td>${actionHtml}</td>
+                    </tr>
+                `;
+            });
+            tbody.innerHTML = html;
+        }
+
+        // --- CALCULATE KPIs ---
+        function calculateKPIs(results) {
+            const total = results.length;
+            let sum = 0;
+            let passed = 0;
+
+            results.forEach(r => {
+                sum += Number(r.percentage || 0);
+                if (r.percentage >= 50) passed++;
+            });
+
+            document.getElementById('kpiTotal').textContent = total;
+            document.getElementById('kpiAvg').textContent = total > 0 ? Math.round(sum / total) + '%' : '0%';
+            document.getElementById('kpiPass').textContent = total > 0 ? Math.round((passed / total) * 100) + '%' : '0%';
+        }
+
+        // --- SEARCH FILTER ---
+        window.filterResults = () => {
+            const term = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = allResults.filter(r => 
+                r.studentName.toLowerCase().includes(term) || 
+                r.matricNo.toLowerCase().includes(term) ||
+                r.examTitle.toLowerCase().includes(term)
+            );
+            renderTable(filtered);
+        };
+
+        // --- PUBLISH RESULT ---
+        window.publishResult = async (attemptId) => {
+            if (!confirm("Are you sure you want to publish this result? The student will be able to see their score immediately.")) return;
+            
+            try {
+                await updateDoc(doc(db, "attempts", attemptId), {
+                    isPublished: true
+                });
+                showToast("Result published successfully!");
+                loadResults(); // Refresh table
+            } catch (error) {
+                console.error(error);
+                showToast("Failed to publish result.", true);
+            }
+        };
+
+        // --- TOAST HELPER ---
+        function showToast(msg, isError = false) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMsg');
+            const icon = toast.querySelector('i');
+            
+            toastMsg.textContent = msg;
+            if (isError) {
+                toast.classList.add('error');
+                icon.className = 'fas fa-exclamation-circle';
+            } else {
+                toast.classList.remove('error');
+                icon.className = 'fas fa-check-circle';
+            }
+
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3500);
+        }
+
+        // --- SECURITY ---
+        function escapeHTML(str) {
+            if(!str) return "";
+            return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag));
+        }
+    </script>
+</body>
+</html>
