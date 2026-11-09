@@ -8,7 +8,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    <!-- PapaParse for CSV Parsing -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     
     <style>
@@ -116,7 +115,8 @@
             background: #f8fafc; color: var(--text-muted); cursor: pointer;
             display: flex; align-items: center; justify-content: center; transition: all 0.2s;
         }
-        .q-btn:hover { background: #fee2e2; color: #dc2626; border-color: #fca5a5; }
+        .q-btn.edit:hover { background: var(--primary-light); color: var(--primary-deep); border-color: var(--primary-teal); }
+        .q-btn.delete:hover { background: #fee2e2; color: #dc2626; border-color: #fca5a5; }
         
         .q-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
         .q-opt { font-size: 13px; color: var(--text-muted); display: flex; gap: 8px; }
@@ -243,6 +243,7 @@
                     <button class="btn btn-outline" onclick="openModal('csvModal')">
                         <i class="fas fa-file-upload"></i> Bulk Import
                     </button>
+                    <!-- FIXED: Directly calls the generic modal opener -->
                     <button class="btn btn-primary" onclick="openQuestionModal()">
                         <i class="fas fa-plus"></i> Create Question
                     </button>
@@ -259,11 +260,11 @@
 
     </main>
 
-    <!-- ================= CREATE QUESTION MODAL ================= -->
+    <!-- ================= CREATE/EDIT QUESTION MODAL ================= -->
     <div class="modal" id="questionModal">
         <div class="modal-content">
             <button class="modal-close" onclick="closeModal('questionModal')">&times;</button>
-            <h3>Create New Question</h3>
+            <h3 id="modalTitle">Create New Question</h3>
             
             <div class="form-group">
                 <label>Question Text</label>
@@ -293,14 +294,14 @@
             <div class="form-group" style="margin-top:16px;">
                 <label>Link to Courses (Select all that apply)</label>
                 <div class="course-select-box" id="courseCheckboxList">
-                    <!-- Populated via JS -->
                     <p style="font-size:12px; color:var(--text-muted);">Loading courses...</p>
                 </div>
             </div>
 
-            <button class="btn btn-primary" style="width:100%; justify-content:center; margin-top:16px;" id="saveQuestionBtn" onclick="saveQuestion()">
-                Save Question
-            </button>
+            <div style="display:flex; gap:12px; margin-top:24px;">
+                <button class="btn btn-outline" style="flex:1; justify-content:center;" onclick="closeModal('questionModal')">Cancel</button>
+                <button class="btn btn-primary" style="flex:2; justify-content:center;" id="saveQuestionBtn" onclick="saveQuestion()">Save Question</button>
+            </div>
         </div>
     </div>
 
@@ -328,43 +329,45 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-        import { getFirestore, collection, getDocs, addDoc, deleteDoc, doc, writeBatch } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, writeBatch } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyCVjXxUulSpTkxZrxpkKJrKC939PvIMKmI",
-  authDomain: "aaronices.firebaseapp.com",
-  projectId: "aaronices",
-  storageBucket: "aaronices.firebasestorage.app",
-  messagingSenderId: "355917763913",
-  appId: "1:355917763913:web:c88ecd1f3f131325423698",
-  measurementId: "G-7B79V1VSES"
-};
+        const firebaseConfig = {
+            apiKey: "AIzaSyCVjXxUulSpTkxZrxpkKJrKC939PvIMKmI",
+            authDomain: "aaronices.firebaseapp.com",
+            projectId: "aaronices",
+            storageBucket: "aaronices.firebasestorage.app",
+            messagingSenderId: "355917763913",
+            appId: "1:355917763913:web:c88ecd1f3f131325423698",
+            measurementId: "G-7B79V1VSES"
+        };
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
 
         let allQuestions = [];
-        let availableCourses = [];
         let currentUserEmail = "";
+        let currentEditId = null; // Tracks if we are editing an existing question
 
-        // --- SECURITY: HTML ESCAPER (Prevents XSS) ---
+        // --- SECURITY: HTML ESCAPER ---
         function escapeHTML(str) {
+            if(!str) return "";
             return str.replace(/[&<>'"]/g, 
-                tag => ({
-                    '&': '&amp;',
-                    '<': '&lt;',
-                    '>': '&gt;',
-                    "'": '&#39;',
-                    '"': '&quot;'
-                }[tag] || tag)
+                tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
             );
         }
 
         // --- UI HELPERS ---
         window.openModal = (id) => document.getElementById(id).classList.add('active');
         window.closeModal = (id) => document.getElementById(id).classList.remove('active');
+
+        // --- OPEN CREATE MODAL (Fixes the bug) ---
+        window.openQuestionModal = () => {
+            currentEditId = null;
+            document.getElementById('modalTitle').textContent = "Create New Question";
+            resetForm();
+            openModal('questionModal');
+        };
 
         // --- AUTH & INITIAL LOAD ---
         onAuthStateChanged(auth, async (user) => {
@@ -380,12 +383,10 @@ const firebaseConfig = {
             const listDiv = document.getElementById('courseCheckboxList');
             try {
                 const snap = await getDocs(collection(db, "courses"));
-                availableCourses = [];
                 let html = '';
                 
                 snap.forEach(doc => {
                     const c = doc.data();
-                    availableCourses.push(c.code);
                     html += `
                         <label class="course-check">
                             <input type="checkbox" value="${escapeHTML(c.code)}" class="course-cb">
@@ -411,7 +412,6 @@ const firebaseConfig = {
                     allQuestions.push({ id: doc.id, ...doc.data() });
                 });
 
-                // Sort newest first
                 allQuestions.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
                 renderQuestions(allQuestions);
             } catch (e) {
@@ -453,7 +453,10 @@ const firebaseConfig = {
                         <div class="q-header">
                             <div class="q-text">${escapeHTML(q.text)}</div>
                             <div class="q-actions">
-                                <button class="q-btn" onclick="deleteQuestion('${q.id}')" title="Delete Question">
+                                <button class="q-btn edit" onclick="editQuestion('${q.id}')" title="Edit Question">
+                                    <i class="fas fa-pen"></i>
+                                </button>
+                                <button class="q-btn delete" onclick="deleteQuestion('${q.id}')" title="Delete Question">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </div>
@@ -479,7 +482,45 @@ const firebaseConfig = {
             renderQuestions(filtered);
         };
 
-        // --- SAVE NEW QUESTION ---
+        // --- RESET FORM ---
+        function resetForm() {
+            document.getElementById('qText').value = '';
+            document.getElementById('qOptA').value = '';
+            document.getElementById('qOptB').value = '';
+            document.getElementById('qOptC').value = '';
+            document.getElementById('qOptD').value = '';
+            document.querySelector('input[name="correctOpt"][value="A"]').checked = true;
+            document.querySelectorAll('.course-cb').forEach(cb => cb.checked = false);
+        }
+
+        // --- EDIT QUESTION ---
+        window.editQuestion = (id) => {
+            const q = allQuestions.find(item => item.id === id);
+            if (!q) return;
+
+            currentEditId = id;
+            document.getElementById('modalTitle').textContent = "Edit Question";
+            
+            // Populate form
+            document.getElementById('qText').value = q.text;
+            document.getElementById('qOptA').value = q.options.A || '';
+            document.getElementById('qOptB').value = q.options.B || '';
+            document.getElementById('qOptC').value = q.options.C || '';
+            document.getElementById('qOptD').value = q.options.D || '';
+            
+            // Check correct answer radio
+            const correctRadio = document.querySelector(`input[name="correctOpt"][value="${q.correctAnswer}"]`);
+            if (correctRadio) correctRadio.checked = true;
+
+            // Check course boxes
+            document.querySelectorAll('.course-cb').forEach(cb => {
+                cb.checked = q.courseIds.includes(cb.value);
+            });
+
+            openModal('questionModal');
+        };
+
+        // --- SAVE NEW OR UPDATE EXISTING QUESTION ---
         window.saveQuestion = async () => {
             const text = document.getElementById('qText').value.trim();
             const optA = document.getElementById('qOptA').value.trim();
@@ -502,24 +543,23 @@ const firebaseConfig = {
             const btn = document.getElementById('saveQuestionBtn');
             btn.textContent = "Saving..."; btn.disabled = true;
 
-            try {
-                await addDoc(collection(db, "questions"), {
-                    text: text,
-                    options: { A: optA, B: optB, C: optC, D: optD },
-                    correctAnswer: correctAnswer,
-                    courseIds: courseIds,
-                    createdBy: currentUserEmail,
-                    createdAt: new Date().toISOString()
-                });
+            const questionData = {
+                text: text,
+                options: { A: optA, B: optB, C: optC, D: optD },
+                correctAnswer: correctAnswer,
+                courseIds: courseIds,
+                createdBy: currentUserEmail,
+                createdAt: new Date().toISOString()
+            };
 
-                // Reset form
-                document.getElementById('qText').value = '';
-                document.getElementById('qOptA').value = '';
-                document.getElementById('qOptB').value = '';
-                document.getElementById('qOptC').value = '';
-                document.getElementById('qOptD').value = '';
-                document.querySelector('input[name="correctOpt"][value="A"]').checked = true;
-                document.querySelectorAll('.course-cb:checked').forEach(cb => cb.checked = false);
+            try {
+                if (currentEditId) {
+                    // Update existing
+                    await updateDoc(doc(db, "questions", currentEditId), questionData);
+                } else {
+                    // Create new
+                    await addDoc(collection(db, "questions"), questionData);
+                }
 
                 closeModal('questionModal');
                 loadQuestions(); 
@@ -552,7 +592,7 @@ const firebaseConfig = {
             a.href = url; a.download = 'question_template.csv'; a.click();
         };
 
-        // --- CSV UPLOAD (BATCH WRITE - ENTERPRISE GRADE) ---
+        // --- CSV UPLOAD (BATCH WRITE) ---
         window.handleCSVUpload = (event) => {
             const file = event.target.files[0];
             if (!file) return;
@@ -572,7 +612,7 @@ const firebaseConfig = {
 
                     let success = 0;
                     let fail = 0;
-                    let batch = writeBatch(db); // Initialize Firestore Batch
+                    let batch = writeBatch(db); 
                     let batchCount = 0;
 
                     for (const row of rows) {
@@ -590,11 +630,8 @@ const firebaseConfig = {
                             }
 
                             const courseIds = coursesStr.split('|').map(s => s.trim().toUpperCase());
-                            
-                            // Create a new document reference
                             const newDocRef = doc(collection(db, "questions"));
                             
-                            // Add to batch instead of sending immediately
                             batch.set(newDocRef, {
                                 text: text,
                                 options: { A: optA, B: optB, C: optC, D: optD },
@@ -607,10 +644,9 @@ const firebaseConfig = {
                             success++;
                             batchCount++;
 
-                            // Firestore limits batches to 500 operations. Commit and reset if we hit the limit.
                             if (batchCount === 500) {
                                 await batch.commit();
-                                batch = writeBatch(db); // Start a new batch
+                                batch = writeBatch(db); 
                                 batchCount = 0;
                             }
 
@@ -619,7 +655,6 @@ const firebaseConfig = {
                         }
                     }
 
-                    // Commit any remaining questions in the final batch
                     if (batchCount > 0) {
                         await batch.commit();
                     }
