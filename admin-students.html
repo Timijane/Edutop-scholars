@@ -8,7 +8,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    <!-- PapaParse for CSV Parsing -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     
     <style>
@@ -25,322 +24,126 @@
             --sidebar-active: rgba(255, 255, 255, 0.15);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         html, body {
-            width: 100%;
-            min-height: 100vh;
+            width: 100%; min-height: 100vh;
             font-family: 'Inter', sans-serif;
             background-color: var(--bg-page);
             color: var(--text-main);
             -webkit-font-smoothing: antialiased;
-            display: flex;
-            padding: 16px;
-            gap: 16px;
+            display: flex; padding: 16px; gap: 16px;
             overflow-x: hidden;
         }
 
         /* ============ SIDEBAR ============ */
         .sidebar {
-            width: 250px;
-            background: var(--sidebar-grad);
-            border-radius: 24px;
-            display: flex;
-            flex-direction: column;
-            padding: 24px 16px;
-            color: #ffffff;
-            flex-shrink: 0;
+            width: 250px; background: var(--sidebar-grad);
+            border-radius: 24px; display: flex; flex-direction: column;
+            padding: 24px 16px; color: #ffffff; flex-shrink: 0;
             box-shadow: 0 10px 30px rgba(45, 106, 79, 0.15);
-            height: calc(100vh - 32px);
-            position: sticky;
-            top: 16px;
+            height: calc(100vh - 32px); position: sticky; top: 16px;
         }
-
-        .sidebar-brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 0 12px;
-            margin-bottom: 40px;
-        }
-
+        .sidebar-brand { display: flex; align-items: center; gap: 12px; padding: 0 12px; margin-bottom: 40px; }
         .sidebar-brand .icon {
-            width: 32px; height: 32px;
-            background: #ffffff;
-            color: var(--primary-deep);
-            border-radius: 8px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 16px;
+            width: 32px; height: 32px; background: #ffffff; color: var(--primary-deep);
+            border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px;
         }
-
-        .sidebar-brand h1 {
-            font-family: 'Outfit', sans-serif;
-            font-size: 18px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-        }
-
-        .nav-menu {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            flex: 1;
-        }
-
+        .sidebar-brand h1 { font-family: 'Outfit', sans-serif; font-size: 18px; font-weight: 700; letter-spacing: -0.5px; }
+        .nav-menu { display: flex; flex-direction: column; gap: 8px; flex: 1; }
         .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 14px 16px;
-            border-radius: 12px;
-            color: rgba(255, 255, 255, 0.7);
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 500;
-            transition: all 0.2s;
-            cursor: pointer;
+            display: flex; align-items: center; gap: 14px; padding: 14px 16px;
+            border-radius: 12px; color: rgba(255, 255, 255, 0.7); text-decoration: none;
+            font-size: 14px; font-weight: 500; transition: all 0.2s; cursor: pointer;
         }
-
         .nav-item i { font-size: 18px; width: 20px; text-align: center; }
         .nav-item:hover, .nav-item.active { background: var(--sidebar-active); color: #ffffff; }
         .nav-bottom { margin-top: auto; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 16px; }
 
         /* ============ MAIN CONTENT ============ */
-        .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            min-width: 0; 
-        }
-
+        .main-content { flex: 1; display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+        
         .topbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--bg-card);
-            padding: 16px 24px;
-            border-radius: 20px;
+            display: flex; justify-content: space-between; align-items: center;
+            background: var(--bg-card); padding: 16px 24px; border-radius: 20px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.02);
         }
-
-        .topbar-left h2 {
-            font-family: 'Outfit', sans-serif;
-            font-size: 22px;
-            font-weight: 700;
-            color: var(--primary-deep);
-        }
-
-        .topbar-right { display: flex; align-items: center; gap: 16px; }
+        .topbar-left h2 { font-family: 'Outfit', sans-serif; font-size: 22px; font-weight: 700; color: var(--primary-deep); }
         
-        .icon-btn {
-            width: 42px; height: 42px;
-            border-radius: 50%;
-            border: 1px solid var(--border);
-            background: #ffffff;
-            color: var(--text-main);
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        /* ============ TABS ============ */
-        .tabs {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 8px;
-        }
-
+        .tabs { display: flex; gap: 12px; margin-bottom: 8px; }
         .tab-btn {
-            padding: 12px 24px;
-            border-radius: 12px;
-            border: none;
-            background: transparent;
-            font-family: 'Outfit', sans-serif;
-            font-size: 15px;
-            font-weight: 600;
-            color: var(--text-muted);
-            cursor: pointer;
-            transition: all 0.2s;
+            padding: 12px 24px; border-radius: 12px; border: none; background: transparent;
+            font-family: 'Outfit', sans-serif; font-size: 15px; font-weight: 600;
+            color: var(--text-muted); cursor: pointer; transition: all 0.2s;
         }
-
-        .tab-btn.active {
-            background: var(--bg-card);
-            color: var(--primary-deep);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-        }
-
+        .tab-btn.active { background: var(--bg-card); color: var(--primary-deep); box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
         .tab-content { display: none; }
         .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
-        
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         /* ============ CARDS & TABLES ============ */
-        .card {
-            background: var(--bg-card);
-            border-radius: 20px;
-            padding: 24px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .card-title {
-            font-family: 'Outfit', sans-serif;
-            font-size: 18px;
-            font-weight: 700;
-        }
+        .card { background: var(--bg-card); border-radius: 20px; padding: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .card-title { font-family: 'Outfit', sans-serif; font-size: 18px; font-weight: 700; }
 
         .btn {
-            padding: 10px 20px;
-            border-radius: 8px;
-            border: none;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
+            padding: 10px 20px; border-radius: 8px; border: none;
+            font-size: 13px; font-weight: 600; cursor: pointer;
+            transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px;
         }
-
         .btn-primary { background: var(--primary-deep); color: #ffffff; }
         .btn-primary:hover { background: #1b4332; }
         .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-main); }
         .btn-outline:hover { background: #f8fafc; }
-        .btn-teal { background: var(--primary-teal); color: #ffffff; }
-        .btn-teal:hover { background: #40916c; }
+        .btn-sm { padding: 6px 12px; font-size: 11px; }
 
         .table-responsive { overflow-x: auto; }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-
-        th {
-            text-align: left;
-            padding: 16px;
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            border-bottom: 1px solid var(--border);
-        }
-
-        td {
-            padding: 16px;
-            font-size: 14px;
-            border-bottom: 1px solid var(--border);
-            color: var(--text-main);
-        }
-
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th { text-align: left; padding: 16px; font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; border-bottom: 1px solid var(--border); }
+        td { padding: 16px; font-size: 14px; border-bottom: 1px solid var(--border); color: var(--text-main); }
         tr:hover td { background: #f8fafc; }
 
-        .badge {
-            padding: 4px 10px;
-            border-radius: 100px;
-            font-size: 11px;
-            font-weight: 600;
-        }
+        .badge { padding: 4px 10px; border-radius: 100px; font-size: 11px; font-weight: 600; }
         .badge-green { background: #d1fae5; color: #065f46; }
         .badge-gray { background: #f1f5f9; color: #475569; }
         .badge-red { background: #fee2e2; color: #991b1b; }
 
         /* ============ MODALS ============ */
-        .modal {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(4px);
-            z-index: 100;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
+        .modal { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); z-index: 100; align-items: center; justify-content: center; padding: 20px; }
         .modal.active { display: flex; }
-
         .modal-content {
-            background: var(--bg-card);
-            padding: 32px;
-            border-radius: 20px;
-            max-width: 520px;
-            width: 100%;
-            position: relative;
+            background: var(--bg-card); padding: 32px; border-radius: 20px;
+            max-width: 520px; width: 100%; position: relative;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            animation: modalIn 0.3s ease;
-            max-height: 90vh;
-            overflow-y: auto;
+            animation: modalIn 0.3s ease; max-height: 90vh; overflow-y: auto;
         }
-
         @keyframes modalIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-
-        .modal-close {
-            position: absolute; top: 20px; right: 24px;
-            font-size: 24px; color: var(--text-muted); cursor: pointer; background: none; border: none;
-        }
-
-        .modal-content h3 {
-            font-family: 'Outfit', sans-serif;
-            font-size: 20px; font-weight: 700; margin-bottom: 24px; color: var(--primary-deep);
-        }
+        .modal-close { position: absolute; top: 20px; right: 24px; font-size: 24px; color: var(--text-muted); cursor: pointer; background: none; border: none; }
+        .modal-content h3 { font-family: 'Outfit', sans-serif; font-size: 20px; font-weight: 700; margin-bottom: 24px; color: var(--primary-deep); }
 
         .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-
         .form-group { margin-bottom: 16px; }
-
         .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
-
-        .form-control {
-            width: 100%; padding: 12px 16px; font-size: 14px;
-            border: 1px solid var(--border); border-radius: 10px; outline: none;
-            font-family: 'Inter', sans-serif;
-        }
-
+        .form-control { width: 100%; padding: 12px 16px; font-size: 14px; border: 1px solid var(--border); border-radius: 10px; outline: none; font-family: 'Inter', sans-serif; }
         .form-control:focus { border-color: var(--primary-teal); box-shadow: 0 0 0 3px rgba(82,183,136,0.1); }
-        
-        /* CSV Dropzone */
+
         .dropzone {
-            border: 2px dashed var(--border);
-            border-radius: 12px;
-            padding: 40px 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-            background: #f8fafc;
-            margin-bottom: 16px;
+            border: 2px dashed var(--border); border-radius: 12px; padding: 40px 20px;
+            text-align: center; cursor: pointer; transition: all 0.2s; background: #f8fafc; margin-bottom: 16px;
         }
         .dropzone:hover { border-color: var(--primary-teal); background: var(--primary-light); }
         .dropzone i { font-size: 32px; color: var(--primary-teal); margin-bottom: 12px; }
         .dropzone p { font-size: 13px; color: var(--text-muted); }
-        
-        /* ============ RESPONSIVE ============ */
+
+        /* Responsive */
         @media (max-width: 992px) {
             body { flex-direction: column; padding: 10px; }
-            .sidebar { 
-                width: 100%; height: auto; position: relative; top: 0;
-                flex-direction: row; align-items: center; justify-content: space-between;
-                padding: 12px 20px;
-            }
+            .sidebar { width: 100%; height: auto; position: relative; top: 0; flex-direction: row; align-items: center; justify-content: space-between; padding: 12px 20px; }
             .sidebar-brand { margin-bottom: 0; }
             .nav-menu { flex-direction: row; gap: 4px; overflow-x: auto; width: auto; flex: none; }
             .nav-item { padding: 10px; }
             .nav-item span { display: none; }
             .nav-bottom { display: none; }
-        }
-        @media (max-width: 600px) {
             .form-row { grid-template-columns: 1fr; }
         }
     </style>
@@ -360,10 +163,10 @@
             <a href="#" class="nav-item active">
                 <i class="fas fa-users"></i> <span>Students & Courses</span>
             </a>
-            <a href="#" class="nav-item">
+            <a href="admin-exams.html" class="nav-item">
                 <i class="fas fa-file-alt"></i> <span>Exams</span>
             </a>
-            <a href="#" class="nav-item">
+            <a href="admin-questions.html" class="nav-item">
                 <i class="fas fa-question-circle"></i> <span>Question Bank</span>
             </a>
         </nav>
@@ -376,7 +179,6 @@
 
     <!-- MAIN CONTENT -->
     <main class="main-content">
-        
         <header class="topbar">
             <div class="topbar-left">
                 <h2>Management</h2>
@@ -386,13 +188,12 @@
             </div>
         </header>
 
-        <!-- TABS -->
         <div class="tabs">
             <button class="tab-btn active" onclick="switchTab('students')">Students</button>
             <button class="tab-btn" onclick="switchTab('courses')">Courses & Departments</button>
         </div>
 
-        <!-- ================= STUDENTS TAB ================= -->
+        <!-- STUDENTS TAB -->
         <div id="tab-students" class="tab-content active">
             <div class="card">
                 <div class="card-header">
@@ -414,19 +215,19 @@
                                 <th>Matric No</th>
                                 <th>Email</th>
                                 <th>Dept / Level</th>
-                                <th>Status</th>
+                                <th>Password</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody id="studentsTableBody">
-                            <!-- Populated via JS -->
-                            <tr><td colspan="5" style="text-align:center; color:var(--text-muted);">Loading students...</td></tr>
+                            <tr><td colspan="6" style="text-align:center; color:var(--text-muted);">Loading students...</td></tr>
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
 
-        <!-- ================= COURSES TAB ================= -->
+        <!-- COURSES TAB -->
         <div id="tab-courses" class="tab-content">
             <div class="card">
                 <div class="card-header">
@@ -446,14 +247,12 @@
                             </tr>
                         </thead>
                         <tbody id="coursesTableBody">
-                            <!-- Populated via JS -->
                             <tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Loading courses...</td></tr>
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
-
     </main>
 
     <!-- ================= ADD STUDENT MODAL ================= -->
@@ -464,16 +263,16 @@
             <div class="form-row">
                 <div class="form-group">
                     <label>Full Name</label>
-                    <input type="text" id="stuName" class="form-control" placeholder="John Doe">
+                    <input type="text" id="stuName" class="form-control" placeholder="e.g. Wale Oke">
                 </div>
                 <div class="form-group">
                     <label>Matric / Reg No.</label>
-                    <input type="text" id="stuMatric" class="form-control" placeholder="CSC/2023/001">
+                    <input type="text" id="stuMatric" class="form-control" placeholder="e.g. CSC/2023/001">
                 </div>
             </div>
             <div class="form-group">
                 <label>Email Address</label>
-                <input type="email" id="stuEmail" class="form-control" placeholder="john@gmail.com">
+                <input type="email" id="stuEmail" class="form-control" placeholder="e.g. wale@gmail.com">
             </div>
             <div class="form-row">
                 <div class="form-group">
@@ -487,11 +286,34 @@
                 </div>
                 <div class="form-group">
                     <label>Level / Class</label>
-                    <input type="text" id="stuLevel" class="form-control" placeholder="e.g. 100L or SS2">
+                    <input type="text" id="stuLevel" class="form-control" placeholder="e.g. 100L">
                 </div>
             </div>
             <button class="btn btn-primary" style="width:100%; justify-content:center;" id="saveStudentBtn" onclick="addStudent()">
                 Create Student Account
+            </button>
+            <p style="text-align: center; font-size: 11px; color: var(--text-muted); margin-top: 16px;">
+                The default password will be the student's <strong>First Name + 2026</strong> (e.g. Wale2026).
+            </p>
+        </div>
+    </div>
+
+    <!-- ================= EDIT PASSWORD MODAL ================= -->
+    <div class="modal" id="editPassModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('editPassModal')">&times;</button>
+            <h3>Manage Student Password</h3>
+            <input type="hidden" id="editStuId">
+            <div class="form-group">
+                <label>Student Name</label>
+                <input type="text" id="editStuName" class="form-control" disabled style="background:#f1f5f9;">
+            </div>
+            <div class="form-group">
+                <label>Current Password</label>
+                <input type="text" id="editStuPass" class="form-control">
+            </div>
+            <button class="btn btn-primary" style="width:100%; justify-content:center;" id="updatePassBtn" onclick="updateStudentPassword()">
+                Update Password
             </button>
         </div>
     </div>
@@ -524,16 +346,16 @@
             <div class="form-row">
                 <div class="form-group">
                     <label>Course Code</label>
-                    <input type="text" id="courseCode" class="form-control" placeholder="CSC101">
+                    <input type="text" id="courseCode" class="form-control" placeholder="e.g. CSC101">
                 </div>
                 <div class="form-group">
                     <label>Level</label>
-                    <input type="text" id="courseLevel" class="form-control" placeholder="100L">
+                    <input type="text" id="courseLevel" class="form-control" placeholder="e.g. 100L">
                 </div>
             </div>
             <div class="form-group">
                 <label>Course Title</label>
-                <input type="text" id="courseTitle" class="form-control" placeholder="Intro to Computer Science">
+                <input type="text" id="courseTitle" class="form-control" placeholder="e.g. Intro to Computer Science">
             </div>
             <div class="form-group">
                 <label>Is this a General Course? (e.g. Use of English)</label>
@@ -552,18 +374,17 @@
     <script type="module">
         import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
         import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc, collection, query, where, getDocs, addDoc, setDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, collection, query, where, getDocs, addDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyCVjXxUulSpTkxZrxpkKJrKC939PvIMKmI",
-  authDomain: "aaronices.firebaseapp.com",
-  projectId: "aaronices",
-  storageBucket: "aaronices.firebasestorage.app",
-  messagingSenderId: "355917763913",
-  appId: "1:355917763913:web:c88ecd1f3f131325423698",
-  measurementId: "G-7B79V1VSES"
-};
+        const firebaseConfig = {
+            apiKey: "AIzaSyCVjXxUulSpTkxZrxpkKJrKC939PvIMKmI",
+            authDomain: "aaronices.firebaseapp.com",
+            projectId: "aaronices",
+            storageBucket: "aaronices.firebasestorage.app",
+            messagingSenderId: "355917763913",
+            appId: "1:355917763913:web:c88ecd1f3f131325423698",
+            measurementId: "G-7B79V1VSES"
+        };
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
@@ -573,7 +394,6 @@ const firebaseConfig = {
         window.switchTab = (tabName) => {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-            
             event.target.classList.add('active');
             document.getElementById(`tab-${tabName}`).classList.add('active');
         };
@@ -585,12 +405,10 @@ const firebaseConfig = {
         onAuthStateChanged(auth, async (user) => {
             if (!user) { window.location.href = "index.html"; return; }
             
-            // Verify staff role
             const q = query(collection(db, "staff"), where("email", "==", user.email.toLowerCase()));
             const snap = await getDocs(q);
             if (snap.empty) { window.location.href = "index.html"; return; }
 
-            // Load initial data
             loadStudents();
             loadCourses();
         });
@@ -603,22 +421,125 @@ const firebaseConfig = {
                 let html = '';
                 snap.forEach(doc => {
                     const data = doc.data();
+                    // Show default if not saved yet (for older accounts)
+                    const displayPass = data.currentPassword || (data.fullName ? data.fullName.split(' ')[0] + "2026" : "N/A");
+
                     html += `
                         <tr>
                             <td style="font-weight:600;">${data.fullName || 'N/A'}</td>
                             <td><span class="badge badge-gray">${data.matricNo || 'N/A'}</span></td>
                             <td>${data.email || 'N/A'}</td>
                             <td>${data.department || 'N/A'} - ${data.level || 'N/A'}</td>
-                            <td><span class="badge badge-green">Active</span></td>
+                            <td><strong>${displayPass}</strong></td>
+                            <td>
+                                <button class="btn btn-outline btn-sm" onclick="openEditPass('${doc.id}', '${data.fullName}', '${displayPass}')">
+                                    <i class="fas fa-key"></i> Edit Pass
+                                </button>
+                            </td>
                         </tr>
                     `;
                 });
-                tbody.innerHTML = html || '<tr><td colspan="5" style="text-align:center;">No students found.</td></tr>';
+                tbody.innerHTML = html || '<tr><td colspan="6" style="text-align:center;">No students found.</td></tr>';
             } catch (e) {
                 console.error(e);
-                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:red;">Error loading students.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:red;">Error loading students.</td></tr>';
             }
         }
+
+        // --- OPEN EDIT PASSWORD MODAL ---
+        window.openEditPass = (id, name, currentPass) => {
+            document.getElementById('editStuId').value = id;
+            document.getElementById('editStuName').value = name;
+            document.getElementById('editStuPass').value = currentPass;
+            openModal('editPassModal');
+        };
+
+        // --- UPDATE PASSWORD IN FIRESTORE ---
+        window.updateStudentPassword = async () => {
+            const id = document.getElementById('editStuId').value;
+            const newPass = document.getElementById('editStuPass').value.trim();
+            const btn = document.getElementById('updatePassBtn');
+
+            if (newPass.length < 6) {
+                alert("Password must be at least 6 characters.");
+                return;
+            }
+
+            btn.textContent = "Updating...";
+            btn.disabled = true;
+
+            try {
+                // Note: This updates the password on the Admin dashboard view. 
+                // It does NOT change their Firebase Auth login password automatically 
+                // unless they use the "Forgot Password" flow.
+                // For a full CBT system, you would also trigger a password reset email here.
+                await updateDoc(doc(db, "users", id), {
+                    currentPassword: newPass
+                });
+                closeModal('editPassModal');
+                loadStudents();
+            } catch (error) {
+                console.error(error);
+                alert("Error: " + error.message);
+            } finally {
+                btn.textContent = "Update Password";
+                btn.disabled = false;
+            }
+        };
+
+        // --- ADD STUDENT MANUALLY ---
+        window.addStudent = async () => {
+            const name = document.getElementById('stuName').value.trim();
+            const matric = document.getElementById('stuMatric').value.trim().toUpperCase();
+            const email = document.getElementById('stuEmail').value.trim().toLowerCase();
+            const dept = document.getElementById('stuDept').value;
+            const level = document.getElementById('stuLevel').value.trim();
+            const btn = document.getElementById('saveStudentBtn');
+
+            if (!name || !matric || !email || !level) { alert("Please fill all fields."); return; }
+
+            btn.textContent = "Creating..."; btn.disabled = true;
+
+            // Generate Password: First Name + 2026 (ensures it's > 6 chars for Firebase)
+            let firstName = name.split(' ')[0];
+            let defaultPass = firstName.length >= 6 ? firstName : firstName + "2026";
+
+            try {
+                const secondaryApp = initializeApp(firebaseConfig, "SecondaryCreate");
+                const secondaryAuth = getAuth(secondaryApp);
+                
+                const userCred = await createUserWithEmailAndPassword(secondaryAuth, email, defaultPass);
+                
+                await setDoc(doc(db, "users", userCred.user.uid), {
+                    fullName: name,
+                    matricNo: matric,
+                    email: email,
+                    department: dept,
+                    level: level,
+                    currentPassword: defaultPass, // Store for Admin visibility
+                    enrolledCourseIds: [],
+                    isOwing: false,
+                    createdAt: new Date().toISOString()
+                });
+
+                await secondaryAuth.signOut();
+                await deleteApp(secondaryApp);
+
+                alert(`Student created! Default Password: ${defaultPass}`);
+                closeModal('addStudentModal');
+                document.getElementById('stuName').value = '';
+                document.getElementById('stuMatric').value = '';
+                document.getElementById('stuEmail').value = '';
+                document.getElementById('stuLevel').value = '';
+                loadStudents();
+
+            } catch (error) {
+                console.error(error);
+                alert("Error: " + error.message);
+            } finally {
+                btn.textContent = "Create Student Account"; btn.disabled = false;
+            }
+        };
 
         // --- FETCH COURSES ---
         async function loadCourses() {
@@ -643,58 +564,6 @@ const firebaseConfig = {
                 tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:red;">Error loading courses.</td></tr>';
             }
         }
-
-        // --- ADD STUDENT MANUALLY ---
-        window.addStudent = async () => {
-            const name = document.getElementById('stuName').value.trim();
-            const matric = document.getElementById('stuMatric').value.trim().toUpperCase();
-            const email = document.getElementById('stuEmail').value.trim().toLowerCase();
-            const dept = document.getElementById('stuDept').value;
-            const level = document.getElementById('stuLevel').value.trim();
-            const btn = document.getElementById('saveStudentBtn');
-
-            if (!name || !matric || !email || !level) { alert("Please fill all fields."); return; }
-
-            btn.textContent = "Creating..."; btn.disabled = true;
-
-            try {
-                // Secondary App to prevent Admin logout
-                const secondaryApp = initializeApp(firebaseConfig, "SecondaryCreate");
-                const secondaryAuth = getAuth(secondaryApp);
-                const defaultPass = "Student@2026";
-
-                const userCred = await createUserWithEmailAndPassword(secondaryAuth, email, defaultPass);
-                
-                // Save to Firestore
-                await setDoc(doc(db, "users", userCred.user.uid), {
-                    fullName: name,
-                    matricNo: matric,
-                    email: email,
-                    department: dept,
-                    level: level,
-                    enrolledCourseIds: [],
-                    isOwing: false,
-                    createdAt: new Date().toISOString()
-                });
-
-                await secondaryAuth.signOut();
-                await deleteApp(secondaryApp);
-
-                alert(`Student created! Default Password: ${defaultPass}`);
-                closeModal('addStudentModal');
-                document.getElementById('stuName').value = '';
-                document.getElementById('stuMatric').value = '';
-                document.getElementById('stuEmail').value = '';
-                document.getElementById('stuLevel').value = '';
-                loadStudents();
-
-            } catch (error) {
-                console.error(error);
-                alert("Error: " + error.message);
-            } finally {
-                btn.textContent = "Create Student Account"; btn.disabled = false;
-            }
-        };
 
         // --- ADD COURSE ---
         window.addCourse = async () => {
@@ -726,7 +595,7 @@ const firebaseConfig = {
 
         // --- CSV TEMPLATE ---
         window.downloadCSVTemplate = () => {
-            const csvContent = "Full Name,Matric No,Email,Department,Level\nJohn Doe,CSC/2023/001,john@gmail.com,Science,100L";
+            const csvContent = "Full Name,Matric No,Email,Department,Level\nWale Oke,CSC/2023/001,wale@gmail.com,Science,100L\nAmina Bello,LAW/2023/002,amina@gmail.com,Arts,200L";
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -749,7 +618,7 @@ const firebaseConfig = {
                     const rows = results.data;
                     if (rows.length === 0) { statusDiv.textContent = "File is empty."; return; }
 
-                    statusDiv.textContent = `Found ${rows.length} students. Uploading (please wait)...`;
+                    statusDiv.textContent = `Found ${rows.length} students. Uploading...`;
 
                     let successCount = 0;
                     let failCount = 0;
@@ -764,14 +633,20 @@ const firebaseConfig = {
 
                             if (!name || !matric || !email) continue;
 
+                            // Generate Password for CSV: First Name + 2026
+                            let firstName = name.split(' ')[0];
+                            let defaultPass = firstName.length >= 6 ? firstName : firstName + "2026";
+
                             const secondaryApp = initializeApp(firebaseConfig, "SecondaryCSV");
                             const secondaryAuth = getAuth(secondaryApp);
                             
-                            const userCred = await createUserWithEmailAndPassword(secondaryAuth, email, "Student@2026");
+                            const userCred = await createUserWithEmailAndPassword(secondaryAuth, email, defaultPass);
                             
                             await setDoc(doc(db, "users", userCred.user.uid), {
                                 fullName: name, matricNo: matric.toUpperCase(), email: email.toLowerCase(),
-                                department: dept, level: level, enrolledCourseIds: [], isOwing: false,
+                                department: dept, level: level, 
+                                currentPassword: defaultPass, // Store for Admin
+                                enrolledCourseIds: [], isOwing: false,
                                 createdAt: new Date().toISOString()
                             });
 
