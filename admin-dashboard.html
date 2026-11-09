@@ -371,7 +371,7 @@
     <!-- JAVASCRIPT LOGIC -->
     <script type="module">
         import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-        import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+        import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
         import { getFirestore, doc, getDoc, collection, query, where, getDocs, addDoc, setDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -406,21 +406,44 @@
 
             currentUserEmail = user.email;
 
-            const staffRef = collection(db, "staff");
-            const q = query(staffRef, where("email", "==", user.email.toLowerCase()));
-            const snap = await getDocs(q);
+            try {
+                // Fetch directly by UID (Fixes the error!)
+                const staffDocRef = doc(db, "staff", user.uid);
+                const staffSnap = await getDoc(staffDocRef);
 
-            if (snap.empty) {
-                alert("Access Denied. You are not registered as staff.");
+                if (!staffSnap.exists()) {
+                    // Fallback: Check by email just in case
+                    const staffRef = collection(db, "staff");
+                    const q = query(staffRef, where("email", "==", user.email.toLowerCase()));
+                    const snap = await getDocs(q);
+                    
+                    if (snap.empty) {
+                        alert("Access Denied. You are not registered as staff.");
+                        await signOut(auth);
+                        window.location.href = "index.html";
+                        return;
+                    }
+                    
+                    const staffData = snap.docs[0].data();
+                    setupDashboard(staffData);
+                } else {
+                    const staffData = staffSnap.data();
+                    setupDashboard(staffData);
+                }
+
+            } catch (error) {
+                console.error("Auth check failed:", error);
+                alert("Error verifying admin access. Please try logging in again.");
+                await signOut(auth);
                 window.location.href = "index.html";
-                return;
             }
+        });
 
-            const staffData = snap.docs[0].data();
+        function setupDashboard(staffData) {
             currentUserRole = staffData.role;
-            
             document.getElementById('welcome-msg').textContent = `Welcome back, ${staffData.name || 'Staff'} (${currentUserRole.replace('_', ' ').toUpperCase()})`;
 
+            // Apply Role-Based Access Control (RBAC)
             if (currentUserRole === 'super_admin') {
                 document.getElementById('nav-staff').style.display = 'flex';
             } else if (currentUserRole === 'admin') {
@@ -431,7 +454,7 @@
             }
 
             loadDashboardData();
-        });
+        }
 
         // --- DASHBOARD DATA ---
         async function loadDashboardData() {
