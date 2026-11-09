@@ -5,81 +5,62 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Aaronice Prime Edu · CBT Portal</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    
     <style>
         :root {
-            --white: #ffffff;
-            --green-light: #f0fdf4;
-            --green-soft: #dcfce7;
-            --green-primary: #16a34a;
-            --green-dark: #15803d;
-            --text-black: #0f172a;
-            --text-body: #334155;
-            --text-muted: #64748b;
-            --border: #e2e8f0;
-            --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
-            --shadow-md: 0 10px 25px -5px rgba(0,0,0,0.05);
+            /* Palette extracted from your MediCore reference */
+            --bg-page: #dcece7;          /* Soft mint/sage background */
+            --bg-card: #ffffff;          /* Pure white */
+            --primary-deep: #2d6a4f;     /* Deep forest green */
+            --primary-teal: #52b788;     /* Bright teal accent */
+            --primary-light: #e3f0ec;    /* Very light mint */
+            --text-main: #0f172a;        /* Pure black/slate */
+            --text-muted: #64748b;       /* Muted gray */
+            --border: #cbdad5;           /* Soft border */
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', system-ui, sans-serif;
         }
 
-        body {
-            /* Very light green to pure white gradient */
-            background: linear-gradient(135deg, var(--green-light) 0%, var(--green-soft) 30%, var(--white) 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            color: var(--text-black);
-            -webkit-font-smoothing: antialiased;
-        }
-
-        .container {
-            display: flex;
+        html, body {
             width: 100%;
-            max-width: 1200px;
-            height: 720px;
-            background: var(--white);
-            border-radius: 24px;
-            overflow: hidden;
-            box-shadow: var(--shadow-md);
-            border: 1px solid var(--border);
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
         }
 
-        /* ============ 3D HERO SECTION ============ */
-        .hero-section {
-            flex: 1.2;
-            position: relative;
-            background: #0f172a; /* Dark background to make 3D pop like reference */
-            overflow: hidden;
+        /* ============ FULL SCREEN SPLIT LAYOUT ============ */
+        .layout {
             display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            width: 100vw;
+            min-height: 100vh;
+            overflow: hidden;
         }
 
-        /* Subtle grid/glow background for the 3D scene */
-        .hero-section::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: 
-                radial-gradient(circle at 50% 50%, rgba(22, 163, 74, 0.15) 0%, transparent 60%),
-                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-            background-size: 100% 100%, 40px 40px, 40px 40px;
-            pointer-events: none;
+        /* ============ HERO / 3D SECTION (LEFT) ============ */
+        .hero-side {
+            flex: 1.1;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            perspective: 1400px;
+            overflow: hidden;
+            background: var(--bg-page);
         }
 
         .scene {
             width: 100%;
-            height: 400px;
-            perspective: 1200px;
+            height: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -88,104 +69,153 @@
         }
 
         .carousel {
-            width: 140px;
-            height: 200px;
+            width: 180px;
+            height: 260px;
             position: relative;
             transform-style: preserve-3d;
-            animation: spin 24s infinite linear;
+            /* Spin is controlled by JS to sync with popouts */
+            animation: spin 12s infinite linear; 
         }
 
-        .carousel:hover {
+        .carousel.paused {
             animation-play-state: paused;
         }
 
         .carousel-cell {
             position: absolute;
-            width: 140px;
-            height: 200px;
+            width: 180px;
+            height: 260px;
             left: 0;
             top: 0;
-            border-radius: 12px;
+            border-radius: 16px;
             background-size: cover;
             background-position: center;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
-            border: 1px solid rgba(255,255,255,0.2);
-            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            border: 4px solid #ffffff;
+            transition: all 0.3s;
         }
 
-        /* 8 images arranged in a circle (360 / 8 = 45 degrees) */
-        /* translateZ(190px) creates the radius of the circle */
-        .carousel-cell:nth-child(1) { transform: rotateY(0deg) translateZ(190px); }
-        .carousel-cell:nth-child(2) { transform: rotateY(45deg) translateZ(190px); }
-        .carousel-cell:nth-child(3) { transform: rotateY(90deg) translateZ(190px); }
-        .carousel-cell:nth-child(4) { transform: rotateY(135deg) translateZ(190px); }
-        .carousel-cell:nth-child(5) { transform: rotateY(180deg) translateZ(190px); }
-        .carousel-cell:nth-child(6) { transform: rotateY(225deg) translateZ(190px); }
-        .carousel-cell:nth-child(7) { transform: rotateY(270deg) translateZ(190px); }
-        .carousel-cell:nth-child(8) { transform: rotateY(315deg) translateZ(190px); }
+        /* 8 Images arranged in a circle */
+        .carousel-cell:nth-child(1) { transform: rotateY(0deg) translateZ(240px); }
+        .carousel-cell:nth-child(2) { transform: rotateY(45deg) translateZ(240px); }
+        .carousel-cell:nth-child(3) { transform: rotateY(90deg) translateZ(240px); }
+        .carousel-cell:nth-child(4) { transform: rotateY(135deg) translateZ(240px); }
+        .carousel-cell:nth-child(5) { transform: rotateY(180deg) translateZ(240px); }
+        .carousel-cell:nth-child(6) { transform: rotateY(225deg) translateZ(240px); }
+        .carousel-cell:nth-child(7) { transform: rotateY(270deg) translateZ(240px); }
+        .carousel-cell:nth-child(8) { transform: rotateY(315deg) translateZ(240px); }
 
         @keyframes spin {
             from { transform: rotateY(0deg); }
             to { transform: rotateY(360deg); }
         }
 
-        .hero-text {
+        /* ============ POP-OUT OVERLAY ============ */
+        .popout-overlay {
             position: absolute;
-            bottom: 40px;
-            left: 40px;
-            right: 40px;
-            z-index: 3;
-            text-align: center;
-        }
-
-        .hero-text h2 {
-            color: #ffffff;
-            font-size: 20px;
-            font-weight: 600;
-            letter-spacing: -0.5px;
-            margin-bottom: 8px;
-        }
-
-        .hero-text p {
-            color: #94a3b8;
-            font-size: 13.5px;
-            line-height: 1.5;
-            max-width: 400px;
-            margin: 0 auto;
-        }
-
-        /* ============ FORM SECTION ============ */
-        .form-section {
-            flex: 1;
-            padding: 50px 60px;
+            inset: 0;
+            background-size: cover;
+            background-position: center;
+            z-index: 10;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            background: var(--white);
+            justify-content: flex-end;
+            padding: 60px;
+            opacity: 0;
+            transform: scale(0.85);
+            pointer-events: none;
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 0;
+        }
+
+        /* Dark gradient overlay for text readability */
+        .popout-overlay::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(11, 18, 32, 0.9) 0%, rgba(11, 18, 32, 0.3) 50%, transparent 100%);
+            z-index: 1;
+        }
+
+        .popout-overlay.active {
+            opacity: 1;
+            transform: scale(1);
+            pointer-events: auto;
+        }
+
+        .popout-content {
             position: relative;
-            z-index: 10;
+            z-index: 2;
+            color: #ffffff;
+            max-width: 500px;
+        }
+
+        .popout-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            background: var(--primary-teal);
+            color: #ffffff;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border-radius: 100px;
+            margin-bottom: 20px;
+        }
+
+        .popout-content h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 32px;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 12px;
+        }
+
+        .popout-content p {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #cbd5e1;
+        }
+
+        /* ============ FORM SECTION (RIGHT) ============ */
+        .form-side {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            position: relative;
+            z-index: 20;
+        }
+
+        .form-card {
+            width: 100%;
+            max-width: 420px;
+            background: transparent;
+            animation: fadeUp 0.6s ease-out forwards;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .brand {
             margin-bottom: 40px;
-            text-align: center;
+            text-align: left;
         }
 
-        /* Typography logo, NO graduation cap */
         .brand h1 {
-            font-size: 24px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 28px;
             font-weight: 800;
-            color: var(--text-black);
-            letter-spacing: -0.8px;
-            margin-bottom: 4px;
-        }
-
-        .brand h1 span {
-            color: var(--green-primary);
+            color: var(--text-main);
+            letter-spacing: -0.5px;
+            margin-bottom: 6px;
         }
 
         .brand p {
-            font-size: 12px;
+            font-size: 13px;
             color: var(--text-muted);
             font-weight: 500;
             letter-spacing: 0.5px;
@@ -194,15 +224,15 @@
 
         .welcome {
             margin-bottom: 32px;
-            text-align: left;
         }
 
         .welcome h2 {
+            font-family: 'Outfit', sans-serif;
             font-size: 26px;
-            font-weight: 700;
-            color: var(--text-black);
-            letter-spacing: -0.5px;
-            margin-bottom: 6px;
+            font-weight: 600;
+            color: var(--text-main);
+            letter-spacing: -0.3px;
+            margin-bottom: 8px;
         }
 
         .welcome p {
@@ -218,7 +248,7 @@
             display: block;
             font-size: 13px;
             font-weight: 600;
-            color: var(--text-black);
+            color: var(--text-main);
             margin-bottom: 8px;
         }
 
@@ -228,7 +258,7 @@
 
         .input-wrap i {
             position: absolute;
-            left: 16px;
+            left: 18px;
             top: 50%;
             transform: translateY(-50%);
             color: var(--text-muted);
@@ -237,14 +267,16 @@
 
         .form-control {
             width: 100%;
-            padding: 14px 16px 14px 44px;
+            padding: 15px 16px 15px 48px;
             font-size: 14.5px;
-            color: var(--text-black);
-            background: var(--green-light);
+            font-family: 'Inter', sans-serif;
+            color: var(--text-main);
+            background: var(--bg-card);
             border: 1.5px solid var(--border);
             border-radius: 12px;
             transition: all 0.2s;
             font-weight: 500;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.02);
         }
 
         .form-control::placeholder {
@@ -254,23 +286,24 @@
 
         .form-control:focus {
             outline: none;
-            background: var(--white);
-            border-color: var(--green-primary);
-            box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.1);
+            background: var(--bg-card);
+            border-color: var(--primary-teal);
+            box-shadow: 0 0 0 4px rgba(82, 183, 136, 0.15);
         }
 
         .password-toggle {
             position: absolute;
-            right: 16px;
+            right: 18px;
             top: 50%;
             transform: translateY(-50%);
             color: var(--text-muted);
             cursor: pointer;
             font-size: 14px;
+            transition: color 0.2s;
         }
 
         .password-toggle:hover {
-            color: var(--text-black);
+            color: var(--primary-deep);
         }
 
         .form-options {
@@ -286,46 +319,48 @@
             align-items: center;
             gap: 8px;
             cursor: pointer;
-            color: var(--text-body);
+            color: var(--text-muted);
             font-weight: 500;
         }
 
         .remember input {
-            accent-color: var(--green-primary);
+            accent-color: var(--primary-deep);
             width: 16px;
             height: 16px;
             cursor: pointer;
         }
 
         .forgot-link {
-            color: var(--green-primary);
+            color: var(--primary-deep);
             text-decoration: none;
             font-weight: 600;
         }
 
         .forgot-link:hover {
-            color: var(--green-dark);
+            color: var(--primary-teal);
             text-decoration: underline;
         }
 
         .btn {
             width: 100%;
-            padding: 15px;
-            background: var(--green-primary);
-            color: var(--white);
+            padding: 16px;
+            background: var(--primary-deep);
+            color: #ffffff;
             border: none;
             border-radius: 12px;
             font-size: 15px;
+            font-family: 'Outfit', sans-serif;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
             letter-spacing: 0.3px;
+            box-shadow: 0 4px 12px rgba(45, 106, 79, 0.2);
         }
 
         .btn:hover {
-            background: var(--green-dark);
+            background: #1b4332;
             transform: translateY(-1px);
-            box-shadow: 0 6px 16px rgba(22, 163, 74, 0.25);
+            box-shadow: 0 6px 16px rgba(45, 106, 79, 0.3);
         }
 
         .btn:disabled {
@@ -339,14 +374,14 @@
             display: flex;
             gap: 12px;
             padding: 16px;
-            background: var(--green-light);
-            border: 1px solid var(--green-soft);
+            background: var(--primary-light);
             border-radius: 12px;
             margin-top: 30px;
+            border: 1px solid rgba(82, 183, 136, 0.2);
         }
 
         .info-note i {
-            color: var(--green-primary);
+            color: var(--primary-deep);
             font-size: 16px;
             flex-shrink: 0;
             margin-top: 2px;
@@ -354,8 +389,9 @@
 
         .info-note p {
             font-size: 13px;
-            color: var(--text-body);
+            color: var(--primary-deep);
             line-height: 1.5;
+            font-weight: 500;
         }
 
         .copyright {
@@ -370,7 +406,7 @@
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(15, 23, 42, 0.6);
+            background: rgba(15, 23, 42, 0.5);
             backdrop-filter: blur(4px);
             z-index: 100;
             align-items: center;
@@ -383,46 +419,48 @@
         }
 
         .modal-content {
-            background: var(--white);
+            background: var(--bg-card);
             padding: 32px;
             border-radius: 20px;
             max-width: 420px;
             width: 100%;
             position: relative;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            animation: modalIn 0.2s ease;
+            animation: modalIn 0.3s ease;
         }
 
         @keyframes modalIn {
-            from { opacity: 0; transform: scale(0.96); }
+            from { opacity: 0; transform: scale(0.95); }
             to { opacity: 1; transform: scale(1); }
         }
 
         .modal-content h3 {
-            font-size: 20px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 22px;
             font-weight: 700;
             margin-bottom: 8px;
-            color: var(--text-black);
+            color: var(--text-main);
         }
 
         .modal-content p {
             font-size: 14px;
             color: var(--text-muted);
             line-height: 1.5;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
         }
 
         .modal-close {
             position: absolute;
-            top: 16px;
-            right: 20px;
+            top: 20px;
+            right: 24px;
             font-size: 24px;
             color: var(--text-muted);
             cursor: pointer;
+            transition: color 0.2s;
         }
 
         .modal-close:hover {
-            color: var(--text-black);
+            color: var(--text-main);
         }
 
         .modal-message {
@@ -431,12 +469,13 @@
             border-radius: 10px;
             font-size: 13px;
             display: none;
+            font-weight: 500;
         }
 
         .modal-message.success {
-            background: var(--green-light);
-            color: var(--green-dark);
-            border-left: 4px solid var(--green-primary);
+            background: var(--primary-light);
+            color: var(--primary-deep);
+            border-left: 4px solid var(--primary-teal);
             display: block;
         }
 
@@ -461,37 +500,47 @@
 
         /* ============ RESPONSIVE ============ */
         @media (max-width: 992px) {
-            body { padding: 16px; }
-            .container {
+            .layout {
                 flex-direction: column;
-                height: auto;
-                max-width: 500px;
             }
-            .hero-section {
-                height: 350px;
-                min-height: 350px;
+            .hero-side {
+                height: 45vh;
+                min-height: 400px;
+                flex: none;
             }
-            .scene { height: 350px; transform: scale(0.8); }
-            .form-section { padding: 40px 30px; }
-            .hero-text { display: none; }
+            .popout-overlay {
+                padding: 30px;
+            }
+            .popout-content h2 { font-size: 24px; }
+            .form-side {
+                padding: 40px 24px;
+                align-items: flex-start;
+            }
+            .form-card {
+                margin-top: -60px; /* Pull form up over hero slightly */
+                background: var(--bg-card);
+                padding: 32px;
+                border-radius: 24px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            }
         }
 
         @media (max-width: 480px) {
-            body { padding: 0; }
-            .container { border-radius: 0; border: none; min-height: 100vh; }
-            .hero-section { height: 280px; min-height: 280px; }
-            .scene { transform: scale(0.65); }
-            .form-section { padding: 32px 20px; }
+            .hero-side { height: 35vh; min-height: 300px; }
+            .carousel { transform: scale(0.65); }
+            .form-card { padding: 24px; }
+            .brand h1 { font-size: 24px; }
+            .welcome h2 { font-size: 22px; }
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
+    <div class="layout">
         <!-- HERO / 3D CAROUSEL SECTION -->
-        <div class="hero-section">
+        <div class="hero-side">
             <div class="scene">
-                <div class="carousel">
+                <div class="carousel" id="carousel">
                     <!-- 8 Academic & Exam Images -->
                     <div class="carousel-cell" style="background-image: url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=400&q=80');"></div>
                     <div class="carousel-cell" style="background-image: url('https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=400&q=80');"></div>
@@ -503,61 +552,68 @@
                     <div class="carousel-cell" style="background-image: url('https://images.unsplash.com/photo-1571260899304-425eee4c7efc?auto=format&fit=crop&w=400&q=80');"></div>
                 </div>
             </div>
-            <div class="hero-text">
-                <h2>Aaronice Prime Edu CBT</h2>
-                <p>Secure, computer-based examinations for all faculties and departments</p>
+            
+            <!-- Pop-out Overlay (Hidden by default) -->
+            <div class="popout-overlay" id="popoutOverlay">
+                <div class="popout-content">
+                    <span class="popout-badge" id="popoutBadge">Exam Rule</span>
+                    <h2 id="popoutTitle">Read All Instructions Carefully</h2>
+                    <p id="popoutText">Understand every rule before you begin. Once the exam starts, the timer will not pause.</p>
+                </div>
             </div>
         </div>
 
         <!-- FORM SECTION -->
-        <div class="form-section">
-            <div class="brand">
-                <!-- Graduation cap removed -->
-                <h1>Aaronice Prime <span>Edu</span></h1>
-                <p>Computer-Based Examination Portal</p>
-            </div>
+        <div class="form-side">
+            <div class="form-card">
+                <div class="brand">
+                    <!-- Removed graduation cap, black text -->
+                    <h1>Aaronice Prime Edu</h1>
+                    <p>Computer-Based Examination Portal</p>
+                </div>
 
-            <div class="welcome">
-                <h2>Welcome to your CBT Portal</h2>
-                <p>Sign in with your matriculation details to begin.</p>
-            </div>
+                <div class="welcome">
+                    <h2>Welcome to your CBT Portal</h2>
+                    <p>Sign in with your matriculation details to begin.</p>
+                </div>
 
-            <form id="login-form">
-                <div class="form-group">
-                    <label for="login-matric">Matric / Reg Number</label>
-                    <div class="input-wrap">
-                        <i class="fas fa-id-card"></i>
-                        <input type="text" id="login-matric" class="form-control" placeholder="e.g. CSC/2023/001" required autocomplete="username">
+                <form id="login-form">
+                    <div class="form-group">
+                        <label for="login-matric">Matric / Reg Number</label>
+                        <div class="input-wrap">
+                            <i class="fas fa-id-card"></i>
+                            <input type="text" id="login-matric" class="form-control" placeholder="e.g. CSC/2023/001" required autocomplete="username">
+                        </div>
                     </div>
-                </div>
 
-                <div class="form-group">
-                    <label for="login-password">Password</label>
-                    <div class="input-wrap">
-                        <i class="fas fa-lock"></i>
-                        <input type="password" id="login-password" class="form-control" placeholder="Enter your password" required autocomplete="current-password">
-                        <i class="fas fa-eye password-toggle" onclick="togglePassword('login-password', this)"></i>
+                    <div class="form-group">
+                        <label for="login-password">Password</label>
+                        <div class="input-wrap">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="login-password" class="form-control" placeholder="Enter your password" required autocomplete="current-password">
+                            <i class="fas fa-eye password-toggle" onclick="togglePassword('login-password', this)"></i>
+                        </div>
                     </div>
+
+                    <div class="form-options">
+                        <label class="remember">
+                            <input type="checkbox" id="remember">
+                            Remember me
+                        </label>
+                        <a href="#" class="forgot-link" id="forgot-password-link">Forgot password?</a>
+                    </div>
+
+                    <button type="submit" class="btn" id="login-btn">Sign In</button>
+                </form>
+
+                <div class="info-note">
+                    <i class="fas fa-info-circle"></i>
+                    <p>Your account is created by the exam administrator. Contact your ICT unit if you are unable to sign in.</p>
                 </div>
 
-                <div class="form-options">
-                    <label class="remember">
-                        <input type="checkbox" id="remember">
-                        Remember me
-                    </label>
-                    <a href="#" class="forgot-link" id="forgot-password-link">Forgot password?</a>
+                <div class="copyright">
+                    &copy; 2026 Aaronice Prime Edu · Powered by Triangle Tech
                 </div>
-
-                <button type="submit" class="btn" id="login-btn">Sign In</button>
-            </form>
-
-            <div class="info-note">
-                <i class="fas fa-info-circle"></i>
-                <p>Your account is created by the exam administrator. Contact your ICT unit if you are unable to sign in.</p>
-            </div>
-
-            <div class="copyright">
-                &copy; 2026 Aaronice Prime Edu · Powered by Triangle Tech
             </div>
         </div>
     </div>
@@ -580,7 +636,62 @@
     </div>
 
     <script>
-        // Password Toggle
+        // --- 3D CAROUSEL + POPOUT ANIMATION LOGIC ---
+        const carousel = document.getElementById('carousel');
+        const overlay = document.getElementById('popoutOverlay');
+        const popoutBadge = document.getElementById('popoutBadge');
+        const popoutTitle = document.getElementById('popoutTitle');
+        const popoutText = document.getElementById('popoutText');
+
+        // Rules and images for the popouts
+        const rules = [
+            { badge: "Exam Rule", title: "Read All Instructions Carefully", text: "Understand every rule before you begin. Once the exam starts, the timer will not pause.", img: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=1000&q=80" },
+            { badge: "System Security", title: "Do Not Refresh the Page", text: "Refreshing or navigating away will automatically submit your answers. Stay on the page until you finish.", img: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1000&q=80" },
+            { badge: "Academic Excellence", title: "Your Success Starts Here", text: "Every examination is a step toward your degree. Take your time, answer thoughtfully, and give it your best.", img: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=1000&q=80" },
+            { badge: "Results Policy", title: "Results Published by Dept", text: "Scores are released after the exam window closes. Check your student dashboard for official results.", img: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=1000&q=80" }
+        ];
+        
+        let ruleIndex = 0;
+
+        function runAnimationCycle() {
+            // 1. The carousel is currently spinning (takes 12s for a full spin)
+            
+            // 2. After 12 seconds, stop the carousel and pop out the image
+            setTimeout(() => {
+                carousel.classList.add('paused'); // Stop rotation
+                
+                // Load new rule data
+                const rule = rules[ruleIndex];
+                overlay.style.backgroundImage = `url('${rule.img}')`;
+                popoutBadge.textContent = rule.badge;
+                popoutTitle.textContent = rule.title;
+                popoutText.textContent = rule.text;
+                
+                // Trigger the scale up and fade in
+                overlay.classList.add('active');
+
+                // 3. Keep the popout visible for 5 seconds
+                setTimeout(() => {
+                    // Fade out popout
+                    overlay.classList.remove('active');
+                    
+                    // 4. Wait 1 second for fade out, then restart the spin
+                    setTimeout(() => {
+                        carousel.classList.remove('paused');
+                        ruleIndex = (ruleIndex + 1) % rules.length; // Move to next rule
+                        
+                        // Loop the whole process (Wait for the spin to finish again)
+                        runAnimationCycle(); 
+                    }, 1000);
+
+                }, 5000);
+            }, 12000); // Wait 12 seconds for the spin
+        }
+
+        // Start the cycle
+        runAnimationCycle();
+
+        // --- UI LOGIC ---
         window.togglePassword = function(inputId, icon) {
             const input = document.getElementById(inputId);
             if (input.type === "password") {
@@ -594,7 +705,6 @@
             }
         };
 
-        // Modal Logic
         const modal = document.getElementById('forgot-password-modal');
         document.getElementById('forgot-password-link').addEventListener('click', (e) => {
             e.preventDefault();
@@ -613,6 +723,7 @@
         });
     </script>
 
+    <!-- FIREBASE LOGIC (Unchanged) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
         import { 
@@ -639,7 +750,6 @@
             "triangleofscholars@gmail.com"
         ];
 
-        // Look up user by matric number
         async function getUserByMatric(matric) {
             const usersRef = collection(db, "users");
             const q = query(usersRef, where("matricNo", "==", matric.trim().toUpperCase()));
@@ -649,7 +759,6 @@
             return { uid: d.id, ...d.data() };
         }
 
-        // Check existing session
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 if (adminEmails.includes(user.email)) {
@@ -657,8 +766,7 @@
                     return;
                 }
                 try {
-                    const userRef = doc(db, "users", user.uid);
-                    const userDoc = await getDoc(userRef);
+                    const userDoc = await getDoc(doc(db, "users", user.uid));
                     if (userDoc.exists()) {
                         window.location.href = "dashboard.html";
                     }
@@ -668,7 +776,6 @@
             }
         });
 
-        // Login Logic
         const loginFormElement = document.getElementById('login-form');
         loginFormElement.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -706,7 +813,6 @@
             }
         });
 
-        // Forgot Password Logic
         const sendResetBtn = document.getElementById('send-reset-btn');
         const resetMatric = document.getElementById('reset-matric');
         const modalMessage = document.getElementById('modal-message');
