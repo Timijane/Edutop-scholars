@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CBT Exam · Aaronice Prime Edu</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-page: #f8fafc;          
+            --bg-card: #ffffff;          
+            --primary-deep: #2d6a4f;     
+            --primary-teal: #52b788;     
+            --primary-light: #e3f0ec;    
+            --text-main: #0f172a;        
+            --text-muted: #64748b;       
+            --border: #cbd5e1;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* Prevent page scroll */
+        }
+
+        /* ============ TOP BAR ============ */
+        .cbt-header {
+            background: var(--bg-card);
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--border);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+            z-index: 10;
+        }
+
+        .candidate-info { display: flex; align-items: center; gap: 16px; }
+        
+        .cand-avatar {
+            width: 40px; height: 40px; border-radius: 8px;
+            background: var(--primary-light); color: var(--primary-deep);
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 18px;
+        }
+        
+        .cand-details h2 { font-size: 15px; font-weight: 700; color: var(--text-main); }
+        .cand-details p { font-size: 12px; color: var(--text-muted); }
+        .cand-details p span { font-weight: 600; color: var(--primary-deep); }
+
+        .exam-title { text-align: center; }
+        .exam-title h1 { font-family: 'Outfit', sans-serif; font-size: 18px; color: var(--primary-deep); }
+        .exam-title p { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); }
+
+        .timer-box {
+            display: flex; align-items: center; gap: 10px;
+            background: #fef2f2; border: 1px solid #fecaca;
+            padding: 8px 16px; border-radius: 100px;
+            color: #b91c1c; font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 20px;
+        }
+        .timer-box i { font-size: 18px; animation: pulse 1s infinite; }
+        .timer-box.warning { background: #fffbeb; border-color: #fde68a; color: #92400e; }
+        
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
+        /* ============ MAIN LAYOUT ============ */
+        .cbt-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* --- LEFT: Question Area --- */
+        .question-area {
+            flex: 1;
+            padding: 32px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .q-number-bar {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 24px;
+        }
+        .q-number-bar h3 { font-size: 18px; font-weight: 600; }
+        .q-number-bar span { font-size: 13px; color: var(--text-muted); background: #e2e8f0; padding: 4px 12px; border-radius: 100px; }
+
+        .q-text {
+            font-size: 20px;
+            line-height: 1.5;
+            font-weight: 500;
+            margin-bottom: 32px;
+            color: var(--text-main);
+        }
+
+        .options-list {
+            display: flex; flex-direction: column; gap: 16px;
+        }
+
+        .option-item {
+            display: flex; align-items: center; gap: 16px;
+            padding: 16px 20px; border: 2px solid var(--border);
+            border-radius: 12px; cursor: pointer;
+            transition: all 0.2s; background: var(--bg-card);
+        }
+        
+        .option-item:hover { border-color: var(--primary-teal); background: #f0fdf4; }
+        .option-item.selected { border-color: var(--primary-deep); background: var(--primary-light); }
+
+        .opt-letter {
+            width: 32px; height: 32px; border-radius: 50%;
+            background: #f1f5f9; color: var(--text-main);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 14px; border: 1px solid var(--border);
+        }
+        .option-item.selected .opt-letter { background: var(--primary-deep); color: white; border-color: var(--primary-deep); }
+
+        .opt-text { font-size: 16px; font-weight: 500; color: var(--text-main); }
+
+        /* --- RIGHT: Navigation Palette --- */
+        .nav-area {
+            width: 320px;
+            background: var(--bg-card);
+            border-left: 2px solid var(--border);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .palette-header {
+            padding: 20px; border-bottom: 1px solid var(--border);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .palette-header h3 { font-size: 14px; font-weight: 700; }
+        
+        .legend { display: flex; gap: 12px; margin-top: 10px; font-size: 11px; color: var(--text-muted); }
+        .legend-item { display: flex; align-items: center; gap: 4px; }
+        .legend-box { width: 12px; height: 12px; border-radius: 3px; border: 1px solid var(--border); }
+        .legend-box.answered { background: var(--primary-teal); border-color: var(--primary-teal); }
+        .legend-box.current { background: #fff; border: 2px solid var(--primary-deep); }
+
+        .palette-grid {
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            overflow-y: auto;
+            flex: 1;
+            align-content: start;
+        }
+
+        .pal-btn {
+            aspect-ratio: 1; border-radius: 8px; border: 1px solid var(--border);
+            background: #f8fafc; color: var(--text-main); font-weight: 600; font-size: 14px;
+            cursor: pointer; transition: all 0.2s;
+            display: flex; align-items: center; justify-content: center;
+        }
+        
+        .pal-btn:hover { border-color: var(--primary-teal); }
+        .pal-btn.answered { background: var(--primary-teal); color: white; border-color: var(--primary-teal); }
+        .pal-btn.current { border: 3px solid var(--primary-deep); box-shadow: 0 0 0 2px rgba(45,106,79,0.2); }
+        .pal-btn.current.answered { background: var(--primary-teal); border-color: var(--primary-deep); color: white;}
+
+        /* --- BOTTOM BAR --- */
+        .cbt-footer {
+            background: var(--bg-card);
+            padding: 16px 32px;
+            border-top: 2px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .btn {
+            padding: 12px 24px; border-radius: 8px; border: none;
+            font-size: 14px; font-weight: 600; cursor: pointer;
+            transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px;
+        }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-outline { background: transparent; border: 2px solid var(--border); color: var(--text-main); }
+        .btn-outline:hover:not(:disabled) { background: #f8fafc; }
+        .btn-primary { background: var(--primary-deep); color: white; }
+        .btn-primary:hover:not(:disabled) { background: #1b4332; }
+        .btn-danger { background: var(--danger); color: white; }
+        .btn-danger:hover:not(:disabled) { background: #b91c1c; }
+
+        /* ============ MODAL ============ */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(4px); z-index: 100; align-items: center; justify-content: center; padding: 20px; }
+        .modal.active { display: flex; }
+        .modal-content {
+            background: var(--bg-card); padding: 32px; border-radius: 16px;
+            max-width: 450px; width: 100%; text-align: center;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+        .modal-content h2 { font-family: 'Outfit', sans-serif; font-size: 24px; margin-bottom: 12px; color: var(--text-main); }
+        .modal-content p { font-size: 14px; color: var(--text-muted); margin-bottom: 24px; line-height: 1.6; }
+        .modal-actions { display: flex; gap: 12px; justify-content: center; }
+
+        /* ============ RESULT SCREEN ============ */
+        #resultScreen {
+            display: none; position: fixed; inset: 0; background: var(--bg-page);
+            z-index: 200; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px;
+        }
+        .result-card {
+            background: var(--bg-card); padding: 40px; border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05); max-width: 500px; width: 100%;
+        }
+        .result-icon { font-size: 64px; color: var(--primary-teal); margin-bottom: 20px; }
+        .result-card h1 { font-family: 'Outfit', sans-serif; font-size: 28px; margin-bottom: 8px; }
+        .result-card p { color: var(--text-muted); margin-bottom: 24px; }
+        
+        .score-display {
+            font-family: 'Outfit', sans-serif; font-size: 56px; font-weight: 800;
+            color: var(--primary-deep); line-height: 1; margin-bottom: 8px;
+        }
+
+        .offline-badge {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: #fef3c7; color: #92400e; padding: 6px 12px;
+            border-radius: 100px; font-size: 12px; font-weight: 600; margin-bottom: 20px;
+        }
+
+        /* Mobile adjustments */
+        @media (max-width: 900px) {
+            .cbt-container { flex-direction: column; }
+            .nav-area { width: 100%; border-left: none; border-top: 2px solid var(--border); max-height: 250px; }
+            .question-area { padding: 20px; }
+            .cbt-header { flex-direction: column; gap: 12px; text-align: center; }
+            .q-text { font-size: 18px; }
+            .option-item { padding: 12px 16px; }
+            .palette-grid { grid-template-columns: repeat(8, 1fr); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TOP BAR -->
+    <header class="cbt-header">
+        <div class="candidate-info">
+            <div class="cand-avatar" id="candInitials">?</div>
+            <div class="cand-details">
+                <h2 id="candName">Loading...</h2>
+                <p>Matric: <span id="candMatric">...</span></p>
+            </div>
+        </div>
+        <div class="exam-title">
+            <h1 id="examTitleDisplay">Loading Exam...</h1>
+            <p>Computer-Based Test</p>
+        </div>
+        <div class="timer-box" id="timerBox">
+            <i class="fas fa-clock"></i>
+            <span id="timerDisplay">00:00</span>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <div class="cbt-container">
+        
+        <!-- QUESTION AREA -->
+        <main class="question-area">
+            <div class="q-number-bar">
+                <h3>Question <span id="currentQNum">1</span></h3>
+                <span id="qSubjectTag">Subject</span>
+            </div>
+            
+            <div class="q-text" id="questionText">Loading question...</div>
+            
+            <div class="options-list" id="optionsList">
+                <!-- Options injected via JS -->
+            </div>
+        </main>
+
+        <!-- NAVIGATION PALETTE -->
+        <aside class="nav-area">
+            <div class="palette-header">
+                <div>
+                    <h3>Question Palette</h3>
+                    <div class="legend">
+                        <div class="legend-item"><div class="legend-box answered"></div> Answered</div>
+                        <div class="legend-item"><div class="legend-box current"></div> Current</div>
+                    </div>
+                </div>
+            </div>
+            <div class="palette-grid" id="paletteGrid">
+                <!-- Grid injected via JS -->
+            </div>
+        </aside>
+    </div>
+
+    <!-- BOTTOM BAR -->
+    <footer class="cbt-footer">
+        <button class="btn btn-outline" id="prevBtn" onclick="navigateQuestion(-1)">
+            <i class="fas fa-arrow-left"></i> Previous
+        </button>
+        
+        <button class="btn btn-danger" onclick="openSubmitModal()">
+            Submit Exam
+        </button>
+
+        <button class="btn btn-primary" id="nextBtn" onclick="navigateQuestion(1)">
+            Next <i class="fas fa-arrow-right"></i>
+        </button>
+    </footer>
+
+    <!-- SUBMIT MODAL -->
+    <div class="modal" id="submitModal">
+        <div class="modal-content">
+            <h2>Submit Exam?</h2>
+            <p>You have answered <strong id="answeredCount">0</strong> out of <strong id="totalCount">0</strong> questions. Once submitted, you cannot return to the exam.</p>
+            <div class="modal-actions">
+                <button class="btn btn-outline" onclick="closeModal('submitModal')">Cancel</button>
+                <button class="btn btn-danger" id="confirmSubmitBtn" onclick="submitExam(false)">Yes, Submit</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- RESULT SCREEN -->
+    <div id="resultScreen">
+        <div class="result-card">
+            <i class="fas fa-check-circle result-icon"></i>
+            <h1>Exam Submitted Successfully</h1>
+            <p id="syncStatusText" style="color: var(--text-muted);"></p>
+            
+            <div class="score-display" id="finalScoreDisplay">0%</div>
+            <p style="margin-bottom: 32px;">Your final score</p>
+
+            <button class="btn btn-primary" style="width:100%; justify-content:center;" onclick="window.location.href='dashboard.html'">
+                Return to Dashboard
+            </button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCictHNxtslYs9VR0hoicxlwPn_QghkgIA",
+            authDomain: "edutop-7ff51.firebaseapp.com",
+            projectId: "edutop-7ff51",
+            storageBucket: "edutop-7ff51.firebasestorage.app",
+            messagingSenderId: "79307850494",
+            appId: "1:79307850494:web:b51ce51204140ec5429baf",
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // State Variables
+        let currentUser = null;
+        let examData = null;
+        let questions = [];
+        let currentIndex = 0;
+        let answers = {}; 
+        let timerInterval = null;
+        let timeRemainingSeconds = 0;
+        
+        const urlParams = new URLSearchParams(window.location.search);
+        const examId = urlParams.get('examId');
+
+        // LocalStorage Keys
+        const getSessionKey = (uid) => `cbt_session_${examId}_${uid}`;
+
+        // --- INITIALIZATION ---
+        onAuthStateChanged(auth, async (user) => {
+            if (!user || !examId) { window.location.href = "dashboard.html"; return; }
+            currentUser = user;
+
+            // Check for existing offline session
+            const savedSession = localStorage.getItem(getSessionKey(user.uid));
+            if (savedSession) {
+                const parsed = JSON.parse(savedSession);
+                // Verify it's for the same exam
+                if (parsed.examId === examId) {
+                    answers = parsed.answers;
+                    timeRemainingSeconds = parsed.timeRemaining;
+                    await loadExamData(true); // true = resuming
+                    return;
+                }
+            }
+            
+            // Fresh Start
+            await loadExamData(false);
+        });
+
+        async function loadExamData(isResuming) {
+            try {
+                // 1. Fetch Exam Document
+                const examSnap = await getDoc(doc(db, "exams", examId));
+                if (!examSnap.exists()) { alert("Exam not found."); window.location.href = "dashboard.html"; return; }
+                examData = examSnap.data();
+
+                // 2. Fetch Student Profile
+                const userSnap = await getDoc(doc(db, "users", currentUser.uid));
+                if(userSnap.exists()) {
+                    const u = userSnap.data();
+                    document.getElementById('candName').textContent = u.fullName;
+                    document.getElementById('candMatric').textContent = u.matricNo;
+                    document.getElementById('candInitials').textContent = u.fullName.substring(0,2).toUpperCase();
+                }
+
+                // 3. Set UI Headers
+                document.getElementById('examTitleDisplay').textContent = examData.title;
+
+                // 4. Fetch Questions
+                const qPromises = examData.questionIds.map(qId => getDoc(doc(db, "questions", qId)));
+                const qSnaps = await Promise.all(qPromises);
+                
+                questions = qSnaps.map(snap => ({ id: snap.id, ...snap.data() }));
+                document.getElementById('qSubjectTag').textContent = examData.courseId;
+
+                // 5. Shuffle Questions (if required and NOT resuming)
+                if (examData.shuffleQuestions && !isResuming) {
+                    questions.sort(() => Math.random() - 0.5);
+                }
+
+                // 6. Setup Timer
+                if (!isResuming) {
+                    // Calculate time remaining based on exam duration OR until end time, whichever is sooner
+                    const now = new Date().getTime();
+                    const examEnd = new Date(examData.endTime).getTime();
+                    const durationMs = examData.duration * 60 * 1000;
+                    
+                    const maxAllowedMs = examEnd - now;
+                    timeRemainingSeconds = Math.floor((maxAllowedMs < durationMs ? maxAllowedMs : durationMs) / 1000);
+                    
+                    if (timeRemainingSeconds <= 0) {
+                        alert("This exam window has closed."); window.location.href = "dashboard.html"; return;
+                    }
+                }
+
+                // 7. Start App
+                document.getElementById('totalCount').textContent = questions.length;
+                renderPalette();
+                renderQuestion();
+                startTimer();
+                
+                if(isResuming) {
+                    console.log("Resumed from offline session.");
+                }
+
+            } catch (error) {
+                console.error("Load Error:", error);
+                alert("Failed to load exam data. Check internet connection.");
+            }
+        }
+
+        // --- RENDERING ---
+        function renderQuestion() {
+            if (questions.length === 0) return;
+            
+            const q = questions[currentIndex];
+            document.getElementById('currentQNum').textContent = currentIndex + 1;
+            document.getElementById('questionText').textContent = q.text;
+
+            const optList = document.getElementById('optionsList');
+            optList.innerHTML = '';
+
+            let displayOptions = ['A', 'B', 'C', 'D'];
+            // Shuffle options if required
+            if (examData.shuffleOptions) {
+                displayOptions.sort(() => Math.random() - 0.5);
+            }
+
+            displayOptions.forEach(letter => {
+                const text = q.options[letter];
+                const isSelected = answers[q.id] === letter;
+
+                const div = document.createElement('div');
+                div.className = `option-item ${isSelected ? 'selected' : ''}`;
+                div.innerHTML = `
+                    <div class="opt-letter">${letter}</div>
+                    <div class="opt-text">${escapeHTML(text)}</div>
+                `;
+                div.onclick = () => selectOption(q.id, letter);
+                optList.appendChild(div);
+            });
+
+            updateButtons();
+        }
+
+        function renderPalette() {
+            const grid = document.getElementById('paletteGrid');
+            grid.innerHTML = '';
+            
+            questions.forEach((q, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'pal-btn';
+                btn.textContent = idx + 1;
+                btn.onclick = () => { currentIndex = idx; renderQuestion(); renderPalette(); };
+                
+                if (answers[q.id]) btn.classList.add('answered');
+                if (idx === currentIndex) btn.classList.add('current');
+                
+                grid.appendChild(btn);
+            });
+        }
+
+        function updateButtons() {
+            document.getElementById('prevBtn').disabled = currentIndex === 0;
+            document.getElementById('nextBtn').disabled = currentIndex === questions.length - 1;
+            
+            // Update answered count for modal
+            document.getElementById('answeredCount').textContent = Object.keys(answers).length;
+        }
+
+        // --- ACTIONS ---
+        function selectOption(qId, letter) {
+            answers[qId] = letter;
+            
+            // Save to LocalStorage Instantly
+            saveProgressToLocal();
+            
+            renderQuestion();
+            renderPalette();
+        }
+
+        window.navigateQuestion = (direction) => {
+            currentIndex += direction;
+            if (currentIndex < 0) currentIndex = 0;
+            if (currentIndex >= questions.length) currentIndex = questions.length - 1;
+            renderQuestion();
+            renderPalette();
+        };
+
+        function saveProgressToLocal() {
+            const session = {
+                examId: examId,
+                answers: answers,
+                timeRemaining: timeRemainingSeconds,
+                savedAt: new Date().toISOString()
+            };
+            localStorage.setItem(getSessionKey(currentUser.uid), JSON.stringify(session));
+        }
+
+        // --- TIMER ---
+        function startTimer() {
+            updateTimerDisplay();
+            
+            timerInterval = setInterval(() => {
+                timeRemainingSeconds--;
+                updateTimerDisplay();
+                saveProgressToLocal(); // Sync timer state
+
+                // Warning state at 5 mins
+                if (timeRemainingSeconds === 300) {
+                    document.getElementById('timerBox').classList.add('warning');
+                }
+
+                // Auto submit at 0
+                if (timeRemainingSeconds <= 0) {
+                    clearInterval(timerInterval);
+                    submitExam(true); // true = auto submit
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const m = Math.floor(timeRemainingSeconds / 60).toString().padStart(2, '0');
+            const s = (timeRemainingSeconds % 60).toString().padStart(2, '0');
+            document.getElementById('timerDisplay').textContent = `${m}:${s}`;
+        }
+
+        // --- SUBMISSION ---
+        window.openSubmitModal = () => {
+            document.getElementById('submitModal').classList.add('active');
+        };
+
+        window.closeModal = (id) => {
+            document.getElementById(id).classList.remove('active');
+        };
+
+        window.submitExam = async (isAutoSubmit) => {
+            if (!isAutoSubmit && !confirm("Are you sure you want to submit?")) return;
+            
+            clearInterval(timerInterval);
+            document.getElementById('confirmSubmitBtn').disabled = true;
+            document.getElementById('confirmSubmitBtn').textContent = "Submitting...";
+
+            // 1. Calculate Score
+            let correct = 0;
+            questions.forEach(q => {
+                if (answers[q.id] === q.correctAnswer) correct++;
+            });
+            
+            const percentage = Math.round((correct / questions.length) * 100);
+
+            // 2. Prepare Attempt Data
+            const attemptData = {
+                studentUid: currentUser.uid,
+                matricNo: document.getElementById('candMatric').textContent,
+                studentName: document.getElementById('candName').textContent,
+                examId: examId,
+                examTitle: examData.title,
+                courseId: examData.courseId,
+                answers: answers,
+                score: correct,
+                totalQuestions: questions.length,
+                percentage: percentage,
+                status: isAutoSubmit ? 'auto_submitted' : 'submitted',
+                submittedAt: new Date().toISOString()
+            };
+
+            // 3. Try to sync to Firebase
+            let syncSuccess = false;
+            if (navigator.onLine) {
+                try {
+                    await addDoc(collection(db, "attempts"), attemptData);
+                    syncSuccess = true;
+                } catch (e) {
+                    console.error("Sync failed:", e);
+                }
+            }
+
+            // 4. Handle Offline Fallback
+            if (!syncSuccess) {
+                // Save to a local queue for later syncing
+                let offlineQueue = JSON.parse(localStorage.getItem('offline_attempts') || '[]');
+                offlineQueue.push(attemptData);
+                localStorage.setItem('offline_attempts', JSON.stringify(offlineQueue));
+            }
+
+            // 5. Clean up session
+            localStorage.removeItem(getSessionKey(currentUser.uid));
+
+            // 6. Show Results Screen
+            closeModal('submitModal');
+            document.getElementById('resultScreen').style.display = 'flex';
+            
+            if (examData.showResults || syncSuccess || !syncSuccess) {
+                // Note: We show score locally regardless of examData.showResults for instant gratification, 
+                // but in a strict system, you hide the score and just say "Submitted".
+                document.getElementById('finalScoreDisplay').textContent = `${percentage}%`;
+            }
+
+            if (!syncSuccess) {
+                const p = document.getElementById('syncStatusText');
+                p.innerHTML = `<span class="offline-badge"><i class="fas fa-wifi"></i> Saved Offline</span><br>Your answers are saved on this device. Please tell the invigilator.`;
+            }
+        };
+
+        // --- SECURITY / UTILS ---
+        function escapeHTML(str) {
+            if(!str) return "";
+            return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag));
+        }
+
+        // Prevent accidental page reload during exam
+        window.addEventListener('beforeunload', function (e) {
+            if (!document.getElementById('resultScreen').style.display || document.getElementById('resultScreen').style.display === 'none') {
+                e.preventDefault();
+                e.returnValue = '';
+            }
+        });
+
+    </script>
+</body>
+</html>
