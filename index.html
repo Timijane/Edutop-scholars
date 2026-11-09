@@ -3,39 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>CBT Portal · Aaronice Prime Edu</title>
+    <title>Aaronice Prime Edu · CBT Portal</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --white: #ffffff;
+            --green-light: #f0fdf4;
+            --green-soft: #dcfce7;
             --green-primary: #16a34a;
             --green-dark: #15803d;
-            --green-deep: #166534;
-            --green-soft: #f0fdf4;
-            --green-line: #d1fae5;
             --text-black: #0f172a;
             --text-body: #334155;
             --text-muted: #64748b;
-            --border: #e5e7eb;
+            --border: #e2e8f0;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+            --shadow-md: 0 10px 25px -5px rgba(0,0,0,0.05);
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', system-ui, sans-serif;
         }
 
-        html, body { height: 100%; }
-
         body {
-            background: var(--white);
-            color: var(--text-black);
+            /* Very light green to pure white gradient */
+            background: linear-gradient(135deg, var(--green-light) 0%, var(--green-soft) 30%, var(--white) 100%);
+            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
-            padding: 24px;
+            padding: 20px;
+            color: var(--text-black);
             -webkit-font-smoothing: antialiased;
         }
 
@@ -43,152 +43,159 @@
             display: flex;
             width: 100%;
             max-width: 1200px;
-            min-height: 640px;
+            height: 720px;
             background: var(--white);
-            border-radius: 20px;
+            border-radius: 24px;
             overflow: hidden;
+            box-shadow: var(--shadow-md);
             border: 1px solid var(--border);
-            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
         }
 
-        /* ============ SLIDER (LEFT) ============ */
-        .slider-section {
-            flex: 1;
+        /* ============ 3D HERO SECTION ============ */
+        .hero-section {
+            flex: 1.2;
             position: relative;
-            min-height: 640px;
-            background: var(--green-deep);
+            background: #0f172a; /* Dark background to make 3D pop like reference */
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
 
-        .slider { position: relative; width: 100%; height: 100%; }
-
-        .slide {
-            position: absolute;
-            inset: 0;
-            opacity: 0;
-            transition: opacity 0.9s ease;
-            background-size: cover;
-            background-position: center;
-        }
-
-        .slide::before {
+        /* Subtle grid/glow background for the 3D scene */
+        .hero-section::before {
             content: '';
             position: absolute;
             inset: 0;
-            background: linear-gradient(180deg, rgba(22, 101, 52, 0.35) 0%, rgba(22, 101, 52, 0.88) 100%);
+            background: 
+                radial-gradient(circle at 50% 50%, rgba(22, 163, 74, 0.15) 0%, transparent 60%),
+                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 100% 100%, 40px 40px, 40px 40px;
+            pointer-events: none;
         }
 
-        .slide.active { opacity: 1; }
-
-        .slide-content {
-            position: absolute;
-            left: 0; right: 0; bottom: 0;
-            padding: 40px;
-            color: #fff;
+        .scene {
+            width: 100%;
+            height: 400px;
+            perspective: 1200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
             z-index: 2;
         }
 
-        .slide-badge {
-            display: inline-block;
-            padding: 6px 14px;
-            background: rgba(255, 255, 255, 0.18);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 100px;
-            font-size: 11px;
-            font-weight: 600;
-            letter-spacing: 1.2px;
-            text-transform: uppercase;
-            margin-bottom: 16px;
+        .carousel {
+            width: 140px;
+            height: 200px;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: spin 24s infinite linear;
         }
 
-        .slide-content h3 {
-            font-size: 26px;
-            font-weight: 700;
-            line-height: 1.3;
-            margin-bottom: 10px;
-            letter-spacing: -0.3px;
+        .carousel:hover {
+            animation-play-state: paused;
         }
 
-        .slide-content p {
-            font-size: 15px;
-            line-height: 1.6;
-            opacity: 0.92;
-            max-width: 440px;
-        }
-
-        .slider-indicators {
+        .carousel-cell {
             position: absolute;
-            bottom: 24px;
+            width: 140px;
+            height: 200px;
+            left: 0;
+            top: 0;
+            border-radius: 12px;
+            background-size: cover;
+            background-position: center;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        /* 8 images arranged in a circle (360 / 8 = 45 degrees) */
+        /* translateZ(190px) creates the radius of the circle */
+        .carousel-cell:nth-child(1) { transform: rotateY(0deg) translateZ(190px); }
+        .carousel-cell:nth-child(2) { transform: rotateY(45deg) translateZ(190px); }
+        .carousel-cell:nth-child(3) { transform: rotateY(90deg) translateZ(190px); }
+        .carousel-cell:nth-child(4) { transform: rotateY(135deg) translateZ(190px); }
+        .carousel-cell:nth-child(5) { transform: rotateY(180deg) translateZ(190px); }
+        .carousel-cell:nth-child(6) { transform: rotateY(225deg) translateZ(190px); }
+        .carousel-cell:nth-child(7) { transform: rotateY(270deg) translateZ(190px); }
+        .carousel-cell:nth-child(8) { transform: rotateY(315deg) translateZ(190px); }
+
+        @keyframes spin {
+            from { transform: rotateY(0deg); }
+            to { transform: rotateY(360deg); }
+        }
+
+        .hero-text {
+            position: absolute;
+            bottom: 40px;
             left: 40px;
-            display: flex;
-            gap: 8px;
-            z-index: 5;
+            right: 40px;
+            z-index: 3;
+            text-align: center;
         }
 
-        .indicator {
-            width: 28px;
-            height: 4px;
-            border-radius: 4px;
-            background: rgba(255, 255, 255, 0.35);
-            cursor: pointer;
-            transition: all 0.3s;
+        .hero-text h2 {
+            color: #ffffff;
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            margin-bottom: 8px;
         }
 
-        .indicator.active { background: #fff; width: 44px; }
+        .hero-text p {
+            color: #94a3b8;
+            font-size: 13.5px;
+            line-height: 1.5;
+            max-width: 400px;
+            margin: 0 auto;
+        }
 
-        /* ============ FORM (RIGHT) ============ */
+        /* ============ FORM SECTION ============ */
         .form-section {
             flex: 1;
-            padding: 56px 48px;
+            padding: 50px 60px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             background: var(--white);
+            position: relative;
+            z-index: 10;
         }
 
         .brand {
+            margin-bottom: 40px;
             text-align: center;
-            margin-bottom: 38px;
         }
 
-        .brand-mark {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 14px;
-        }
-
-        .brand-mark .icon {
-            width: 40px;
-            height: 40px;
-            background: var(--green-soft);
-            border: 1.5px solid var(--green-line);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--green-primary);
-            font-size: 18px;
-        }
-
-        .brand-mark h1 {
-            font-size: 20px;
-            font-weight: 700;
+        /* Typography logo, NO graduation cap */
+        .brand h1 {
+            font-size: 24px;
+            font-weight: 800;
             color: var(--text-black);
-            letter-spacing: -0.3px;
+            letter-spacing: -0.8px;
+            margin-bottom: 4px;
+        }
+
+        .brand h1 span {
+            color: var(--green-primary);
         }
 
         .brand p {
-            font-size: 13px;
+            font-size: 12px;
             color: var(--text-muted);
             font-weight: 500;
-            letter-spacing: 0.3px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
         }
 
-        .form-container { width: 100%; max-width: 420px; margin: 0 auto; }
-
-        .welcome { margin-bottom: 30px; }
+        .welcome {
+            margin-bottom: 32px;
+            text-align: left;
+        }
 
         .welcome h2 {
             font-size: 26px;
@@ -203,7 +210,9 @@
             color: var(--text-muted);
         }
 
-        .form-group { margin-bottom: 20px; }
+        .form-group {
+            margin-bottom: 20px;
+        }
 
         .form-group label {
             display: block;
@@ -213,58 +222,62 @@
             margin-bottom: 8px;
         }
 
-        .input-wrap { position: relative; }
+        .input-wrap {
+            position: relative;
+        }
 
-        .input-wrap > i {
+        .input-wrap i {
             position: absolute;
             left: 16px;
             top: 50%;
             transform: translateY(-50%);
             color: var(--text-muted);
-            font-size: 14px;
-            pointer-events: none;
+            font-size: 15px;
         }
 
         .form-control {
             width: 100%;
-            padding: 13px 46px 13px 44px;
-            font-size: 14px;
+            padding: 14px 16px 14px 44px;
+            font-size: 14.5px;
             color: var(--text-black);
-            background: #fafafa;
+            background: var(--green-light);
             border: 1.5px solid var(--border);
-            border-radius: 10px;
+            border-radius: 12px;
             transition: all 0.2s;
             font-weight: 500;
         }
 
-        .form-control::placeholder { color: #94a3b8; font-weight: 400; }
+        .form-control::placeholder {
+            color: #94a3b8;
+            font-weight: 400;
+        }
 
         .form-control:focus {
             outline: none;
-            background: #fff;
+            background: var(--white);
             border-color: var(--green-primary);
-            box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1);
+            box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.1);
         }
 
         .password-toggle {
             position: absolute;
-            right: 14px;
+            right: 16px;
             top: 50%;
             transform: translateY(-50%);
             color: var(--text-muted);
             cursor: pointer;
             font-size: 14px;
-            padding: 4px;
-            transition: color 0.2s;
         }
 
-        .password-toggle:hover { color: var(--green-primary); }
+        .password-toggle:hover {
+            color: var(--text-black);
+        }
 
         .form-options {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 24px;
+            margin-bottom: 28px;
             font-size: 13px;
         }
 
@@ -278,9 +291,9 @@
         }
 
         .remember input {
+            accent-color: var(--green-primary);
             width: 16px;
             height: 16px;
-            accent-color: var(--green-primary);
             cursor: pointer;
         }
 
@@ -290,20 +303,23 @@
             font-weight: 600;
         }
 
-        .forgot-link:hover { color: var(--green-dark); text-decoration: underline; }
+        .forgot-link:hover {
+            color: var(--green-dark);
+            text-decoration: underline;
+        }
 
         .btn {
             width: 100%;
-            padding: 13px;
+            padding: 15px;
             background: var(--green-primary);
-            color: #fff;
+            color: var(--white);
             border: none;
-            border-radius: 10px;
+            border-radius: 12px;
             font-size: 15px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
-            letter-spacing: 0.2px;
+            letter-spacing: 0.3px;
         }
 
         .btn:hover {
@@ -312,10 +328,8 @@
             box-shadow: 0 6px 16px rgba(22, 163, 74, 0.25);
         }
 
-        .btn:active { transform: translateY(0); }
-
         .btn:disabled {
-            background: #9ca3af;
+            background: #cbd5e1;
             cursor: not-allowed;
             transform: none;
             box-shadow: none;
@@ -323,33 +337,32 @@
 
         .info-note {
             display: flex;
-            gap: 10px;
-            padding: 14px 16px;
-            background: var(--green-soft);
-            border: 1px solid var(--green-line);
-            border-radius: 10px;
-            margin-top: 24px;
+            gap: 12px;
+            padding: 16px;
+            background: var(--green-light);
+            border: 1px solid var(--green-soft);
+            border-radius: 12px;
+            margin-top: 30px;
         }
 
         .info-note i {
             color: var(--green-primary);
-            font-size: 15px;
+            font-size: 16px;
             flex-shrink: 0;
             margin-top: 2px;
         }
 
         .info-note p {
-            font-size: 12.5px;
+            font-size: 13px;
             color: var(--text-body);
             line-height: 1.5;
         }
 
         .copyright {
             text-align: center;
-            margin-top: 28px;
-            font-size: 11.5px;
+            margin-top: 40px;
+            font-size: 12px;
             color: var(--text-muted);
-            letter-spacing: 0.2px;
         }
 
         /* ============ MODAL ============ */
@@ -357,7 +370,7 @@
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(15, 23, 42, 0.5);
+            background: rgba(15, 23, 42, 0.6);
             backdrop-filter: blur(4px);
             z-index: 100;
             align-items: center;
@@ -365,17 +378,19 @@
             padding: 20px;
         }
 
-        .modal.active { display: flex; }
+        .modal.active {
+            display: flex;
+        }
 
         .modal-content {
-            background: #fff;
+            background: var(--white);
             padding: 32px;
-            border-radius: 16px;
+            border-radius: 20px;
             max-width: 420px;
             width: 100%;
             position: relative;
-            animation: modalIn 0.25s ease;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            animation: modalIn 0.2s ease;
         }
 
         @keyframes modalIn {
@@ -386,13 +401,12 @@
         .modal-content h3 {
             font-size: 20px;
             font-weight: 700;
-            color: var(--text-black);
             margin-bottom: 8px;
-            letter-spacing: -0.3px;
+            color: var(--text-black);
         }
 
-        .modal-content > p {
-            font-size: 13.5px;
+        .modal-content p {
+            font-size: 14px;
             color: var(--text-muted);
             line-height: 1.5;
             margin-bottom: 20px;
@@ -405,40 +419,39 @@
             font-size: 24px;
             color: var(--text-muted);
             cursor: pointer;
-            line-height: 1;
-            transition: color 0.2s;
         }
 
-        .modal-close:hover { color: var(--text-black); }
+        .modal-close:hover {
+            color: var(--text-black);
+        }
 
         .modal-message {
             margin-top: 16px;
-            padding: 12px 14px;
-            border-radius: 8px;
+            padding: 12px 16px;
+            border-radius: 10px;
             font-size: 13px;
             display: none;
-            line-height: 1.5;
         }
 
         .modal-message.success {
-            background: var(--green-soft);
-            color: var(--green-deep);
-            border-left: 3px solid var(--green-primary);
+            background: var(--green-light);
+            color: var(--green-dark);
+            border-left: 4px solid var(--green-primary);
             display: block;
         }
 
         .modal-message.error {
             background: #fef2f2;
-            color: #991b1b;
-            border-left: 3px solid #dc2626;
+            color: #b91c1c;
+            border-left: 4px solid #ef4444;
             display: block;
         }
 
         .loading-spinner {
             display: inline-block;
-            width: 15px;
-            height: 15px;
-            border: 2px solid rgba(255, 255, 255, 0.4);
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.4);
             border-radius: 50%;
             border-top-color: #fff;
             animation: spin 0.6s linear infinite;
@@ -446,149 +459,119 @@
             vertical-align: middle;
         }
 
-        @keyframes spin { to { transform: rotate(360deg); } }
-
         /* ============ RESPONSIVE ============ */
-        @media (max-width: 900px) {
-            body { padding: 16px; align-items: flex-start; }
+        @media (max-width: 992px) {
+            body { padding: 16px; }
             .container {
                 flex-direction: column;
-                min-height: auto;
-                border-radius: 16px;
+                height: auto;
+                max-width: 500px;
             }
-            .slider-section {
-                min-height: 260px;
-                height: 260px;
-                flex: none;
+            .hero-section {
+                height: 350px;
+                min-height: 350px;
             }
-            .slide-content { padding: 24px; }
-            .slide-content h3 { font-size: 20px; }
-            .slide-content p { font-size: 13px; }
-            .slider-indicators { left: 24px; bottom: 16px; }
-            .form-section { padding: 36px 28px; flex: none; }
-            .brand { margin-bottom: 28px; }
-            .welcome h2 { font-size: 22px; }
+            .scene { height: 350px; transform: scale(0.8); }
+            .form-section { padding: 40px 30px; }
+            .hero-text { display: none; }
         }
 
         @media (max-width: 480px) {
             body { padding: 0; }
-            .container { border-radius: 0; border: none; min-height: 100vh; box-shadow: none; }
-            .slider-section { height: 230px; min-height: 230px; }
-            .form-section { padding: 28px 20px; }
-            .brand-mark h1 { font-size: 18px; }
-            .welcome h2 { font-size: 20px; }
-            .form-control { padding: 12px 42px 12px 42px; font-size: 13.5px; }
-            .btn { padding: 12px; font-size: 14px; }
+            .container { border-radius: 0; border: none; min-height: 100vh; }
+            .hero-section { height: 280px; min-height: 280px; }
+            .scene { transform: scale(0.65); }
+            .form-section { padding: 32px 20px; }
         }
     </style>
 </head>
 <body>
+
     <div class="container">
-        <div class="slider-section">
-            <div class="slider">
-                <div class="slide active" style="background-image: url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80');">
-                    <div class="slide-content">
-                        <span class="slide-badge">Exam Rule</span>
-                        <h3>Read All Instructions Carefully</h3>
-                        <p>Understand every rule before you begin. Once the exam starts, the timer will not pause.</p>
-                    </div>
-                </div>
-                <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1434030216411-0b793f4b4173?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80');">
-                    <div class="slide-content">
-                        <span class="slide-badge">Exam Rule</span>
-                        <h3>Do Not Refresh the Page</h3>
-                        <p>Refreshing or navigating away will automatically submit your answers. Stay on the page until you finish.</p>
-                    </div>
-                </div>
-                <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80');">
-                    <div class="slide-content">
-                        <span class="slide-badge">Academic Excellence</span>
-                        <h3>Your Success Starts Here</h3>
-                        <p>Every examination is a step toward your degree. Take your time, answer thoughtfully, and give it your best.</p>
-                    </div>
-                </div>
-                <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1541339907198-e08756dedf3f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80');">
-                    <div class="slide-content">
-                        <span class="slide-badge">Results Policy</span>
-                        <h3>Results Are Published by Your Department</h3>
-                        <p>Scores are released after the exam window closes. Check your student portal for official results.</p>
-                    </div>
+        <!-- HERO / 3D CAROUSEL SECTION -->
+        <div class="hero-section">
+            <div class="scene">
+                <div class="carousel">
+                    <!-- 8 Academic & Exam Images -->
+                    <div class="carousel-cell" style="background-image: url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=400&q=80');"></div>
+                    <div class="carousel-cell" style="background-image: url('https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=400&q=80');"></div>
+                    <div class="carousel-cell" style="background-image: url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=400&q=80');"></div>
+                    <div class="carousel-cell" style="background-image: url('https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=400&q=80');"></div>
+                    <div class="carousel-cell" style="background-image: url('https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&w=400&q=80');"></div>
+                    <div class="carousel-cell" style="background-image: url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=400&q=80');"></div>
+                    <div class="carousel-cell" style="background-image: url('https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?auto=format&fit=crop&w=400&q=80');"></div>
+                    <div class="carousel-cell" style="background-image: url('https://images.unsplash.com/photo-1571260899304-425eee4c7efc?auto=format&fit=crop&w=400&q=80');"></div>
                 </div>
             </div>
-            <div class="slider-indicators">
-                <div class="indicator active" data-slide="0"></div>
-                <div class="indicator" data-slide="1"></div>
-                <div class="indicator" data-slide="2"></div>
-                <div class="indicator" data-slide="3"></div>
+            <div class="hero-text">
+                <h2>Aaronice Prime Edu CBT</h2>
+                <p>Secure, computer-based examinations for all faculties and departments</p>
             </div>
         </div>
 
+        <!-- FORM SECTION -->
         <div class="form-section">
             <div class="brand">
-                <div class="brand-mark">
-                    <div class="icon"><i class="fas fa-graduation-cap"></i></div>
-                    <h1>Aaronice Prime Edu</h1>
-                </div>
+                <!-- Graduation cap removed -->
+                <h1>Aaronice Prime <span>Edu</span></h1>
                 <p>Computer-Based Examination Portal</p>
             </div>
 
-            <div class="form-container">
-                <div class="welcome">
-                    <h2>Welcome to your CBT Portal</h2>
-                    <p>Sign in with your matriculation details to begin.</p>
+            <div class="welcome">
+                <h2>Welcome to your CBT Portal</h2>
+                <p>Sign in with your matriculation details to begin.</p>
+            </div>
+
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="login-matric">Matric / Reg Number</label>
+                    <div class="input-wrap">
+                        <i class="fas fa-id-card"></i>
+                        <input type="text" id="login-matric" class="form-control" placeholder="e.g. CSC/2023/001" required autocomplete="username">
+                    </div>
                 </div>
 
-                <form id="login-form">
-                    <div class="form-group">
-                        <label for="login-matric">Matric / Reg Number</label>
-                        <div class="input-wrap">
-                            <i class="fas fa-id-card"></i>
-                            <input type="text" id="login-matric" class="form-control" placeholder="e.g. CSC/2023/001" required autocomplete="username">
-                        </div>
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <div class="input-wrap">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="login-password" class="form-control" placeholder="Enter your password" required autocomplete="current-password">
+                        <i class="fas fa-eye password-toggle" onclick="togglePassword('login-password', this)"></i>
                     </div>
-
-                    <div class="form-group">
-                        <label for="login-password">Password</label>
-                        <div class="input-wrap">
-                            <i class="fas fa-lock"></i>
-                            <input type="password" id="login-password" class="form-control" placeholder="Enter your password" required autocomplete="current-password">
-                            <i class="fas fa-eye password-toggle" onclick="togglePassword('login-password', this)"></i>
-                        </div>
-                    </div>
-
-                    <div class="form-options">
-                        <label class="remember">
-                            <input type="checkbox" id="remember">
-                            Remember me
-                        </label>
-                        <a href="#" class="forgot-link" id="forgot-password-link">Forgot password?</a>
-                    </div>
-
-                    <button type="submit" class="btn" id="login-btn">Sign In</button>
-                </form>
-
-                <div class="info-note">
-                    <i class="fas fa-info-circle"></i>
-                    <p>Your account is created by the exam administrator. Contact your ICT unit if you are unable to sign in.</p>
                 </div>
 
-                <div class="copyright">
-                    © 2026 Aaronice Prime Edu · Powered by Triangle Tech
+                <div class="form-options">
+                    <label class="remember">
+                        <input type="checkbox" id="remember">
+                        Remember me
+                    </label>
+                    <a href="#" class="forgot-link" id="forgot-password-link">Forgot password?</a>
                 </div>
+
+                <button type="submit" class="btn" id="login-btn">Sign In</button>
+            </form>
+
+            <div class="info-note">
+                <i class="fas fa-info-circle"></i>
+                <p>Your account is created by the exam administrator. Contact your ICT unit if you are unable to sign in.</p>
+            </div>
+
+            <div class="copyright">
+                &copy; 2026 Aaronice Prime Edu · Powered by Triangle Tech
             </div>
         </div>
     </div>
 
+    <!-- FORGOT PASSWORD MODAL -->
     <div id="forgot-password-modal" class="modal">
         <div class="modal-content">
             <span class="modal-close" id="modal-close">&times;</span>
             <h3>Reset Password</h3>
             <p>Enter your matric number. A reset link will be sent to the email address on your student record.</p>
             <div class="form-group">
-                <label for="reset-matric">Matric / Reg Number</label>
                 <div class="input-wrap">
                     <i class="fas fa-id-card"></i>
-                    <input type="text" id="reset-matric" class="form-control" placeholder="e.g. CSC/2023/001">
+                    <input type="text" id="reset-matric" class="form-control" placeholder="Matric Number">
                 </div>
             </div>
             <button id="send-reset-btn" class="btn">Send Reset Link</button>
@@ -597,24 +580,7 @@
     </div>
 
     <script>
-        // Slider
-        let currentSlide = 0;
-        const slides = document.querySelectorAll('.slide');
-        const indicators = document.querySelectorAll('.indicator');
-
-        function showSlide(index) {
-            if (!slides.length) return;
-            slides.forEach(s => s.classList.remove('active'));
-            indicators.forEach(i => i.classList.remove('active'));
-            slides[index].classList.add('active');
-            if (indicators[index]) indicators[index].classList.add('active');
-            currentSlide = index;
-        }
-
-        indicators.forEach((ind, idx) => ind.addEventListener('click', () => showSlide(idx)));
-        setInterval(() => showSlide((currentSlide + 1) % slides.length), 5500);
-
-        // Password toggle
+        // Password Toggle
         window.togglePassword = function(inputId, icon) {
             const input = document.getElementById(inputId);
             if (input.type === "password") {
@@ -628,32 +594,30 @@
             }
         };
 
-        // Modal
+        // Modal Logic
         const modal = document.getElementById('forgot-password-modal');
-        const closeModal = () => {
-            modal.classList.remove('active');
-            document.getElementById('modal-message').className = 'modal-message';
-        };
-
         document.getElementById('forgot-password-link').addEventListener('click', (e) => {
             e.preventDefault();
             modal.classList.add('active');
             document.getElementById('reset-matric').value = document.getElementById('login-matric').value || '';
         });
-        document.getElementById('modal-close').addEventListener('click', closeModal);
-        modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+        document.getElementById('modal-close').addEventListener('click', () => {
+            modal.classList.remove('active');
+            document.getElementById('modal-message').className = 'modal-message';
+        });
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('active');
+                document.getElementById('modal-message').className = 'modal-message';
+            }
+        });
     </script>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-        import {
-            getAuth,
-            signInWithEmailAndPassword,
-            onAuthStateChanged,
-            sendPasswordResetEmail,
-            setPersistence,
-            browserLocalPersistence,
-            browserSessionPersistence
+        import { 
+            getAuth, signInWithEmailAndPassword, onAuthStateChanged, sendPasswordResetEmail,
+            setPersistence, browserLocalPersistence, browserSessionPersistence
         } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
         import { getFirestore, doc, getDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
@@ -675,16 +639,17 @@
             "triangleofscholars@gmail.com"
         ];
 
-        // Find student by matric number
+        // Look up user by matric number
         async function getUserByMatric(matric) {
-            const q = query(collection(db, "users"), where("matricNo", "==", matric.trim().toUpperCase()));
+            const usersRef = collection(db, "users");
+            const q = query(usersRef, where("matricNo", "==", matric.trim().toUpperCase()));
             const snap = await getDocs(q);
             if (snap.empty) return null;
             const d = snap.docs[0];
             return { uid: d.id, ...d.data() };
         }
 
-        // Session check
+        // Check existing session
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 if (adminEmails.includes(user.email)) {
@@ -692,76 +657,94 @@
                     return;
                 }
                 try {
-                    const userDoc = await getDoc(doc(db, "users", user.uid));
-                    if (userDoc.exists()) window.location.href = "dashboard.html";
-                } catch (err) { console.error("Session check:", err); }
+                    const userRef = doc(db, "users", user.uid);
+                    const userDoc = await getDoc(userRef);
+                    if (userDoc.exists()) {
+                        window.location.href = "dashboard.html";
+                    }
+                } catch (error) {
+                    console.error("Session check failed:", error);
+                }
             }
         });
 
-        // Login
-        const loginForm = document.getElementById('login-form');
-        loginForm.addEventListener('submit', async (e) => {
+        // Login Logic
+        const loginFormElement = document.getElementById('login-form');
+        loginFormElement.addEventListener('submit', async (e) => {
             e.preventDefault();
             const matric = document.getElementById('login-matric').value.trim().toUpperCase();
             const password = document.getElementById('login-password').value;
-            const remember = document.getElementById('remember').checked;
+            const rememberMe = document.getElementById('remember').checked;
             const btn = document.getElementById('login-btn');
 
-            btn.innerHTML = '<span class="loading-spinner"></span> Signing in...';
+            btn.innerHTML = '<span class="loading-spinner"></span> Authenticating...';
             btn.disabled = true;
 
             try {
                 const student = await getUserByMatric(matric);
                 if (!student || !student.email) throw { code: 'app/matric-not-found' };
 
-                await setPersistence(auth, remember ? browserLocalPersistence : browserSessionPersistence);
+                const mode = rememberMe ? browserLocalPersistence : browserSessionPersistence;
+                await setPersistence(auth, mode);
                 await signInWithEmailAndPassword(auth, student.email, password);
+
                 window.location.href = 'dashboard.html';
-            } catch (err) {
-                console.error("Login:", err);
-                let msg = "Unable to sign in. Please try again.";
-                if (err.code === 'app/matric-not-found') msg = "Matric number not found. Contact your exam administrator.";
-                else if (err.code === 'auth/wrong-password' || err.code === 'auth/user-not-found') msg = "Incorrect matric number or password.";
-                else if (err.code === 'auth/too-many-requests') msg = "Too many attempts. Please try again later.";
-                alert(msg);
+
+            } catch (error) {
+                console.error("Login Error:", error);
+                let message = "Login failed. Please try again.";
+                if (error.code === 'app/matric-not-found') {
+                    message = "Matric number not found. Contact the exam administrator.";
+                } else if (error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found') {
+                    message = "Invalid matric number or password.";
+                } else if (error.code === 'auth/too-many-requests') {
+                    message = "Too many attempts. Please try again later.";
+                }
+                alert(message);
                 btn.innerHTML = "Sign In";
                 btn.disabled = false;
             }
         });
 
-        // Forgot password
+        // Forgot Password Logic
         const sendResetBtn = document.getElementById('send-reset-btn');
+        const resetMatric = document.getElementById('reset-matric');
         const modalMessage = document.getElementById('modal-message');
+        
         sendResetBtn.addEventListener('click', async () => {
-            const matric = document.getElementById('reset-matric').value.trim().toUpperCase();
-
+            const matric = resetMatric.value.trim().toUpperCase();
+            
             if (!matric) {
                 modalMessage.textContent = "Please enter your matric number.";
                 modalMessage.className = "modal-message error";
                 return;
             }
-
-            const originalText = sendResetBtn.innerText;
+            
+            const originalBtnText = sendResetBtn.innerText;
             sendResetBtn.innerHTML = '<span class="loading-spinner"></span> Sending...';
             sendResetBtn.disabled = true;
-
+            
             try {
                 const student = await getUserByMatric(matric);
                 if (!student || !student.email) throw { code: 'app/matric-not-found' };
-
+                
                 await sendPasswordResetEmail(auth, student.email);
                 modalMessage.textContent = `Reset link sent to the email on record for ${matric}.`;
                 modalMessage.className = "modal-message success";
-                document.getElementById('reset-matric').value = '';
-                setTimeout(() => document.getElementById('modal-close').click(), 3500);
-            } catch (err) {
-                console.error("Reset:", err);
-                modalMessage.textContent = err.code === 'app/matric-not-found'
-                    ? "Matric number not found. Contact your exam administrator."
-                    : "Unable to send reset email. Please try again.";
+                resetMatric.value = '';
+                
+                setTimeout(() => {
+                    document.getElementById('modal-close').click();
+                }, 3500);
+                
+            } catch (error) {
+                console.error("Reset Error:", error);
+                modalMessage.textContent = error.code === 'app/matric-not-found' 
+                    ? "Matric number not found." 
+                    : "Error sending reset email. Try again.";
                 modalMessage.className = "modal-message error";
             } finally {
-                sendResetBtn.innerHTML = originalText;
+                sendResetBtn.innerHTML = originalBtnText;
                 sendResetBtn.disabled = false;
             }
         });
