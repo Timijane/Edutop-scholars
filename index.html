@@ -122,6 +122,7 @@
 
         .input-wrap {
             position: relative;
+            width: 100%;
         }
 
         /* Left Icon (Lock / ID Card) */
@@ -139,7 +140,7 @@
         /* Input Field */
         .form-control {
             width: 100%;
-            /* Increased right padding to 48px to prevent text overlapping the eye icon */
+            /* 48px padding on left and right ensures text never overlaps icons */
             padding: 15px 48px 15px 48px; 
             font-size: 14.5px;
             font-family: 'Inter', sans-serif;
@@ -164,20 +165,26 @@
             box-shadow: 0 0 0 4px rgba(82, 183, 136, 0.15);
         }
 
-        /* Right Icon (Eye) */
-        .password-toggle {
+        /* Right Icon (Eye Button) - Bulletproof implementation */
+        .password-toggle-btn {
             position: absolute;
-            right: 18px;
+            right: 10px;
             top: 50%;
             transform: translateY(-50%);
+            background: transparent;
+            border: none;
             color: var(--text-muted);
-            cursor: pointer;
             font-size: 16px;
-            z-index: 10; /* Ensures it sits above the input text */
+            cursor: pointer;
+            padding: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
             transition: color 0.2s;
         }
 
-        .password-toggle:hover {
+        .password-toggle-btn:hover {
             color: var(--primary-deep);
         }
 
@@ -511,7 +518,7 @@
             .form-group label { font-size: 11px; margin-bottom: 4px; }
             .form-control { padding: 10px 40px 10px 36px; font-size: 12px; border-radius: 8px; }
             .input-wrap .left-icon { left: 12px; font-size: 12px; }
-            .password-toggle { right: 12px; font-size: 14px; }
+            .password-toggle-btn { right: 6px; font-size: 14px; }
             .form-options { flex-direction: column; align-items: flex-start; gap: 8px; margin-bottom: 16px; font-size: 11px; }
             .btn { padding: 12px; font-size: 13px; border-radius: 8px; }
             .info-note { padding: 10px; margin-top: 16px; border-radius: 8px; }
@@ -553,7 +560,7 @@
 
                 <form id="login-form">
                     <div class="form-group">
-                        <!-- NO MENTION OF ADMIN -->
+                        <!-- NO ADMIN MENTION -->
                         <label for="login-matric">Matric / Reg No.</label>
                         <div class="input-wrap">
                             <i class="fas fa-id-card left-icon"></i>
@@ -566,8 +573,10 @@
                         <div class="input-wrap">
                             <i class="fas fa-lock left-icon"></i>
                             <input type="password" id="login-password" class="form-control" placeholder="Password" required autocomplete="current-password">
-                            <!-- Eye Icon moved to right and separated -->
-                            <i class="fas fa-eye password-toggle" id="togglePassBtn"></i>
+                            <!-- Bulletproof Eye Button -->
+                            <button type="button" class="password-toggle-btn" id="togglePassBtn">
+                                <i class="fas fa-eye"></i>
+                            </button>
                         </div>
                     </div>
 
@@ -637,7 +646,7 @@
     </div>
 
     <script>
-        // --- 3D CAROUSEL + POPOUT ANIMATION LOGIC ---
+        // --- 3D CAROUSEL ANIMATION ---
         const carousel = document.getElementById('carousel');
         const overlay = document.getElementById('popoutOverlay');
         const popoutBadge = document.getElementById('popoutBadge');
@@ -675,9 +684,10 @@
         }
         runAnimationCycle();
 
-        // --- FIXED PASSWORD TOGGLE LOGIC ---
+        // --- PERFECT EYE TOGGLE LOGIC ---
         const togglePassBtn = document.getElementById('togglePassBtn');
         const passwordInput = document.getElementById('login-password');
+        const eyeIcon = togglePassBtn.querySelector('i');
 
         togglePassBtn.addEventListener('click', function(e) {
             e.preventDefault(); // Prevents form submission
@@ -685,12 +695,12 @@
             
             if (passwordInput.type === "password") {
                 passwordInput.type = "text";
-                this.classList.remove("fa-eye");
-                this.classList.add("fa-eye-slash");
+                eyeIcon.classList.remove("fa-eye");
+                eyeIcon.classList.add("fa-eye-slash");
             } else {
                 passwordInput.type = "password";
-                this.classList.remove("fa-eye-slash");
-                this.classList.add("fa-eye");
+                eyeIcon.classList.remove("fa-eye-slash");
+                eyeIcon.classList.add("fa-eye");
             }
         });
 
@@ -754,7 +764,7 @@
             return snap.docs[0].data().role; 
         }
 
-        // --- SESSION CHECK (If already logged in) ---
+        // --- SESSION CHECK ---
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 const role = await getStaffRole(user.email);
@@ -794,7 +804,6 @@
             try {
                 let loginEmail = '';
 
-                // Silently check if input is email (Staff) or Matric No (Student)
                 if (loginInput.includes('@')) {
                     loginEmail = loginInput.toLowerCase();
                 } else {
@@ -803,12 +812,10 @@
                     loginEmail = student.email;
                 }
 
-                // Remember Me Logic
                 const mode = rememberMe ? browserLocalPersistence : browserSessionPersistence;
                 await setPersistence(auth, mode);
                 const userCredential = await signInWithEmailAndPassword(auth, loginEmail, password);
 
-                // Determine where to redirect
                 const role = await getStaffRole(userCredential.user.email);
                 
                 if (role) {
