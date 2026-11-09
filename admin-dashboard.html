@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard · Aaronice Prime Edu</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-page: #dcece7;          
+            --bg-card: #ffffff;          
+            --primary-deep: #2d6a4f;     
+            --primary-teal: #52b788;     
+            --primary-light: #e3f0ec;    
+            --text-main: #0f172a;        
+            --text-muted: #64748b;       
+            --border: #e2e8f0;
+            --sidebar-grad: linear-gradient(180deg, #2d6a4f 0%, #40916c 100%);
+            --sidebar-active: rgba(255, 255, 255, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            -webkit-font-smoothing: antialiased;
+            display: flex;
+            padding: 16px;
+            gap: 16px;
+            overflow-x: hidden;
+        }
+
+        /* ============ SIDEBAR ============ */
+        .sidebar {
+            width: 250px;
+            background: var(--sidebar-grad);
+            border-radius: 24px;
+            display: flex;
+            flex-direction: column;
+            padding: 24px 16px;
+            color: #ffffff;
+            flex-shrink: 0;
+            box-shadow: 0 10px 30px rgba(45, 106, 79, 0.15);
+            height: calc(100vh - 32px);
+            position: sticky;
+            top: 16px;
+        }
+
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 12px;
+            margin-bottom: 40px;
+        }
+
+        .sidebar-brand .icon {
+            width: 32px;
+            height: 32px;
+            background: #ffffff;
+            color: var(--primary-deep);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .sidebar-brand h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 16px;
+            border-radius: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .nav-item i {
+            font-size: 18px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: var(--sidebar-active);
+            color: #ffffff;
+        }
+
+        .nav-bottom {
+            margin-top: auto;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 16px;
+        }
+
+        /* ============ MAIN CONTENT ============ */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            min-width: 0; 
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg-card);
+            padding: 16px 24px;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+        }
+
+        .topbar-left h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--primary-deep);
+            margin-bottom: 2px;
+        }
+
+        .topbar-left p {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .search-box {
+            position: relative;
+            width: 260px;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 16px 12px 42px;
+            border-radius: 100px;
+            border: 1px solid var(--border);
+            background: #f8fafc;
+            font-size: 13px;
+            font-family: 'Inter', sans-serif;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .search-box input:focus {
+            border-color: var(--primary-teal);
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(82, 183, 136, 0.1);
+        }
+
+        .icon-btn {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: 1px solid var(--border);
+            background: #ffffff;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.2s;
+        }
+
+        .icon-btn:hover { background: #f8fafc; }
+
+        /* ============ KPI GRID ============ */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+
+        .kpi-card {
+            background: var(--bg-card);
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .kpi-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .kpi-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            line-height: 1.3;
+            max-width: 70%;
+        }
+
+        .kpi-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: var(--primary-deep);
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .kpi-value {
+            font-family: 'Outfit', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-main);
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .kpi-trend {
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--primary-teal);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .kpi-trend.neutral { color: var(--text-muted); }
+
+        /* ============ DASHBOARD GRID ============ */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .card-pill {
+            background: #f1f5f9;
+            color: var(--text-main);
+            padding: 6px 12px;
+            border-radius: 100px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .left-col {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .chart-container {
+            width: 100%;
+            height: 220px;
+            position: relative;
+            margin-top: auto;
+        }
+        
+        .chart-svg {
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+        }
+
+        .chart-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 12px;
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .activity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+            background: var(--primary-deep);
+            color: #ffffff;
+        }
+
+        .activity-icon.warning { background: #f59e0b; }
+        .activity-icon.success { background: var(--primary-teal); }
+
+        .activity-info { flex: 1; }
+
+        .activity-info h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 2px;
+        }
+
+        .activity-info p {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .activity-meta { text-align: right; }
+
+        .activity-time {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+            display: block;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 100px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .badge.success { background: #d1fae5; color: #065f46; }
+        .badge.warning { background: #fef3c7; color: #92400e; }
+        .badge.neutral { background: #f1f5f9; color: #475569; }
+
+        .right-col {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .calendar-header h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+            text-align: center;
+        }
+
+        .cal-day-label {
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .cal-day {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-main);
+            margin: 0 auto;
+            cursor: pointer;
+        }
+
+        .cal-day:hover { background: #f1f5f9; }
+        .cal-day.active { background: var(--primary-deep); color: #ffffff; }
+        .cal-day.outline { border: 1px solid var(--border); }
+
+        .bar-chart {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            height: 120px;
+            margin-top: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .bar-col {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+        }
+
+        .bar {
+            width: 24px;
+            border-radius: 4px;
+            background: var(--primary-light);
+            transition: height 0.3s;
+            position: relative;
+        }
+
+        .bar.highlight { background: var(--primary-teal); }
+        .bar-label { font-size: 11px; color: var(--text-muted); font-weight: 600; }
+
+        .upcoming-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .upcoming-item {
+            background: #f8fafc;
+            padding: 14px 16px;
+            border-radius: 12px;
+            border-left: 3px solid var(--primary-teal);
+        }
+
+        .upcoming-item h4 {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .upcoming-item p {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .promo-card {
+            background: linear-gradient(135deg, #2d6a4f 0%, #52b788 100%);
+            border-radius: 20px;
+            padding: 24px;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .promo-icon {
+            width: 36px; height: 36px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 16px;
+            margin-bottom: 16px;
+        }
+
+        .promo-card h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            position: relative;
+        }
+
+        .promo-card p {
+            font-size: 12px;
+            color: rgba(255,255,255,0.8);
+            line-height: 1.5;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .promo-btn {
+            background: rgba(255,255,255,0.2);
+            color: #ffffff;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: auto;
+            position: relative;
+        }
+
+        .promo-btn:hover { background: rgba(255,255,255,0.3); }
+
+        /* ============ MODALS (Staff Management) ============ */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal.active { display: flex; }
+
+        .modal-content {
+            background: var(--bg-card);
+            padding: 32px;
+            border-radius: 20px;
+            max-width: 480px;
+            width: 100%;
+            position: relative;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            animation: modalIn 0.3s ease;
+        }
+
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 24px;
+            font-size: 24px;
+            color: var(--text-muted);
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+
+        .modal-content h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            color: var(--primary-deep);
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 14px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            outline: none;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-teal);
+            box-shadow: 0 0 0 3px rgba(82, 183, 136, 0.1);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary-deep);
+            color: #ffffff;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: 0.2s;
+        }
+
+        .btn:hover { background: #1b4332; }
+        .btn:disabled { background: #cbd5e1; cursor: not-allowed; }
+
+        /* ============ RESPONSIVE ============ */
+        @media (max-width: 1200px) {
+            .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+            .dashboard-grid { grid-template-columns: 1fr; }
+            .right-col { display: grid; grid-template-columns: 1fr 1fr; }
+            .promo-card { grid-column: span 2; }
+        }
+
+        @media (max-width: 992px) {
+            body { flex-direction: column; padding: 10px; }
+            .sidebar { 
+                width: 100%; height: auto; position: relative; top: 0;
+                flex-direction: row; align-items: center; justify-content: space-between;
+                padding: 12px 20px;
+            }
+            .sidebar-brand { margin-bottom: 0; }
+            .nav-menu { flex-direction: row; gap: 4px; overflow-x: auto; width: auto; flex: none; }
+            .nav-item { padding: 10px; }
+            .nav-item span { display: none; }
+            .nav-bottom { display: none; }
+            .topbar { flex-direction: column; align-items: flex-start; gap: 16px; }
+            .topbar-right { width: 100%; justify-content: space-between; }
+            .search-box { flex: 1; width: auto; }
+        }
+
+        @media (max-width: 640px) {
+            .kpi-grid { grid-template-columns: 1fr; }
+            .right-col { grid-template-columns: 1fr; }
+            .promo-card { grid-column: span 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <div class="icon"><i class="fas fa-graduation-cap"></i></div>
+            <h1>Admin Panel</h1>
+        </div>
+
+        <nav class="nav-menu">
+            <a href="#" class="nav-item active">
+                <i class="fas fa-th-large"></i> <span>Dashboard</span>
+            </a>
+            <!-- Visible to Super Admin and Admin -->
+            <a href="#" class="nav-item" id="nav-students">
+                <i class="fas fa-users"></i> <span>Students</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fas fa-book"></i> <span>Courses</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i class="fas fa-file-alt"></i> <span>Exams</span>
+            </a>
+            <!-- Visible to Super Admin and Question Manager -->
+            <a href="#" class="nav-item" id="nav-questions">
+                <i class="fas fa-question-circle"></i> <span>Question Bank</span>
+            </a>
+            <!-- Visible to Super Admin only -->
+            <a href="#" class="nav-item" id="nav-staff" style="display:none;">
+                <i class="fas fa-user-shield"></i> <span>Staff Management</span>
+            </a>
+        </nav>
+
+        <div class="nav-bottom">
+            <a href="index.html" class="nav-item">
+                <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+        
+        <!-- TOPBAR -->
+        <header class="topbar">
+            <div class="topbar-left">
+                <h2>Dashboard</h2>
+                <p id="welcome-msg">Welcome back, Admin</p>
+            </div>
+            <div class="topbar-right">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search students, exams...">
+                </div>
+                <button class="icon-btn">
+                    <i class="fas fa-bell"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- KPI CARDS -->
+        <section class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <span class="kpi-title">Total Students</span>
+                    <div class="kpi-icon"><i class="fas fa-users"></i></div>
+                </div>
+                <div class="kpi-value">1,248</div>
+                <div class="kpi-trend"><i class="fas fa-arrow-up"></i> +12% vs last month</div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <span class="kpi-title">Active Exams</span>
+                    <div class="kpi-icon" style="background: #40916c;"><i class="fas fa-file-alt"></i></div>
+                </div>
+                <div class="kpi-value">12</div>
+                <div class="kpi-trend"><i class="fas fa-arrow-up"></i> +2 new today</div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <span class="kpi-title">Questions in Bank</span>
+                    <div class="kpi-icon" style="background: #52b788;"><i class="fas fa-database"></i></div>
+                </div>
+                <div class="kpi-value">4,560</div>
+                <div class="kpi-trend neutral">Across all subjects</div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <span class="kpi-title">System Health</span>
+                    <div class="kpi-icon" style="background: #1b4332;"><i class="fas fa-wifi"></i></div>
+                </div>
+                <div class="kpi-value">98%</div>
+                <div class="kpi-trend" style="color: var(--primary-deep); font-weight: 600;">Optimal</div>
+            </div>
+        </section>
+
+        <!-- CHARTS & ACTIVITY GRID -->
+        <section class="dashboard-grid">
+            
+            <!-- LEFT COLUMN -->
+            <div class="left-col">
+                <!-- Line Chart -->
+                <div class="card" style="flex: 1;">
+                    <div class="card-header">
+                        <span class="card-title">Exam Submissions Trends</span>
+                        <span class="card-pill">Weekly</span>
+                    </div>
+                    <div class="chart-container">
+                        <svg class="chart-svg" viewBox="0 0 500 200" preserveAspectRatio="none">
+                            <defs>
+                                <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0%" stop-color="#52b788" stop-opacity="0.3"/>
+                                    <stop offset="100%" stop-color="#52b788" stop-opacity="0"/>
+                                </linearGradient>
+                            </defs>
+                            <path d="M0,40 L500,40 M0,80 L500,80 M0,120 L500,120 M0,160 L500,160" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4 4" fill="none"/>
+                            <path d="M0,180 C50,170 100,140 150,130 C200,120 250,100 300,90 C350,80 400,60 500,40 L500,200 L0,200 Z" fill="url(#chartGrad)"/>
+                            <path d="M0,180 C50,170 100,140 150,130 C200,120 250,100 300,90 C350,80 400,60 500,40" fill="none" stroke="#2d6a4f" stroke-width="3" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <div class="chart-labels">
+                        <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">Recent Activity</span>
+                    </div>
+                    <div class="activity-list">
+                        <div class="activity-item">
+                            <div class="activity-icon success"><i class="fas fa-file-upload"></i></div>
+                            <div class="activity-info">
+                                <h4>CSV Upload Successful</h4>
+                                <p>By Admin • 120 students added to CSC101</p>
+                            </div>
+                            <div class="activity-meta">
+                                <span class="activity-time">2m ago</span>
+                                <span class="badge success">Success</span>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon warning"><i class="fas fa-exclamation-triangle"></i></div>
+                            <div class="activity-info">
+                                <h4>Offline Sync Pending</h4>
+                                <p>3 devices have not synced exams yet</p>
+                            </div>
+                            <div class="activity-meta">
+                                <span class="activity-time">15m ago</span>
+                                <span class="badge warning">Warning</span>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon"><i class="fas fa-user-plus"></i></div>
+                            <div class="activity-info">
+                                <h4>New Staff Added</h4>
+                                <p>Question Manager: Jane Doe</p>
+                            </div>
+                            <div class="activity-meta">
+                                <span class="activity-time">1h ago</span>
+                                <span class="badge neutral">Completed</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT COLUMN -->
+            <div class="right-col">
+                <!-- Calendar -->
+                <div class="card">
+                    <div class="calendar-header">
+                        <h3>October 2026</h3>
+                    </div>
+                    <div class="calendar-grid">
+                        <span class="cal-day-label">Mo</span><span class="cal-day-label">Tu</span><span class="cal-day-label">We</span><span class="cal-day-label">Th</span><span class="cal-day-label">Fr</span><span class="cal-day-label">Sa</span><span class="cal-day-label">Su</span>
+                        
+                        <span class="cal-day"></span><span class="cal-day"></span><span class="cal-day"></span><span class="cal-day">1</span><span class="cal-day">2</span><span class="cal-day">3</span><span class="cal-day">4</span>
+                        <span class="cal-day">5</span><span class="cal-day">6</span><span class="cal-day">7</span><span class="cal-day">8</span><span class="cal-day">9</span><span class="cal-day outline">10</span><span class="cal-day">11</span>
+                        <span class="cal-day active">12</span><span class="cal-day">13</span><span class="cal-day">14</span><span class="cal-day">15</span><span class="cal-day">16</span><span class="cal-day">17</span><span class="cal-day">18</span>
+                    </div>
+                </div>
+
+                <!-- Performance (Bar Chart) -->
+                <div class="card">
+                    <div class="card-header" style="margin-bottom: 0;">
+                        <span class="card-title">Top Exam Performance</span>
+                    </div>
+                    <div class="bar-chart">
+                        <div class="bar-col"><div class="bar" style="height: 40%;"></div><span class="bar-label">CSC</span></div>
+                        <div class="bar-col"><div class="bar highlight" style="height: 75%;"></div><span class="bar-label">ENG</span></div>
+                        <div class="bar-col"><div class="bar" style="height: 55%;"></div><span class="bar-label">LAW</span></div>
+                        <div class="bar-col"><div class="bar" style="height: 30%;"></div><span class="bar-label">BIO</span></div>
+                        <div class="bar-col"><div class="bar highlight" style="height: 90%;"></div><span class="bar-label">MTH</span></div>
+                    </div>
+                </div>
+
+                <!-- Upcoming -->
+                <div class="card">
+                    <div class="card-header" style="margin-bottom: 12px;">
+                        <span class="card-title">Upcoming Exams</span>
+                    </div>
+                    <div class="upcoming-list">
+                        <div class="upcoming-item">
+                            <h4>ENG101 Mid-Semester</h4>
+                            <p>10:00 AM - 11:00 AM</p>
+                        </div>
+                        <div class="upcoming-item">
+                            <h4>LAW201 Final Exam</h4>
+                            <p>02:30 PM - 04:30 PM</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Offline Sync Card -->
+                <div class="promo-card">
+                    <div class="promo-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                    <h3>Offline Sync Center</h3>
+                    <p>Manage attempts that haven't synced from student devices yet.</p>
+                    <button class="promo-btn">Review Pending Syncs</button>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <!-- STAFF MANAGEMENT MODAL (Super Admin Only) -->
+    <div class="modal" id="staffModal">
+        <div class="modal-content">
+            <button class="modal-close" id="closeStaffModal">&times;</button>
+            <h3>Add New Staff Member</h3>
+            
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="staffName" class="form-control" placeholder="e.g. John Doe">
+            </div>
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" id="staffEmail" class="form-control" placeholder="e.g. john@aaronice.com">
+            </div>
+            <div class="form-group">
+                <label>Role</label>
+                <select id="staffRole" class="form-control">
+                    <option value="admin">Admin (Max 3)</option>
+                    <option value="super_admin">Super Admin (Max 2)</option>
+                    <option value="question_manager">Question Manager (Unlimited)</option>
+                </select>
+            </div>
+            
+            <button class="btn" id="saveStaffBtn">Create Staff Account</button>
+            <p style="text-align: center; font-size: 11px; color: var(--text-muted); margin-top: 16px;">
+                Note: Default password is <strong>Aaronice@2026</strong>. Staff must change it on first login.
+            </p>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script type="module">
+        import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, collection, query, where, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCictHNxtslYs9VR0hoicxlwPn_QghkgIA",
+            authDomain: "edutop-7ff51.firebaseapp.com",
+            projectId: "edutop-7ff51",
+            storageBucket: "edutop-7ff51.firebasestorage.app",
+            messagingSenderId: "79307850494",
+            appId: "1:79307850494:web:b51ce51204140ec5429baf",
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentUserRole = null;
+        let currentUserEmail = null;
+
+        // 1. Verify User & Apply Role-Based UI
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = "index.html";
+                return;
+            }
+
+            currentUserEmail = user.email;
+
+            // Check staff collection for role
+            const staffRef = collection(db, "staff");
+            const q = query(staffRef, where("email", "==", user.email.toLowerCase()));
+            const snap = await getDocs(q);
+
+            if (snap.empty) {
+                alert("Access Denied. You are not registered as staff.");
+                window.location.href = "index.html";
+                return;
+            }
+
+            const staffData = snap.docs[0].data();
+            currentUserRole = staffData.role;
+            
+            // Update UI
+            document.getElementById('welcome-msg').textContent = `Welcome back, ${staffData.name || 'Staff'} (${currentUserRole.replace('_', ' ').toUpperCase()})`;
+
+            // Apply RBAC (Role-Based Access Control)
+            if (currentUserRole === 'super_admin') {
+                // Super Admin sees everything
+                document.getElementById('nav-staff').style.display = 'flex';
+            } else if (currentUserRole === 'admin') {
+                // Admin sees students, but NO staff management
+                document.getElementById('nav-staff').style.display = 'none';
+            } else if (currentUserRole === 'question_manager') {
+                // Question Manager only sees questions and courses
+                document.getElementById('nav-students').style.display = 'none';
+                document.getElementById('nav-staff').style.display = 'none';
+            }
+        });
+
+        // 2. Staff Management Logic (Super Admin Only)
+        const staffModal = document.getElementById('staffModal');
+        const closeStaffModal = document.getElementById('closeStaffModal');
+        const saveStaffBtn = document.getElementById('saveStaffBtn');
+
+        // Open modal when clicking "Staff Management"
+        document.getElementById('nav-staff').addEventListener('click', (e) => {
+            e.preventDefault();
+            staffModal.classList.add('active');
+        });
+
+        closeStaffModal.addEventListener('click', () => {
+            staffModal.classList.remove('active');
+        });
+
+        // Add New Staff (Using Secondary App to prevent logout)
+        saveStaffBtn.addEventListener('click', async () => {
+            const name = document.getElementById('staffName').value.trim();
+            const email = document.getElementById('staffEmail').value.trim().toLowerCase();
+            const role = document.getElementById('staffRole').value;
+
+            if (!name || !email) {
+                alert("Please fill in all fields.");
+                return;
+            }
+
+            saveStaffBtn.disabled = true;
+            saveStaffBtn.textContent = "Checking limits...";
+
+            try {
+                // Check Limits (Frontend check, true limits MUST be in Firestore Rules)
+                const staffRef = collection(db, "staff");
+                const qRole = query(staffRef, where("role", "==", role));
+                const roleSnap = await getDocs(qRole);
+
+                if (role === 'super_admin' && roleSnap.size >= 2) {
+                    alert("Limit Reached: You can only have a maximum of 2 Super Admins.");
+                    saveStaffBtn.disabled = false;
+                    saveStaffBtn.textContent = "Create Staff Account";
+                    return;
+                }
+                if (role === 'admin' && roleSnap.size >= 3) {
+                    alert("Limit Reached: You can only have a maximum of 3 Admins.");
+                    saveStaffBtn.disabled = false;
+                    saveStaffBtn.textContent = "Create Staff Account";
+                    return;
+                }
+
+                saveStaffBtn.textContent = "Creating account...";
+
+                // Secondary App logic
+                const secondaryApp = initializeApp(firebaseConfig, "Secondary");
+                const secondaryAuth = getAuth(secondaryApp);
+                const defaultPassword = "Aaronice@2026";
+
+                // Create in Auth
+                const userCredential = await createUserWithEmailAndPassword(secondaryAuth, email, defaultPassword);
+                
+                // Save to Firestore
+                await addDoc(collection(db, "staff"), {
+                    email: email,
+                    name: name,
+                    role: role,
+                    createdAt: new Date().toISOString(),
+                    addedBy: currentUserEmail
+                });
+
+                // Cleanup
+                await secondaryAuth.signOut();
+                await deleteApp(secondaryApp);
+
+                alert(`Successfully created ${role} account for ${name}. Default password: ${defaultPassword}`);
+                staffModal.classList.remove('active');
+                document.getElementById('staffName').value = '';
+                document.getElementById('staffEmail').value = '';
+
+            } catch (error) {
+                console.error("Error adding staff:", error);
+                alert("Failed to add staff: " + error.message);
+            } finally {
+                saveStaffBtn.disabled = false;
+                saveStaffBtn.textContent = "Create Staff Account";
+            }
+        });
+    </script>
+</body>
+</html>
