@@ -32,7 +32,7 @@
             height: 100vh;
             display: flex;
             flex-direction: column;
-            overflow: hidden; /* Prevent page scroll */
+            overflow: hidden;
         }
 
         /* ============ TOP BAR ============ */
@@ -220,12 +220,7 @@
         }
         .result-icon { font-size: 64px; color: var(--primary-teal); margin-bottom: 20px; }
         .result-card h1 { font-family: 'Outfit', sans-serif; font-size: 28px; margin-bottom: 8px; }
-        .result-card p { color: var(--text-muted); margin-bottom: 24px; }
-        
-        .score-display {
-            font-family: 'Outfit', sans-serif; font-size: 56px; font-weight: 800;
-            color: var(--primary-deep); line-height: 1; margin-bottom: 8px;
-        }
+        .result-card p { color: var(--text-muted); margin-bottom: 24px; line-height: 1.5; }
 
         .offline-badge {
             display: inline-flex; align-items: center; gap: 6px;
@@ -327,17 +322,14 @@
         </div>
     </div>
 
-    <!-- RESULT SCREEN -->
+    <!-- RESULT SCREEN (NO SCORE SHOWN) -->
     <div id="resultScreen">
         <div class="result-card">
             <i class="fas fa-check-circle result-icon"></i>
             <h1>Exam Submitted Successfully</h1>
-            <p id="syncStatusText" style="color: var(--text-muted);"></p>
+            <p id="syncStatusText">Your answers have been recorded. Results will be published by the exam administrator.</p>
             
-            <div class="score-display" id="finalScoreDisplay">0%</div>
-            <p style="margin-bottom: 32px;">Your final score</p>
-
-            <button class="btn btn-primary" style="width:100%; justify-content:center;" onclick="window.location.href='dashboard.html'">
+            <button class="btn btn-primary" style="width:100%; justify-content:center; margin-top: 16px;" onclick="window.location.href='dashboard.html'">
                 Return to Dashboard
             </button>
         </div>
@@ -346,7 +338,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCictHNxtslYs9VR0hoicxlwPn_QghkgIA",
@@ -385,11 +377,10 @@
             const savedSession = localStorage.getItem(getSessionKey(user.uid));
             if (savedSession) {
                 const parsed = JSON.parse(savedSession);
-                // Verify it's for the same exam
                 if (parsed.examId === examId) {
                     answers = parsed.answers;
                     timeRemainingSeconds = parsed.timeRemaining;
-                    await loadExamData(true); // true = resuming
+                    await loadExamData(true); 
                     return;
                 }
             }
@@ -400,12 +391,10 @@
 
         async function loadExamData(isResuming) {
             try {
-                // 1. Fetch Exam Document
                 const examSnap = await getDoc(doc(db, "exams", examId));
                 if (!examSnap.exists()) { alert("Exam not found."); window.location.href = "dashboard.html"; return; }
                 examData = examSnap.data();
 
-                // 2. Fetch Student Profile
                 const userSnap = await getDoc(doc(db, "users", currentUser.uid));
                 if(userSnap.exists()) {
                     const u = userSnap.data();
@@ -414,24 +403,20 @@
                     document.getElementById('candInitials').textContent = u.fullName.substring(0,2).toUpperCase();
                 }
 
-                // 3. Set UI Headers
                 document.getElementById('examTitleDisplay').textContent = examData.title;
 
-                // 4. Fetch Questions
+                // Fetch Questions
                 const qPromises = examData.questionIds.map(qId => getDoc(doc(db, "questions", qId)));
                 const qSnaps = await Promise.all(qPromises);
                 
                 questions = qSnaps.map(snap => ({ id: snap.id, ...snap.data() }));
                 document.getElementById('qSubjectTag').textContent = examData.courseId;
 
-                // 5. Shuffle Questions (if required and NOT resuming)
                 if (examData.shuffleQuestions && !isResuming) {
                     questions.sort(() => Math.random() - 0.5);
                 }
 
-                // 6. Setup Timer
                 if (!isResuming) {
-                    // Calculate time remaining based on exam duration OR until end time, whichever is sooner
                     const now = new Date().getTime();
                     const examEnd = new Date(examData.endTime).getTime();
                     const durationMs = examData.duration * 60 * 1000;
@@ -444,15 +429,10 @@
                     }
                 }
 
-                // 7. Start App
                 document.getElementById('totalCount').textContent = questions.length;
                 renderPalette();
                 renderQuestion();
                 startTimer();
-                
-                if(isResuming) {
-                    console.log("Resumed from offline session.");
-                }
 
             } catch (error) {
                 console.error("Load Error:", error);
@@ -472,7 +452,6 @@
             optList.innerHTML = '';
 
             let displayOptions = ['A', 'B', 'C', 'D'];
-            // Shuffle options if required
             if (examData.shuffleOptions) {
                 displayOptions.sort(() => Math.random() - 0.5);
             }
@@ -514,18 +493,13 @@
         function updateButtons() {
             document.getElementById('prevBtn').disabled = currentIndex === 0;
             document.getElementById('nextBtn').disabled = currentIndex === questions.length - 1;
-            
-            // Update answered count for modal
             document.getElementById('answeredCount').textContent = Object.keys(answers).length;
         }
 
         // --- ACTIONS ---
         function selectOption(qId, letter) {
             answers[qId] = letter;
-            
-            // Save to LocalStorage Instantly
             saveProgressToLocal();
-            
             renderQuestion();
             renderPalette();
         }
@@ -555,17 +529,15 @@
             timerInterval = setInterval(() => {
                 timeRemainingSeconds--;
                 updateTimerDisplay();
-                saveProgressToLocal(); // Sync timer state
+                saveProgressToLocal(); 
 
-                // Warning state at 5 mins
                 if (timeRemainingSeconds === 300) {
                     document.getElementById('timerBox').classList.add('warning');
                 }
 
-                // Auto submit at 0
                 if (timeRemainingSeconds <= 0) {
                     clearInterval(timerInterval);
-                    submitExam(true); // true = auto submit
+                    submitExam(true); 
                 }
             }, 1000);
         }
@@ -592,7 +564,7 @@
             document.getElementById('confirmSubmitBtn').disabled = true;
             document.getElementById('confirmSubmitBtn').textContent = "Submitting...";
 
-            // 1. Calculate Score
+            // 1. Background Marking Logic
             let correct = 0;
             questions.forEach(q => {
                 if (answers[q.id] === q.correctAnswer) correct++;
@@ -613,10 +585,11 @@
                 totalQuestions: questions.length,
                 percentage: percentage,
                 status: isAutoSubmit ? 'auto_submitted' : 'submitted',
+                isPublished: false, // <-- CRUCIAL: Requires admin approval to be visible
                 submittedAt: new Date().toISOString()
             };
 
-            // 3. Try to sync to Firebase
+            // 3. Silent Sync
             let syncSuccess = false;
             if (navigator.onLine) {
                 try {
@@ -627,30 +600,23 @@
                 }
             }
 
-            // 4. Handle Offline Fallback
+            // 4. Handle Offline Fallback (Silent Queue)
             if (!syncSuccess) {
-                // Save to a local queue for later syncing
-                let offlineQueue = JSON.parse(localStorage.getItem('offline_attempts') || '[]');
-                offlineQueue.push(attemptData);
-                localStorage.setItem('offline_attempts', JSON.stringify(offlineQueue));
+                let pendingQueue = JSON.parse(localStorage.getItem('pending_cbt_sync') || '[]');
+                pendingQueue.push(attemptData);
+                localStorage.setItem('pending_cbt_sync', JSON.stringify(pendingQueue));
             }
 
-            // 5. Clean up session
+            // 5. Clean up active session
             localStorage.removeItem(getSessionKey(currentUser.uid));
 
-            // 6. Show Results Screen
+            // 6. Show Generic Results Screen (No Score Shown)
             closeModal('submitModal');
             document.getElementById('resultScreen').style.display = 'flex';
-            
-            if (examData.showResults || syncSuccess || !syncSuccess) {
-                // Note: We show score locally regardless of examData.showResults for instant gratification, 
-                // but in a strict system, you hide the score and just say "Submitted".
-                document.getElementById('finalScoreDisplay').textContent = `${percentage}%`;
-            }
 
             if (!syncSuccess) {
                 const p = document.getElementById('syncStatusText');
-                p.innerHTML = `<span class="offline-badge"><i class="fas fa-wifi"></i> Saved Offline</span><br>Your answers are saved on this device. Please tell the invigilator.`;
+                p.innerHTML = `<span class="offline-badge"><i class="fas fa-cloud-upload-alt"></i> Pending Sync</span><br>Your answers are 100% safe. They will automatically upload when your internet returns.`;
             }
         };
 
@@ -667,7 +633,6 @@
                 e.returnValue = '';
             }
         });
-
     </script>
 </body>
 </html>
