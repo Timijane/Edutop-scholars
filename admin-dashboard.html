@@ -153,6 +153,35 @@
         /* Loading Skeleton */
         .loading-text { color: var(--text-muted); font-size: 12px; font-style: italic; }
 
+        /* ============ MODALS ============ */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); z-index: 100; align-items: center; justify-content: center; padding: 20px; }
+        .modal.active { display: flex; }
+        .modal-content {
+            background: var(--bg-card); padding: 32px; border-radius: 20px;
+            max-width: 480px; width: 100%; position: relative;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            animation: modalIn 0.3s ease;
+        }
+        @keyframes modalIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        .modal-close { position: absolute; top: 20px; right: 24px; font-size: 24px; color: var(--text-muted); cursor: pointer; background: none; border: none; }
+        .modal-content h3 { font-family: 'Outfit', sans-serif; font-size: 20px; font-weight: 700; margin-bottom: 24px; color: var(--primary-deep); }
+
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 8px; }
+        .form-control {
+            width: 100%; padding: 12px 16px; font-size: 14px; border: 1px solid var(--border);
+            border-radius: 10px; outline: none; font-family: 'Inter', sans-serif;
+        }
+        .form-control:focus { border-color: var(--primary-teal); box-shadow: 0 0 0 3px rgba(82, 183, 136, 0.1); }
+
+        .btn {
+            width: 100%; padding: 14px; background: var(--primary-deep); color: #ffffff;
+            border: none; border-radius: 10px; font-size: 14px; font-weight: 600;
+            cursor: pointer; margin-top: 10px; transition: 0.2s;
+        }
+        .btn:hover { background: #1b4332; }
+        .btn:disabled { background: #cbd5e1; cursor: not-allowed; }
+
         @media (max-width: 1200px) {
             .kpi-grid { grid-template-columns: repeat(2, 1fr); }
             .dashboard-grid { grid-template-columns: 1fr; }
@@ -200,6 +229,7 @@
             <a href="admin-results.html" class="nav-item">
                 <i class="fas fa-chart-bar"></i> <span>Results & Publish</span>
             </a>
+            <!-- STAFF MANAGEMENT LINK -->
             <a href="#" class="nav-item" id="nav-staff" style="display:none;">
                 <i class="fas fa-user-shield"></i> <span>Staff Management</span>
             </a>
@@ -268,10 +298,7 @@
 
         <!-- CHARTS & ACTIVITY GRID -->
         <section class="dashboard-grid">
-            
-            <!-- LEFT COLUMN -->
             <div class="left-col">
-                <!-- Bar Chart -->
                 <div class="card" style="flex: 1;">
                     <div class="card-header">
                         <span class="card-title">Top Submissions by Course</span>
@@ -281,7 +308,6 @@
                     </div>
                 </div>
 
-                <!-- Recent Activity -->
                 <div class="card">
                     <div class="card-header">
                         <span class="card-title">Recent Exam Submissions</span>
@@ -292,9 +318,7 @@
                 </div>
             </div>
 
-            <!-- RIGHT COLUMN -->
             <div class="right-col">
-                <!-- Upcoming -->
                 <div class="card">
                     <div class="card-header" style="margin-bottom: 12px;">
                         <span class="card-title">Upcoming Exams</span>
@@ -304,7 +328,6 @@
                     </div>
                 </div>
 
-                <!-- Offline Sync Card -->
                 <div class="promo-card">
                     <div class="promo-icon"><i class="fas fa-cloud-upload-alt"></i></div>
                     <h3>Results Center</h3>
@@ -312,15 +335,44 @@
                     <a href="admin-results.html" class="promo-btn">Go to Results</a>
                 </div>
             </div>
-
         </section>
     </main>
 
+    <!-- ================= STAFF MANAGEMENT MODAL ================= -->
+    <div class="modal" id="staffModal">
+        <div class="modal-content">
+            <button class="modal-close" id="closeStaffModal">&times;</button>
+            <h3>Add New Staff Member</h3>
+            
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="staffName" class="form-control" placeholder="e.g. Wale Oke">
+            </div>
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" id="staffEmail" class="form-control" placeholder="e.g. wale@gmail.com">
+            </div>
+            <div class="form-group">
+                <label>Role</label>
+                <select id="staffRole" class="form-control">
+                    <option value="admin">Admin (Max 3)</option>
+                    <option value="super_admin">Super Admin (Max 2)</option>
+                    <option value="question_manager">Question Manager (Unlimited)</option>
+                </select>
+            </div>
+            
+            <button class="btn" id="saveStaffBtn">Create Staff Account</button>
+            <p style="text-align: center; font-size: 11px; color: var(--text-muted); margin-top: 16px;">
+                Default password will be their First Name + 2026 (e.g. Wale2026).
+            </p>
+        </div>
+    </div>
+
     <!-- JAVASCRIPT LOGIC -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc, collection, query, where, getDocs, orderBy, limit } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+        import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, collection, query, where, getDocs, addDoc, setDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCVjXxUulSpTkxZrxpkKJrKC939PvIMKmI",
@@ -336,6 +388,9 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
+        let currentUserRole = null;
+        let currentUserEmail = null;
+
         // Helper to escape text
         function escapeHTML(str) {
             if(!str) return "";
@@ -349,7 +404,8 @@
                 return;
             }
 
-            // Check staff collection for role
+            currentUserEmail = user.email;
+
             const staffRef = collection(db, "staff");
             const q = query(staffRef, where("email", "==", user.email.toLowerCase()));
             const snap = await getDocs(q);
@@ -361,28 +417,25 @@
             }
 
             const staffData = snap.docs[0].data();
-            const role = staffData.role;
+            currentUserRole = staffData.role;
             
-            // Update Welcome Message
-            document.getElementById('welcome-msg').textContent = `Welcome back, ${staffData.name || 'Staff'} (${role.replace('_', ' ').toUpperCase()})`;
+            document.getElementById('welcome-msg').textContent = `Welcome back, ${staffData.name || 'Staff'} (${currentUserRole.replace('_', ' ').toUpperCase()})`;
 
-            // Apply RBAC (Role-Based Access Control)
-            if (role === 'super_admin') {
+            if (currentUserRole === 'super_admin') {
                 document.getElementById('nav-staff').style.display = 'flex';
-            } else if (role === 'admin') {
+            } else if (currentUserRole === 'admin') {
                 document.getElementById('nav-staff').style.display = 'none';
-            } else if (role === 'question_manager') {
+            } else if (currentUserRole === 'question_manager') {
                 document.getElementById('nav-students').style.display = 'none';
                 document.getElementById('nav-staff').style.display = 'none';
             }
 
-            // Load Live Data
             loadDashboardData();
         });
 
+        // --- DASHBOARD DATA ---
         async function loadDashboardData() {
             try {
-                // --- Fetch Data in Parallel ---
                 const [usersSnap, examsSnap, questionsSnap, attemptsSnap] = await Promise.all([
                     getDocs(collection(db, "users")),
                     getDocs(collection(db, "exams")),
@@ -390,7 +443,6 @@
                     getDocs(collection(db, "attempts"))
                 ]);
 
-                // 1. Update KPIs
                 document.getElementById('kpi-students').textContent = usersSnap.size;
                 document.getElementById('kpi-questions').textContent = questionsSnap.size;
 
@@ -412,13 +464,8 @@
                 });
                 document.getElementById('kpi-pending').textContent = pendingResults;
 
-                // 2. Render Bar Chart (Top 5 Courses by Submissions)
                 renderChart(allAttempts);
-
-                // 3. Render Recent Activity (Latest 3 submissions)
                 renderRecentActivity(allAttempts, allExams);
-
-                // 4. Render Upcoming Exams (Next 2 that haven't started)
                 renderUpcomingExams(allExams);
 
             } catch (error) {
@@ -433,26 +480,19 @@
                 return;
             }
 
-            // Group by Course ID
             const courseCounts = {};
             attempts.forEach(a => {
                 const cid = a.courseId || 'Unknown';
                 courseCounts[cid] = (courseCounts[cid] || 0) + 1;
             });
 
-            // Sort by highest count and take top 5
-            const sortedCourses = Object.entries(courseCounts)
-                .sort((a, b) => b[1] - a[1])
-                .slice(0, 5);
-
-            const maxCount = sortedCourses[0][1]; // Highest count for scaling height
+            const sortedCourses = Object.entries(courseCounts).sort((a, b) => b[1] - a[1]).slice(0, 5);
+            const maxCount = sortedCourses[0][1];
 
             let html = '';
             sortedCourses.forEach(([course, count], index) => {
                 const heightPct = (count / maxCount) * 100;
-                // Highlight the top course
                 const barClass = index === 0 ? 'bar highlight' : 'bar';
-                
                 html += `
                     <div class="bar-col">
                         <div class="${barClass}" style="height: ${heightPct}%;"></div>
@@ -470,26 +510,21 @@
                 return;
             }
 
-            // Sort attempts by submittedAt descending
             attempts.sort((a, b) => new Date(b.submittedAt) - new Date(a.submittedAt));
             const recent = attempts.slice(0, 3);
 
             let html = '';
             recent.forEach(a => {
-                // Find exam title
                 const exam = exams.find(e => e.id === a.examId) || {};
                 const examTitle = exam.title || a.examTitle || 'Exam';
                 
-                // Calculate how long ago
                 const date = new Date(a.submittedAt);
                 const diffMins = Math.floor((new Date() - date) / 60000);
                 let timeAgo = `${diffMins}m ago`;
                 if (diffMins > 60) timeAgo = `${Math.floor(diffMins/60)}h ago`;
                 if (diffMins > 1440) timeAgo = `${Math.floor(diffMins/1440)}d ago`;
 
-                const statusBadge = a.isPublished 
-                    ? '<span class="badge success">Published</span>' 
-                    : '<span class="badge warning">Pending</span>';
+                const statusBadge = a.isPublished ? '<span class="badge success">Published</span>' : '<span class="badge warning">Pending</span>';
 
                 html += `
                     <div class="activity-item">
@@ -514,7 +549,6 @@
             const container = document.getElementById('upcoming-list');
             const now = new Date().getTime();
 
-            // Filter exams that are scheduled to start in the future
             const upcoming = exams
                 .filter(e => e.startTime && new Date(e.startTime).getTime() > now && e.isPublished)
                 .sort((a, b) => new Date(a.startTime) - new Date(b.startTime))
@@ -529,7 +563,6 @@
             upcoming.forEach(e => {
                 const date = new Date(e.startTime);
                 const dateStr = date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) + ' at ' + date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
-                
                 html += `
                     <div class="upcoming-item">
                         <h4>${escapeHTML(e.courseId)} - ${escapeHTML(e.title)}</h4>
@@ -539,6 +572,91 @@
             });
             container.innerHTML = html;
         }
+
+        // --- STAFF MANAGEMENT LOGIC ---
+        const staffModal = document.getElementById('staffModal');
+        const closeStaffModal = document.getElementById('closeStaffModal');
+        const saveStaffBtn = document.getElementById('saveStaffBtn');
+
+        // 1. Open Modal
+        document.getElementById('nav-staff').addEventListener('click', (e) => {
+            e.preventDefault();
+            staffModal.classList.add('active');
+        });
+
+        // 2. Close Modal
+        closeStaffModal.addEventListener('click', () => {
+            staffModal.classList.remove('active');
+        });
+
+        // 3. Create Staff
+        saveStaffBtn.addEventListener('click', async () => {
+            const name = document.getElementById('staffName').value.trim();
+            const email = document.getElementById('staffEmail').value.trim().toLowerCase();
+            const role = document.getElementById('staffRole').value;
+
+            if (!name || !email) { alert("Please fill in all fields."); return; }
+
+            saveStaffBtn.disabled = true;
+            saveStaffBtn.textContent = "Checking limits...";
+
+            try {
+                // Limit Checks
+                const staffRef = collection(db, "staff");
+                const qRole = query(staffRef, where("role", "==", role));
+                const roleSnap = await getDocs(qRole);
+
+                if (role === 'super_admin' && roleSnap.size >= 2) {
+                    alert("Limit Reached: You can only have a maximum of 2 Super Admins.");
+                    saveStaffBtn.disabled = false;
+                    saveStaffBtn.textContent = "Create Staff Account";
+                    return;
+                }
+                if (role === 'admin' && roleSnap.size >= 3) {
+                    alert("Limit Reached: You can only have a maximum of 3 Admins.");
+                    saveStaffBtn.disabled = false;
+                    saveStaffBtn.textContent = "Create Staff Account";
+                    return;
+                }
+
+                saveStaffBtn.textContent = "Creating account...";
+
+                // Secondary App (prevents admin logout)
+                const secondaryApp = initializeApp(firebaseConfig, "SecondaryApp_" + Date.now());
+                const secondaryAuth = getAuth(secondaryApp);
+                
+                // Default password: FirstName + 2026
+                let firstName = name.split(' ')[0];
+                let defaultPassword = firstName.length >= 6 ? firstName : firstName + "2026";
+
+                const userCredential = await createUserWithEmailAndPassword(secondaryAuth, email, defaultPassword);
+                
+                // Save to Firestore
+                await setDoc(doc(db, "staff", userCredential.user.uid), {
+                    email: email,
+                    name: name,
+                    role: role,
+                    currentPassword: defaultPassword,
+                    createdAt: new Date().toISOString(),
+                    addedBy: currentUserEmail
+                });
+
+                await secondaryAuth.signOut();
+                await deleteApp(secondaryApp);
+
+                alert(`Success! Created ${role} account for ${name}.\nEmail: ${email}\nDefault Password: ${defaultPassword}`);
+                staffModal.classList.remove('active');
+                document.getElementById('staffName').value = '';
+                document.getElementById('staffEmail').value = '';
+
+            } catch (error) {
+                console.error("Error adding staff:", error);
+                alert("Failed to add staff: " + error.message);
+            } finally {
+                saveStaffBtn.disabled = false;
+                saveStaffBtn.textContent = "Create Staff Account";
+            }
+        });
     </script>
 </body>
 </html>
