@@ -34,13 +34,12 @@
             background-color: var(--bg-page);
             color: var(--text-main);
             -webkit-font-smoothing: antialiased;
-            overflow: hidden; /* Prevent scrolling, force fit */
+            overflow: hidden;
         }
 
-        /* ============ FORCED SPLIT SCREEN LAYOUT ============ */
         .layout {
             display: flex;
-            flex-direction: row; /* Force side-by-side */
+            flex-direction: row;
             width: 100vw;
             height: 100vh;
             overflow: hidden;
@@ -55,7 +54,7 @@
             padding: 40px;
             position: relative;
             z-index: 20;
-            background: var(--bg-page); /* Blend with background */
+            background: var(--bg-page);
         }
 
         .form-card {
@@ -125,18 +124,23 @@
             position: relative;
         }
 
-        .input-wrap i {
+        /* Left Icon (Lock / ID Card) */
+        .input-wrap .left-icon {
             position: absolute;
             left: 18px;
             top: 50%;
             transform: translateY(-50%);
             color: var(--text-muted);
             font-size: 15px;
+            z-index: 2;
+            pointer-events: none;
         }
 
+        /* Input Field */
         .form-control {
             width: 100%;
-            padding: 15px 16px 15px 48px;
+            /* Increased right padding to 48px to prevent text overlapping the eye icon */
+            padding: 15px 48px 15px 48px; 
             font-size: 14.5px;
             font-family: 'Inter', sans-serif;
             color: var(--text-main);
@@ -160,6 +164,7 @@
             box-shadow: 0 0 0 4px rgba(82, 183, 136, 0.15);
         }
 
+        /* Right Icon (Eye) */
         .password-toggle {
             position: absolute;
             right: 18px;
@@ -167,7 +172,8 @@
             transform: translateY(-50%);
             color: var(--text-muted);
             cursor: pointer;
-            font-size: 14px;
+            font-size: 16px;
+            z-index: 10; /* Ensures it sits above the input text */
             transition: color 0.2s;
         }
 
@@ -280,7 +286,7 @@
             perspective: 1400px;
             overflow: hidden;
             background: var(--bg-page);
-            border-left: 1px solid var(--border); /* Subtle separation */
+            border-left: 1px solid var(--border);
         }
 
         .scene {
@@ -298,7 +304,6 @@
             height: 260px;
             position: relative;
             transform-style: preserve-3d;
-            /* Spin duration reduced to 7s */
             animation: spin 7s infinite linear; 
         }
 
@@ -486,7 +491,7 @@
             vertical-align: middle;
         }
 
-        /* ============ FORCED MOBILE SCALING (NO STACKING) ============ */
+        /* ============ FORCED MOBILE SCALING ============ */
         @media (max-width: 992px) {
             .form-side { padding: 24px; }
             .carousel { transform: scale(0.75); }
@@ -504,9 +509,9 @@
             .welcome p { font-size: 12px; }
             .form-group { margin-bottom: 14px; }
             .form-group label { font-size: 11px; margin-bottom: 4px; }
-            .form-control { padding: 10px 12px 10px 36px; font-size: 12px; border-radius: 8px; }
-            .input-wrap i { left: 12px; font-size: 12px; }
-            .password-toggle { right: 12px; font-size: 12px; }
+            .form-control { padding: 10px 40px 10px 36px; font-size: 12px; border-radius: 8px; }
+            .input-wrap .left-icon { left: 12px; font-size: 12px; }
+            .password-toggle { right: 12px; font-size: 14px; }
             .form-options { flex-direction: column; align-items: flex-start; gap: 8px; margin-bottom: 16px; font-size: 11px; }
             .btn { padding: 12px; font-size: 13px; border-radius: 8px; }
             .info-note { padding: 10px; margin-top: 16px; border-radius: 8px; }
@@ -548,19 +553,21 @@
 
                 <form id="login-form">
                     <div class="form-group">
-                        <label for="login-matric">Matric / Reg No. or Admin Email</label>
+                        <!-- NO MENTION OF ADMIN -->
+                        <label for="login-matric">Matric / Reg No.</label>
                         <div class="input-wrap">
-                            <i class="fas fa-id-card"></i>
-                            <input type="text" id="login-matric" class="form-control" placeholder="e.g. CSC/2023/001 or admin@email.com" required autocomplete="username">
+                            <i class="fas fa-id-card left-icon"></i>
+                            <input type="text" id="login-matric" class="form-control" placeholder="e.g. CSC/2023/001" required autocomplete="username">
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label for="login-password">Password</label>
                         <div class="input-wrap">
-                            <i class="fas fa-lock"></i>
+                            <i class="fas fa-lock left-icon"></i>
                             <input type="password" id="login-password" class="form-control" placeholder="Password" required autocomplete="current-password">
-                            <i class="fas fa-eye password-toggle" onclick="togglePassword('login-password', this)"></i>
+                            <!-- Eye Icon moved to right and separated -->
+                            <i class="fas fa-eye password-toggle" id="togglePassBtn"></i>
                         </div>
                     </div>
 
@@ -577,7 +584,7 @@
 
                 <div class="info-note">
                     <i class="fas fa-info-circle"></i>
-                    <p>Accounts are created by the admin. Contact ICT if you cannot log in.</p>
+                    <p>Accounts are created by the school. Contact ICT if you cannot log in.</p>
                 </div>
 
                 <div class="copyright">
@@ -620,7 +627,7 @@
             <p>Enter your matric number to receive a reset link.</p>
             <div class="form-group">
                 <div class="input-wrap">
-                    <i class="fas fa-id-card"></i>
+                    <i class="fas fa-id-card left-icon"></i>
                     <input type="text" id="reset-matric" class="form-control" placeholder="Matric Number">
                 </div>
             </div>
@@ -647,51 +654,47 @@
         let ruleIndex = 0;
 
         function runAnimationCycle() {
-            // 1. The carousel spins for exactly 7 seconds
             setTimeout(() => {
-                carousel.classList.add('paused'); // Stop rotation
-                
+                carousel.classList.add('paused');
                 const rule = rules[ruleIndex];
                 overlay.style.backgroundImage = `url('${rule.img}')`;
                 popoutBadge.textContent = rule.badge;
                 popoutTitle.textContent = rule.title;
                 popoutText.textContent = rule.text;
-                
-                // Trigger the scale up and fade in
                 overlay.classList.add('active');
 
-                // 2. Keep the popout visible for 4 seconds
                 setTimeout(() => {
                     overlay.classList.remove('active');
-                    
-                    // 3. Wait 0.6s for fade out, then restart the spin
                     setTimeout(() => {
                         carousel.classList.remove('paused');
                         ruleIndex = (ruleIndex + 1) % rules.length;
                         runAnimationCycle(); 
                     }, 600);
-
                 }, 4000);
-            }, 7000); // Wait 7 seconds for the spin
+            }, 7000);
         }
-
-        // Start the cycle
         runAnimationCycle();
 
-        // --- UI LOGIC ---
-        window.togglePassword = function(inputId, icon) {
-            const input = document.getElementById(inputId);
-            if (input.type === "password") {
-                input.type = "text";
-                icon.classList.remove("fa-eye");
-                icon.classList.add("fa-eye-slash");
-            } else {
-                input.type = "password";
-                icon.classList.remove("fa-eye-slash");
-                icon.classList.add("fa-eye");
-            }
-        };
+        // --- FIXED PASSWORD TOGGLE LOGIC ---
+        const togglePassBtn = document.getElementById('togglePassBtn');
+        const passwordInput = document.getElementById('login-password');
 
+        togglePassBtn.addEventListener('click', function(e) {
+            e.preventDefault(); // Prevents form submission
+            e.stopPropagation(); // Prevents clicking the input box
+            
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                this.classList.remove("fa-eye");
+                this.classList.add("fa-eye-slash");
+            } else {
+                passwordInput.type = "password";
+                this.classList.remove("fa-eye-slash");
+                this.classList.add("fa-eye");
+            }
+        });
+
+        // --- MODAL LOGIC ---
         const modal = document.getElementById('forgot-password-modal');
         document.getElementById('forgot-password-link').addEventListener('click', (e) => {
             e.preventDefault();
@@ -719,16 +722,16 @@
         } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
         import { getFirestore, doc, getDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyCVjXxUulSpTkxZrxpkKJrKC939PvIMKmI",
-  authDomain: "aaronices.firebaseapp.com",
-  projectId: "aaronices",
-  storageBucket: "aaronices.firebasestorage.app",
-  messagingSenderId: "355917763913",
-  appId: "1:355917763913:web:c88ecd1f3f131325423698",
-  measurementId: "G-7B79V1VSES"
-};
+        const firebaseConfig = {
+            apiKey: "AIzaSyCVjXxUulSpTkxZrxpkKJrKC939PvIMKmI",
+            authDomain: "aaronices.firebaseapp.com",
+            projectId: "aaronices",
+            storageBucket: "aaronices.firebasestorage.app",
+            messagingSenderId: "355917763913",
+            appId: "1:355917763913:web:c88ecd1f3f131325423698",
+            measurementId: "G-7B79V1VSES"
+        };
+
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
@@ -791,7 +794,7 @@ const firebaseConfig = {
             try {
                 let loginEmail = '';
 
-                // Check if input is email (Staff) or Matric No (Student)
+                // Silently check if input is email (Staff) or Matric No (Student)
                 if (loginInput.includes('@')) {
                     loginEmail = loginInput.toLowerCase();
                 } else {
@@ -800,6 +803,7 @@ const firebaseConfig = {
                     loginEmail = student.email;
                 }
 
+                // Remember Me Logic
                 const mode = rememberMe ? browserLocalPersistence : browserSessionPersistence;
                 await setPersistence(auth, mode);
                 const userCredential = await signInWithEmailAndPassword(auth, loginEmail, password);
@@ -844,7 +848,7 @@ const firebaseConfig = {
             const input = resetMatric.value.trim();
             
             if (!input) {
-                modalMessage.textContent = "Please enter your matric number or email.";
+                modalMessage.textContent = "Please enter your matric number.";
                 modalMessage.className = "modal-message error";
                 return;
             }
