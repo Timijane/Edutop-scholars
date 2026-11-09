@@ -140,7 +140,6 @@
         /* Input Field */
         .form-control {
             width: 100%;
-            /* 48px padding on left and right ensures text never overlaps icons */
             padding: 15px 48px 15px 48px; 
             font-size: 14.5px;
             font-family: 'Inter', sans-serif;
@@ -165,7 +164,7 @@
             box-shadow: 0 0 0 4px rgba(82, 183, 136, 0.15);
         }
 
-        /* Right Icon (Eye Button) - Bulletproof implementation */
+        /* Right Icon (Eye Button) */
         .password-toggle-btn {
             position: absolute;
             right: 10px;
@@ -560,7 +559,6 @@
 
                 <form id="login-form">
                     <div class="form-group">
-                        <!-- NO ADMIN MENTION -->
                         <label for="login-matric">Matric / Reg No.</label>
                         <div class="input-wrap">
                             <i class="fas fa-id-card left-icon"></i>
@@ -690,8 +688,8 @@
         const eyeIcon = togglePassBtn.querySelector('i');
 
         togglePassBtn.addEventListener('click', function(e) {
-            e.preventDefault(); // Prevents form submission
-            e.stopPropagation(); // Prevents clicking the input box
+            e.preventDefault(); 
+            e.stopPropagation(); 
             
             if (passwordInput.type === "password") {
                 passwordInput.type = "text";
@@ -825,7 +823,13 @@
                         window.location.href = 'admin-dashboard.html'; 
                     }
                 } else {
-                    window.location.href = 'dashboard.html';
+                    // Verify student profile exists before redirecting
+                    const userDoc = await getDoc(doc(db, "users", userCredential.user.uid));
+                    if (userDoc.exists()) {
+                        window.location.href = 'dashboard.html';
+                    } else {
+                        throw { message: "Student profile not found. Contact exam administrator." };
+                    }
                 }
 
             } catch (error) {
@@ -834,10 +838,18 @@
                 
                 if (error.code === 'app/matric-not-found') {
                     message = "Matric number not found. Contact the exam administrator.";
-                } else if (error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found' || error.code === 'auth/invalid-email') {
-                    message = "Invalid login details.";
+                } else if (
+                    error.code === 'auth/wrong-password' || 
+                    error.code === 'auth/user-not-found' || 
+                    error.code === 'auth/invalid-email' ||
+                    error.code === 'auth/invalid-credential'
+                ) {
+                    // HINT REMOVED FOR SECURITY
+                    message = "Incorrect Matric/Email or Password.";
                 } else if (error.code === 'auth/too-many-requests') {
                     message = "Too many attempts. Please try again later.";
+                } else if (error.message) {
+                    message = error.message;
                 }
                 
                 alert(message);
