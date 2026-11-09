@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create First Super Admin</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 40px; background: #f0fdf4; }
+        .box { background: white; padding: 30px; border-radius: 12px; max-width: 400px; margin: 0 auto; box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
+        h2 { color: #166534; margin-top: 0; }
+        p { font-size: 13px; color: #666; margin-bottom: 20px; }
+        input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 14px; }
+        button { width: 100%; padding: 14px; background: #16a34a; color: white; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        button:hover { background: #15803d; }
+        #status { margin-top: 20px; font-weight: bold; font-size: 14px; text-align: center; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2>Create Super Admin</h2>
+        <p>This will create your account in Firebase Auth AND save your role in Firestore.</p>
+        
+        <input type="text" id="name" placeholder="Full Name (e.g. Master Timi)">
+        <input type="email" id="email" placeholder="Email Address">
+        <input type="password" id="password" placeholder="Password (min 6 characters)">
+        
+        <button id="btn" onclick="createAdmin()">Create Admin Account</button>
+        <div id="status"></div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+        import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+        // YOUR NEW FIREBASE CONFIG
+        const firebaseConfig = {
+            apiKey: "AIzaSyCVjXxUulSpTkxZrxpkKJrKC939PvIMKmI",
+            authDomain: "aaronices.firebaseapp.com",
+            projectId: "aaronices",
+            storageBucket: "aaronices.firebasestorage.app",
+            messagingSenderId: "355917763913",
+            appId: "1:355917763913:web:c88ecd1f3f131325423698",
+            measurementId: "G-7B79V1VSES"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        window.createAdmin = async function() {
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const status = document.getElementById('status');
+            const btn = document.getElementById('btn');
+
+            if(!name || !email || !password) {
+                status.innerHTML = "❌ Please fill all fields.";
+                status.style.color = "red";
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerText = "Creating...";
+            status.innerHTML = "Creating account...";
+            status.style.color = "blue";
+
+            try {
+                // 1. Create the user in Firebase Auth
+                const userCred = await createUserWithEmailAndPassword(auth, email, password);
+                
+                // 2. Save to Firestore 'staff' collection with Super Admin role
+                await setDoc(doc(db, "staff", userCred.user.uid), {
+                    email: email.toLowerCase(),
+                    name: name,
+                    role: "super_admin",
+                    createdAt: new Date().toISOString()
+                });
+
+                status.innerHTML = "✅ Success! You can now close this page and log in via index.html.";
+                status.style.color = "green";
+                btn.innerText = "Done!";
+                
+            } catch (error) {
+                console.error(error);
+                status.innerHTML = "❌ Error: " + error.message;
+                status.style.color = "red";
+                btn.disabled = false;
+                btn.innerText = "Create Admin Account";
+            }
+        }
+    </script>
+</body>
+</html>￼Enter
