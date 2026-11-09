@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Management · Aaronice Prime Edu</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-page: #dcece7;          
+            --bg-card: #ffffff;          
+            --primary-deep: #2d6a4f;     
+            --primary-teal: #52b788;     
+            --primary-light: #e3f0ec;    
+            --text-main: #0f172a;        
+            --text-muted: #64748b;       
+            --border: #e2e8f0;
+            --sidebar-grad: linear-gradient(180deg, #2d6a4f 0%, #40916c 100%);
+            --sidebar-active: rgba(255, 255, 255, 0.15);
+            --danger: #ef4444;
+            --warning: #f59e0b;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            width: 100%; min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            -webkit-font-smoothing: antialiased;
+            display: flex; padding: 16px; gap: 16px;
+            overflow-x: hidden;
+        }
+
+        /* ============ SIDEBAR ============ */
+        .sidebar {
+            width: 250px; background: var(--sidebar-grad);
+            border-radius: 24px; display: flex; flex-direction: column;
+            padding: 24px 16px; color: #ffffff; flex-shrink: 0;
+            box-shadow: 0 10px 30px rgba(45, 106, 79, 0.15);
+            height: calc(100vh - 32px); position: sticky; top: 16px;
+        }
+        .sidebar-brand { display: flex; align-items: center; gap: 12px; padding: 0 12px; margin-bottom: 40px; }
+        .sidebar-brand .icon {
+            width: 32px; height: 32px; background: #ffffff; color: var(--primary-deep);
+            border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px;
+        }
+        .sidebar-brand h1 { font-family: 'Outfit', sans-serif; font-size: 18px; font-weight: 700; letter-spacing: -0.5px; }
+        .nav-menu { display: flex; flex-direction: column; gap: 8px; flex: 1; }
+        .nav-item {
+            display: flex; align-items: center; gap: 14px; padding: 14px 16px;
+            border-radius: 12px; color: rgba(255, 255, 255, 0.7); text-decoration: none;
+            font-size: 14px; font-weight: 500; transition: all 0.2s; cursor: pointer;
+        }
+        .nav-item i { font-size: 18px; width: 20px; text-align: center; }
+        .nav-item:hover, .nav-item.active { background: var(--sidebar-active); color: #ffffff; }
+        .nav-bottom { margin-top: auto; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 16px; }
+
+        /* ============ MAIN CONTENT ============ */
+        .main-content { flex: 1; display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+        
+        .topbar {
+            display: flex; justify-content: space-between; align-items: center;
+            background: var(--bg-card); padding: 16px 24px; border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+        }
+        .topbar-left h2 { font-family: 'Outfit', sans-serif; font-size: 22px; font-weight: 700; color: var(--primary-deep); }
+
+        .card {
+            background: var(--bg-card); border-radius: 20px; padding: 24px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+        }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 16px; }
+        .card-title { font-family: 'Outfit', sans-serif; font-size: 18px; font-weight: 700; }
+
+        .btn {
+            padding: 10px 20px; border-radius: 8px; border: none;
+            font-size: 13px; font-weight: 600; cursor: pointer;
+            transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px;
+        }
+        .btn-primary { background: var(--primary-deep); color: #ffffff; }
+        .btn-primary:hover { background: #1b4332; }
+        .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-main); }
+        .btn-outline:hover { background: #f8fafc; }
+        .btn-danger { background: #fee2e2; color: #dc2626; }
+        .btn-danger:hover { background: #fca5a5; }
+
+        /* ============ DATA TABLE ============ */
+        .table-responsive { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th {
+            text-align: left; padding: 16px; font-size: 12px; font-weight: 600;
+            color: var(--text-muted); text-transform: uppercase; border-bottom: 1px solid var(--border);
+        }
+        td { padding: 16px; font-size: 14px; border-bottom: 1px solid var(--border); color: var(--text-main); vertical-align: middle; }
+        tr:hover td { background: #f8fafc; }
+
+        .badge { padding: 4px 10px; border-radius: 100px; font-size: 11px; font-weight: 600; }
+        .badge-green { background: #d1fae5; color: #065f46; }
+        .badge-gray { background: #f1f5f9; color: #475569; }
+        .badge-red { background: #fee2e2; color: #991b1b; }
+        .badge-warning { background: #fef3c7; color: #92400e; }
+
+        .action-btns { display: flex; gap: 8px; }
+        .icon-btn {
+            width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--border);
+            background: #f8fafc; color: var(--text-muted); cursor: pointer;
+            display: flex; align-items: center; justify-content: center; transition: all 0.2s;
+        }
+        .icon-btn:hover { background: var(--primary-light); color: var(--primary-deep); border-color: var(--primary-teal); }
+        .icon-btn.delete:hover { background: #fee2e2; color: #dc2626; border-color: #fca5a5; }
+
+        /* ============ MODAL ============ */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); z-index: 100; align-items: center; justify-content: center; padding: 20px; }
+        .modal.active { display: flex; }
+        .modal-content {
+            background: var(--bg-card); padding: 32px; border-radius: 20px;
+            max-width: 650px; width: 100%; position: relative;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            animation: modalIn 0.3s ease; max-height: 90vh; overflow-y: auto;
+        }
+        @keyframes modalIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        .modal-close { position: absolute; top: 20px; right: 24px; font-size: 24px; color: var(--text-muted); cursor: pointer; background: none; border: none; }
+        .modal-content h3 { font-family: 'Outfit', sans-serif; font-size: 20px; font-weight: 700; margin-bottom: 24px; color: var(--primary-deep); }
+
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+        .form-control {
+            width: 100%; padding: 12px 16px; font-size: 14px; border: 1px solid var(--border);
+            border-radius: 10px; outline: none; font-family: 'Inter', sans-serif;
+        }
+        .form-control:focus { border-color: var(--primary-teal); box-shadow: 0 0 0 3px rgba(82,183,136,0.1); }
+        
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+        /* Toggle Switch */
+        .toggle-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); }
+        .toggle-row:last-child { border-bottom: none; }
+        .toggle-label { font-size: 14px; font-weight: 500; }
+        .toggle-desc { font-size: 12px; color: var(--text-muted); }
+        .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #cbd5e1; transition: .4s; border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px;
+            background-color: white; transition: .4s; border-radius: 50%;
+        }
+        input:checked + .slider { background-color: var(--primary-teal); }
+        input:checked + .slider:before { transform: translateX(20px); }
+
+        .loading-overlay {
+            display: none; position: absolute; inset: 0; background: rgba(255,255,255,0.8);
+            z-index: 10; align-items: center; justify-content: center; flex-direction: column; gap: 12px;
+            border-radius: 20px; font-weight: 600; color: var(--primary-deep);
+        }
+        .loading-overlay.active { display: flex; }
+        .spinner { width: 40px; height: 40px; border: 4px solid var(--border); border-top-color: var(--primary-deep); border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        @media (max-width: 992px) {
+            body { flex-direction: column; padding: 10px; }
+            .sidebar { width: 100%; height: auto; position: relative; top: 0; flex-direction: row; align-items: center; justify-content: space-between; padding: 12px 20px; }
+            .sidebar-brand { margin-bottom: 0; }
+            .nav-menu { flex-direction: row; gap: 4px; overflow-x: auto; width: auto; flex: none; }
+            .nav-item { padding: 10px; }
+            .nav-item span { display: none; }
+            .nav-bottom { display: none; }
+            .form-row { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <div class="icon"><i class="fas fa-graduation-cap"></i></div>
+            <h1>Admin Panel</h1>
+        </div>
+        <nav class="nav-menu">
+            <a href="admin-dashboard.html" class="nav-item">
+                <i class="fas fa-th-large"></i> <span>Dashboard</span>
+            </a>
+            <a href="admin-students.html" class="nav-item">
+                <i class="fas fa-users"></i> <span>Students & Courses</span>
+            </a>
+            <a href="#" class="nav-item active">
+                <i class="fas fa-file-alt"></i> <span>Exams</span>
+            </a>
+            <a href="admin-questions.html" class="nav-item">
+                <i class="fas fa-question-circle"></i> <span>Question Bank</span>
+            </a>
+        </nav>
+        <div class="nav-bottom">
+            <a href="index.html" class="nav-item">
+                <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+        
+        <header class="topbar">
+            <div class="topbar-left">
+                <h2>Exam Management</h2>
+            </div>
+        </header>
+
+        <div class="card" style="position: relative;">
+            <div class="loading-overlay" id="loadingOverlay">
+                <div class="spinner"></div>
+                <p>Processing Exam Data...</p>
+            </div>
+
+            <div class="card-header">
+                <h3 class="card-title">All Scheduled Exams</h3>
+                <button class="btn btn-primary" onclick="openCreateModal()">
+                    <i class="fas fa-plus"></i> Create New Exam
+                </button>
+            </div>
+
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Exam Title</th>
+                            <th>Course</th>
+                            <th>Duration</th>
+                            <th>Questions</th>
+                            <th>Window</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="examsTableBody">
+                        <tr><td colspan="7" style="text-align:center;">Loading exams...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- ================= CREATE EXAM MODAL ================= -->
+    <div class="modal" id="examModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('examModal')">&times;</button>
+            <h3>Create New Exam</h3>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Select Course</label>
+                    <select id="examCourse" class="form-control" onchange="checkAvailableQuestions()">
+                        <option value="">-- Select Course --</option>
+                        <!-- Populated via JS -->
+                    </select>
+                    <small id="courseQuestionCount" style="color: var(--text-muted); margin-top: 4px; display: block;"></small>
+                </div>
+                <div class="form-group">
+                    <label>Exam Title</label>
+                    <input type="text" id="examTitle" class="form-control" placeholder="e.g. Mid-Semester Test">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Start Time (When students can begin)</label>
+                    <input type="datetime-local" id="examStart" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>End Time (When exam closes)</label>
+                    <input type="datetime-local" id="examEnd" class="form-control">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Duration (Minutes)</label>
+                    <input type="number" id="examDuration" class="form-control" placeholder="e.g. 45" min="1">
+                </div>
+                <div class="form-group">
+                    <label>Number of Questions to Pull</label>
+                    <input type="number" id="examQuestionCount" class="form-control" placeholder="e.g. 40" min="1">
+                </div>
+            </div>
+
+            <div style="margin-top: 16px; margin-bottom: 24px; background: #f8fafc; padding: 16px; border-radius: 10px; border: 1px solid var(--border);">
+                <div class="toggle-row">
+                    <div>
+                        <div class="toggle-label">Shuffle Questions</div>
+                        <div class="toggle-desc">Randomize the order of questions for each student</div>
+                    </div>
+                    <label class="switch"><input type="checkbox" id="examShuffleQ" checked><span class="slider"></span></label>
+                </div>
+                <div class="toggle-row">
+                    <div>
+                        <div class="toggle-label">Shuffle Options (A, B, C, D)</div>
+                        <div class="toggle-desc">Randomize the order of the answers</div>
+                    </div>
+                    <label class="switch"><input type="checkbox" id="examShuffleO" checked><span class="slider"></span></label>
+                </div>
+                <div class="toggle-row">
+                    <div>
+                        <div class="toggle-label">Publish Immediately</div>
+                        <div class="toggle-desc">Make this exam visible to students right away</div>
+                    </div>
+                    <label class="switch"><input type="checkbox" id="examPublish" checked><span class="slider"></span></label>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" style="width:100%; justify-content:center;" id="saveExamBtn" onclick="createExam()">
+                Create Exam
+            </button>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+        import { getFirestore, collection, getDocs, addDoc, deleteDoc, updateDoc, doc, query, where } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCictHNxtslYs9VR0hoicxlwPn_QghkgIA",
+            authDomain: "edutop-7ff51.firebaseapp.com",
+            projectId: "edutop-7ff51",
+            storageBucket: "edutop-7ff51.firebasestorage.app",
+            messagingSenderId: "79307850494",
+            appId: "1:79307850494:web:b51ce51204140ec5429baf",
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let allExams = [];
+        let currentUserEmail = "";
+
+        // --- SECURITY ---
+        function escapeHTML(str) {
+            if(!str) return "";
+            return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag));
+        }
+
+        window.openModal = (id) => document.getElementById(id).classList.add('active');
+        window.closeModal = (id) => document.getElementById(id).classList.remove('active');
+
+        // --- AUTH & INITIALIZATION ---
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) { window.location.href = "index.html"; return; }
+            currentUserEmail = user.email;
+
+            await loadCoursesDropdown();
+            await loadExams();
+        });
+
+        // --- LOAD COURSES FOR DROPDOWN ---
+        async function loadCoursesDropdown() {
+            const select = document.getElementById('examCourse');
+            try {
+                const snap = await getDocs(collection(db, "courses"));
+                let html = '<option value="">-- Select Course --</option>';
+                snap.forEach(doc => {
+                    const c = doc.data();
+                    html += `<option value="${escapeHTML(c.code)}">${escapeHTML(c.code)} - ${escapeHTML(c.title)}</option>`;
+                });
+                select.innerHTML = html;
+            } catch (e) {
+                console.error("Error loading courses:", e);
+            }
+        }
+
+        // --- CHECK AVAILABLE QUESTIONS FOR SELECTED COURSE ---
+        window.checkAvailableQuestions = async () => {
+            const courseCode = document.getElementById('examCourse').value;
+            const info = document.getElementById('courseQuestionCount');
+            
+            if (!courseCode) { info.textContent = ""; return; }
+            info.textContent = "Checking available questions...";
+
+            try {
+                const q = query(collection(db, "questions"), where("courseIds", "array-contains", courseCode));
+                const snap = await getDocs(q);
+                info.textContent = `✓ ${snap.size} questions available in the bank for this course.`;
+                info.style.color = snap.size > 0 ? "var(--primary-deep)" : "red";
+            } catch (e) {
+                info.textContent = "Error checking questions.";
+            }
+        };
+
+        // --- LOAD EXAMS ---
+        async function loadExams() {
+            const tbody = document.getElementById('examsTableBody');
+            try {
+                const snap = await getDocs(collection(db, "exams"));
+                allExams = [];
+                snap.forEach(doc => {
+                    allExams.push({ id: doc.id, ...doc.data() });
+                });
+
+                // Sort: latest created first
+                allExams.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+                if (allExams.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:var(--text-muted);">No exams created yet.</td></tr>';
+                    return;
+                }
+
+                let html = '';
+                const now = new Date();
+
+                allExams.forEach(exam => {
+                    const start = new Date(exam.startTime);
+                    const end = new Date(exam.endTime);
+                    
+                    let statusBadge = '';
+                    if (!exam.isPublished) {
+                        statusBadge = '<span class="badge badge-gray">Draft</span>';
+                    } else if (now < start) {
+                        statusBadge = '<span class="badge badge-warning">Scheduled</span>';
+                    } else if (now > end) {
+                        statusBadge = '<span class="badge badge-red">Closed</span>';
+                    } else {
+                        statusBadge = '<span class="badge badge-green">Active Now</span>';
+                    }
+
+                    const dateOptions = { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+                    const windowStr = `${start.toLocaleDateString('en-GB', dateOptions)} <br><span style="font-size:11px;color:var(--text-muted);">to ${end.toLocaleDateString('en-GB', dateOptions)}</span>`;
+
+                    html += `
+                        <tr>
+                            <td style="font-weight:600;">${escapeHTML(exam.title)}</td>
+                            <td><span class="badge badge-gray">${escapeHTML(exam.courseId)}</span></td>
+                            <td>${exam.duration} mins</td>
+                            <td>${exam.questionIds.length} Qs</td>
+                            <td style="font-size:12px;">${windowStr}</td>
+                            <td>${statusBadge}</td>
+                            <td>
+                                <div class="action-btns">
+                                    <button class="icon-btn" onclick="togglePublish('${exam.id}', ${exam.isPublished})" title="Toggle Publish">
+                                        <i class="fas ${exam.isPublished ? 'fa-eye-slash' : 'fa-eye'}"></i>
+                                    </button>
+                                    <button class="icon-btn delete" onclick="deleteExam('${exam.id}')" title="Delete">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                });
+                tbody.innerHTML = html;
+            } catch (e) {
+                console.error("Error loading exams:", e);
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:red;">Failed to load exams.</td></tr>';
+            }
+        }
+
+        // --- OPEN CREATE MODAL ---
+        window.openCreateModal = () => {
+            // Reset form
+            document.getElementById('examCourse').value = '';
+            document.getElementById('examTitle').value = '';
+            document.getElementById('examStart').value = '';
+            document.getElementById('examEnd').value = '';
+            document.getElementById('examDuration').value = '';
+            document.getElementById('examQuestionCount').value = '';
+            document.getElementById('courseQuestionCount').textContent = '';
+            document.getElementById('examPublish').checked = true;
+            openModal('examModal');
+        };
+
+        // --- CREATE EXAM (AUTO PULL RANDOM QUESTIONS) ---
+        window.createExam = async () => {
+            const courseId = document.getElementById('examCourse').value;
+            const title = document.getElementById('examTitle').value.trim();
+            const startStr = document.getElementById('examStart').value;
+            const endStr = document.getElementById('examEnd').value;
+            const duration = parseInt(document.getElementById('examDuration').value);
+            const reqQuestions = parseInt(document.getElementById('examQuestionCount').value);
+            
+            const shuffleQ = document.getElementById('examShuffleQ').checked;
+            const shuffleO = document.getElementById('examShuffleO').checked;
+            const isPublished = document.getElementById('examPublish').checked;
+
+            // Validation
+            if (!courseId || !title || !startStr || !endStr || !duration || !reqQuestions) {
+                alert("Please fill in all fields."); return;
+            }
+            if (new Date(startStr) >= new Date(endStr)) {
+                alert("Start time must be before End time."); return;
+            }
+            if (duration > ((new Date(endStr) - new Date(startStr)) / 60000)) {
+                alert("Duration cannot be longer than the exam window."); return;
+            }
+
+            const btn = document.getElementById('saveExamBtn');
+            const overlay = document.getElementById('loadingOverlay');
+            btn.disabled = true;
+            overlay.classList.add('active');
+
+            try {
+                // 1. Fetch all questions for this course
+                const q = query(collection(db, "questions"), where("courseIds", "array-contains", courseId));
+                const snap = await getDocs(q);
+                
+                let availableQuestions = [];
+                snap.forEach(doc => {
+                    availableQuestions.push(doc.id);
+                });
+
+                if (availableQuestions.length < reqQuestions) {
+                    alert(`Not enough questions! You requested ${reqQuestions}, but only ${availableQuestions.length} exist for ${courseId}.`);
+                    overlay.classList.remove('active');
+                    btn.disabled = false;
+                    return;
+                }
+
+                // 2. Shuffle and slice to the required count
+                // Fisher-Yates shuffle algorithm
+                for (let i = availableQuestions.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [availableQuestions[i], availableQuestions[j]] = [availableQuestions[j], availableQuestions[i]];
+                }
+                const selectedQuestionIds = availableQuestions.slice(0, reqQuestions);
+
+                // 3. Save exam to database
+                await addDoc(collection(db, "exams"), {
+                    title: title,
+                    courseId: courseId,
+                    startTime: new Date(startStr).toISOString(),
+                    endTime: new Date(endStr).toISOString(),
+                    duration: duration,
+                    questionIds: selectedQuestionIds,
+                    shuffleQuestions: shuffleQ,
+                    shuffleOptions: shuffleO,
+                    showResults: false, 
+                    isPublished: isPublished,
+                    createdBy: currentUserEmail,
+                    createdAt: new Date().toISOString()
+                });
+
+                // 4. Clean up and refresh
+                closeModal('examModal');
+                loadExams();
+
+            } catch (error) {
+                console.error("Error creating exam:", error);
+                alert("Failed to create exam: " + error.message);
+            } finally {
+                overlay.classList.remove('active');
+                btn.disabled = false;
+            }
+        };
+
+        // --- TOGGLE PUBLISH ---
+        window.togglePublish = async (id, currentStatus) => {
+            try {
+                const examRef = doc(db, "exams", id);
+                await updateDoc(examRef, { isPublished: !currentStatus });
+                loadExams();
+            } catch (e) {
+                alert("Error updating status: " + e.message);
+            }
+        };
+
+        // --- DELETE EXAM ---
+        window.deleteExam = async (id) => {
+            if (!confirm("Are you sure you want to delete this exam? All student attempts will remain, but the exam will be removed.")) return;
+            try {
+                await deleteDoc(doc(db, "exams", id));
+                loadExams();
+            } catch (e) {
+                alert("Error deleting exam: " + e.message);
+            }
+        };
+    </script>
+</body>
+</html>
