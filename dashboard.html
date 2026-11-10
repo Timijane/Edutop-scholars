@@ -59,15 +59,14 @@
     border-bottom: 1px solid var(--line);
   }
 
-  /* FIX: Reduced max-width to 1000px for better 80% screen scaling */
   .topbar-inner {
-    max-width: 1000px; margin: 0 auto; padding: 0 20px; height: 60px;
+    max-width: 1240px; margin: 0 auto; padding: 0 20px; height: 60px;
     display: flex; align-items: center; justify-content: space-between; gap: 16px;
   }
 
-  .brand { display: flex; align-items: center; text-decoration: none; color: var(--ink-900); }
+  .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink-900); }
   .brand-text { display: flex; flex-direction: column; line-height: 1.15; }
-  .brand-text strong { font-size: 15px; font-weight: 700; letter-spacing: -0.2px; }
+  .brand-text strong { font-size: 14px; font-weight: 700; letter-spacing: -0.2px; }
   .brand-text span { font-size: 10.5px; color: var(--ink-500); font-weight: 500; letter-spacing: 0.3px; }
 
   .topbar-actions { display: flex; align-items: center; gap: 10px; }
@@ -150,8 +149,7 @@
   .notif-empty { padding: 30px; text-align: center; color: var(--ink-500); font-size: 12px; }
 
   /* ============ MAIN ============ */
-  /* FIX: Reduced max-width to 1000px for better 80% screen scaling */
-  .main { max-width: 1000px; margin: 0 auto; padding: 28px 20px 60px; }
+  .main { max-width: 1240px; margin: 0 auto; padding: 28px 20px 60px; }
 
   .page-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; margin-bottom: 22px; flex-wrap: wrap; }
   .page-head h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.4px; color: var(--ink-900); margin-bottom: 2px; }
@@ -202,7 +200,6 @@
   .status-badge.locked-time { background: var(--blue-soft); color: #1e40af; }
   .status-badge.locked-fee { background: var(--danger-soft); color: #991b1b; }
   .status-badge.closed { background: var(--line-soft); color: var(--ink-500); }
-  .status-badge.completed { background: var(--green-600); color: #fff; }
 
   .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 8px 16px; font-size: 12.5px; font-weight: 600; border-radius: 8px; border: 1px solid transparent; cursor: pointer; transition: all 0.15s; text-decoration: none; white-space: nowrap; }
   .btn-primary { background: var(--green-600); color: #fff; box-shadow: 0 1px 2px rgba(22, 163, 74, 0.2); }
@@ -893,7 +890,6 @@
     return `${m}m`;
   }
 
-  // ================== RENDER EXAMS (PREVENT MULTIPLE ATTEMPTS) ==================
   function renderExams() {
     const container = $('#examList');
     $('#examCount').textContent = state.exams.length;
@@ -919,13 +915,8 @@
       const duration = exam.duration || exam.durationMinutes || '—';
       const questions = exam.questionCount || (exam.questionIds || []).length || '—';
 
-      // FIX: Check if the student has already taken this exam
-      const hasTaken = state.attempts.some(a => a.examId === exam.id);
-
       let action = '';
-      if (hasTaken) {
-        action = `<span class="status-badge completed"><i class="fas fa-check"></i> Completed</span>`;
-      } else if (st.canStart) {
+      if (st.canStart) {
         action = `<a href="cbt.html?examId=${encodeURIComponent(exam.id)}" class="btn btn-primary btn-sm">Start exam</a>`;
       } else if (st.status === 'locked-time') {
         action = `<span class="status-badge locked-time"><i class="fas fa-clock"></i> ${countdown(st.startsAt - Date.now())}</span>`;
@@ -936,14 +927,14 @@
       }
 
       return `
-        <div class="exam-row ${(st.canStart && !hasTaken) ? '' : 'locked'}">
+        <div class="exam-row ${st.canStart ? '' : 'locked'}">
           <div class="exam-icon">${esc(code.substring(0, 4))}</div>
           <div class="exam-info">
             <h4>${esc(code)} — ${esc(title)}</h4>
             <div class="meta">
               <span><i class="fas fa-clock"></i>${esc(duration)} min</span>
               <span><i class="fas fa-list-ol"></i>${esc(questions)} questions</span>
-              ${(st.status === 'ready' && !hasTaken) ? `<span style="color:var(--green-700);font-weight:600;"><i class="fas fa-circle" style="font-size:6px;color:var(--green-600);"></i> Available now</span>` : ''}
+              ${st.status === 'ready' ? `<span style="color:var(--green-700);font-weight:600;"><i class="fas fa-circle" style="font-size:6px;color:var(--green-600);"></i> Available now</span>` : ''}
               ${st.status === 'locked-time' && exam.startTime ? `<span><i class="fas fa-calendar"></i>${fmtDateTime(exam.startTime)}</span>` : ''}
             </div>
           </div>
@@ -955,10 +946,10 @@
   // ================== ATTEMPTS / PERFORMANCE ==================
   async function loadAttempts() {
     try {
-      // FIX: Fetch ALL attempts (not just published) so we can lock exams and show count
       const q = query(
         collection(db, 'attempts'),
-        where('studentUid', '==', state.user.uid)
+        where('studentUid', '==', state.user.uid),
+        where('isPublished', '==', true)
       );
       const snap = await getDocs(q);
       state.attempts = [];
@@ -972,12 +963,9 @@
 
   function renderPerformance() {
     const body = $('#perfBody');
-    
-    // Only show performance for PUBLISHED attempts
-    const publishedAttempts = state.attempts.filter(a => a.isPublished === true);
-    $('#perfCount').textContent = publishedAttempts.length;
+    $('#perfCount').textContent = state.attempts.length;
 
-    if (!publishedAttempts.length) {
+    if (!state.attempts.length) {
       body.innerHTML = `
         <div class="empty">
           <div class="icon"><i class="fas fa-chart-simple"></i></div>
@@ -988,7 +976,7 @@
     }
 
     const byCourse = {};
-    publishedAttempts.forEach(a => {
+    state.attempts.forEach(a => {
       const key = a.courseCode || a.courseId || '—';
       if (!byCourse[key]) byCourse[key] = { total: 0, count: 0 };
       byCourse[key].total += Number(a.percentage || 0);
@@ -1009,14 +997,15 @@
     `).join('')}</div>`;
   }
 
+  // ================== UPCOMING (FIXED) ==================
   function renderUpcoming() {
     const now = Date.now();
     
+    // FIX: Include both future exams AND currently active exams
     const upcoming = state.exams
       .filter(e => {
         const start = new Date(e.startTime).getTime();
         const end = new Date(e.endTime).getTime();
-        // Include active and future exams
         return start > now || (start <= now && end >= now);
       })
       .sort((a, b) => new Date(a.startTime) - new Date(b.startTime))
@@ -1049,26 +1038,21 @@
     }).join('');
   }
 
-  // ================== STATS (UPDATED) ==================
+  // ================== STATS ==================
   function renderStats() {
     const attempts = state.attempts;
-    // Only calculate scores for published exams
-    const publishedAttempts = attempts.filter(a => a.isPublished === true);
-    
-    const avg = publishedAttempts.length
-      ? Math.round(publishedAttempts.reduce((s, a) => s + Number(a.percentage || 0), 0) / publishedAttempts.length)
+    const avg = attempts.length
+      ? Math.round(attempts.reduce((s, a) => s + Number(a.percentage || 0), 0) / attempts.length)
       : null;
-    const best = publishedAttempts.length
-      ? Math.max(...publishedAttempts.map(a => Number(a.percentage || 0)))
+    const best = attempts.length
+      ? Math.max(...attempts.map(a => Number(a.percentage || 0)))
       : null;
 
     $('#statAvg').innerHTML = avg === null ? '—<small>%</small>' : `${avg}<small>%</small>`;
-    $('#statAvgSub').textContent = publishedAttempts.length ? `Across ${publishedAttempts.length} published exam${publishedAttempts.length === 1 ? '' : 's'}` : 'No published exams yet';
+    $('#statAvgSub').textContent = attempts.length ? `Across ${attempts.length} exam${attempts.length === 1 ? '' : 's'}` : 'No exams taken yet';
     $('#statAvgSub').className = 'sub ' + (avg !== null && avg >= 50 ? 'up' : (avg !== null ? 'down' : ''));
 
-    // FIX: Count ALL attempts (published or not) so the student sees they took it
     $('#statExamsTaken').textContent = attempts.length;
-    
     $('#statBest').innerHTML = best === null ? '—<small>%</small>' : `${best}<small>%</small>`;
     if (best !== null) {
       $('#statBestSub').textContent = best >= 70 ? 'Strong performance' : best >= 50 ? 'Passing' : 'Needs improvement';
@@ -1090,24 +1074,36 @@
       const course = state.courses.find(c => c.id === exam.courseId || c.code === exam.courseCode) || {};
       const label = course.code || exam.courseCode || 'Exam';
 
+      // 1. Exam is scheduled
       if (start > now) {
         state.notifications.push({
-          type: 'scheduled', icon: 'blue', title: 'Exam Scheduled',
-          text: `${label} - ${exam.title} starts on ${fmtDateTime(exam.startTime)}.`, time: start
+          type: 'scheduled',
+          icon: 'blue',
+          title: 'Exam Scheduled',
+          text: `${label} - ${exam.title} starts on ${fmtDateTime(exam.startTime)}.`,
+          time: start
         });
       }
       
+      // 2. Exam expires soon (within 24 hours)
       if (end > now && (end - now) < oneDay) {
         state.notifications.push({
-          type: 'expiring', icon: 'amber', title: 'Exam Expiring Soon!',
-          text: `${label} - ${exam.title} ends in ${Math.ceil((end - now) / (1000 * 60 * 60))} hours.`, time: end
+          type: 'expiring',
+          icon: 'amber',
+          title: 'Exam Expiring Soon!',
+          text: `${label} - ${exam.title} ends in ${Math.ceil((end - now) / (1000 * 60 * 60))} hours.`,
+          time: end
         });
       }
 
+      // 3. Exam is active now
       if (start <= now && end >= now) {
         state.notifications.push({
-          type: 'active', icon: 'green', title: 'Exam Available Now',
-          text: `${label} - ${exam.title} is currently open.`, time: start
+          type: 'active',
+          icon: 'green',
+          title: 'Exam Available Now',
+          text: `${label} - ${exam.title} is currently open.`,
+          time: start
         });
       }
     });
