@@ -9,17 +9,20 @@
 <style>
   :root {
     --white: #ffffff;
-    --gray-50: #f8fafc;
-    --gray-100: #f1f5f9;
-    --gray-200: #e2e8f0;
-    --gray-800: #1e293b;
-    
-    --ink-900: #0f172a;
+    --green-50: #f5fdf8;
+    --green-100: #e8f9ee;
+    --green-200: #c6efd3;
+    --green-500: #22c55e;
+    --green-600: #16a34a;
+    --green-700: #15803d;
+    --green-800: #166534;
+
+    --ink-900: #0b1220;
     --ink-700: #334155;
     --ink-500: #64748b;
     --ink-400: #94a3b8;
-    --line: #e2e8f0;
-    --line-soft: #f8fafc;
+    --line: #e8eaed;
+    --line-soft: #f1f3f5;
 
     --danger: #dc2626;
     --danger-soft: #fef2f2;
@@ -41,7 +44,7 @@
   body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
     color: var(--ink-900);
-    background: var(--gray-50);
+    background: linear-gradient(180deg, var(--green-50) 0%, var(--green-100) 180px, var(--white) 480px, var(--white) 100%);
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
     line-height: 1.5;
@@ -51,7 +54,7 @@
   /* ============ TOPBAR ============ */
   .topbar {
     position: sticky; top: 0; z-index: 40;
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--line);
   }
@@ -61,22 +64,20 @@
     display: flex; align-items: center; justify-content: space-between; gap: 16px;
   }
 
-  .brand { display: flex; align-items: center; text-decoration: none; color: var(--ink-900); }
+  .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink-900); }
   .brand-text { display: flex; flex-direction: column; line-height: 1.15; }
-  .brand-text strong { font-size: 15px; font-weight: 700; letter-spacing: -0.3px; }
+  .brand-text strong { font-size: 14px; font-weight: 700; letter-spacing: -0.2px; }
   .brand-text span { font-size: 10.5px; color: var(--ink-500); font-weight: 500; letter-spacing: 0.3px; }
 
   .topbar-actions { display: flex; align-items: center; gap: 10px; }
 
   .offline-pill {
     display: inline-flex; align-items: center; gap: 7px; padding: 6px 11px;
-    background: var(--gray-100); border: 1px solid var(--gray-200);
-    border-radius: 100px; font-size: 11.5px; font-weight: 600; color: var(--ink-700);
+    background: var(--green-100); border: 1px solid var(--green-200);
+    border-radius: 100px; font-size: 11.5px; font-weight: 600; color: var(--green-800);
   }
   .offline-pill.offline { background: var(--amber-soft); border-color: #fde68a; color: #92400e; }
-  .offline-pill .dot {
-    width: 6px; height: 6px; border-radius: 50%; background: var(--ink-500);
-  }
+  .offline-pill .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green-600); }
   .offline-pill.offline .dot { background: var(--amber); }
 
   .icon-btn {
@@ -84,7 +85,7 @@
     background: var(--white); display: flex; align-items: center; justify-content: center;
     color: var(--ink-700); cursor: pointer; position: relative; transition: all 0.15s;
   }
-  .icon-btn:hover { background: var(--gray-100); }
+  .icon-btn:hover { background: var(--line-soft); }
   .icon-btn .badge-dot {
     position: absolute; top: 7px; right: 7px; width: 7px; height: 7px;
     border-radius: 50%; background: var(--danger); border: 1.5px solid var(--white);
@@ -96,11 +97,11 @@
     border: 1px solid var(--line); background: var(--white); border-radius: 100px;
     cursor: pointer; transition: all 0.15s;
   }
-  .avatar-btn:hover { background: var(--gray-100); }
+  .avatar-btn:hover { background: var(--line-soft); }
   .avatar {
     width: 30px; height: 30px; border-radius: 50%;
-    background: var(--gray-200);
-    color: var(--ink-900); display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, var(--green-600), var(--green-700));
+    color: #fff; display: flex; align-items: center; justify-content: center;
     font-size: 12px; font-weight: 700;
   }
   .avatar-name { font-size: 12.5px; font-weight: 600; color: var(--ink-900); }
@@ -121,7 +122,7 @@
     color: var(--ink-700); font-size: 12.5px; font-weight: 500; text-decoration: none;
     border-radius: 8px; transition: background 0.12s;
   }
-  .avatar-menu a:hover { background: var(--gray-100); color: var(--ink-900); }
+  .avatar-menu a:hover { background: var(--line-soft); color: var(--ink-900); }
   .avatar-menu a i { width: 14px; color: var(--ink-500); font-size: 12px; }
   .avatar-menu a.danger { color: var(--danger); }
   .avatar-menu a.danger i { color: var(--danger); }
@@ -138,11 +139,11 @@
   .notif-header h4 { font-size: 13px; font-weight: 700; }
   .notif-list { max-height: 300px; overflow-y: auto; }
   .notif-item { padding: 12px 16px; border-bottom: 1px solid var(--line-soft); display: flex; gap: 12px; text-decoration: none; color: inherit; transition: background 0.12s; }
-  .notif-item:hover { background: var(--gray-50); }
+  .notif-item:hover { background: var(--line-soft); }
   .notif-icon { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
   .notif-icon.blue { background: var(--blue-soft); color: var(--blue); }
   .notif-icon.amber { background: var(--amber-soft); color: var(--amber); }
-  .notif-icon.gray { background: var(--gray-100); color: var(--ink-700); }
+  .notif-icon.green { background: var(--green-100); color: var(--green-700); }
   .notif-info h5 { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
   .notif-info p { font-size: 11.5px; color: var(--ink-500); line-height: 1.4; }
   .notif-empty { padding: 30px; text-align: center; color: var(--ink-500); font-size: 12px; }
@@ -154,41 +155,18 @@
   .page-head h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.4px; color: var(--ink-900); margin-bottom: 2px; }
   .page-head p { font-size: 13px; color: var(--ink-500); }
   .page-head .today { font-size: 12px; color: var(--ink-500); display: flex; align-items: center; gap: 6px; }
-  .page-head .today i { color: var(--ink-400); }
+  .page-head .today i { color: var(--green-600); }
 
-  /* ============ WELCOME STRIP (No Green) ============ */
-  .welcome-strip {
-    background: var(--white);
-    border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 20px 24px;
-    display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; margin-bottom: 22px;
-  }
-  .welcome-left { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
-  .welcome-avatar {
-    width: 48px; height: 48px; border-radius: 12px; background: var(--gray-100);
-    color: var(--ink-900); display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700;
-  }
-  .welcome-info h2 { font-size: 16px; font-weight: 700; color: var(--ink-900); margin-bottom: 3px; }
-  .welcome-info .meta { display: flex; flex-wrap: wrap; gap: 14px; font-size: 12px; color: var(--ink-500); }
-  .welcome-info .meta span { display: inline-flex; align-items: center; gap: 5px; }
-  .welcome-info .meta i { color: var(--ink-400); font-size: 11px; }
-  .welcome-info .meta strong { color: var(--ink-900); font-weight: 600; }
-
-  .fee-status { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; }
-  .fee-badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 100px; font-size: 11.5px; font-weight: 600; }
-  .fee-badge.clear { background: var(--gray-100); color: var(--ink-900); border: 1px solid var(--line); }
-  .fee-badge.owing { background: var(--danger-soft); color: #991b1b; border: 1px solid #fecaca; }
-  .fee-badge i { font-size: 10px; }
-  .fee-status small { font-size: 11px; color: var(--ink-500); }
-
-  /* ============ STATS (No Green) ============ */
+  /* ============ STATS ============ */
   .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
   .stat { background: var(--white); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 16px; position: relative; overflow: hidden; }
+  .stat::after { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--green-600); }
   .stat .label { font-size: 11px; color: var(--ink-500); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
-  .stat .label i { font-size: 10px; color: var(--ink-400); }
+  .stat .label i { font-size: 10px; color: var(--green-600); }
   .stat .value { font-size: 22px; font-weight: 700; color: var(--ink-900); letter-spacing: -0.5px; line-height: 1.1; }
   .stat .value small { font-size: 13px; color: var(--ink-500); font-weight: 500; }
   .stat .sub { font-size: 11px; color: var(--ink-500); margin-top: 4px; }
-  .stat .sub.up { color: var(--blue); }
+  .stat .sub.up { color: var(--green-700); }
   .stat .sub.down { color: var(--danger); }
 
   /* ============ LAYOUT GRID ============ */
@@ -197,19 +175,19 @@
 
   .card { background: var(--white); border: 1px solid var(--line); border-radius: var(--radius-lg); overflow: hidden; }
   .card-head { padding: 16px 18px; border-bottom: 1px solid var(--line-soft); display: flex; justify-content: space-between; align-items: center; gap: 10px; }
-  .card-head h3 { font-size: 14.5px; font-weight: 700; color: var(--ink-900); display: flex; align-items: center; gap: 8px; }
-  .card-head h3 i { color: var(--ink-400); font-size: 13px; }
-  .card-head .count { font-size: 11px; font-weight: 600; color: var(--ink-500); background: var(--gray-100); padding: 3px 9px; border-radius: 100px; }
-  .card-head .link { font-size: 12px; font-weight: 600; color: var(--ink-900); text-decoration: none; background: none; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; }
-  .card-head .link:hover { text-decoration: underline; }
+  .card-head h3 { font-size: 14.5px; font-weight: 700; color: var(--ink-900); letter-spacing: -0.2px; display: flex; align-items: center; gap: 8px; }
+  .card-head h3 i { color: var(--green-600); font-size: 13px; }
+  .card-head .count { font-size: 11px; font-weight: 600; color: var(--ink-500); background: var(--line-soft); padding: 3px 9px; border-radius: 100px; }
+  .card-head .link { font-size: 12px; font-weight: 600; color: var(--green-700); text-decoration: none; background: none; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; }
+  .card-head .link:hover { color: var(--green-800); text-decoration: underline; }
   .card-body { padding: 0; }
 
   /* ============ EXAM LIST ============ */
   .exam-row { display: flex; align-items: center; gap: 14px; padding: 14px 18px; border-bottom: 1px solid var(--line-soft); transition: background 0.12s; }
   .exam-row:last-child { border-bottom: none; }
-  .exam-row:hover { background: var(--gray-50); }
-  .exam-icon { width: 42px; height: 42px; border-radius: 10px; background: var(--gray-100); color: var(--ink-900); display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700; flex-shrink: 0; }
-  .exam-row.locked .exam-icon { background: var(--gray-50); color: var(--ink-400); }
+  .exam-row:hover { background: var(--green-50); }
+  .exam-icon { width: 42px; height: 42px; border-radius: 10px; background: var(--green-100); color: var(--green-800); display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700; flex-shrink: 0; }
+  .exam-row.locked .exam-icon { background: var(--line-soft); color: var(--ink-400); }
   .exam-info { flex: 1; min-width: 0; }
   .exam-info h4 { font-size: 13.5px; font-weight: 700; color: var(--ink-900); margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .exam-info .meta { display: flex; flex-wrap: wrap; gap: 10px; font-size: 11.5px; color: var(--ink-500); }
@@ -218,22 +196,22 @@
 
   .status-badge { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 100px; font-size: 11px; font-weight: 600; }
   .status-badge i { font-size: 9px; }
-  .status-badge.ready { background: var(--ink-900); color: var(--white); }
+  .status-badge.ready { background: var(--green-100); color: var(--green-800); }
   .status-badge.locked-time { background: var(--blue-soft); color: #1e40af; }
   .status-badge.locked-fee { background: var(--danger-soft); color: #991b1b; }
-  .status-badge.closed { background: var(--gray-100); color: var(--ink-500); }
+  .status-badge.closed { background: var(--line-soft); color: var(--ink-500); }
 
   .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 8px 16px; font-size: 12.5px; font-weight: 600; border-radius: 8px; border: 1px solid transparent; cursor: pointer; transition: all 0.15s; text-decoration: none; white-space: nowrap; }
-  .btn-primary { background: var(--ink-900); color: var(--white); }
-  .btn-primary:hover { background: #000; }
+  .btn-primary { background: var(--green-600); color: #fff; box-shadow: 0 1px 2px rgba(22, 163, 74, 0.2); }
+  .btn-primary:hover { background: var(--green-700); }
   .btn-outline { background: var(--white); color: var(--ink-700); border-color: var(--line); }
-  .btn-outline:hover { background: var(--gray-100); }
+  .btn-outline:hover { background: var(--line-soft); }
   .btn:disabled { opacity: 0.55; cursor: not-allowed; }
   .btn-sm { padding: 6px 12px; font-size: 11.5px; }
 
   /* ============ EMPTY STATE ============ */
   .empty { padding: 40px 20px; text-align: center; color: var(--ink-500); }
-  .empty .icon { width: 48px; height: 48px; border-radius: 12px; background: var(--gray-100); color: var(--ink-400); display: flex; align-items: center; justify-content: center; font-size: 18px; margin: 0 auto 12px; }
+  .empty .icon { width: 48px; height: 48px; border-radius: 12px; background: var(--green-100); color: var(--green-700); display: flex; align-items: center; justify-content: center; font-size: 18px; margin: 0 auto 12px; }
   .empty h4 { font-size: 13.5px; font-weight: 600; color: var(--ink-900); margin-bottom: 4px; }
   .empty p { font-size: 12px; line-height: 1.5; }
 
@@ -242,7 +220,7 @@
   .info-card { padding: 16px 18px; border-bottom: 1px solid var(--line-soft); display: flex; align-items: flex-start; gap: 12px; }
   .info-card:last-child { border-bottom: none; }
   .info-card .ic { width: 34px; height: 34px; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
-  .info-card .ic.green { background: var(--gray-100); color: var(--ink-900); }
+  .info-card .ic.green { background: var(--green-100); color: var(--green-800); }
   .info-card .ic.blue { background: var(--blue-soft); color: #1e40af; }
   .info-card .ic.amber { background: var(--amber-soft); color: #92400e; }
   .info-card .ic.red { background: var(--danger-soft); color: #991b1b; }
@@ -252,11 +230,11 @@
   /* ============ COURSES GRID ============ */
   .courses-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; padding: 16px 18px; }
   .course-tile { background: var(--white); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px 14px; transition: all 0.15s; position: relative; }
-  .course-tile:hover { border-color: var(--ink-400); box-shadow: var(--shadow-sm); }
-  .course-tile .code { font-size: 13px; font-weight: 700; color: var(--ink-900); margin-bottom: 3px; }
+  .course-tile:hover { border-color: var(--green-200); box-shadow: var(--shadow-sm); }
+  .course-tile .code { font-size: 13px; font-weight: 700; color: var(--ink-900); letter-spacing: -0.2px; margin-bottom: 3px; }
   .course-tile .title { font-size: 11.5px; color: var(--ink-500); line-height: 1.4; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
   .course-tile .tile-meta { margin-top: 8px; display: flex; gap: 10px; font-size: 10.5px; color: var(--ink-500); }
-  .course-tile .tile-meta i { font-size: 9.5px; margin-right: 3px; color: var(--ink-400); }
+  .course-tile .tile-meta i { font-size: 9.5px; margin-right: 3px; color: var(--green-600); }
   .course-tile .remove { position: absolute; top: 8px; right: 8px; width: 20px; height: 20px; border-radius: 5px; background: transparent; border: none; color: var(--ink-400); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 10px; transition: all 0.12s; }
   .course-tile .remove:hover { background: var(--danger-soft); color: var(--danger); }
 
@@ -264,8 +242,8 @@
   .chart-list { padding: 16px 18px; display: flex; flex-direction: column; gap: 12px; }
   .chart-row { display: grid; grid-template-columns: 70px 1fr 42px; align-items: center; gap: 10px; font-size: 11.5px; }
   .chart-row .code { font-weight: 600; color: var(--ink-900); }
-  .chart-row .track { height: 6px; background: var(--gray-100); border-radius: 100px; overflow: hidden; }
-  .chart-row .bar { height: 100%; border-radius: 100px; background: var(--ink-900); transition: width 0.6s ease; }
+  .chart-row .track { height: 6px; background: var(--line-soft); border-radius: 100px; overflow: hidden; }
+  .chart-row .bar { height: 100%; border-radius: 100px; background: linear-gradient(90deg, var(--green-600), var(--green-500)); transition: width 0.6s ease; }
   .chart-row .pct { color: var(--ink-500); font-weight: 600; text-align: right; }
 
   /* ============ MODAL ============ */
@@ -277,15 +255,15 @@
   .modal-head h3 { font-size: 15px; font-weight: 700; color: var(--ink-900); margin-bottom: 2px; }
   .modal-head p { font-size: 12px; color: var(--ink-500); }
   .modal-close { background: none; border: none; font-size: 20px; color: var(--ink-500); cursor: pointer; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 6px; transition: all 0.12s; }
-  .modal-close:hover { background: var(--gray-100); color: var(--ink-900); }
+  .modal-close:hover { background: var(--line-soft); color: var(--ink-900); }
   .modal-body { padding: 20px 22px; max-height: 60vh; overflow-y: auto; }
   .modal-foot { padding: 14px 22px; border-top: 1px solid var(--line-soft); display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
 
   .course-check-list { display: flex; flex-direction: column; gap: 8px; }
   .course-check { display: flex; align-items: center; gap: 12px; padding: 11px 14px; border: 1px solid var(--line); border-radius: var(--radius-sm); cursor: pointer; transition: all 0.12s; }
-  .course-check:hover { border-color: var(--ink-400); background: var(--gray-50); }
-  .course-check input { accent-color: var(--ink-900); width: 16px; height: 16px; cursor: pointer; }
-  .course-check.selected { border-color: var(--ink-900); background: var(--gray-50); }
+  .course-check:hover { border-color: var(--green-200); background: var(--green-50); }
+  .course-check input { accent-color: var(--green-600); width: 16px; height: 16px; cursor: pointer; }
+  .course-check.selected { border-color: var(--green-600); background: var(--green-50); }
   .course-check .info { flex: 1; }
   .course-check .info strong { font-size: 12.5px; color: var(--ink-900); display: block; }
   .course-check .info span { font-size: 11px; color: var(--ink-500); }
@@ -293,7 +271,7 @@
   .search-input { width: 100%; padding: 9px 12px 9px 34px; font-size: 12.5px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--white); color: var(--ink-900); margin-bottom: 14px; position: relative; }
   .search-wrap { position: relative; }
   .search-wrap i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--ink-400); font-size: 12px; }
-  .search-input:focus { outline: none; border-color: var(--ink-900); box-shadow: 0 0 0 3px rgba(15,23,42,0.1); }
+  .search-input:focus { outline: none; border-color: var(--green-600); box-shadow: 0 0 0 3px rgba(22,163,74,0.1); }
 
   /* ============ TOAST ============ */
   .toast-wrap { position: fixed; bottom: 20px; right: 20px; z-index: 200; display: flex; flex-direction: column; gap: 8px; }
@@ -306,8 +284,6 @@
   @media (max-width: 640px) {
     .stats { grid-template-columns: repeat(2, 1fr); }
     .page-head h1 { font-size: 19px; }
-    .welcome-strip { padding: 16px; }
-    .welcome-avatar { width: 40px; height: 40px; font-size: 15px; }
     .exam-row { padding: 12px 14px; gap: 10px; }
     .exam-icon { width: 36px; height: 36px; font-size: 13px; }
     .exam-action .btn { padding: 6px 10px; font-size: 11px; }
@@ -393,27 +369,6 @@
       <span id="todayDate">--</span>
     </div>
   </div>
-
-  <!-- Welcome -->
-  <section class="welcome-strip" id="welcomeStrip">
-    <div class="welcome-left">
-      <div class="welcome-avatar" id="welcomeAvatar">--</div>
-      <div class="welcome-info">
-        <h2 id="welcomeName">Loading...</h2>
-        <div class="meta">
-          <span><i class="fas fa-id-card"></i> <strong id="welcomeMatric">--</strong></span>
-          <span><i class="fas fa-building"></i> <strong id="welcomeDept">--</strong></span>
-          <span><i class="fas fa-layer-group"></i> <strong id="welcomeLevel">--</strong></span>
-        </div>
-      </div>
-    </div>
-    <div class="fee-status" id="feeStatusWrap">
-      <div class="fee-badge clear" id="feeBadge">
-        <i class="fas fa-check-circle"></i> Account in good standing
-      </div>
-      <small>Fee clearance: <span id="feeStatusText">clear</span></small>
-    </div>
-  </section>
 
   <!-- Stats -->
   <section class="stats">
@@ -503,21 +458,21 @@
         </div>
         <div class="card-body">
           <div class="info-card">
-            <div class="ic blue"><i class="fas fa-wifi"></i></div>
+            <div class="ic green"><i class="fas fa-wifi"></i></div>
             <div>
               <h5>Works offline</h5>
               <p>Once you start an exam, it runs offline. Answers save locally every second.</p>
             </div>
           </div>
           <div class="info-card">
-            <div class="ic amber"><i class="fas fa-clock"></i></div>
+            <div class="ic blue"><i class="fas fa-clock"></i></div>
             <div>
               <h5>Timer doesn't pause</h5>
               <p>Once the exam starts, time keeps counting — even if you leave the page.</p>
             </div>
           </div>
           <div class="info-card">
-            <div class="ic red"><i class="fas fa-redo"></i></div>
+            <div class="ic amber"><i class="fas fa-redo"></i></div>
             <div>
               <h5>Don't refresh</h5>
               <p>Refreshing or closing the tab will auto-submit your exam with current answers.</p>
@@ -536,7 +491,7 @@
       <!-- Upcoming -->
       <section class="card">
         <div class="card-head">
-          <h3><i class="fas fa-hourglass-half"></i> Upcoming</h3>
+          <h3><i class="fas fa-hourglass-half"></i> Upcoming & Active</h3>
         </div>
         <div class="card-body" id="upcomingBody">
           <div class="empty" style="padding:24px 16px;">
@@ -642,11 +597,6 @@
   const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
   const esc = (s = '') => String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 
-  const fmtDate = (iso) => {
-    if (!iso) return '—';
-    const d = new Date(iso);
-    return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
-  };
   const fmtDateTime = (iso) => {
     if (!iso) return '—';
     const d = new Date(iso);
@@ -664,15 +614,6 @@
 
   function initials(name) {
     return (name || '?').trim().split(/\s+/).map(w => w[0]).join('').substring(0, 2).toUpperCase();
-  }
-
-  function levelTypeLabel(type, level) {
-    if (!type && !level) return '—';
-    const t = (type || '').toLowerCase();
-    if (t === 'university') return `${level || '—'} Level`;
-    if (t === 'secondary') return level || 'Secondary';
-    if (t === 'primary') return level || 'Primary';
-    return level || '—';
   }
 
   // ================== OFFLINE INDICATOR ==================
@@ -744,32 +685,11 @@
   function renderProfile() {
     const p = state.profile;
     const name = p.fullName || 'Student';
-    const matric = p.matricNo || '—';
-    const dept = p.department || p.departmentName || '—';
-    const level = levelTypeLabel(p.levelType, p.level);
-
+    
     $('#avatarInitials').textContent = initials(name);
     $('#avatarName').textContent = name.split(' ')[0];
     $('#menuFullName').textContent = name;
-    $('#menuMatric').textContent = matric;
-
-    $('#welcomeAvatar').textContent = initials(name);
-    $('#welcomeName').textContent = name;
-    $('#welcomeMatric').textContent = matric;
-    $('#welcomeDept').textContent = dept;
-    $('#welcomeLevel').textContent = level;
-
-    const owing = !!p.isOwing;
-    const badge = $('#feeBadge');
-    if (owing) {
-      badge.className = 'fee-badge owing';
-      badge.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Fees outstanding';
-      $('#feeStatusText').textContent = 'owing — some exams locked';
-    } else {
-      badge.className = 'fee-badge clear';
-      badge.innerHTML = '<i class="fas fa-check-circle"></i> Account in good standing';
-      $('#feeStatusText').textContent = 'clear';
-    }
+    $('#menuMatric').textContent = p.matricNo || '—';
 
     $('#todayDate').textContent = new Date().toLocaleDateString('en-GB', {
       weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
@@ -925,7 +845,7 @@
     }
   }
 
-  // ================== EXAMS (FIXED) ==================
+  // ================== EXAMS ==================
   async function loadExams() {
     const enrolled = state.profile.enrolledCourseIds || [];
     if (!enrolled.length) { state.exams = []; return; }
@@ -935,12 +855,10 @@
       const all = [];
       snap.forEach(d => all.push({ id: d.id, ...d.data() }));
 
-      // FIX: Convert enrolled Database IDs into Course Codes
       const enrolledCodes = state.courses
         .filter(c => enrolled.includes(c.id) || enrolled.includes(c.code))
         .map(c => c.code);
 
-      // Filter exams using the actual Course Codes
       state.exams = all.filter(e =>
         e.isPublished !== false &&
         (enrolledCodes.includes(e.courseId) || enrolledCodes.includes(e.courseCode))
@@ -1016,7 +934,7 @@
             <div class="meta">
               <span><i class="fas fa-clock"></i>${esc(duration)} min</span>
               <span><i class="fas fa-list-ol"></i>${esc(questions)} questions</span>
-              ${st.status === 'ready' ? `<span style="color:var(--ink-900);font-weight:600;"><i class="fas fa-circle" style="font-size:6px;color:var(--ink-900);"></i> Available now</span>` : ''}
+              ${st.status === 'ready' ? `<span style="color:var(--green-700);font-weight:600;"><i class="fas fa-circle" style="font-size:6px;color:var(--green-600);"></i> Available now</span>` : ''}
               ${st.status === 'locked-time' && exam.startTime ? `<span><i class="fas fa-calendar"></i>${fmtDateTime(exam.startTime)}</span>` : ''}
             </div>
           </div>
@@ -1079,10 +997,17 @@
     `).join('')}</div>`;
   }
 
+  // ================== UPCOMING (FIXED) ==================
   function renderUpcoming() {
     const now = Date.now();
+    
+    // FIX: Include both future exams AND currently active exams
     const upcoming = state.exams
-      .filter(e => e.startTime && new Date(e.startTime).getTime() > now)
+      .filter(e => {
+        const start = new Date(e.startTime).getTime();
+        const end = new Date(e.endTime).getTime();
+        return start > now || (start <= now && end >= now);
+      })
       .sort((a, b) => new Date(a.startTime) - new Date(b.startTime))
       .slice(0, 3);
 
@@ -1091,16 +1016,23 @@
       body.innerHTML = `<div class="empty" style="padding:24px 16px;"><div class="icon" style="width:36px;height:36px;font-size:14px;"><i class="fas fa-calendar"></i></div><p>No upcoming exams yet.</p></div>`;
       return;
     }
+
     body.innerHTML = upcoming.map(e => {
       const course = state.courses.find(c => c.id === e.courseId || c.code === e.courseCode) || {};
       const label = course.code || e.courseCode || 'Exam';
-      const when = new Date(e.startTime);
+      const start = new Date(e.startTime);
+      const end = new Date(e.endTime);
+      
+      const isActive = now >= start.getTime() && now <= end.getTime();
+      const iconClass = isActive ? 'green' : 'blue';
+      const statusText = isActive ? 'Active Now' : start.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' }) + ' · ' + start.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+      
       return `
         <div class="info-card">
-          <div class="ic blue"><i class="fas fa-calendar-day"></i></div>
+          <div class="ic ${iconClass}"><i class="fas fa-calendar-day"></i></div>
           <div>
             <h5>${esc(label)} — ${esc(e.title || 'Exam')}</h5>
-            <p>${when.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })} · ${when.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}</p>
+            <p style="${isActive ? 'color:var(--green-700);font-weight:600;' : ''}">${statusText}</p>
           </div>
         </div>`;
     }).join('');
@@ -1168,7 +1100,7 @@
       if (start <= now && end >= now) {
         state.notifications.push({
           type: 'active',
-          icon: 'gray',
+          icon: 'green',
           title: 'Exam Available Now',
           text: `${label} - ${exam.title} is currently open.`,
           time: start
@@ -1176,7 +1108,6 @@
       }
     });
 
-    // Sort by time, newest first
     state.notifications.sort((a, b) => a.time - b.time);
     renderNotificationMenu();
   }
@@ -1191,7 +1122,7 @@
       return;
     }
 
-    dot.style.display = 'block'; // Show red dot
+    dot.style.display = 'block';
     list.innerHTML = state.notifications.map(n => `
       <a href="#" class="notif-item">
         <div class="notif-icon ${n.icon}"><i class="fas fa-${n.icon === 'amber' ? 'exclamation-circle' : n.icon === 'blue' ? 'calendar-plus' : 'check-circle'}"></i></div>
